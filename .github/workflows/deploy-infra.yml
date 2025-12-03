@@ -42,4 +42,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: rg-ds1-${{ inputs.environment }}
           template: ./infra/main.bicep
-          parameters: environmentName=${{ inputs.environment }}
+          parameters: >
+            environmentName=${{ inputs.environment }}
+            shopifyAccessToken=${{ secrets.SHOPIFY_ACCESS_TOKEN }}
+            shopifyShopName=${{ secrets.SHOPIFY_SHOP_NAME }}

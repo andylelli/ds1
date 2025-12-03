@@ -6,6 +6,10 @@ param environmentName string = 'dev'
 @description('The location for all resources')
 param location string = resourceGroup().location
 
+@secure()
+param shopifyAccessToken string = ''
+param shopifyShopName string = ''
+
 var appName = 'ds1-agent-${environmentName}'
 var uniqueSuffix = uniqueString(resourceGroup().id)
 
@@ -58,6 +62,8 @@ module app 'modules/app.bicep' = {
     openAiEndpoint: openai.outputs.endpoint
     cosmosEndpoint: cosmos.outputs.endpoint
     cosmosDatabaseName: cosmos.outputs.databaseName
+    shopifyAccessToken: shopifyAccessToken
+    shopifyShopName: shopifyShopName
   }
 }
 

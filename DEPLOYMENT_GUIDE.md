@@ -63,6 +63,8 @@ You will need these 3 values for the next step:
 | `AZURE_CLIENT_ID` | The App ID you created above. |
 | `AZURE_TENANT_ID` | Your Azure Tenant ID. |
 | `AZURE_SUBSCRIPTION_ID` | Your Azure Subscription ID. |
+| `SHOPIFY_SHOP_NAME` | Your Shopify store domain (e.g., `mystore.myshopify.com`). |
+| `SHOPIFY_ACCESS_TOKEN` | Your Admin API Access Token (from Shopify App settings). |
 
 ---
 

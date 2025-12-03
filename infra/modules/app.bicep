@@ -8,6 +8,9 @@ param acrPassword string
 param openAiEndpoint string
 param cosmosEndpoint string
 param cosmosDatabaseName string
+@secure()
+param shopifyAccessToken string
+param shopifyShopName string
 
 resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
   name: appName
@@ -26,6 +29,10 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
         {
           name: 'acr-password'
           value: acrPassword
+        }
+        {
+          name: 'shopify-token'
+          value: shopifyAccessToken
         }
       ]
       registries: [
@@ -57,6 +64,14 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
             {
               name: 'AZURE_COSMOS_DB_NAME'
               value: cosmosDatabaseName
+            }
+            {
+              name: 'SHOPIFY_SHOP_NAME'
+              value: shopifyShopName
+            }
+            {
+              name: 'SHOPIFY_ACCESS_TOKEN'
+              secretRef: 'shopify-token'
             }
           ]
           resources: {
