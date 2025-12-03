@@ -23,8 +23,20 @@ export class ProductResearchAgent extends BaseAgent {
     // Placeholder for real scraping/API logic
     return {
       products: [
-        { id: 'p1', name: 'Smart Posture Corrector', potential: 'High', margin: '65%' },
-        { id: 'p2', name: 'Portable Blender', potential: 'Medium', margin: '50%' }
+        { 
+          id: 'p1', 
+          name: 'Smart Posture Corrector', 
+          potential: 'High', 
+          margin: '65%',
+          images: ['https://via.placeholder.com/600x600.png?text=Posture+Corrector'] 
+        },
+        { 
+          id: 'p2', 
+          name: 'Portable Blender', 
+          potential: 'Medium', 
+          margin: '50%',
+          images: ['https://via.placeholder.com/600x600.png?text=Portable+Blender']
+        }
       ]
     };
   }
