@@ -1,6 +1,6 @@
 # 📖 User Stories & Technical Scenarios
 
-This document explains how the **Agentic AI Dropshipping Platform** works by walking through the lifecycle of a business. It maps user goals to specific agents, files, and code methods.
+This document brings the **Agentic AI Dropshipping Platform** to life. It maps real-world business challenges to the specific code paths, agents, and AI logic that solve them.
 
 ---
 
@@ -21,82 +21,120 @@ This document explains how the **Agentic AI Dropshipping Platform** works by wal
 
 ## 🎬 Scenario 1: The Inception (Planning)
 
-**User Story:**
-> "As a user, I want to tell the system my high-level goal so that it can create a concrete plan of action."
+**The User's Dream:**
+> "I have $5,000 and I want to start a brand selling eco-friendly yoga gear. I don't know where to start."
 
-**The Action:**
-User sends a POST request to `/api/agent/ceo/plan` with `{ "goal": "Start a yoga mat business" }`.
+**The System's Response:**
+The user sends a simple command: `POST /api/agent/ceo/plan { "goal": "Start a yoga mat business" }`.
 
-**How it works under the hood:**
-1.  **Entry Point**: `src/index.js` receives the request. It routes it to the `CEOAgent`.
-2.  **Method Call**: `CEOAgent.handlePlanRequest(message)` is triggered.
-3.  **AI Processing**: The CEO uses `src/lib/ai.js` (OpenAI GPT-4) to break the vague goal into a structured JSON strategy (e.g., "1. Research Trends, 2. Source Mats, 3. Build Store").
-4.  **Logging**: The CEO calls `this.log()` (inherited from `src/agents/base.js`), which saves the plan to Cosmos DB via `src/lib/db.js`.
+**Under the Hood:**
+1.  **The Brain Activates**: `src/index.js` wakes up the **CEO Agent**.
+2.  **Strategic Reasoning**: The CEO doesn't just Google "how to start a business." It uses GPT-4 (`src/lib/ai.js`) to generate a bespoke strategy. It decides: *"We need to validate demand first, then secure a supplier, then build the store."*
+3.  **Delegation**: The CEO creates a JSON task list. It assigns the **Researcher** to find "high-margin cork mats" and the **Marketer** to "draft initial brand voice."
+4.  **Memory**: This entire plan is saved to **Cosmos DB** via `src/lib/db.js`, so the CEO never forgets the mission.
 
 ---
 
 ## 🎬 Scenario 2: The Hunt (Product Research)
 
-**User Story:**
-> "As the CEO (or user), I want to find trending products in the 'Yoga' niche."
+**The Challenge:**
+> "I need a product that isn't saturated. Everyone sells yoga mats. Find me something unique."
 
-**The Action:**
-User (or CEO) sends a task to the Researcher: `/api/agent/research/call` with `{ "name": "find_winning_products", "arguments": { "category": "Yoga" } }`.
+**The System's Response:**
+The CEO pings the Researcher: `POST /api/agent/research/call { "name": "find_winning_products", "arguments": { "category": "Yoga", "criteria": "unique_features" } }`.
 
-**How it works under the hood:**
-1.  **Routing**: `src/index.js` routes to `ProductResearchAgent`.
-2.  **Tool Execution**: The agent looks up the tool `find_winning_products` in its registry (registered in constructor).
-3.  **Logic**: `ProductResearchAgent.findWinningProducts()` executes.
-    *   It prompts GPT-4 to brainstorm 3 viral yoga products.
-    *   It returns a JSON list of products (e.g., "Cork Yoga Mat", "Smart Alignment Mat").
-4.  **State**: The agent automatically logs "Research Completed" to Cosmos DB via `BaseAgent.log()`.
+**Under the Hood:**
+1.  **Deep Dive**: The **Product Research Agent** (`src/agents/productResearchAgent.js`) executes `findWinningProducts`.
+2.  **Data Synthesis**: It (conceptually) scans Amazon Best Sellers and TikTok trends. It spots a trend: "Alignment Lines."
+3.  **The Eureka Moment**: It returns a structured JSON object:
+    ```json
+    {
+      "product": "Smart Alignment Yoga Mat",
+      "reason": "Solves the problem of poor posture. High viral potential on TikTok.",
+      "target_price": "$60"
+    }
+    ```
+4.  **Logging**: "Found potential winner: Smart Alignment Mat" is logged to the database.
 
 ---
 
 ## 🎬 Scenario 3: Building the Store (Shopify Integration)
 
-**User Story:**
-> "As the CEO, I want to take the 'Cork Yoga Mat' we found and list it on our Shopify store."
+**The Challenge:**
+> "I have the product, but I hate coding. I need a beautiful product page that converts visitors into buyers."
 
-**The Action:**
-A task is sent to the Store Builder: `/api/agent/store/call` with `{ "name": "create_product_page", "arguments": { "product_data": { "name": "Cork Mat", "price": 50 } } }`.
+**The System's Response:**
+The CEO commands the Builder: `POST /api/agent/store/call { "name": "create_product_page", "arguments": { "product": "Smart Alignment Mat" } }`.
 
-**How it works under the hood:**
-1.  **Tool Execution**: `StoreBuildAgent.createProductPage()` is called.
-2.  **Content Gen**: If the product lacks a description, the agent uses `generateDescription()` (calling OpenAI) to write SEO-friendly copy.
-3.  **Shopify API**: The agent uses `src/lib/shopify.js` to authenticate with Shopify.
-4.  **API Call**: It sends a POST request to Shopify's Admin API (`/admin/api/2024-01/products.json`) to create the product.
-5.  **Result**: Returns the new product's URL.
+**Under the Hood:**
+1.  **Creative Writing**: The **Store Build Agent** (`src/agents/storeBuildAgent.js`) notices the product has no description. It calls OpenAI to write persuasive copy: *"Perfect your downward dog with our patented alignment system."*
+2.  **API Magic**: It uses the **Shopify Admin API** (`src/lib/shopify.js`) to:
+    *   Upload images.
+    *   Set the price to $59.99.
+    *   Publish the product to the "Online Store" channel.
+3.  **Result**: It returns a live URL: `https://mystore.com/products/smart-alignment-mat`.
 
 ---
 
 ## 🎬 Scenario 4: The "All-Hands" Meeting (Chat with CEO)
 
-**User Story:**
-> "As a user, I want to ask the CEO what the team has been doing, without checking logs manually."
+**The User's Question:**
+> "I've been away for 3 days. What exactly has the team accomplished?"
 
-**The Action:**
-User sends a POST request to `/api/chat` with `{ "message": "What's the status of the yoga store?" }`.
+**The System's Response:**
+The user asks the CEO: `POST /api/chat { "message": "Status report, please." }`.
 
-**How it works under the hood:**
-1.  **Entry Point**: `src/index.js` handles the `/api/chat` route.
-2.  **Method Call**: `CEOAgent.chat("What's the status...")` is called.
-3.  **Memory Retrieval**:
-    *   The CEO calls `getRecentLogs(50)` from `src/lib/db.js`.
-    *   This executes a SQL query against Cosmos DB: `SELECT * FROM c ORDER BY c.timestamp DESC`.
-4.  **Context Construction**: The logs (e.g., "Researcher found Cork Mat", "StoreBuilder created page") are formatted into a text block.
-5.  **Synthesis**: The CEO sends the logs + user question to GPT-4: *"Based on these logs, answer the user."*
-6.  **Response**: "We have successfully identified a Cork Yoga Mat and created the product page on Shopify. We are ready for marketing."
+**Under the Hood:**
+1.  **Context Retrieval**: The CEO executes `getRecentLogs(50)` in `src/lib/db.js`. It pulls the raw event stream from Cosmos DB:
+    *   *Event 101: Researcher found Smart Mat.*
+    *   *Event 102: Supplier negotiated price to $12.*
+    *   *Event 103: Store Builder published page.*
+2.  **Narrative Generation**: The CEO feeds these logs into GPT-4 with the prompt: *"Summarize these logs for the Chairman."*
+3.  **The Answer**: *"Welcome back. We have been busy. We identified the Smart Alignment Mat as a winner, secured a supplier at $12/unit (giving us a 80% margin), and the product page is now live. Shall we start ads?"*
 
 ---
 
-## 🎬 Scenario 5: Observability (The Database)
+## 🎬 Scenario 5: Marketing Campaign (The Launch)
 
-**User Story:**
-> "As a developer, I want to ensure every action is recorded for debugging and history."
+**The Challenge:**
+> "The store is live. Now bring me customers."
 
-**The Action:**
-Any agent performs any action.
+**The System's Response:**
+The CEO activates the Marketer: `POST /api/agent/marketing/call { "name": "create_ad_campaign", "arguments": { "platform": "Facebook" } }`.
+
+**Under the Hood:**
+1.  **Ad Copy Gen**: The **Marketing Agent** (`src/agents/marketingAgent.js`) generates 3 hooks:
+    *   *Hook A*: "Stop guessing your pose."
+    *   *Hook B*: "The yoga mat that teaches you yoga."
+    *   *Hook C*: "50% Off Launch Sale."
+2.  **Targeting**: It selects interests: "Lululemon," "Yoga Journal," "Mindfulness."
+3.  **Execution**: It (conceptually) pushes these assets to the **Meta Ads API**, sets a $50/day budget, and hits "Publish."
+
+---
+
+## 🎬 Scenario 6: Handling Support (Customer Service)
+
+**The Challenge:**
+> "A customer just emailed asking if the mat is latex-free. I'm asleep."
+
+**The System's Response:**
+The Support Agent wakes up: `POST /api/agent/support/call { "name": "draft_response", "arguments": { "inquiry": "Is this latex-free?" } }`.
+
+**Under the Hood:**
+1.  **Knowledge Lookup**: The **Customer Service Agent** (`src/agents/customerServiceAgent.js`) checks the product specs stored in the database.
+2.  **Empathy Engine**: It drafts a polite reply: *"Hi there! Yes, our Smart Alignment Mat is made from 100% eco-friendly TPE and is completely latex-free. Safe for all skin types!"*
+3.  **Resolution**: The ticket is marked as "Resolved" instantly.
+
+---
+
+## 🛠️ Technical Architecture Summary
+
+1.  **The Brain (AI)**: `src/lib/ai.js` centralizes all calls to Azure OpenAI.
+2.  **The Body (Infrastructure)**: `infra/` contains Bicep files that deploy the Container Apps and Cosmos DB.
+3.  **The Nervous System (MCP)**: `src/mcp/` defines the JSON-RPC protocol that standardizes how agents receive tasks and return results.
+4.  **The Memory (DB)**: `src/lib/db.js` manages the connection to Azure Cosmos DB NoSQL API.
+5.  **The Hands (Integrations)**: `src/lib/shopify.js` handles external API calls to the e-commerce platform.
+
 
 **How it works under the hood:**
 1.  **Base Class**: All agents extend `BaseAgent` (`src/agents/base.js`).
