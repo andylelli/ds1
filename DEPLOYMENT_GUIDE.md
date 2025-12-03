@@ -123,6 +123,17 @@ Your agents are now live!
 ### Talk to your Agents
 You can use Postman, curl, or any API tool.
 
+**🆕 NEW: Chat with the CEO (Status & History)**
+Ask the CEO about the organization's status. The CEO reads the database logs to give you an accurate answer.
+```bash
+POST https://<YOUR_APP_URL>/api/chat
+Content-Type: application/json
+
+{
+  "message": "What have the agents been working on recently?"
+}
+```
+
 **Example: Ask the CEO to plan a business**
 ```bash
 POST https://<YOUR_APP_URL>/api/agent/ceo/plan

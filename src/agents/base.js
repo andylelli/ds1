@@ -12,12 +12,22 @@
  */
 import { MCPServer } from '../mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../mcp/protocol.js';
+import { saveAgentLog } from '../lib/db.js';
 
 export class BaseAgent extends MCPServer {
   constructor(name) {
     super();
     this.name = name;
     this.capabilities = new Set();
+  }
+
+  async log(type, data) {
+    console.log(`[${this.name}] ${type}:`, JSON.stringify(data, null, 2));
+    try {
+      await saveAgentLog(this.name, type, data);
+    } catch (err) {
+      console.error(`[${this.name}] Failed to save log to DB:`, err.message);
+    }
   }
 
   async handleMessage(message) {
@@ -32,6 +42,12 @@ export class BaseAgent extends MCPServer {
       default:
         await super.handleMessage(message);
     }
+  }
+
+  async handleToolCall(message) {
+    const { name, arguments: args } = message.params;
+    await this.log('tool_execution', { tool: name, args });
+    await super.handleToolCall(message);
   }
 
   async handlePlanRequest(message) {

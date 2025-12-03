@@ -43,13 +43,37 @@ export async function initDatabase() {
   console.log(`[Database] Connected to Cosmos DB: ${dbName}`);
 }
 
-export async function saveAgentLog(agentName, message) {
+export async function saveAgentLog(agentName, message, type = 'log', data = null) {
   if (!container) return; // Fallback if DB not init
   
-  await container.items.create({
-    agent: agentName,
-    message: message,
-    timestamp: new Date().toISOString(),
-    type: 'log'
-  });
+  try {
+    await container.items.create({
+      agent: agentName,
+      message: message,
+      type: type,
+      data: data,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error("Failed to save log:", e.message);
+  }
+}
+
+export async function getRecentLogs(limit = 20) {
+  if (!container) return [];
+
+  try {
+    const querySpec = {
+      query: "SELECT * FROM c ORDER BY c.timestamp DESC OFFSET 0 LIMIT @limit",
+      parameters: [
+        { name: "@limit", value: limit }
+      ]
+    };
+    
+    const { resources: items } = await container.items.query(querySpec).fetchAll();
+    return items.reverse(); // Return chronological order
+  } catch (e) {
+    console.error("Failed to fetch logs:", e.message);
+    return [];
+  }
 }
