@@ -1,3 +1,14 @@
+/**
+ * Marketing Agent
+ * 
+ * What it does:
+ * - Creates ad campaigns and writes marketing copy.
+ * - Manages ad budgets and targeting.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - Ad Platforms (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class MarketingAgent extends BaseAgent {

@@ -1,3 +1,14 @@
+/**
+ * Product Research Agent
+ * 
+ * What it does:
+ * - Finds potential winning products.
+ * - Analyzes market niches and competition.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - External Product APIs or Scrapers (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class ProductResearchAgent extends BaseAgent {

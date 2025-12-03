@@ -1,3 +1,15 @@
+/**
+ * Database Connection Manager
+ * 
+ * What it does:
+ * - Manages connections to Azure Cosmos DB.
+ * - Provides helper functions to initialize the DB and save agent logs.
+ * 
+ * Interacts with:
+ * - Azure Cosmos DB
+ * - Main Server (initialization)
+ * - Agents (logging/memory)
+ */
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
 

@@ -1,3 +1,14 @@
+/**
+ * Operations Agent
+ * 
+ * What it does:
+ * - Fulfills orders and generates tracking numbers.
+ * - Checks inventory levels across warehouses.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - Inventory Management Systems (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class OperationsAgent extends BaseAgent {

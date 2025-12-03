@@ -1,3 +1,17 @@
+/**
+ * Main Application Entry Point
+ * 
+ * What it does:
+ * - Initializes the Express.js web server.
+ * - Instantiates all specific agents (CEO, Research, Supplier, etc.).
+ * - Connects to the database.
+ * - Sets up API routes to dispatch tasks to agents via the MCP protocol.
+ * 
+ * Interacts with:
+ * - All Agent classes in /src/agents/
+ * - Database module (/src/lib/db.js)
+ * - MCP Protocol definitions (/src/mcp/protocol.js)
+ */
 import express from 'express';
 import { CEOAgent } from './agents/ceoAgent.js';
 import { ProductResearchAgent } from './agents/productResearchAgent.js';

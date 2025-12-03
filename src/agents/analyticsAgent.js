@@ -1,3 +1,14 @@
+/**
+ * Analytics Agent
+ * 
+ * What it does:
+ * - Generates financial and performance reports.
+ * - Predicts future sales trends.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - Data Warehouses (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class AnalyticsAgent extends BaseAgent {

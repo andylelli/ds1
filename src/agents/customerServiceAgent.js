@@ -1,3 +1,15 @@
+/**
+ * Customer Service Agent
+ * 
+ * What it does:
+ * - Handles customer support tickets.
+ * - Generates FAQs for products.
+ * - Performs sentiment analysis on customer messages.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - Ticketing Systems (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class CustomerServiceAgent extends BaseAgent {

@@ -1,3 +1,15 @@
+/**
+ * CEO Agent (Orchestrator)
+ * 
+ * What it does:
+ * - Acts as the high-level planner and orchestrator.
+ * - Uses Generative AI (GPT-4) to break down user goals into actionable strategies.
+ * - Delegates tasks to other agents (conceptually).
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - AI Library (/src/lib/ai.js)
+ */
 import { BaseAgent } from './base.js';
 import { getOpenAIClient, DEPLOYMENT_NAME } from '../lib/ai.js';
 

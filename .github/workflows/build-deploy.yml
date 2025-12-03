@@ -1,0 +1,58 @@
+name: Build and Deploy App
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Infrastructure Details
+        id: infra
+        run: |
+          # We assume the 'dev' environment for the main branch
+          RG_NAME="rg-ds1-dev"
+          APP_NAME="ds1-agent-dev"
+          
+          # Get ACR details dynamically
+          echo "Getting ACR details..."
+          ACR_NAME=$(az acr list --resource-group $RG_NAME --query "[0].name" -o tsv)
+          LOGIN_SERVER=$(az acr list --resource-group $RG_NAME --query "[0].loginServer" -o tsv)
+          
+          echo "acr_name=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "login_server=$LOGIN_SERVER" >> $GITHUB_OUTPUT
+          echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+
+      - name: Login to ACR
+        run: |
+          az acr login --name ${{ steps.infra.outputs.acr_name }}
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_TAG=${{ steps.infra.outputs.login_server }}/ds1-agent:${{ github.sha }}
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
+
+      - name: Deploy to Container App
+        run: |
+          az containerapp update \
+            --name ${{ steps.infra.outputs.app_name }} \
+            --resource-group ${{ steps.infra.outputs.rg_name }} \
+            --image ${{ steps.infra.outputs.login_server }}/ds1-agent:${{ github.sha }}

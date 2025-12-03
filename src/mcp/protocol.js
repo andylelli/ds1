@@ -1,3 +1,15 @@
+/**
+ * Model Context Protocol (MCP) Definitions
+ * 
+ * What it does:
+ * - Defines the JSON-RPC message schemas using Zod.
+ * - Specifies message types for Tasks, Plans, Resources, and Logs.
+ * 
+ * Interacts with:
+ * - MCP Server (/src/mcp/server.js)
+ * - Base Agent (/src/agents/base.js)
+ * - Main Server (/src/index.js)
+ */
 import { z } from 'zod';
 
 // Base MCP Message Schema

@@ -1,3 +1,14 @@
+/**
+ * Store Build Agent
+ * 
+ * What it does:
+ * - Manages the creation of product pages.
+ * - Optimizes content for SEO.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - E-commerce Platform APIs (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class StoreBuildAgent extends BaseAgent {

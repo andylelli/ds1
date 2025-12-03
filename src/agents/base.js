@@ -1,3 +1,15 @@
+/**
+ * Base Agent Class
+ * 
+ * What it does:
+ * - Extends the generic MCPServer to create an Agent.
+ * - Adds handling for agent-specific message types like 'agent/plan' and 'agent/critique'.
+ * - Serves as the parent class for all specific agents.
+ * 
+ * Interacts with:
+ * - MCP Server (/src/mcp/server.js)
+ * - MCP Protocol (/src/mcp/protocol.js)
+ */
 import { MCPServer } from '../mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../mcp/protocol.js';
 

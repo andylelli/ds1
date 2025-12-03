@@ -1,3 +1,15 @@
+/**
+ * MCP Server Core
+ * 
+ * What it does:
+ * - Implements the base server logic for the Model Context Protocol.
+ * - Handles message parsing, validation, and routing to registered tools/resources.
+ * - Manages JSON-RPC error handling and response formatting.
+ * 
+ * Interacts with:
+ * - MCP Protocol definitions (/src/mcp/protocol.js)
+ * - Standard Input/Output (stdio) or direct method calls.
+ */
 import { createInterface } from 'readline';
 import { MCP_MESSAGE_TYPES } from './protocol.js';
 

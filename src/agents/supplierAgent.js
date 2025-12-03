@@ -1,3 +1,14 @@
+/**
+ * Supplier Agent
+ * 
+ * What it does:
+ * - Finds suppliers for specific products.
+ * - Handles price negotiations and shipping estimates.
+ * 
+ * Interacts with:
+ * - Base Agent Class
+ * - Supplier Databases/APIs (simulated)
+ */
 import { BaseAgent } from './base.js';
 
 export class SupplierAgent extends BaseAgent {

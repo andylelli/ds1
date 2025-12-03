@@ -1,3 +1,14 @@
+/**
+ * AI Client Configuration
+ * 
+ * What it does:
+ * - Exports a configured OpenAI client instance.
+ * - Handles authentication for both Azure Managed Identity (Production) and API Keys (Development).
+ * 
+ * Interacts with:
+ * - Azure OpenAI Service
+ * - Agents requiring AI capabilities (e.g., CEO Agent)
+ */
 import { AzureOpenAI } from "openai";
 import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
 
