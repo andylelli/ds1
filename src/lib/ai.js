@@ -1,4 +1,4 @@
-import { OpenAIClient, AzureKeyCredential } from "@azure/openai";
+import { AzureOpenAI } from "openai";
 import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
 
 // Helper to get the OpenAI client
@@ -12,7 +12,11 @@ export function getOpenAIClient() {
 
   // Option 1: API Key (Good for local dev)
   if (process.env.AZURE_OPENAI_KEY) {
-    return new OpenAIClient(endpoint, new AzureKeyCredential(process.env.AZURE_OPENAI_KEY));
+    return new AzureOpenAI({ 
+      endpoint, 
+      apiKey: process.env.AZURE_OPENAI_KEY, 
+      apiVersion: "2024-05-01-preview" 
+    });
   }
 
   // Option 2: Managed Identity (Best for Azure Container Apps)
@@ -20,7 +24,11 @@ export function getOpenAIClient() {
   const scope = "https://cognitiveservices.azure.com/.default";
   const azureADTokenProvider = getBearerTokenProvider(credential, scope);
   
-  return new OpenAIClient(endpoint, azureADTokenProvider);
+  return new AzureOpenAI({ 
+    endpoint, 
+    azureADTokenProvider, 
+    apiVersion: "2024-05-01-preview" 
+  });
 }
 
 export const DEPLOYMENT_NAME = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
