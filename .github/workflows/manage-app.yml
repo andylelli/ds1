@@ -1,0 +1,78 @@
+name: Manage App (Start/Stop/Scale)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'status'
+        type: choice
+        options:
+          - status
+          - start
+          - stop
+          - restart
+          - scale
+      replicas:
+        description: 'Replica count (only for scale action)'
+        required: false
+        default: '1'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Execute Action
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            APP_NAME="ds1-agent-${{ inputs.environment }}"
+            RG_NAME="rg-ds1-${{ inputs.environment }}"
+            
+            echo "Targeting App: $APP_NAME in Resource Group: $RG_NAME"
+
+            if [ "${{ inputs.action }}" == "status" ]; then
+              az containerapp show --name $APP_NAME --resource-group $RG_NAME --query "properties.configuration.ingress.fqdn"
+              az containerapp replica list --name $APP_NAME --resource-group $RG_NAME --output table
+            
+            elif [ "${{ inputs.action }}" == "start" ]; then
+              # Container Apps "start" isn't a direct command like VM, usually we scale up from 0 or just ensure it's running.
+              # But if we want to "start" a stopped revision, we usually just update it.
+              # However, for simplicity, we'll treat "start" as setting replicas to 1 if it was 0.
+              echo "Ensuring at least 1 replica..."
+              az containerapp update --name $APP_NAME --resource-group $RG_NAME --min-replicas 1 --max-replicas 1
+            
+            elif [ "${{ inputs.action }}" == "stop" ]; then
+              # "Stop" usually means scaling to 0 to save money
+              echo "Stopping app (scaling to 0)..."
+              az containerapp update --name $APP_NAME --resource-group $RG_NAME --min-replicas 0 --max-replicas 0
+            
+            elif [ "${{ inputs.action }}" == "restart" ]; then
+              echo "Restarting revision..."
+              az containerapp revision restart --name $APP_NAME --resource-group $RG_NAME --revision $(az containerapp revision list --name $APP_NAME --resource-group $RG_NAME --query "[0].name" -o tsv)
+            
+            elif [ "${{ inputs.action }}" == "scale" ]; then
+              COUNT=${{ inputs.replicas }}
+              echo "Scaling to $COUNT replicas..."
+              az containerapp update --name $APP_NAME --resource-group $RG_NAME --min-replicas $COUNT --max-replicas $COUNT
+            fi
