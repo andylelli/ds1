@@ -64,7 +64,17 @@ You will need these 3 values for the next step:
 | `AZURE_TENANT_ID` | Your Azure Tenant ID. |
 | `AZURE_SUBSCRIPTION_ID` | Your Azure Subscription ID. |
 | `SHOPIFY_SHOP_NAME` | Your Shopify store domain (e.g., `mystore.myshopify.com`). |
-| `SHOPIFY_ACCESS_TOKEN` | Your Admin API Access Token (from Shopify App settings). |
+| `SHOPIFY_ACCESS_TOKEN` | Your Admin API Access Token (see below). |
+
+### 🛍️ How to get your Shopify Access Token
+1.  Log in to your **Shopify Admin**.
+2.  Go to **Settings** > **Apps and sales channels** > **Develop apps**.
+3.  Click **Create an app** and name it "DropShip Agent".
+4.  Click **Configure Admin API scopes**.
+5.  Search for and check: `write_products`, `read_products`.
+6.  Click **Save**.
+7.  Click **Install app** (top right).
+8.  Under **Admin API access token**, click **Reveal token once**. Copy this value.
 
 ---
 
