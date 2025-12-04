@@ -114,6 +114,86 @@ This document outlines the external services, APIs, and websites that need to be
 
 ---
 
+## 🎧 Customer Service & Ticketing Upgrade
+
+### 1. Context-Aware Ticketing System
+*See `Documentation/Blueprints/DESIGN_CS_CONTEXT.md` for blueprint.*
+- [ ] **Design Ticket Database Schema**
+    - **Why**: Current tickets are ephemeral. We need to store conversation history, status, and priority to provide "human-like" continuity.
+    - **How**:
+        1.  Create `Tickets` collection: `{ id, customerId, orderId, status, priority, tags }`.
+        2.  Create `Messages` collection: `{ id, ticketId, sender, content, timestamp }`.
+- [ ] **Implement Ticket Manager Class**
+    - **Why**: Centralized logic for CRUD operations on tickets.
+    - **How**:
+        1.  Create `src/lib/ticketManager.js`.
+        2.  Implement `createTicket`, `addMessage`, `getHistory`, `updateStatus`.
+- [ ] **Update Customer Service Agent**
+    - **Why**: The agent must read the history *before* generating a reply.
+    - **How**:
+        1.  Update `handleTicket` tool to accept `ticket_id`.
+        2.  Call `TicketManager.getHistory(ticket_id)` to build the prompt context.
+        3.  Save the agent's response back to the DB.
+
+### 2. Escalation & Priority Logic
+- [ ] **Implement Sentiment-Based Escalation**
+    - **Why**: Angry customers need faster, higher-quality responses to prevent chargebacks.
+    - **How**:
+        1.  Use OpenAI to score sentiment (0-100).
+        2.  If sentiment < 20 (Very Angry), set `priority = 'critical'` and `status = 'escalated'`.
+        3.  Escalated tickets trigger a notification to the `CEOAgent` (or human admin).
+
+---
+
+## 🏗️ Core Architecture Upgrades
+
+### 1. Event-Driven Architecture (EDA)
+*See `Documentation/Blueprints/DESIGN_EVENT_BUS.md` for blueprint.*
+- [ ] **Implement Event Bus**
+    - **Why**: Decouple agents from the synchronous simulation loop.
+    - **How**: Create `src/lib/eventBus.js` (Node EventEmitter).
+- [ ] **Refactor Operations Agent**
+    - **Why**: Order fulfillment should happen immediately upon payment.
+    - **How**: Subscribe `OperationsAgent` to `ORDER_PAID` event.
+
+### 2. Multi-Product Support
+*See `Documentation/Blueprints/DESIGN_MULTI_PRODUCT.md` for blueprint.*
+- [ ] **Update Database Schema**
+    - **Why**: Support multiple products with different lifecycles.
+    - **How**: Change `db.product` (object) to `db.products` (array).
+- [ ] **Refactor Marketing Agent**
+    - **Why**: Ads need to target specific products.
+    - **How**: Update tools to accept `productId`.
+
+### 3. Retention System
+*See `Documentation/Blueprints/DESIGN_RETENTION_SYSTEM.md` for blueprint.*
+- [ ] **Create Retention Agent**
+    - **Why**: Increase LTV via email flows.
+    - **How**: Scaffold `src/agents/retentionAgent.js`.
+- [ ] **Implement Abandoned Cart Flow**
+    - **Why**: Recover lost sales.
+    - **How**: Listen for `CHECKOUT_STARTED` -> Wait 1h -> Send Email.
+
+### 4. Strategy & Intelligence
+*See `Documentation/Blueprints/DESIGN_STRATEGY_ENGINE.md` for blueprint.*
+- [ ] **Implement Strategy Engine**
+    - **Why**: CEO needs to make data-driven decisions (Pivot vs Scale).
+    - **How**: Create `src/lib/strategyEngine.js` with OODA loop logic.
+
+### 5. Compliance & Risk
+*See `Documentation/Blueprints/DESIGN_COMPLIANCE_SYSTEM.md` for blueprint.*
+- [ ] **Create Compliance Guard**
+    - **Why**: Prevent bans and lawsuits.
+    - **How**: Create `src/lib/complianceGuard.js` with keyword blacklists.
+
+### 6. Financial Analytics
+*See `Documentation/Blueprints/DESIGN_ANALYTICS_PIPELINE.md` for blueprint.*
+- [ ] **Implement Financial Ledger**
+    - **Why**: Accurate P&L tracking including fees and COGS.
+    - **How**: Create `src/lib/ledger.js` for transaction-level logging.
+
+---
+
 ## 📢 Marketing Agent
 
 ### 1. Ad Platforms (Meta / TikTok / Google / Pinterest)

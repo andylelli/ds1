@@ -20,7 +20,7 @@ This document tracks the development status of the system, organized by function
 | **Base Agent Class** | ✅ | - | Core architecture with logging, tools, and memory. |
 | **CEO Agent** | ✅ | - | Orchestrator that manages the simulation lifecycle. |
 | **Analytics Agent** | ✅ | - | Generates financial reports and profit/loss analysis. |
-| **Customer Service Agent** | ✅ | - | Handles support tickets and sentiment analysis. |
+| **CustomerServiceAgent** | ⚠️ | 🤖 Agent | **Upgrade**: Moving to Context-Aware Ticketing (History/DB). |
 | **Operations Agent** | ✅ | - | Manages fulfillment. **Stubbed** for Real API switch. |
 | **Product Researcher** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
 | **Supplier Manager** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
@@ -42,6 +42,7 @@ This document tracks the development status of the system, organized by function
 | **Traffic Source Simulator** | ✅ | - | **New**: Simulates distinct channels (Social, Search, Direct) with different conversion rates. |
 | **Customer Persona Engine** | ❌ | 🤖 Agent | **New**: Generates diverse user behaviors (bounce, cart abandonment, purchase) to test UI. |
 | **Market Event Injector** | ✅ | - | **New**: Randomly introduces external factors (competitor price drop, ad cost spike). |
+| **Problem Event Generator** | ✅ | - | **New**: Simulates post-sale issues (Refunds, Lost Packages, Complaints). |
 | **Cash Flow Engine** | ❌ | 🤖 Agent | **New**: Simulates payment gateway holds vs. instant ad spend (Cash flow management). |
 
 ### 🖥️ Frontend & Visualization

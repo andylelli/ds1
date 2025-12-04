@@ -17,6 +17,15 @@ export class OperationsAgent extends BaseAgent {
     super('Operations');
     this.registerTool('fulfill_order', this.fulfillOrder.bind(this));
     this.registerTool('check_inventory', this.checkInventory.bind(this));
+    this.registerTool('handle_shipping_issue', this.handleShippingIssue.bind(this));
+  }
+
+  async handleShippingIssue({ order_id, issue_type }) {
+    this.log('warn', `Handling shipping issue for ${order_id}: ${issue_type}`);
+    return {
+        action: 'reship',
+        new_tracking: 'TRK-REPLACEMENT-' + Math.floor(Math.random() * 1000000)
+    };
   }
 
   async fulfillOrder({ order_id }) {

@@ -1,6 +1,7 @@
 import { saveAgentLog, saveProduct, saveOrder, saveAd } from './lib/db.js';
 import { simulateTraffic } from './lib/trafficSimulator.js';
 import { getMarketEvent } from './lib/marketEvents.js';
+import { generateProblemEvents } from './lib/problemEvents.js';
 
 export async function runProductLifecycle(agents) {
   const log = async (msg, data) => {
@@ -117,6 +118,35 @@ export async function runProductLifecycle(agents) {
             const fulfillResult = await agents.ops.fulfillOrder({ order_id: order.id });
             await log(`🚚 Order ${order.id} Shipped. Tracking: ${fulfillResult.tracking_number}`, fulfillResult);
         }
+
+        // --- STEP 6.5: POST-SALE ISSUES ---
+        await log("Step 6.5: Monitoring for post-sale issues...");
+        const problems = generateProblemEvents(trafficResults.orders);
+        
+        if (problems.length > 0) {
+            await log(`⚠️ ALERT: ${problems.length} issues detected!`);
+            
+            for (const problem of problems) {
+                await log(`   > [${problem.type}] Order ${problem.orderId}: ${problem.description}`);
+                
+                if (problem.agent === 'CustomerService') {
+                    const resolution = await agents.support.handleTicket({ 
+                        ticket_id: problem.id, 
+                        message: `${problem.description} (Order: ${problem.orderId})` 
+                    });
+                    await log(`   ✅ CS Resolution: ${resolution.response} [Action: ${resolution.action}]`);
+                } else if (problem.agent === 'Operations') {
+                    const resolution = await agents.ops.handleShippingIssue({
+                        order_id: problem.orderId,
+                        issue_type: problem.type
+                    });
+                    await log(`   ✅ Ops Resolution: Reshipped. New Tracking: ${resolution.new_tracking}`);
+                }
+            }
+        } else {
+            await log("✨ No issues reported. Smooth sailing!");
+        }
+
     } else {
         await log("Step 6: Skipped fulfillment (no orders).");
     }

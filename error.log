@@ -9,3 +9,4 @@ SyntaxError: The requested module '@shopify/shopify-api' does not provide an exp
     at async handleMainPromise (node:internal/modules/run_main:66:12)
 
 Node.js v20.9.0
+SHOPIFY_SHOP_NAME or SHOPIFY_ACCESS_TOKEN not set. Shopify integration will fail.

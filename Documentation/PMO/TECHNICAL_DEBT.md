@@ -48,6 +48,19 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
     *   Mock the `BaseAgent` class to test individual agent logic in isolation.
 
 ### 5. Agent Context Window Management
+*   **Severity:** 🔸 Medium
+*   **Description:** Agents currently have no memory of past interactions.
+*   **The Problem:** The `CustomerServiceAgent` cannot handle multi-turn conversations. It treats every message as a new request.
+*   **Proposed Solution:** Implement a **Context-Aware Ticketing System**.
+    *   See `Documentation/Blueprints/DESIGN_CS_CONTEXT.md` for the full design.
+    *   Store conversation history in a structured DB.
+    *   Inject history into the Agent's prompt before generation.
+
+### 6. Hardcoded Configuration
+*   **Severity:** 🔹 Low
+*   **Description:** API keys and settings are often hardcoded or scattered.
+*   **The Problem:** Changing a setting requires code edits.
+*   **Proposed Solution:** Centralize all config in `src/config/settings.js` (or `.env`).
 *   **Severity:** 🔥 High
 *   **Description:** Agents currently have no mechanism to "forget" or summarize past actions.
 *   **The Problem:** As the simulation runs for "days" or "weeks", the conversation history sent to OpenAI will exceed the token limit (e.g., 128k tokens), causing crashes or massive API bills.
