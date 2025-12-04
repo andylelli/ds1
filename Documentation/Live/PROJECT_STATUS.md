@@ -80,6 +80,7 @@ This document tracks the development status of the system, organized by function
 | **Dockerization** | ❌ | 🤖 Agent | Containerizing the app for easy deployment. |
 | **Persistent DB** | ❌ | 🤝 Both | Agent writes migration code. User provides DB Host (e.g., Mongo Atlas). |
 | **CI/CD Pipeline** | ❌ | 🤝 Both | **New**: Automated testing and deployment (GitHub Actions). |
+| **Event Bus / Message Queue** | ❌ | 🤖 Agent | **Critical**: Decouples agents for real-time async handling (Webhooks). |
 | **Task Queue (Redis)** | ❌ | 🤖 Agent | **New**: For handling background jobs (emails, scraping) without blocking. |
 | **Error Monitoring** | ❌ | 🤝 Both | **New**: Integration with Sentry to catch crashes in production. |
 | **Security Hardening** | ❌ | 🤖 Agent | **New**: Rate limiting, Helmet.js, and input validation. |

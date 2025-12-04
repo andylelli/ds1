@@ -7,6 +7,38 @@ This document outlines the external services, APIs, and websites that need to be
 
 ---
 
+## 🛡️ Infrastructure & Core
+
+### 1. Event-Driven Architecture (Critical for Live Mode)
+- [ ] **Implement Event Bus (Redis/EventEmitter)**
+    - **Why**: Real business is asynchronous. Webhooks (e.g., `orders/create`) must trigger agents immediately, not wait for a loop.
+    - **How**:
+        1.  Install `redis` or use Node's `EventEmitter` for local dev.
+        2.  Create `src/lib/eventBus.js`.
+        3.  Refactor `simulation.js` to emit events (`EVENT_TICK`, `EVENT_ORDER_PAID`) instead of running a linear script.
+        4.  Update Agents to subscribe to relevant events.
+
+### 2. Database Migration
+- [ ] **Migrate from JSON to SQLite/MongoDB**
+    - **Why**: `sandbox_db.json` will become slow and corrupt with concurrent writes in Live Mode.
+    - **How**:
+        1.  Choose SQLite (easier) or MongoDB (better for JSON docs).
+        2.  Create `src/lib/db_adapter.js` to abstract the database calls.
+        3.  Replace `fs.writeFileSync` calls with SQL/Mongoose queries.
+
+### 3. Security & Compliance
+- [ ] **Implement PII Redaction**
+    - **Why**: Logging real customer names/addresses violates GDPR/CCPA.
+    - **How**:
+        1.  Create a logger middleware that regex-replaces emails and phone numbers with `***`.
+- [ ] **Token Management System**
+    - **Why**: OAuth tokens for Shopify/Meta expire. Hardcoded keys will fail after 24h.
+    - **How**:
+        1.  Create a `TokenManager` class that checks expiry.
+        2.  Implement the "Refresh Token" flow to get new access tokens automatically.
+
+---
+
 ## 🕵️ Product Research Agent
 
 ### 1. Marketplaces (Amazon / AliExpress / Temu)
