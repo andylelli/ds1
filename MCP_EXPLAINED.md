@@ -60,28 +60,56 @@ In the MCP universe, there are three distinct roles. Understanding "who is who" 
 
 MCP uses **JSON-RPC 2.0** as its underlying grammar. Every sentence spoken in MCP follows a strict Subject-Verb-Object structure wrapped in JSON.
 
-### **Request Structure (The Question)**
-A Client asks a Server to do something.
+### **A. Task Request (`tools/call`)**
+A Client asks an Agent to execute a specific tool.
 ```json
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "method": "tools/call",        // The Verb
-  "params": {                    // The Object/Modifiers
+  "method": "tools/call",
+  "params": {
     "name": "calculate_tax",
     "arguments": { "price": 100 }
   }
 }
 ```
 
-### **Response Structure (The Answer)**
-The Server replies.
+### **B. Task Response**
+The Agent replies with the result. Note the `content` array structure.
 ```json
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "result": {                    // The Result
-    "content": [{ "type": "text", "text": "10.00" }]
+  "result": {
+    "content": [
+      { "type": "text", "text": "10.00" }
+    ]
+  }
+}
+```
+
+### **C. Resource Request (`resources/read`)**
+A Client asks to read a specific data source (URI).
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "resources/read",
+  "params": {
+    "uri": "file:///logs/error.txt"
+  }
+}
+```
+
+### **D. Log Notification (`notifications/message`)**
+An Agent sends a status update. This is a "fire-and-forget" message (no `id`).
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/message",
+  "params": {
+    "level": "info",
+    "data": "Connected to database successfully."
   }
 }
 ```
@@ -181,95 +209,125 @@ The conversation is always **Client-Driven**. The Server never speaks unless spo
 
 ---
 
-## 7. The Exhaustive Dictionary
+## 7. The DS1 Protocol Dictionary
 
-A comprehensive reference of every term you might encounter in the Model Context Protocol specification.
+This section defines the exact vocabulary used in Project DS1, derived from `src/mcp/protocol.js`.
 
-### **A - C**
-*   **Attachment**: Binary or text data sent as part of a prompt or tool result.
-    *   *Example*: A tool `read_email` returns the email body as text, but also includes a PDF invoice as an `attachment`.
-*   **Blob**: Binary Large Object. A way to send non-text data (images, PDFs) encoded in Base64.
-    *   *Example*: `{ "type": "blob", "data": "iVBORw0KGgo...", "mimeType": "image/png" }`.
-*   **Capability**: A feature flag exchanged during `initialize`. E.g., a server declares `capabilities: { tools: {} }` to say "I support tools."
-    *   *Example*: A Client sends `capabilities: { sampling: {} }` to tell the Server "I allow you to ask me to run LLM queries."
-*   **Client**: The application (IDE, Chat App) that initiates the connection and queries the LLM.
-    *   *Example*: **Claude Desktop** is the Client; the **Postgres MCP Server** is the Server.
-*   **Completion**: A feature where the client asks the server to auto-complete text (e.g., for code completion or prompt arguments).
-    *   *Example*: User types `/tool run git_com...` and the Server suggests `git_commit`.
-*   **Context**: The accumulated information (files, chat history) available to the LLM to make a decision.
-    *   *Example*: The Client reads `main.js` and `README.md` and pastes their content into the prompt before asking the LLM "How do I run this?"
-*   **Cursor**: An opaque string used for pagination when a list (like `resources/list`) is too long.
-    *   *Example*: The Server returns 100 logs and `"nextCursor": "abc-123"`. The Client sends `abc-123` in the next request to get logs 101-200.
+### **A. Standard Message Types**
+These are the core verbs defined by the MCP specification and implemented in DS1.
 
-### **E - H**
-*   **Error**: A JSON-RPC response indicating failure. Contains a `code` (integer) and `message` (string).
-    *   *Example*: `{ "jsonrpc": "2.0", "id": 1, "error": { "code": -32601, "message": "Method not found" } }`.
-*   **Handshake**: The initial sequence (`initialize` -> `initialized`) where Client and Server agree on protocol version and capabilities.
-    *   *Example*: Client sends `initialize`. Server responds with `protocolVersion: "2024-11-05"`. Client sends `notifications/initialized` to confirm.
-*   **Host**: The environment running the MCP connection (e.g., the OS process, Docker container).
-    *   *Example*: **VS Code** acts as the Host when it launches an MCP server to provide context for Copilot.
-*   **Host Process**: The actual executable running the Server (e.g., `node server.js`).
-    *   *Example*: The background process `python my_server.py` that VS Code spawned.
+| Method | Direction | Description | Schema Reference |
+| :--- | :--- | :--- | :--- |
+| `tools/call` | Client -> Server | Execute a specific tool. | `TaskRequestSchema` |
+| `resources/read` | Client -> Server | Read data from a URI. | `ResourceRequestSchema` |
+| `notifications/message` | Server -> Client | Send a log or status update. | `LogMessageSchema` |
 
-### **I - L**
-*   **Image Content**: A content type used to send visual data to multimodal LLMs.
-    *   *Example*: `{ "type": "image", "data": "base64...", "mimeType": "image/jpeg" }`.
-*   **Implementation**: The specific code base running the protocol (e.g., "The TypeScript SDK").
-    *   *Example*: The **Python MCP SDK** (`mcp`) is an implementation that developers use to build servers.
-*   **Initialize**: The first method called by the Client to start the session.
-    *   *Example*: `{ "method": "initialize", "params": { "protocolVersion": "2024-11-05", "capabilities": {} } }`.
-*   **JSON-RPC 2.0**: The stateless, lightweight remote procedure call protocol that MCP is built on top of.
-    *   *Example*: Every message must have `"jsonrpc": "2.0"`. Requests have `"id"`, Notifications do not.
-*   **Logging**: A capability allowing the Server to send log messages (`debug`, `info`, `error`) to the Client's console.
-    *   *Example*: Server sends `notifications/message` with `{ "level": "info", "data": "Connected to Database" }`. Client displays this in the "Output" tab.
+### **B. Custom Message Types (DS1 Specific)**
+Project DS1 extends the standard MCP with two agent-specific verbs defined in `src/mcp/protocol.js`.
 
-### **M - N**
-*   **Method**: The "verb" in a JSON-RPC request (e.g., `tools/call`).
-    *   *Example*: In `{ "method": "resources/read" }`, the method tells the receiver what action to take.
-*   **MIME Type**: A standard identifier for file formats (e.g., `application/json`, `image/png`) used in Resources.
-    *   *Example*: A resource `config.json` has MIME type `application/json`, telling the Client to treat it as structured data.
-*   **Notification**: A one-way message that does not expect a response (e.g., `notifications/message` or `resources/updated`).
-    *   *Example*: `{ "jsonrpc": "2.0", "method": "notifications/message", "params": { ... } }`. Note the lack of an `"id"` field.
+#### **1. `agent/plan`**
+*   **Purpose**: The Client sends a high-level goal to the Agent, asking for a step-by-step execution plan.
+*   **Schema**: `PlanRequestSchema`
+*   **Example Payload**:
+    ```json
+    {
+      "method": "agent/plan",
+      "params": {
+        "goal": "Launch a new coffee brand",
+        "context": { "budget": 5000 }
+      }
+    }
+    ```
 
-### **P - R**
-*   **Pagination**: The practice of splitting large lists into pages using a `cursor`.
-    *   *Example*: A database query returns 10,000 rows. The Server sends the first 100 and a cursor. The Client requests the next 100 using that cursor.
-*   **Progress Token**: A unique ID used to report the progress of a long-running operation.
-    *   *Example*: Client sends `progressToken: 123` with a tool call. Server sends notifications: `123: 10%`, `123: 50%`, `123: Done`.
-*   **Prompt**: A reusable template defined by the Server to help the User or Client construct a query.
-    *   *Example*: A "Git Commit" prompt that automatically reads `git diff` and asks the LLM to "Write a commit message for these changes."
-*   **Request**: A message that expects a response. Must have a unique `id`.
-    *   *Example*: `{ "jsonrpc": "2.0", "id": 5, "method": "ping" }`.
-*   **Resource**: A passive data source (file, database row) identified by a URI.
-    *   *Example*: `postgres://db/users/schema` provides the table schema so the LLM knows how to write SQL queries.
-*   **Resource Template**: A pattern (like `/users/{id}`) that describes a dynamic set of resources.
-    *   *Example*: `file:///logs/{date}/*.log` tells the Client "I can read any log file if you give me the date."
-*   **Response**: The message returned after a Request. Must match the Request's `id`.
-    *   *Example*: `{ "jsonrpc": "2.0", "id": 5, "result": {} }`.
-*   **Root**: A filesystem path that the Client gives the Server permission to access.
-    *   *Example*: The Client tells the Server "You are allowed to read files in `/home/user/project`." The Server cannot read `/etc/passwd`.
+#### **2. `agent/critique`**
+*   **Purpose**: The Client asks the Agent to review a specific output or code snippet for errors.
+*   **Schema**: `CritiqueRequestSchema`
+*   **Example Payload**:
+    ```json
+    {
+      "method": "agent/critique",
+      "params": {
+        "task": "Write Ad Copy",
+        "output": "Buy our coffee!",
+        "criteria": ["persuasiveness", "clarity"]
+      }
+    }
+    ```
 
-### **S - T**
-*   **Sampling**: A capability where the **Server** asks the **Client** to run an LLM inference ("Please complete this text for me"). This reverses the usual flow.
-    *   *Example*: A Server reads a 10MB log file (too big to send) and asks the Client's LLM to "Summarize the errors in this text" locally.
-*   **Server**: The process that provides tools, resources, and prompts.
-    *   *Example*: The `sqlite-mcp-server` provides access to a SQLite database file.
-*   **Session**: The duration of the connection between Client and Server.
-    *   *Example*: Starts when the Client spawns the Server process and ends when the Client kills it or the connection drops.
-*   **SSE (Server-Sent Events)**: A transport mechanism using HTTP, useful for web-based MCP connections.
-    *   *Example*: A web-based chat interface connects to a remote MCP server via `http://api.example.com/mcp/sse`.
-*   **Stdio**: Standard Input/Output. The default transport mechanism where messages are sent via the command line pipes.
-    *   *Example*: The Client runs `spawn("node", ["server.js"])` and writes JSON-RPC messages to the process's `stdin`.
-*   **Text Content**: The standard content type for strings, code, and JSON.
-    *   *Example*: `{ "type": "text", "text": "The weather is sunny." }`.
-*   **Tool**: An executable function exposed by the Server that the Client can invoke.
-    *   *Example*: `send_slack_message(channel, text)` is a tool exposed by a Slack MCP Server.
-*   **Transport**: The underlying communication channel (Stdio, SSE, HTTP).
-    *   *Example*: "We are using the Stdio transport for local development and SSE for production."
+### **C. The Tool Registry (The Verbs)**
+These are the specific capabilities exposed by our agent fleet.
 
-### **U - Z**
-*   **URI (Uniform Resource Identifier)**: The unique address of a Resource (e.g., `file:///home/user/data.txt`).
-    *   *Example*: `postgres://localhost/users` identifies a database table; `file:///c:/logs/error.log` identifies a local file.
-*   **User**: The human interacting with the Client.
-    *   *Example*: You, the developer, typing "Fix this bug" into the VS Code Chat window.
+#### **🕵️ Product Research Agent**
+*   **`find_winning_products`**: Scrapes marketplaces for high-demand items.
+    *   *Args*: `{ category: "Home Decor", criteria: "High Margin" }`
+*   **`analyze_niche`**: Evaluates competition and saturation.
+    *   *Args*: `{ niche: "Ergonomic Chairs" }`
+
+#### **📦 Supplier Agent**
+*   **`find_suppliers`**: Searches for vendors on AliExpress/CJ.
+    *   *Args*: `{ product_id: "123", min_rating: 4.5 }`
+*   **`negotiate_price`**: Initiates a chat session to lower unit costs.
+    *   *Args*: `{ supplier_id: "sup_99", target_price: 15.00 }`
+
+#### **🏗️ Store Build Agent**
+*   **`create_product_page`**: Generates HTML/Liquid for a new product.
+    *   *Args*: `{ title: "Comfy Chair", price: 99.99, images: [...] }`
+*   **`optimize_seo`**: Updates meta tags and descriptions.
+    *   *Args*: `{ page_id: "p_1", keywords: ["office", "ergonomic"] }`
+
+#### **📢 Marketing Agent**
+*   **`create_ad_campaign`**: Launches ads on Meta/TikTok.
+    *   *Args*: `{ platform: "facebook", budget: 50, creative_id: "c_1" }`
+*   **`write_copy`**: Generates persuasive text for ads or emails.
+    *   *Args*: `{ tone: "urgent", product_name: "Comfy Chair" }`
+
+#### **🤝 Customer Service Agent**
+*   **`handle_ticket`**: Drafts a reply to a customer inquiry.
+    *   *Args*: `{ ticket_id: "t_555", sentiment: "angry" }`
+*   **`generate_faq`**: Creates a list of common questions based on ticket history.
+    *   *Args*: `{ topic: "shipping" }`
+
+#### **🚚 Operations Agent**
+*   **`fulfill_order`**: Sends shipping details to the supplier.
+    *   *Args*: `{ order_id: "o_777", address: "123 Main St" }`
+*   **`check_inventory`**: Queries current stock levels.
+    *   *Args*: `{ sku: "chair-red" }`
+
+#### **📊 Analytics Agent**
+*   **`generate_report`**: Compiles sales and traffic data.
+    *   *Args*: `{ date_range: "last_30_days" }`
+*   **`predict_sales`**: Uses historical data to forecast revenue.
+    *   *Args*: `{ month: "December" }`
+
+### **D. Resources (The Nouns)**
+*   *Currently, no agents expose passive resources via `resources/read`. All data access is handled via Tools.*
+
+---
+
+## 8. Case Study: Project DS1 Implementation
+
+To see these concepts in action, look at your own codebase.
+
+*   **The Protocol**: Defined in `src/mcp/protocol.js`. This file uses Zod schemas to enforce the Grammar (Section 2).
+*   **The Server**: Implemented in `src/mcp/server.js`. This class handles message routing and supports two Transports:
+    *   **Stdio**: For running agents as standalone processes (via `start()`).
+    *   **Direct**: For in-process communication (via `handleMessage()`), used by the main app.
+*   **The Agents**: In `src/agents/base.js`, you will see that `BaseAgent extends MCPServer`.
+    *   **Why?** This means every agent (CEO, Researcher) is technically an **MCP Server**.
+    *   **Benefit**: The main application (`src/index.js`) treats them all uniformly. It sends `tools/call` messages to them, and they reply. This makes our architecture modular and compliant with the standard.
+*   **The Client**: The main application (`src/index.js`) acts as the **MCP Client**. It orchestrates the workflow by sending requests to the Agent Servers and handling their responses.
+
+---
+
+## 9. Summary
+
+MCP is the language that allows our DropShip agents to talk to each other and the main application. By strictly following this Subject-Verb-Object grammar, we ensure that our system is:
+
+1.  **Modular**: New agents can be added without changing the core logic.
+2.  **Reliable**: Zod schemas catch errors before they cause crashes.
+3.  **Standardized**: We are using an industry-standard protocol, not a hacked-together solution.
+
+You are now equipped to read the code in `src/mcp/` and `src/agents/` with full understanding of *how* and *why* the pieces fit together.
+
+
 
