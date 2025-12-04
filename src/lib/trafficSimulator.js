@@ -10,8 +10,8 @@
  */
 export function simulateTraffic(product, activeCampaigns, marketEvent = null) {
     const sources = [
-        { name: 'Direct', baseTraffic: 5, conversionRate: 0.02, variance: 2 },
-        { name: 'SEO', baseTraffic: 8, conversionRate: 0.03, variance: 3 }
+        { name: 'Direct', baseTraffic: 50, conversionRate: 0.02, variance: 20 },
+        { name: 'SEO', baseTraffic: 80, conversionRate: 0.03, variance: 30 }
     ];
 
     // Apply Market Modifiers

@@ -99,7 +99,11 @@
         <div class="card">
             <h2>Product Lifecycle Simulation</h2>
             <p>Click below to run a full end-to-end simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
-            <button onclick="startSimulation()" style="background: #28a745;">▶ Start Simulation</button>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="startSimulation()" style="background: #28a745;">▶ Start Simulation</button>
+                <button onclick="clearLogDisplay()" style="background: #6c757d;">🧹 Clear</button>
+                <button onclick="showAllLogs()" style="background: #17a2b8;">📜 History</button>
+            </div>
             
             <h3>Live Logs</h3>
             <div id="logViewer">Waiting for logs...</div>
@@ -126,6 +130,19 @@
 
     <script>
         let logInterval = null;
+        let logStartTime = 0; // Timestamp to filter logs
+
+        function clearLogDisplay() {
+            logStartTime = Date.now();
+            fetchLogs();
+            showStatus('Log display cleared.', 'success');
+        }
+
+        function showAllLogs() {
+            logStartTime = 0;
+            fetchLogs();
+            showStatus('Showing full history.', 'success');
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -209,6 +226,9 @@
 
         async function startSimulation() {
             try {
+                // Clear logs on new run (with 2s buffer to catch immediate logs)
+                logStartTime = Date.now() - 2000;
+                
                 const res = await fetch('/api/simulation/start', { method: 'POST' });
                 const data = await res.json();
                 showStatus(data.message, 'success');
@@ -223,13 +243,17 @@
                 const res = await fetch('/api/logs');
                 const logs = await res.json();
                 
+                // Filter logs based on clear time
+                const filteredLogs = logs.filter(log => new Date(log.timestamp).getTime() >= logStartTime);
+
                 const viewer = document.getElementById('logViewer');
-                if (logs.length === 0) {
-                    viewer.innerHTML = '<div style="padding:1rem">No logs found.</div>';
+                if (filteredLogs.length === 0) {
+                    const hiddenCount = logs.length - filteredLogs.length;
+                    viewer.innerHTML = `<div style="padding:1rem">No new logs... (${hiddenCount} hidden)</div>`;
                     return;
                 }
 
-                viewer.innerHTML = logs.map(log => `
+                viewer.innerHTML = filteredLogs.map(log => `
                     <div class="log-entry">
                         <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
                         <span class="log-agent">${log.agent}</span>: 

@@ -48,8 +48,8 @@ const EVENTS = [
 export function getMarketEvent() {
     const rand = Math.random();
     
-    // 20% chance of NO event (Normal day)
-    if (rand > 0.8) {
+    // 5% chance of NO event (Normal day) - Reduced from 20% for demo purposes
+    if (rand > 0.95) {
         return null;
     }
 

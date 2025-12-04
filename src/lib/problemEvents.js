@@ -10,25 +10,25 @@ const PROBLEM_TYPES = [
     {
         type: 'LOST_PACKAGE',
         description: 'Customer claims package never arrived despite tracking saying delivered.',
-        probability: 0.05, // 5% chance
+        probability: 0.25, // Increased to 25% for demo
         agent: 'Operations'
     },
     {
         type: 'PRODUCT_DEFECT',
         description: 'Product arrived broken or not working.',
-        probability: 0.03, // 3% chance
+        probability: 0.15, // Increased to 15% for demo
         agent: 'CustomerService'
     },
     {
         type: 'SHIPPING_DELAY',
         description: 'Tracking has not updated in 10 days. Customer is angry.',
-        probability: 0.08, // 8% chance
+        probability: 0.30, // Increased to 30% for demo
         agent: 'CustomerService'
     },
     {
         type: 'REFUND_REQUEST',
         description: 'Customer changed mind and wants to return the item.',
-        probability: 0.04, // 4% chance
+        probability: 0.20, // Increased to 20% for demo
         agent: 'CustomerService'
     }
 ];

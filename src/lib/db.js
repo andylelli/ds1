@@ -123,7 +123,7 @@ export async function saveAgentLog(agentName, message, type = 'log', data = null
   }
 }
 
-export async function getRecentLogs(limit = 20) {
+export async function getRecentLogs(limit = 100) {
   if (!container) return [];
 
   try {
