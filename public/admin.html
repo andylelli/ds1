@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 Control Panel</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        h1 { color: #333; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        select, button { padding: 0.5rem; font-size: 1rem; margin-bottom: 1rem; width: 100%; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .status { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; display: none; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🎛️ DS1 Control Panel</h1>
+    
+    <div id="statusMessage" class="status"></div>
+
+    <div class="card">
+        <h2>Environment Settings</h2>
+        
+        <label for="dbMode">Database Mode</label>
+        <select id="dbMode">
+            <option value="mock">Mock (Sandbox)</option>
+            <option value="live">Live (Azure Cosmos DB)</option>
+        </select>
+        <small>Switching modes will reconnect the database immediately.</small>
+
+        <br><br>
+
+        <label for="logLevel">Log Level</label>
+        <select id="logLevel">
+            <option value="debug">Debug (Verbose)</option>
+            <option value="info">Info (Standard)</option>
+            <option value="warn">Warning</option>
+            <option value="error">Error Only</option>
+        </select>
+
+        <br><br>
+
+        <label for="useSimulatedEndpoints">3rd Party Integrations</label>
+        <select id="useSimulatedEndpoints">
+            <option value="true">Simulated (Mock APIs)</option>
+            <option value="false">Real (Live APIs)</option>
+        </select>
+
+        <br><br>
+        <button onclick="saveConfig()">Save & Apply Changes</button>
+    </div>
+
+    <script>
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                
+                document.getElementById('dbMode').value = config.dbMode;
+                document.getElementById('logLevel').value = config.logLevel;
+                document.getElementById('useSimulatedEndpoints').value = config.useSimulatedEndpoints.toString();
+            } catch (e) {
+                showStatus('Failed to load configuration.', 'error');
+            }
+        }
+
+        async function saveConfig() {
+            const newConfig = {
+                dbMode: document.getElementById('dbMode').value,
+                logLevel: document.getElementById('logLevel').value,
+                useSimulatedEndpoints: document.getElementById('useSimulatedEndpoints').value === 'true'
+            };
+
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newConfig)
+                });
+                
+                if (res.ok) {
+                    showStatus('Configuration saved and applied successfully!', 'success');
+                } else {
+                    showStatus('Error saving configuration.', 'error');
+                }
+            } catch (e) {
+                showStatus('Network error.', 'error');
+            }
+        }
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('statusMessage');
+            el.textContent = msg;
+            el.className = 'status ' + type;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        loadConfig();
+    </script>
+</body>
+</html>

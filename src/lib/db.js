@@ -12,26 +12,36 @@
  */
 import { CosmosClient } from "@azure/cosmos";
 import { DefaultAzureCredential } from "@azure/identity";
+import { MockCosmosClient } from "./mockDb.js";
+import { config } from "./config.js";
 
 let client = null;
 let database = null;
 let container = null;
 
 export async function initDatabase() {
+  const mode = config.get('dbMode');
   const endpoint = process.env.AZURE_COSMOS_ENDPOINT;
   const dbName = process.env.AZURE_COSMOS_DB_NAME || "DropShipDB";
   const containerName = "AgentMemory";
 
-  if (!endpoint) {
-    console.warn("AZURE_COSMOS_ENDPOINT not set. Running in memory-only mode.");
-    return;
-  }
+  console.log(`[Database] Initializing in ${mode.toUpperCase()} mode...`);
 
-  // Use Managed Identity if no key provided
-  if (process.env.AZURE_COSMOS_KEY) {
-    client = new CosmosClient({ endpoint, key: process.env.AZURE_COSMOS_KEY });
+  if (mode === 'mock') {
+    client = new MockCosmosClient();
   } else {
-    client = new CosmosClient({ endpoint, aadCredentials: new DefaultAzureCredential() });
+    if (!endpoint) {
+      console.warn("[Database] Cannot switch to LIVE mode: AZURE_COSMOS_ENDPOINT not set. Falling back to MOCK.");
+      client = new MockCosmosClient();
+      config.set('dbMode', 'mock'); // Revert config
+    } else {
+      // Use Managed Identity if no key provided
+      if (process.env.AZURE_COSMOS_KEY) {
+        client = new CosmosClient({ endpoint, key: process.env.AZURE_COSMOS_KEY });
+      } else {
+        client = new CosmosClient({ endpoint, aadCredentials: new DefaultAzureCredential() });
+      }
+    }
   }
 
   const { database: db } = await client.databases.createIfNotExists({ id: dbName });
@@ -40,7 +50,13 @@ export async function initDatabase() {
   const { container: c } = await database.containers.createIfNotExists({ id: containerName });
   container = c;
   
-  console.log(`[Database] Connected to Cosmos DB: ${dbName}`);
+  console.log(`[Database] Connected to ${mode === 'mock' ? 'Mock DB' : 'Cosmos DB'}: ${dbName}`);
+}
+
+export async function switchDatabaseMode(newMode) {
+  if (newMode !== 'mock' && newMode !== 'live') return;
+  config.set('dbMode', newMode);
+  await initDatabase();
 }
 
 export async function saveAgentLog(agentName, message, type = 'log', data = null) {

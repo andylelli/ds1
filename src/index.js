@@ -13,6 +13,7 @@
  * - MCP Protocol definitions (/src/mcp/protocol.js)
  */
 import express from 'express';
+import path from 'path';
 import { CEOAgent } from './agents/ceoAgent.js';
 import { ProductResearchAgent } from './agents/productResearchAgent.js';
 import { SupplierAgent } from './agents/supplierAgent.js';
@@ -22,10 +23,12 @@ import { CustomerServiceAgent } from './agents/customerServiceAgent.js';
 import { OperationsAgent } from './agents/operationsAgent.js';
 import { AnalyticsAgent } from './agents/analyticsAgent.js';
 import { MCP_MESSAGE_TYPES } from './mcp/protocol.js';
-import { initDatabase } from './lib/db.js';
+import { initDatabase, switchDatabaseMode } from './lib/db.js';
+import { config } from './lib/config.js';
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public')); // Serve admin panel
 
 // Initialize Agents
 const agents = {
@@ -41,6 +44,27 @@ const agents = {
 
 // Initialize DB connection
 initDatabase().catch(console.error);
+
+// --- Configuration API ---
+app.get('/api/config', (req, res) => {
+  res.json(config.getAll());
+});
+
+app.post('/api/config', async (req, res) => {
+  const newConfig = req.body;
+  
+  // Check if DB mode changed
+  const oldDbMode = config.get('dbMode');
+  config.update(newConfig);
+  
+  if (newConfig.dbMode && newConfig.dbMode !== oldDbMode) {
+    console.log(`[Config] Switching DB mode to ${newConfig.dbMode}...`);
+    await switchDatabaseMode(newConfig.dbMode);
+  }
+
+  res.json({ status: 'ok', config: config.getAll() });
+});
+// -------------------------
 
 // Internal helper to route messages to agents
 async function routeMessageToAgent(agent, message) {

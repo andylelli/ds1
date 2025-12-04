@@ -13,6 +13,9 @@
 import { MCPServer } from '../mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../mcp/protocol.js';
 import { saveAgentLog } from '../lib/db.js';
+import { config } from '../lib/config.js';
+
+const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 };
 
 export class BaseAgent extends MCPServer {
   constructor(name) {
@@ -22,7 +25,20 @@ export class BaseAgent extends MCPServer {
   }
 
   async log(type, data) {
-    console.log(`[${this.name}] ${type}:`, JSON.stringify(data, null, 2));
+    const currentLevel = config.get('logLevel') || 'info';
+    
+    // Map 'type' to a level. Default to 'info' if unknown.
+    let level = 'info';
+    if (type === 'error' || type === 'critical') level = 'error';
+    else if (type === 'warning') level = 'warn';
+    else if (type === 'debug') level = 'debug';
+
+    if (LOG_LEVELS[level] >= LOG_LEVELS[currentLevel]) {
+      console.log(`[${this.name}] ${type}:`, JSON.stringify(data, null, 2));
+    }
+
+    // Always save to DB regardless of console log level, 
+    // unless we want to filter DB noise too. For now, keep full history in DB.
     try {
       await saveAgentLog(this.name, type, data);
     } catch (err) {
