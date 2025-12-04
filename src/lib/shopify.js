@@ -10,7 +10,7 @@
  * - StoreBuildAgent
  */
 import '@shopify/shopify-api/adapters/node';
-import { shopifyApi, LATEST_API_VERSION } from '@shopify/shopify-api';
+import { shopifyApi, ApiVersion } from '@shopify/shopify-api';
 
 let shopifyClient = null;
 
@@ -30,7 +30,7 @@ export function getShopifyClient() {
     apiSecretKey: process.env.SHOPIFY_API_SECRET || 'dummy_secret',
     scopes: ['write_products', 'read_products'],
     hostName: shopName,
-    apiVersion: LATEST_API_VERSION,
+    apiVersion: ApiVersion.October24,
     isEmbeddedApp: false,
   });
 

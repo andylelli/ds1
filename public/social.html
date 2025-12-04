@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 Social Feed</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #000; color: white; margin: 0; display: flex; justify-content: center; }
+        .phone-container { width: 100%; max-width: 400px; background: #121212; min-height: 100vh; border-left: 1px solid #333; border-right: 1px solid #333; position: relative; }
+        
+        header { padding: 1rem; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #121212; z-index: 10; }
+        h1 { font-size: 1.2rem; margin: 0; }
+        .nav-link { color: #aaa; text-decoration: none; font-size: 0.9rem; }
+
+        .feed { padding-bottom: 4rem; }
+        
+        /* Generic Post Styles */
+        .post { margin-bottom: 20px; position: relative; background: #222; overflow: hidden; }
+        .user-info { display: flex; align-items: center; padding: 10px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #ddd; margin-right: 10px; background-size: cover; }
+        .username { font-weight: bold; font-size: 0.9rem; }
+        .cta-btn { border: none; padding: 0.8rem; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
+
+        /* TikTok Style */
+        .post.tiktok { height: 80vh; display: flex; flex-direction: column; justify-content: center; margin-bottom: 1px; }
+        .post.tiktok .post-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .post.tiktok .post-content { position: relative; z-index: 2; padding: 1rem; margin-top: auto; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
+        .post.tiktok .tags { color: #fe2c55; font-weight: bold; }
+        .post.tiktok .actions { position: absolute; right: 10px; bottom: 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 3; }
+        .post.tiktok .action-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .post.tiktok .cta-btn { background: #fe2c55; color: white; margin-top: 0.5rem; }
+
+        /* Facebook Style */
+        .post.facebook { background: #fff; color: #1c1e21; border-radius: 8px; margin: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .post.facebook .user-info { padding: 12px; }
+        .post.facebook .username { color: #050505; }
+        .post.facebook .caption { padding: 0 12px 12px; font-size: 0.95rem; }
+        .post.facebook img { width: 100%; height: auto; display: block; }
+        .post.facebook .cta-btn { background: #e4e6eb; color: #050505; margin: 12px; width: calc(100% - 24px); border-radius: 6px; }
+        .post.facebook .fb-header { color: #1877f2; font-size: 0.8rem; margin-left: auto; font-weight: bold; }
+
+        /* Instagram Style */
+        .post.instagram { background: #000; color: white; border-bottom: 1px solid #333; margin-bottom: 0; }
+        .post.instagram .user-info { padding: 10px; justify-content: space-between; }
+        .post.instagram img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .post.instagram .actions-bar { padding: 10px; display: flex; gap: 15px; font-size: 1.5rem; }
+        .post.instagram .caption { padding: 0 10px 10px; font-size: 0.9rem; }
+        .post.instagram .cta-btn { background: #0095f6; color: white; margin: 0 10px 10px; width: calc(100% - 20px); border-radius: 4px; padding: 0.5rem; }
+
+        .empty-state { padding: 2rem; text-align: center; color: #666; margin-top: 50%; }
+
+        /* Tabs */
+        .tabs { display: flex; background: #121212; border-bottom: 1px solid #333; position: sticky; top: 57px; z-index: 9; }
+        .tab { flex: 1; text-align: center; padding: 1rem; cursor: pointer; color: #aaa; border-bottom: 2px solid transparent; }
+        .tab.active { color: white; font-weight: bold; }
+        .tab.active.tiktok { border-bottom-color: #fe2c55; }
+        .tab.active.facebook { border-bottom-color: #1877f2; }
+        .tab.active.instagram { border-bottom-color: #e1306c; }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <header>
+            <h1>📱 Social Feed</h1>
+            <a href="admin.html" class="nav-link">Exit</a>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active tiktok" onclick="filterFeed('tiktok')">TikTok</div>
+            <div class="tab facebook" onclick="filterFeed('facebook')">Facebook</div>
+            <div class="tab instagram" onclick="filterFeed('instagram')">Instagram</div>
+        </div>
+
+        <div id="feed" class="feed">
+            <div class="empty-state">Loading ads...</div>
+        </div>
+    </div>
+
+    <script>
+        let allAds = [];
+        let currentPlatform = 'tiktok';
+
+        async function loadAds() {
+            const feed = document.getElementById('feed');
+            try {
+                const res = await fetch('/api/ads');
+                allAds = await res.json();
+
+                if (allAds.length === 0) {
+                    feed.innerHTML = '<div class="empty-state">No active campaigns.<br>Run a simulation to launch ads.</div>';
+                    return;
+                }
+
+                renderFeed();
+
+            } catch (e) {
+                feed.innerHTML = `<div class="empty-state" style="color:red">Error: ${e.message}</div>`;
+            }
+        }
+
+        function filterFeed(platform) {
+            currentPlatform = platform;
+            
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.classList.contains(platform)) t.classList.add('active');
+            });
+
+            renderFeed();
+        }
+
+        function renderFeed() {
+            const feed = document.getElementById('feed');
+            const filteredAds = allAds.filter(ad => ad.platform.toLowerCase() === currentPlatform);
+
+            if (filteredAds.length === 0) {
+                feed.innerHTML = `<div class="empty-state">No ads found for ${currentPlatform}.</div>`;
+                return;
+            }
+
+            feed.innerHTML = filteredAds.map(ad => {
+                const bgImage = ad.image || 'https://via.placeholder.com/400x800.png?text=Ad+Creative';
+                const platform = ad.platform.toLowerCase();
+                const username = `@${ad.product.replace(/\s+/g, '').toLowerCase()}_official`;
+                const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${ad.product}`;
+
+                if (platform === 'tiktok') {
+                    return `
+                    <div class="post tiktok">
+                        <img src="${bgImage}" class="post-bg" alt="Ad Background">
+                        <div class="actions">
+                            <div class="action-btn">❤️</div>
+                            <div class="action-btn">💬</div>
+                            <div class="action-btn">↗️</div>
+                        </div>
+                        <div class="post-content">
+                            <div class="user-info">
+                                <div class="avatar" style="background-image: url('${avatarUrl}')"></div>
+                                <div class="username">${username}</div>
+                            </div>
+                            <div class="caption">
+                                ${ad.headline} <br>
+                                <span class="tags">#fyp #viral #tiktok #musthave</span>
+                            </div>
+                            <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now 🛍️</button>
+                        </div>
+                    </div>`;
+                } else if (platform === 'facebook') {
+                    return `
+                    <div class="post facebook">
+                        <div class="user-info">
+                            <div class="avatar" style="background-image: url('${avatarUrl}')"></div>
+                            <div>
+                                <div class="username">${ad.product}</div>
+                                <div style="font-size: 0.75rem; color: #65676b;">Sponsored · 🌍</div>
+                            </div>
+                            <div class="fb-header">Like Page</div>
+                        </div>
+                        <div class="caption">${ad.headline}</div>
+                        <img src="${bgImage}" alt="Ad Image">
+                        <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now</button>
+                    </div>`;
+                } else if (platform === 'instagram') {
+                    return `
+                    <div class="post instagram">
+                        <div class="user-info">
+                            <div style="display:flex; align-items:center">
+                                <div class="avatar" style="width:30px; height:30px; background-image: url('${avatarUrl}')"></div>
+                                <div class="username">${username}</div>
+                            </div>
+                            <div>...</div>
+                        </div>
+                        <img src="${bgImage}" alt="Ad Image">
+                        <div class="actions-bar">
+                            <span>❤️</span> <span>💬</span> <span>🚀</span>
+                        </div>
+                        <div class="caption">
+                            <strong>${username}</strong> ${ad.headline} <br>
+                            <span style="color:#0095f6">#ad #sponsored</span>
+                        </div>
+                        <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now</button>
+                    </div>`;
+                }
+                return '';
+            }).join('');
+        }
+
+        loadAds();
+    </script>
+</body>
+</html>

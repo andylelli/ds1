@@ -23,8 +23,9 @@ import { CustomerServiceAgent } from './agents/customerServiceAgent.js';
 import { OperationsAgent } from './agents/operationsAgent.js';
 import { AnalyticsAgent } from './agents/analyticsAgent.js';
 import { MCP_MESSAGE_TYPES } from './mcp/protocol.js';
-import { initDatabase, switchDatabaseMode } from './lib/db.js';
+import { initDatabase, switchDatabaseMode, getRecentLogs, getProducts, getOrders, saveOrder, getAds } from './lib/db.js';
 import { config } from './lib/config.js';
+import { runProductLifecycle } from './simulation.js';
 
 const app = express();
 app.use(express.json());
@@ -63,6 +64,51 @@ app.post('/api/config', async (req, res) => {
   }
 
   res.json({ status: 'ok', config: config.getAll() });
+});
+
+// --- Simulation API ---
+app.post('/api/simulation/start', (req, res) => {
+  // Run asynchronously, don't wait for it to finish
+  runProductLifecycle(agents).catch(console.error);
+  res.json({ status: 'started', message: 'Simulation running in background.' });
+});
+
+app.get('/api/logs', async (req, res) => {
+  const logs = await getRecentLogs(50);
+  res.json(logs);
+});
+
+app.get('/api/products', async (req, res) => {
+  const products = await getProducts();
+  res.json(products);
+});
+
+app.get('/api/orders', async (req, res) => {
+  const orders = await getOrders();
+  res.json(orders);
+});
+
+app.get('/api/ads', async (req, res) => {
+  const ads = await getAds();
+  res.json(ads);
+});
+
+app.post('/api/orders', async (req, res) => {
+  const orderData = req.body;
+  if (!orderData.product || !orderData.amount) {
+    return res.status(400).json({ error: 'Missing product or amount' });
+  }
+
+  const newOrder = {
+    id: `ORD-${Math.floor(Math.random() * 10000)}`,
+    product: orderData.product,
+    amount: orderData.amount,
+    status: 'pending',
+    customer: 'Web Shopper'
+  };
+
+  await saveOrder(newOrder);
+  res.json({ status: 'created', order: newOrder });
 });
 // -------------------------
 

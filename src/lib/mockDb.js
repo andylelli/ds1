@@ -63,7 +63,7 @@ class MockContainer {
         
         return { resource: storedItem };
       },
-      query: async (querySpec) => {
+      query: (querySpec) => {
         const db = readDb();
         let items = db[this.dbId]?.[this.containerId] || [];
         

@@ -1,0 +1,2024 @@
+{
+  "DropShipDB": {
+    "AgentMemory": [
+      {
+        "id": "item_1764872014210_pti4kmhbc",
+        "_ts": 1764872014,
+        "agent": "TestAgent",
+        "message": "Hello World",
+        "timestamp": "2025-12-04T18:13:34.210Z"
+      },
+      {
+        "id": "item_1764872045060_nd45l2i6p",
+        "_ts": 1764872045,
+        "agent": "TestAgent",
+        "message": "Hello World",
+        "timestamp": "2025-12-04T18:14:05.059Z"
+      },
+      {
+        "id": "item_1764872246530_jwbcd1k89",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.530Z"
+      },
+      {
+        "id": "item_1764872246534_v6cnhn855",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.533Z"
+      },
+      {
+        "id": "item_1764872246536_pvo1mkzkc",
+        "_ts": 1764872246,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.536Z"
+      },
+      {
+        "id": "item_1764872246538_vu163ea7b",
+        "_ts": 1764872246,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.538Z"
+      },
+      {
+        "id": "item_1764872246540_wfe8k9bui",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T18:17:26.539Z"
+      },
+      {
+        "id": "item_1764872246541_fkhfyj523",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.540Z"
+      },
+      {
+        "id": "item_1764872246542_6i97jqqg0",
+        "_ts": 1764872246,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.541Z"
+      },
+      {
+        "id": "item_1764872246543_s54ntrybt",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T18:17:26.543Z"
+      },
+      {
+        "id": "item_1764872246545_cv1isfmod",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.545Z"
+      },
+      {
+        "id": "item_1764872246547_0d7mmjlx2",
+        "_ts": 1764872246,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.546Z"
+      },
+      {
+        "id": "item_1764872246549_e3515cxyl",
+        "_ts": 1764872246,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.549Z"
+      },
+      {
+        "id": "item_1764872246551_p8rhj5hmk",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T18:17:26.551Z"
+      },
+      {
+        "id": "item_1764872246552_0vabp2n31",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaign...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.551Z"
+      },
+      {
+        "id": "item_1764872246553_minyzna31",
+        "_ts": 1764872246,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.553Z"
+      },
+      {
+        "id": "item_1764872246555_otzsuu3vl",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "📢 Ads Running. Campaign ID: cmp_4574",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_4574",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T18:17:26.554Z"
+      },
+      {
+        "id": "item_1764872246557_9emivuf6b",
+        "_ts": 1764872246,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:26.556Z"
+      },
+      {
+        "id": "item_1764872248061_ghirviq9u",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-7400",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.061Z"
+      },
+      {
+        "id": "item_1764872248062_7fzbpoboq",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.062Z"
+      },
+      {
+        "id": "item_1764872248063_5pvi0keuj",
+        "_ts": 1764872248,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-7400",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.063Z"
+      },
+      {
+        "id": "item_1764872248064_74imrkt3x",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK74304",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-7400",
+          "tracking_number": "TRK74304",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T18:17:28.064Z"
+      },
+      {
+        "id": "item_1764872248066_a1otkliqc",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.065Z"
+      },
+      {
+        "id": "item_1764872248068_jlpaqt70a",
+        "_ts": 1764872248,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.067Z"
+      },
+      {
+        "id": "item_1764872248070_ugwuejqgo",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T18:17:28.069Z"
+      },
+      {
+        "id": "item_1764872248072_2yv7v6i7b",
+        "_ts": 1764872248,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:17:28.071Z"
+      },
+      {
+        "id": "item_1764874197373_uknf9o519",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.372Z"
+      },
+      {
+        "id": "item_1764874197376_djwyc14r7",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.376Z"
+      },
+      {
+        "id": "item_1764874197378_jmdbylk8k",
+        "_ts": 1764874197,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.377Z"
+      },
+      {
+        "id": "item_1764874197380_jv9n09lgf",
+        "_ts": 1764874197,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.380Z"
+      },
+      {
+        "id": "item_1764874197382_saf37q4kr",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T18:49:57.382Z"
+      },
+      {
+        "id": "item_1764874197383_wvykyq3w6",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.383Z"
+      },
+      {
+        "id": "item_1764874197384_mn3fckoks",
+        "_ts": 1764874197,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.384Z"
+      },
+      {
+        "id": "item_1764874197386_3104lu1kq",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T18:49:57.386Z"
+      },
+      {
+        "id": "item_1764874197388_j644eo4xi",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.387Z"
+      },
+      {
+        "id": "item_1764874197389_xsisb5xm2",
+        "_ts": 1764874197,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.389Z"
+      },
+      {
+        "id": "item_1764874197391_tgwtaot2c",
+        "_ts": 1764874197,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.391Z"
+      },
+      {
+        "id": "item_1764874197393_bn8a391hf",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T18:49:57.393Z"
+      },
+      {
+        "id": "item_1764874197394_8gip9vlzx",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaign...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.394Z"
+      },
+      {
+        "id": "item_1764874197395_iuae99vid",
+        "_ts": 1764874197,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.395Z"
+      },
+      {
+        "id": "item_1764874197397_xhshrd86e",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "📢 Ads Running. Campaign ID: cmp_4434",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_4434",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T18:49:57.396Z"
+      },
+      {
+        "id": "item_1764874197399_o3w8gvbf8",
+        "_ts": 1764874197,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:57.398Z"
+      },
+      {
+        "id": "item_1764874198913_v7bxzfk7d",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-5731",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.912Z"
+      },
+      {
+        "id": "item_1764874198916_xw7rz161n",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.916Z"
+      },
+      {
+        "id": "item_1764874198919_dn4rrh4fc",
+        "_ts": 1764874198,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-5731",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.918Z"
+      },
+      {
+        "id": "item_1764874198923_ma2bscb80",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK69200",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-5731",
+          "tracking_number": "TRK69200",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T18:49:58.922Z"
+      },
+      {
+        "id": "item_1764874198925_d3ljpp43l",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.924Z"
+      },
+      {
+        "id": "item_1764874198928_zvs4a381q",
+        "_ts": 1764874198,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.927Z"
+      },
+      {
+        "id": "item_1764874198932_czydf6c5p",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T18:49:58.931Z"
+      },
+      {
+        "id": "item_1764874198935_1ir5yvmlv",
+        "_ts": 1764874198,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:49:58.934Z"
+      },
+      {
+        "id": "item_1764874400726_q8fra4k4r",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.725Z"
+      },
+      {
+        "id": "item_1764874400727_t490yd7fm",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.727Z"
+      },
+      {
+        "id": "item_1764874400729_0ajmphafv",
+        "_ts": 1764874400,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.728Z"
+      },
+      {
+        "id": "item_1764874400730_ra2xcgnh1",
+        "_ts": 1764874400,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.730Z"
+      },
+      {
+        "id": "item_1764874400731_aqh98n89l",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T18:53:20.731Z"
+      },
+      {
+        "id": "item_1764874400733_3cdfh1gsw",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.733Z"
+      },
+      {
+        "id": "item_1764874400734_7x7hrw5q4",
+        "_ts": 1764874400,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.734Z"
+      },
+      {
+        "id": "item_1764874400735_fbgkxs3ov",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T18:53:20.735Z"
+      },
+      {
+        "id": "item_1764874400737_3fafvk2s2",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.736Z"
+      },
+      {
+        "id": "item_1764874400738_elq0h8jk0",
+        "_ts": 1764874400,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.738Z"
+      },
+      {
+        "id": "item_1764874400740_b378rfxdw",
+        "_ts": 1764874400,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.740Z"
+      },
+      {
+        "id": "item_1764874400741_evny8x6lj",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T18:53:20.741Z"
+      },
+      {
+        "id": "item_1764874400742_sznniwt56",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaign...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.742Z"
+      },
+      {
+        "id": "item_1764874400744_onzzmcut8",
+        "_ts": 1764874400,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.743Z"
+      },
+      {
+        "id": "item_1764874400745_k2x419dj3",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "📢 Ads Running. Campaign ID: cmp_7397",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_7397",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T18:53:20.745Z"
+      },
+      {
+        "id": "item_1764874400746_rhtzgcyk2",
+        "_ts": 1764874400,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:20.746Z"
+      },
+      {
+        "id": "item_1764874402256_vvm14wwct",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-769",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.254Z"
+      },
+      {
+        "id": "item_1764874402260_hntybndda",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.259Z"
+      },
+      {
+        "id": "item_1764874402262_8ejodb84q",
+        "_ts": 1764874402,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-769",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.261Z"
+      },
+      {
+        "id": "item_1764874402263_emzyi7z38",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK692817",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-769",
+          "tracking_number": "TRK692817",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T18:53:22.262Z"
+      },
+      {
+        "id": "item_1764874402264_8w7h1ayff",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.263Z"
+      },
+      {
+        "id": "item_1764874402265_z37m0b6ac",
+        "_ts": 1764874402,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.264Z"
+      },
+      {
+        "id": "item_1764874402266_dp7pvjxra",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T18:53:22.265Z"
+      },
+      {
+        "id": "item_1764874402268_aa7rx365d",
+        "_ts": 1764874402,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:53:22.267Z"
+      },
+      {
+        "id": "item_1764874650083_elxkcna4f",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.082Z"
+      },
+      {
+        "id": "item_1764874650088_h1lpjxm2r",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.087Z"
+      },
+      {
+        "id": "item_1764874650091_ehfwaubcq",
+        "_ts": 1764874650,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.090Z"
+      },
+      {
+        "id": "item_1764874650094_7tep6av67",
+        "_ts": 1764874650,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.093Z"
+      },
+      {
+        "id": "item_1764874650096_orn2pneam",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T18:57:30.095Z"
+      },
+      {
+        "id": "item_1764874650101_wlux4z4fh",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.100Z"
+      },
+      {
+        "id": "item_1764874650104_atwcy3r8c",
+        "_ts": 1764874650,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.103Z"
+      },
+      {
+        "id": "item_1764874650105_tnjrylera",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T18:57:30.105Z"
+      },
+      {
+        "id": "item_1764874650107_wvjuq12sm",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.107Z"
+      },
+      {
+        "id": "item_1764874650109_f7m44qgjc",
+        "_ts": 1764874650,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.108Z"
+      },
+      {
+        "id": "item_1764874650112_x89dw2i7l",
+        "_ts": 1764874650,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.112Z"
+      },
+      {
+        "id": "item_1764874650114_yc32wua4m",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T18:57:30.113Z"
+      },
+      {
+        "id": "item_1764874650117_rkey0hm72",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaign...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.116Z"
+      },
+      {
+        "id": "item_1764874650118_ko7yz69ek",
+        "_ts": 1764874650,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.118Z"
+      },
+      {
+        "id": "item_1764874650120_hz1rhqveq",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "📢 Ads Running. Campaign ID: cmp_5258",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_5258",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T18:57:30.119Z"
+      },
+      {
+        "id": "item_1764874650121_r8mouy0l0",
+        "_ts": 1764874650,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:30.121Z"
+      },
+      {
+        "id": "item_1764874651628_0v21blci6",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-4038",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.627Z"
+      },
+      {
+        "id": "item_1764874651632_l5prtc49o",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.632Z"
+      },
+      {
+        "id": "item_1764874651636_47glwmano",
+        "_ts": 1764874651,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-4038",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.635Z"
+      },
+      {
+        "id": "item_1764874651638_vk7xocuqp",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK851697",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-4038",
+          "tracking_number": "TRK851697",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T18:57:31.638Z"
+      },
+      {
+        "id": "item_1764874651640_lcwhnuap6",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.639Z"
+      },
+      {
+        "id": "item_1764874651643_z0x5fnz1z",
+        "_ts": 1764874651,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.642Z"
+      },
+      {
+        "id": "item_1764874651646_imicopky1",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T18:57:31.645Z"
+      },
+      {
+        "id": "item_1764874651647_oze0mfd40",
+        "_ts": 1764874651,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T18:57:31.647Z"
+      },
+      {
+        "id": "item_1764875061670_gmaxphs07",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.668Z"
+      },
+      {
+        "id": "item_1764875061677_mkfnbdg32",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.674Z"
+      },
+      {
+        "id": "item_1764875061681_u50s08yr0",
+        "_ts": 1764875061,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.680Z"
+      },
+      {
+        "id": "item_1764875061684_8fcggxh91",
+        "_ts": 1764875061,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.683Z"
+      },
+      {
+        "id": "item_1764875061687_cf8329ny0",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T19:04:21.686Z"
+      },
+      {
+        "id": "item_1764875061691_oadcurpmz",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.691Z"
+      },
+      {
+        "id": "item_1764875061694_i9lnbqg53",
+        "_ts": 1764875061,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.693Z"
+      },
+      {
+        "id": "item_1764875061696_s5dr9ob55",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T19:04:21.695Z"
+      },
+      {
+        "id": "item_1764875061699_zfgx4ofks",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.698Z"
+      },
+      {
+        "id": "item_1764875061701_g8k1ihqcf",
+        "_ts": 1764875061,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.700Z"
+      },
+      {
+        "id": "item_1764875061704_bi656ai2r",
+        "_ts": 1764875061,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.702Z"
+      },
+      {
+        "id": "item_1764875061708_b4y0k3a5c",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T19:04:21.706Z"
+      },
+      {
+        "id": "item_1764875061711_uem6dx2uq",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaign...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.710Z"
+      },
+      {
+        "id": "item_1764875061714_7oyfymnpk",
+        "_ts": 1764875061,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.713Z"
+      },
+      {
+        "id": "item_1764875061719_kiwmugaw1",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "📢 Ads Running. Campaign ID: cmp_4562",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_4562",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:04:21.717Z"
+      },
+      {
+        "id": "item_1764875061723_ktzid4qzp",
+        "_ts": 1764875061,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:21.723Z"
+      },
+      {
+        "id": "item_1764875063234_uk7dnn052",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-393",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.232Z"
+      },
+      {
+        "id": "item_1764875063241_7xze0h8jr",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.240Z"
+      },
+      {
+        "id": "item_1764875063246_3we5t9bod",
+        "_ts": 1764875063,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-393",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.244Z"
+      },
+      {
+        "id": "item_1764875063250_03yo88wv5",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK208418",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-393",
+          "tracking_number": "TRK208418",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T19:04:23.248Z"
+      },
+      {
+        "id": "item_1764875063253_ejwfnyryb",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.252Z"
+      },
+      {
+        "id": "item_1764875063256_w4j6ftv1q",
+        "_ts": 1764875063,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.255Z"
+      },
+      {
+        "id": "item_1764875063259_zw183lfpz",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T19:04:23.258Z"
+      },
+      {
+        "id": "item_1764875063262_6ha4u39sv",
+        "_ts": 1764875063,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:04:23.261Z"
+      },
+      {
+        "id": "item_1764875219151_bz1u521sj",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.150Z"
+      },
+      {
+        "id": "item_1764875219156_dyvzwxdp4",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.155Z"
+      },
+      {
+        "id": "item_1764875219159_vkw0shu1b",
+        "_ts": 1764875219,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.158Z"
+      },
+      {
+        "id": "item_1764875219162_io3lmslpt",
+        "_ts": 1764875219,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.160Z"
+      },
+      {
+        "id": "item_1764875219164_tceuq9ocp",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T19:06:59.163Z"
+      },
+      {
+        "id": "item_1764875219169_2zi2znb3f",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.167Z"
+      },
+      {
+        "id": "item_1764875219172_n1qnj9iwc",
+        "_ts": 1764875219,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.171Z"
+      },
+      {
+        "id": "item_1764875219174_x26kzwk6j",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T19:06:59.174Z"
+      },
+      {
+        "id": "item_1764875219177_y96oj1c70",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.176Z"
+      },
+      {
+        "id": "item_1764875219179_telojo92k",
+        "_ts": 1764875219,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.178Z"
+      },
+      {
+        "id": "item_1764875219181_3uduq568o",
+        "_ts": 1764875219,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.180Z"
+      },
+      {
+        "id": "item_1764875219182_61re2zwjs",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T19:06:59.182Z"
+      },
+      {
+        "id": "item_1764875219185_svtgxhk0s",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaigns...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.184Z"
+      },
+      {
+        "id": "item_1764875219188_t3u22y10o",
+        "_ts": 1764875219,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.187Z"
+      },
+      {
+        "id": "item_1764875219190_tgng91t3z",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "📢 TikTok Ads Running. Campaign ID: cmp_2915",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_2915",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:06:59.189Z"
+      },
+      {
+        "id": "item_1764875219194_ab7vzht2j",
+        "_ts": 1764875219,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating Facebook campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.193Z"
+      },
+      {
+        "id": "item_1764875219197_jh3f2082s",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "📢 Facebook Ads Running. Campaign ID: cmp_9732",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_9732",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:06:59.196Z"
+      },
+      {
+        "id": "item_1764875219201_5puikcjg9",
+        "_ts": 1764875219,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating Instagram campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.200Z"
+      },
+      {
+        "id": "item_1764875219203_zk0h8gxyn",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "📢 Instagram Ads Running. Campaign ID: cmp_8125",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_8125",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:06:59.202Z"
+      },
+      {
+        "id": "item_1764875219207_lbey3k5gz",
+        "_ts": 1764875219,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:06:59.207Z"
+      },
+      {
+        "id": "item_1764875220719_sqhe3x45a",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-7321",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.717Z"
+      },
+      {
+        "id": "item_1764875220727_rcspujx64",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.726Z"
+      },
+      {
+        "id": "item_1764875220733_5s8gm43yj",
+        "_ts": 1764875220,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-7321",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.732Z"
+      },
+      {
+        "id": "item_1764875220737_b2t6x4noj",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK696143",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-7321",
+          "tracking_number": "TRK696143",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T19:07:00.736Z"
+      },
+      {
+        "id": "item_1764875220744_3708ahbnn",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.741Z"
+      },
+      {
+        "id": "item_1764875220750_39rmelqqx",
+        "_ts": 1764875220,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.748Z"
+      },
+      {
+        "id": "item_1764875220755_mqxfz63sc",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T19:07:00.753Z"
+      },
+      {
+        "id": "item_1764875220759_f8on75nqj",
+        "_ts": 1764875220,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:07:00.757Z"
+      },
+      {
+        "id": "item_1764875365397_7xyrmknli",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.395Z"
+      },
+      {
+        "id": "item_1764875365403_2k8lol3vz",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.401Z"
+      },
+      {
+        "id": "item_1764875365407_b5ukvgduo",
+        "_ts": 1764875365,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.407Z"
+      },
+      {
+        "id": "item_1764875365411_xfbx2xitp",
+        "_ts": 1764875365,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.410Z"
+      },
+      {
+        "id": "item_1764875365415_eeezc54v0",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ]
+        },
+        "timestamp": "2025-12-04T19:09:25.414Z"
+      },
+      {
+        "id": "item_1764875365421_9kl0uma61",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.420Z"
+      },
+      {
+        "id": "item_1764875365423_zvziwn1gy",
+        "_ts": 1764875365,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.422Z"
+      },
+      {
+        "id": "item_1764875365427_ixsunmxro",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-04T19:09:25.426Z"
+      },
+      {
+        "id": "item_1764875365430_klkd5gwkj",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.429Z"
+      },
+      {
+        "id": "item_1764875365433_pr22fmmxe",
+        "_ts": 1764875365,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.432Z"
+      },
+      {
+        "id": "item_1764875365436_esqjkrpy6",
+        "_ts": 1764875365,
+        "agent": "StoreBuilder",
+        "message": "warning",
+        "type": "Shopify credentials missing. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.435Z"
+      },
+      {
+        "id": "item_1764875365438_sq6eauhpc",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-04T19:09:25.437Z"
+      },
+      {
+        "id": "item_1764875365440_frhwoz8zq",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaigns...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.439Z"
+      },
+      {
+        "id": "item_1764875365442_z3fnuq0t8",
+        "_ts": 1764875365,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.442Z"
+      },
+      {
+        "id": "item_1764875365445_1q2bmpi3z",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "📢 TikTok Ads Running. Campaign ID: cmp_4931",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_4931",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:09:25.444Z"
+      },
+      {
+        "id": "item_1764875365449_62cruffha",
+        "_ts": 1764875365,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating Facebook campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.448Z"
+      },
+      {
+        "id": "item_1764875365452_ig42wnuog",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "📢 Facebook Ads Running. Campaign ID: cmp_4258",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_4258",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:09:25.451Z"
+      },
+      {
+        "id": "item_1764875365456_wf5796gau",
+        "_ts": 1764875365,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "Creating Instagram campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.455Z"
+      },
+      {
+        "id": "item_1764875365458_s472yhz03",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "📢 Instagram Ads Running. Campaign ID: cmp_1383",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_1383",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-04T19:09:25.457Z"
+      },
+      {
+        "id": "item_1764875365465_5mnx0036t",
+        "_ts": 1764875365,
+        "agent": "SimulationDirector",
+        "message": "⏳ Waiting for customers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:25.462Z"
+      },
+      {
+        "id": "item_1764875366972_pgkf8hql4",
+        "_ts": 1764875366,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER RECEIVED! Order ID: ORD-7975",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:26.970Z"
+      },
+      {
+        "id": "item_1764875366983_0loa6hn20",
+        "_ts": 1764875366,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling order...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:26.981Z"
+      },
+      {
+        "id": "item_1764875366988_rsf7my0bt",
+        "_ts": 1764875366,
+        "agent": "Operations",
+        "message": "info",
+        "type": "Fulfilling order ORD-7975",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:26.986Z"
+      },
+      {
+        "id": "item_1764875366993_mljaisj1r",
+        "_ts": 1764875366,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order Shipped. Tracking: TRK630245",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-7975",
+          "tracking_number": "TRK630245",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-04T19:09:26.991Z"
+      },
+      {
+        "id": "item_1764875366998_ja5iyybqf",
+        "_ts": 1764875366,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:26.996Z"
+      },
+      {
+        "id": "item_1764875367002_0bfor0dz2",
+        "_ts": 1764875367,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:27.002Z"
+      },
+      {
+        "id": "item_1764875367005_27wboxnhk",
+        "_ts": 1764875367,
+        "agent": "SimulationDirector",
+        "message": "📊 Profit Report: $7000",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 15000,
+          "costs": 8000,
+          "profit": 7000,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-04T19:09:27.003Z"
+      },
+      {
+        "id": "item_1764875367010_hka7452oz",
+        "_ts": 1764875367,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-04T19:09:27.007Z"
+      }
+    ],
+    "Products": [
+      {
+        "id": "p1",
+        "_ts": 1764874400,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "timestamp": "2025-12-04T18:53:20.732Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764874650,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "timestamp": "2025-12-04T18:57:30.097Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764875061,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "timestamp": "2025-12-04T19:04:21.688Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764875219,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "timestamp": "2025-12-04T19:06:59.165Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764875365,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "timestamp": "2025-12-04T19:09:25.416Z"
+      }
+    ],
+    "Orders": [
+      {
+        "id": "ORD-769",
+        "_ts": 1764874402,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-04T18:53:22.257Z"
+      },
+      {
+        "id": "ORD-4038",
+        "_ts": 1764874651,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-04T18:57:31.629Z"
+      },
+      {
+        "id": "ORD-367",
+        "_ts": 1764874808,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "customer": "Web Shopper",
+        "timestamp": "2025-12-04T19:00:08.969Z"
+      },
+      {
+        "id": "ORD-393",
+        "_ts": 1764875063,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-04T19:04:23.236Z"
+      },
+      {
+        "id": "ORD-7321",
+        "_ts": 1764875220,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-04T19:07:00.722Z"
+      },
+      {
+        "id": "ORD-7975",
+        "_ts": 1764875366,
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-04T19:09:26.975Z"
+      }
+    ],
+    "Ads": [
+      {
+        "id": "cmp_4562",
+        "_ts": 1764875061,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:04:21.721Z"
+      },
+      {
+        "id": "cmp_2915",
+        "_ts": 1764875219,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:06:59.191Z"
+      },
+      {
+        "id": "cmp_9732",
+        "_ts": 1764875219,
+        "platform": "Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:06:59.198Z"
+      },
+      {
+        "id": "cmp_8125",
+        "_ts": 1764875219,
+        "platform": "Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:06:59.204Z"
+      },
+      {
+        "id": "cmp_4931",
+        "_ts": 1764875365,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:09:25.447Z"
+      },
+      {
+        "id": "cmp_4258",
+        "_ts": 1764875365,
+        "platform": "Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:09:25.453Z"
+      },
+      {
+        "id": "cmp_1383",
+        "_ts": 1764875365,
+        "platform": "Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-04T19:09:25.459Z"
+      }
+    ]
+  }
+}

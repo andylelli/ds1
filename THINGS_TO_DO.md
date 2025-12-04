@@ -1,5 +1,8 @@
 # 📝 Things To Do: External Integrations Roadmap
 
+> **Current Status**: 🟢 **Mock Mode Complete**. The system currently runs in a fully simulated environment.
+> **Next Phase**: 🔴 **Live Mode**. The following integrations are required to connect the agents to the real world.
+
 This document outlines the external services, APIs, and websites that need to be integrated for each agent to reach full autonomy. It includes the **Business Justification (Why)** and the **Implementation Steps (How)** for each task.
 
 ---
@@ -81,7 +84,7 @@ This document outlines the external services, APIs, and websites that need to be
 
 ## 📢 Marketing Agent
 
-### 1. Ad Platforms (Meta / TikTok)
+### 1. Ad Platforms (Meta / TikTok / Google / Pinterest)
 - [ ] **Integrate Meta Marketing API**
     - **Why**: To programmatically create, launch, and stop ads. This is the engine of the business.
     - **How**:
@@ -89,6 +92,19 @@ This document outlines the external services, APIs, and websites that need to be
         2.  Generate a System User Access Token.
         3.  Implement `create_campaign`, `create_ad_set`, and `create_ad` tools.
         4.  **Crucial**: Implement a "Kill Switch" to stop ads if ROAS < 1.5.
+
+- [ ] **Integrate Google Ads API**
+    - **Why**: To capture high-intent search traffic (e.g., people searching "buy posture corrector").
+    - **How**:
+        1.  Apply for a Google Ads Developer Token (Basic Access).
+        2.  Use the `google-ads-api` library.
+        3.  Create tools to manage Search and Shopping campaigns.
+
+- [ ] **Integrate Pinterest Ads API**
+    - **Why**: High conversion rates for visual niches (Home Decor, DIY, Fashion).
+    - **How**:
+        1.  Register an app on Pinterest Developers.
+        2.  Implement conversion tracking (Pixel) and ad creation tools.
 
 ### 2. Email (Klaviyo)
 - [ ] **Integrate Klaviyo API**
@@ -122,21 +138,28 @@ This document outlines the external services, APIs, and websites that need to be
 
 ## 🚚 Operations Agent
 
-### 1. Logistics (17Track)
-- [ ] **Integrate 17Track API**
+### 1. Logistics (17Track / AfterShip)
+- [ ] **Integrate 17Track or AfterShip API**
     - **Why**: To proactively tell customers where their package is *before* they ask. Reduces support tickets by 50%.
     - **How**:
-        1.  Get a 17Track API key.
+        1.  Get an API key from 17Track or AfterShip.
         2.  Create a cron job (scheduled task) that checks status of all "In Transit" orders every 6 hours.
         3.  If status changes to "Exception" or "Delivered", trigger an email.
 
-### 2. Payments (Stripe)
-- [ ] **Integrate Stripe API**
-    - **Why**: To handle disputes (chargebacks) automatically. If we don't respond to disputes, we lose the money and our merchant account.
+### 2. Payments (Stripe / PayPal)
+- [ ] **Integrate Stripe & PayPal APIs**
+    - **Why**: To handle disputes (chargebacks) automatically and manage refunds.
     - **How**:
-        1.  Use the `stripe` npm package.
+        1.  Use the `stripe` npm package and PayPal REST SDK.
         2.  Listen for webhooks `charge.dispute.created`.
         3.  Auto-submit evidence (tracking number, delivery proof) using the API.
+
+### 3. Compliance (TaxJar)
+- [ ] **Integrate TaxJar API**
+    - **Why**: To automatically calculate and file sales tax in different jurisdictions.
+    - **How**:
+        1.  Connect TaxJar to the Shopify store.
+        2.  Use the API to fetch tax reports for the Analytics Agent.
 
 ---
 

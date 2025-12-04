@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Control Panel</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #f4f4f9; }
+        body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; background: #f4f4f9; }
         .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 1rem; }
         h1 { color: #333; }
         label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
@@ -15,46 +15,233 @@
         .status { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; display: none; }
         .success { background: #d4edda; color: #155724; }
         .error { background: #f8d7da; color: #721c24; }
+        
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 1rem; border-bottom: 2px solid #ddd; }
+        .tab { padding: 1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .tab.active { border-bottom-color: #007bff; font-weight: bold; color: #007bff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Logs */
+        #logViewer { background: #1e1e1e; color: #d4d4d4; padding: 1rem; height: 400px; overflow-y: auto; font-family: monospace; border-radius: 4px; }
+        .log-entry { margin-bottom: 0.5rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+        .log-time { color: #569cd6; margin-right: 0.5rem; }
+        .log-agent { color: #4ec9b0; font-weight: bold; margin-right: 0.5rem; }
+        .log-msg { color: #ce9178; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:hover { background-color: #f1f1f1; }
+        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+        .badge-high { background: #d4edda; color: #155724; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-shipped { background: #cce5ff; color: #004085; }
     </style>
 </head>
 <body>
-    <h1>🎛️ DS1 Control Panel</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>🎛️ DS1 Control Panel</h1>
+        <div>
+            <a href="social.html" target="_blank" style="text-decoration: none; background: #fe2c55; color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; margin-right: 10px;">📱 Social Feed</a>
+            <a href="shop.html" target="_blank" style="text-decoration: none; background: #28a745; color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold;">🛍️ Open Mock Shop</a>
+        </div>
+    </div>
     
     <div id="statusMessage" class="status"></div>
 
-    <div class="card">
-        <h2>Environment Settings</h2>
-        
-        <label for="dbMode">Database Mode</label>
-        <select id="dbMode">
-            <option value="mock">Mock (Sandbox)</option>
-            <option value="live">Live (Azure Cosmos DB)</option>
-        </select>
-        <small>Switching modes will reconnect the database immediately.</small>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('settings')">Settings</div>
+        <div class="tab" onclick="switchTab('simulation')">Simulation</div>
+        <div class="tab" onclick="switchTab('products')">Products</div>
+        <div class="tab" onclick="switchTab('orders')">Orders</div>
+    </div>
 
-        <br><br>
+    <!-- SETTINGS TAB -->
+    <div id="settings" class="tab-content active">
+        <div class="card">
+            <h2>Environment Settings</h2>
+            
+            <label for="dbMode">Database Mode</label>
+            <select id="dbMode">
+                <option value="mock">Mock (Sandbox)</option>
+                <option value="live">Live (Azure Cosmos DB)</option>
+            </select>
+            <small>Switching modes will reconnect the database immediately.</small>
 
-        <label for="logLevel">Log Level</label>
-        <select id="logLevel">
-            <option value="debug">Debug (Verbose)</option>
-            <option value="info">Info (Standard)</option>
-            <option value="warn">Warning</option>
-            <option value="error">Error Only</option>
-        </select>
+            <br><br>
 
-        <br><br>
+            <label for="logLevel">Log Level</label>
+            <select id="logLevel">
+                <option value="debug">Debug (Verbose)</option>
+                <option value="info">Info (Standard)</option>
+                <option value="warn">Warning</option>
+                <option value="error">Error Only</option>
+            </select>
 
-        <label for="useSimulatedEndpoints">3rd Party Integrations</label>
-        <select id="useSimulatedEndpoints">
-            <option value="true">Simulated (Mock APIs)</option>
-            <option value="false">Real (Live APIs)</option>
-        </select>
+            <br><br>
 
-        <br><br>
-        <button onclick="saveConfig()">Save & Apply Changes</button>
+            <label for="useSimulatedEndpoints">3rd Party Integrations</label>
+            <select id="useSimulatedEndpoints">
+                <option value="true">Simulated (Mock APIs)</option>
+                <option value="false">Real (Live APIs)</option>
+            </select>
+
+            <br><br>
+            <button onclick="saveConfig()">Save & Apply Changes</button>
+        </div>
+    </div>
+
+    <!-- SIMULATION TAB -->
+    <div id="simulation" class="tab-content">
+        <div class="card">
+            <h2>Product Lifecycle Simulation</h2>
+            <p>Click below to run a full end-to-end simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
+            <button onclick="startSimulation()" style="background: #28a745;">▶ Start Simulation</button>
+            
+            <h3>Live Logs</h3>
+            <div id="logViewer">Waiting for logs...</div>
+        </div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div id="products" class="tab-content">
+        <div class="card">
+            <h2>Winning Products</h2>
+            <button onclick="fetchProducts()">🔄 Refresh List</button>
+            <div id="productsList">Loading...</div>
+        </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="orders" class="tab-content">
+        <div class="card">
+            <h2>Order History</h2>
+            <button onclick="fetchOrders()">🔄 Refresh List</button>
+            <div id="ordersList">Loading...</div>
+        </div>
     </div>
 
     <script>
+        let logInterval = null;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Find the tab element that was clicked (or corresponds to tabId)
+            const tabEl = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.toLowerCase().includes(tabId));
+            if(tabEl) tabEl.classList.add('active');
+            
+            const contentEl = document.getElementById(tabId);
+            if(contentEl) contentEl.classList.add('active');
+
+            // Handle Simulation Logs
+            if (tabId === 'simulation') {
+                fetchLogs();
+                logInterval = setInterval(fetchLogs, 2000);
+            } else {
+                if (logInterval) clearInterval(logInterval);
+            }
+
+            // Auto-refresh data
+            if (tabId === 'products') fetchProducts();
+            if (tabId === 'orders') fetchOrders();
+        }
+
+        async function fetchProducts() {
+            const list = document.getElementById('productsList');
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                
+                if (products.length === 0) {
+                    list.innerHTML = '<p>No products found. Run a simulation first.</p>';
+                    return;
+                }
+
+                let html = `<table><thead><tr><th>Name</th><th>Potential</th><th>Margin</th><th>Found At</th></tr></thead><tbody>`;
+                products.forEach(p => {
+                    html += `<tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td><span class="badge badge-high">${p.potential}</span></td>
+                        <td>${p.margin}</td>
+                        <td>${new Date(p.timestamp).toLocaleString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = `<p class="error">Error fetching products: ${e.message}</p>`;
+            }
+        }
+
+        async function fetchOrders() {
+            const list = document.getElementById('ordersList');
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                
+                if (orders.length === 0) {
+                    list.innerHTML = '<p>No orders found.</p>';
+                    return;
+                }
+
+                let html = `<table><thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                orders.forEach(o => {
+                    const statusClass = o.status === 'shipped' ? 'badge-shipped' : 'badge-pending';
+                    html += `<tr>
+                        <td>${o.id}</td>
+                        <td>${o.product}</td>
+                        <td>$${o.amount}</td>
+                        <td><span class="badge ${statusClass}">${o.status}</span></td>
+                        <td>${new Date(o.timestamp).toLocaleString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = `<p class="error">Error fetching orders: ${e.message}</p>`;
+            }
+        }
+
+        async function startSimulation() {
+            try {
+                const res = await fetch('/api/simulation/start', { method: 'POST' });
+                const data = await res.json();
+                showStatus(data.message, 'success');
+                fetchLogs(); // Immediate update
+            } catch (e) {
+                showStatus('Failed to start simulation.', 'error');
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                const logs = await res.json();
+                
+                const viewer = document.getElementById('logViewer');
+                if (logs.length === 0) {
+                    viewer.innerHTML = '<div style="padding:1rem">No logs found.</div>';
+                    return;
+                }
+
+                viewer.innerHTML = logs.map(log => `
+                    <div class="log-entry">
+                        <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
+                        <span class="log-agent">${log.agent}</span>: 
+                        <span class="log-msg">${log.message}</span>
+                        ${log.data ? `<pre style="font-size:0.8em; color:#9cdcfe">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error("Log fetch failed", e);
+            }
+        }
+
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');

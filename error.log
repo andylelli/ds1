@@ -1,0 +1,11 @@
+file:///C:/DropShip/DS1/src/lib/shopify.js:13
+import { shopifyApi, LATEST_API_VERSION } from '@shopify/shopify-api';
+                     ^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@shopify/shopify-api' does not provide an export named 'LATEST_API_VERSION'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:131:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:213:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+    at async loadESM (node:internal/process/esm_loader:34:7)
+    at async handleMainPromise (node:internal/modules/run_main:66:12)
+
+Node.js v20.9.0

@@ -18,6 +18,9 @@ import { config } from "./config.js";
 let client = null;
 let database = null;
 let container = null;
+let productsContainer = null;
+let ordersContainer = null;
+let adsContainer = null;
 
 export async function initDatabase() {
   const mode = config.get('dbMode');
@@ -49,6 +52,15 @@ export async function initDatabase() {
   
   const { container: c } = await database.containers.createIfNotExists({ id: containerName });
   container = c;
+
+  const { container: pc } = await database.containers.createIfNotExists({ id: "Products" });
+  productsContainer = pc;
+
+  const { container: oc } = await database.containers.createIfNotExists({ id: "Orders" });
+  ordersContainer = oc;
+
+  const { container: ac } = await database.containers.createIfNotExists({ id: "Ads" });
+  adsContainer = ac;
   
   console.log(`[Database] Connected to ${mode === 'mock' ? 'Mock DB' : 'Cosmos DB'}: ${dbName}`);
 }
@@ -57,6 +69,42 @@ export async function switchDatabaseMode(newMode) {
   if (newMode !== 'mock' && newMode !== 'live') return;
   config.set('dbMode', newMode);
   await initDatabase();
+}
+
+export async function saveProduct(product) {
+  if (!productsContainer) return;
+  try {
+    await productsContainer.items.create({
+      ...product,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error("Failed to save product:", e.message);
+  }
+}
+
+export async function saveOrder(order) {
+  if (!ordersContainer) return;
+  try {
+    await ordersContainer.items.create({
+      ...order,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error("Failed to save order:", e.message);
+  }
+}
+
+export async function saveAd(ad) {
+  if (!adsContainer) return;
+  try {
+    await adsContainer.items.create({
+      ...ad,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error("Failed to save ad:", e.message);
+  }
 }
 
 export async function saveAgentLog(agentName, message, type = 'log', data = null) {
@@ -90,6 +138,42 @@ export async function getRecentLogs(limit = 20) {
     return items.reverse(); // Return chronological order
   } catch (e) {
     console.error("Failed to fetch logs:", e.message);
+    return [];
+  }
+}
+
+export async function getProducts() {
+  if (!productsContainer) return [];
+  try {
+    const querySpec = { query: "SELECT * FROM c ORDER BY c.timestamp DESC" };
+    const { resources: items } = await productsContainer.items.query(querySpec).fetchAll();
+    return items;
+  } catch (e) {
+    console.error("Failed to fetch products:", e.message);
+    return [];
+  }
+}
+
+export async function getOrders() {
+  if (!ordersContainer) return [];
+  try {
+    const querySpec = { query: "SELECT * FROM c ORDER BY c.timestamp DESC" };
+    const { resources: items } = await ordersContainer.items.query(querySpec).fetchAll();
+    return items;
+  } catch (e) {
+    console.error("Failed to fetch orders:", e.message);
+    return [];
+  }
+}
+
+export async function getAds() {
+  if (!adsContainer) return [];
+  try {
+    const querySpec = { query: "SELECT * FROM c ORDER BY c.timestamp DESC" };
+    const { resources: items } = await adsContainer.items.query(querySpec).fetchAll();
+    return items;
+  } catch (e) {
+    console.error("Failed to fetch ads:", e.message);
     return [];
   }
 }

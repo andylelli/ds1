@@ -1,0 +1,6 @@
+{
+  "dbMode": "mock",
+  "logLevel": "info",
+  "useSimulatedEndpoints": true,
+  "openaiEnabled": true
+}
