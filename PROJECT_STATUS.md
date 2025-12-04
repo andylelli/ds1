@@ -1,0 +1,96 @@
+# 🚀 Project Status & Roadmap
+
+**Project Name:** DropShip AI Agent Swarm (DS1)
+**Last Updated:** December 4, 2025
+
+This document tracks the development status of the system, organized by functional area. It indicates whether the next steps require **User Action** (setting up accounts/keys) or **Agent Action** (coding).
+
+## 📋 Contents
+*   [Agent Swarm](#-agent-swarm)
+*   [Simulation Engine](#️-simulation-engine)
+*   [Frontend & Visualization](#️-frontend--visualization)
+*   [External Integrations](#-external-integrations)
+*   [Infrastructure](#️-infrastructure)
+
+## 🧩 System Components
+
+### 🤖 Agent Swarm
+| Component | Status | Action Owner | Description |
+| :--- | :---: | :---: | :--- |
+| **Base Agent Class** | ✅ | - | Core architecture with logging, tools, and memory. |
+| **CEO Agent** | ✅ | - | Orchestrator that manages the simulation lifecycle. |
+| **Analytics Agent** | ✅ | - | Generates financial reports and profit/loss analysis. |
+| **Customer Service Agent** | ✅ | - | Handles support tickets and sentiment analysis. |
+| **Operations Agent** | ✅ | - | Manages order fulfillment and tracking numbers. |
+| **Product Researcher** | 🚧 | 🤝 Both | Needs **RapidAPI/Google Trends** keys (User) & integration code (Agent). |
+| **Supplier Manager** | 🚧 | 🤝 Both | Needs **AliExpress/CJ** API approval (User) & integration code (Agent). |
+| **Store Builder** | 🚧 | 🤝 Both | Needs **Shopify Admin API** credentials (User) & integration code (Agent). |
+| **Marketer (Paid Ads)** | 🚧 | 🤝 Both | Needs **Meta/TikTok Ads API** tokens (User) & integration code (Agent). |
+| **Retention Agent** | ❌ | 🤝 Both | **New**: Email/SMS marketing (Klaviyo) to increase LTV. |
+| **Content Creator** | ❌ | 🤖 Agent | **New**: Generates organic social content (not paid ads). |
+| **Compliance Officer** | ❌ | 🤖 Agent | **New**: Checks for trademark/copyright issues to prevent bans. |
+| **CRO Specialist** | ❌ | 🤖 Agent | **New**: Optimizes landing pages based on analytics data. |
+| **Self-Correction Logic** | ❌ | 🤖 Agent | Logic to detect failure and adjust strategy automatically. |
+
+### ⚙️ Simulation Engine
+| Component | Status | Action Owner | Description |
+| :--- | :---: | :---: | :--- |
+| **Lifecycle Loop** | ✅ | - | End-to-end business process simulation (`src/simulation.js`). |
+| **Mock Database** | ✅ | - | JSON-based persistence (`sandbox_db.json`) for Products, Orders, Ads. |
+| **Multi-Product Support** | ❌ | 🤖 Agent | Scaling simulation to handle catalogs of 10+ products simultaneously. |
+| **Real-Time Clock** | ❌ | 🤖 Agent | Moving from "Step-based" simulation to a continuous real-time loop. |
+| **Traffic Source Simulator** | ❌ | 🤖 Agent | **New**: Simulates distinct channels (Social, Search, Direct) with different conversion rates. |
+| **Customer Persona Engine** | ❌ | 🤖 Agent | **New**: Generates diverse user behaviors (bounce, cart abandonment, purchase) to test UI. |
+| **Market Event Injector** | ❌ | 🤖 Agent | **New**: Randomly introduces external factors (competitor price drop, ad cost spike). |
+| **Cash Flow Engine** | ❌ | 🤖 Agent | **New**: Simulates payment gateway holds vs. instant ad spend (Cash flow management). |
+
+### 🖥️ Frontend & Visualization
+| Component | Status | Action Owner | Description |
+| :--- | :---: | :---: | :--- |
+| **Control Panel** | ✅ | - | `admin.html`: Start/Stop sim, view logs, reset DB. |
+| **Mock Shop** | ✅ | - | `shop.html`: Simulates product page and conversion flow. |
+| **Social Feed** | ✅ | - | `social.html`: Simulates TikTok/FB/IG feeds with ads. |
+| **Platform Tabs** | ✅ | - | UI to switch between social platforms in the feed. |
+| **Analytics Dashboard** | ❌ | 🤖 Agent | **New**: Visual charts for Revenue, Profit, ROAS, and Traffic sources. |
+| **Live Session Viewer** | ❌ | 🤖 Agent | **New**: Real-time view of simulated customers browsing the store. |
+| **Email/SMS Inbox** | ❌ | 🤖 Agent | **New**: UI to view marketing emails and support tickets sent by agents. |
+| **Supplier Portal** | ❌ | 🤖 Agent | **New**: Dashboard to track order fulfillment status and shipping delays. |
+
+### 🔌 External Integrations
+| Component | Status | Action Owner | Description |
+| :--- | :---: | :---: | :--- |
+| **OpenAI / Azure** | 🚧 | 👤 User | Code is ready. User needs to provide valid API keys in `.env`. |
+| **Shopify Admin API** | 🚧 | 👤 User | Code is stubbed. User needs to create App & provide credentials. |
+| **Meta Marketing API** | 🚧 | 🤝 Both | User needs Business Manager. Agent needs to implement campaign creation. |
+| **TikTok Ads API** | 🚧 | 🤝 Both | User needs Ad Account. Agent needs to implement pixel tracking. |
+| **AliExpress/CJ API** | 🚧 | 🤝 Both | User needs API approval. Agent needs to implement order placement. |
+| **Google Trends** | ❌ | 🤖 Agent | Can use `google-trends-api` (npm) without keys for basic data. |
+| **Stripe / PayPal** | ❌ | 🤝 Both | User needs Merchant Account. Agent needs to implement Webhooks. |
+| **Klaviyo (Email)** | ❌ | 🤝 Both | User needs API Key. Agent needs to implement Email Flows. |
+| **Twilio / WhatsApp** | ❌ | 🤝 Both | **New**: For Supplier Agent to negotiate prices via chat. |
+| **AfterShip / 17Track** | ❌ | 🤝 Both | **New**: For Operations Agent to track shipments automatically. |
+| **TaxJar** | ❌ | 🤝 Both | **New**: For Analytics Agent to calculate real profit (post-tax). |
+| **USPTO / Trademark API** | ❌ | 🤖 Agent | **New**: For Compliance Officer to check for IP violations. |
+
+### 🛡️ Infrastructure
+| Component | Status | Action Owner | Description |
+| :--- | :---: | :---: | :--- |
+| **Express Server** | ✅ | - | Serves frontend and REST APIs (`/api/logs`, etc.). |
+| **CLI Runner** | ✅ | - | Run simulation from terminal (`node src/run_simulation_cli.js`). |
+| **Dockerization** | ❌ | 🤖 Agent | Containerizing the app for easy deployment. |
+| **Persistent DB** | ❌ | 🤝 Both | Agent writes migration code. User provides DB Host (e.g., Mongo Atlas). |
+| **CI/CD Pipeline** | ❌ | 🤝 Both | **New**: Automated testing and deployment (GitHub Actions). |
+| **Task Queue (Redis)** | ❌ | 🤖 Agent | **New**: For handling background jobs (emails, scraping) without blocking. |
+| **Error Monitoring** | ❌ | 🤝 Both | **New**: Integration with Sentry to catch crashes in production. |
+| **Security Hardening** | ❌ | 🤖 Agent | **New**: Rate limiting, Helmet.js, and input validation. |
+
+---
+**Legend:**
+✅ = **Built / Functional**
+🚧 = **Mock Mode / In Progress**
+❌ = **Not Started**
+
+**Action Owner:**
+👤 **User**: Requires external account setup, API keys, or approval.
+🤖 **Agent**: Can be implemented purely through code/VS Code.
+🤝 **Both**: Requires User setup first, then Agent implementation.
