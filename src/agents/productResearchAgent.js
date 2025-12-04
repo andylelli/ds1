@@ -11,6 +11,7 @@
  */
 import { BaseAgent } from './base.js';
 import { getOpenAIClient, DEPLOYMENT_NAME } from '../lib/ai.js';
+import { config } from '../lib/config.js';
 
 export class ProductResearchAgent extends BaseAgent {
   constructor() {
@@ -22,6 +23,14 @@ export class ProductResearchAgent extends BaseAgent {
   async findWinningProducts({ category, criteria }) {
     this.log('info', `Searching for winning products in category: ${category}`);
     
+    if (config.get('useSimulatedEndpoints')) {
+        return this._findWinningProductsMock(category, criteria);
+    } else {
+        return this._findWinningProductsReal(category, criteria);
+    }
+  }
+
+  async _findWinningProductsMock(category, criteria) {
     // 1. AI Brainstorming (Step 1: Idea Generation)
     // In a real production app, this would be replaced/augmented by calls to:
     // - Amazon Best Sellers API
@@ -85,6 +94,16 @@ export class ProductResearchAgent extends BaseAgent {
         ]
       };
     }
+  }
+
+  async _findWinningProductsReal(category, criteria) {
+      this.log('info', `[REAL] Querying Google Trends & AliExpress for: ${category}`);
+      // TODO: Implement Real Market Research APIs
+      // 1. Google Trends API to check interest
+      // 2. AliExpress API to check order volume
+      // 3. Amazon API to check best sellers
+      
+      throw new Error("Real Market Research APIs not implemented yet. Switch to mock mode.");
   }
 
   async analyzeNiche({ niche }) {

@@ -12,6 +12,7 @@
 import { BaseAgent } from './base.js';
 import { getShopifyClient } from '../lib/shopify.js';
 import { getOpenAIClient, DEPLOYMENT_NAME } from '../lib/ai.js';
+import { config } from '../lib/config.js';
 
 export class StoreBuildAgent extends BaseAgent {
   constructor() {
@@ -28,6 +29,16 @@ export class StoreBuildAgent extends BaseAgent {
     if (!description) {
       this.log('info', 'Description missing. Generating one using AI...');
       description = await this.generateDescription(product_data.name);
+    }
+
+    // Check Config for Simulation Mode
+    if (config.get('useSimulatedEndpoints')) {
+        this.log('info', '[MOCK] Shopify integration disabled by config. Returning mock data.');
+        return {
+            url: `/products/${product_data.name.toLowerCase().replace(/ /g, '-')}`,
+            status: 'published (mock)',
+            generated_description: description
+        };
     }
 
     const shopify = getShopifyClient();

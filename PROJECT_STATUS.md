@@ -21,11 +21,11 @@ This document tracks the development status of the system, organized by function
 | **CEO Agent** | ✅ | - | Orchestrator that manages the simulation lifecycle. |
 | **Analytics Agent** | ✅ | - | Generates financial reports and profit/loss analysis. |
 | **Customer Service Agent** | ✅ | - | Handles support tickets and sentiment analysis. |
-| **Operations Agent** | ✅ | - | Manages order fulfillment and tracking numbers. |
-| **Product Researcher** | 🚧 | 🤝 Both | Needs **RapidAPI/Google Trends** keys (User) & integration code (Agent). |
-| **Supplier Manager** | 🚧 | 🤝 Both | Needs **AliExpress/CJ** API approval (User) & integration code (Agent). |
-| **Store Builder** | 🚧 | 🤝 Both | Needs **Shopify Admin API** credentials (User) & integration code (Agent). |
-| **Marketer (Paid Ads)** | 🚧 | 🤝 Both | Needs **Meta/TikTok Ads API** tokens (User) & integration code (Agent). |
+| **Operations Agent** | ✅ | - | Manages fulfillment. **Stubbed** for Real API switch. |
+| **Product Researcher** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
+| **Supplier Manager** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
+| **Store Builder** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
+| **Marketer (Paid Ads)** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
 | **Retention Agent** | ❌ | 🤝 Both | **New**: Email/SMS marketing (Klaviyo) to increase LTV. |
 | **Content Creator** | ❌ | 🤖 Agent | **New**: Generates organic social content (not paid ads). |
 | **Compliance Officer** | ❌ | 🤖 Agent | **New**: Checks for trademark/copyright issues to prevent bans. |
@@ -39,9 +39,9 @@ This document tracks the development status of the system, organized by function
 | **Mock Database** | ✅ | - | JSON-based persistence (`sandbox_db.json`) for Products, Orders, Ads. |
 | **Multi-Product Support** | ❌ | 🤖 Agent | Scaling simulation to handle catalogs of 10+ products simultaneously. |
 | **Real-Time Clock** | ❌ | 🤖 Agent | Moving from "Step-based" simulation to a continuous real-time loop. |
-| **Traffic Source Simulator** | ❌ | 🤖 Agent | **New**: Simulates distinct channels (Social, Search, Direct) with different conversion rates. |
+| **Traffic Source Simulator** | ✅ | - | **New**: Simulates distinct channels (Social, Search, Direct) with different conversion rates. |
 | **Customer Persona Engine** | ❌ | 🤖 Agent | **New**: Generates diverse user behaviors (bounce, cart abandonment, purchase) to test UI. |
-| **Market Event Injector** | ❌ | 🤖 Agent | **New**: Randomly introduces external factors (competitor price drop, ad cost spike). |
+| **Market Event Injector** | ✅ | - | **New**: Randomly introduces external factors (competitor price drop, ad cost spike). |
 | **Cash Flow Engine** | ❌ | 🤖 Agent | **New**: Simulates payment gateway holds vs. instant ad spend (Cash flow management). |
 
 ### 🖥️ Frontend & Visualization
@@ -60,10 +60,10 @@ This document tracks the development status of the system, organized by function
 | Component | Status | Action Owner | Description |
 | :--- | :---: | :---: | :--- |
 | **OpenAI / Azure** | 🚧 | 👤 User | Code is ready. User needs to provide valid API keys in `.env`. |
-| **Shopify Admin API** | 🚧 | 👤 User | Code is stubbed. User needs to create App & provide credentials. |
-| **Meta Marketing API** | 🚧 | 🤝 Both | User needs Business Manager. Agent needs to implement campaign creation. |
-| **TikTok Ads API** | 🚧 | 🤝 Both | User needs Ad Account. Agent needs to implement pixel tracking. |
-| **AliExpress/CJ API** | 🚧 | 🤝 Both | User needs API approval. Agent needs to implement order placement. |
+| **Shopify Admin API** | 🚧 | 👤 User | **Stubbed**: Switch implemented. Needs credentials. |
+| **Meta Marketing API** | 🚧 | 🤝 Both | **Stubbed**: Switch implemented. Needs credentials & API logic. |
+| **TikTok Ads API** | 🚧 | 🤝 Both | **Stubbed**: Switch implemented. Needs credentials & API logic. |
+| **AliExpress/CJ API** | 🚧 | 🤝 Both | **Stubbed**: Switch implemented. Needs credentials & API logic. |
 | **Google Trends** | ❌ | 🤖 Agent | Can use `google-trends-api` (npm) without keys for basic data. |
 | **Stripe / PayPal** | ❌ | 🤝 Both | User needs Merchant Account. Agent needs to implement Webhooks. |
 | **Klaviyo (Email)** | ❌ | 🤝 Both | User needs API Key. Agent needs to implement Email Flows. |
