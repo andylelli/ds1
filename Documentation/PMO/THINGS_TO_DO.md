@@ -277,10 +277,22 @@ This document outlines the external services, APIs, and websites that need to be
 
 ## 📊 Analytics Agent
 
-### 1. Data Sources (GA4 / Pixel)
+### 2. Data Sources (GA4 / Pixel)
 - [ ] **Integrate Google Analytics Data API (GA4)**
     - **Why**: To get the "truth" about traffic sources. Shopify data and Facebook data often disagree.
     - **How**:
         1.  Enable GA4 Data API in Google Cloud.
         2.  Create a tool `get_traffic_report(date_range)`.
         3.  Use this to calculate the real Conversion Rate per channel.
+
+---
+
+## 🖥️ Frontend & Visualization
+
+### 1. Admin Panel Features
+- [ ] **Implement CEO Chat Interface**
+    - **Why**: To allow the human user to query the CEO Agent directly for status updates, strategy explanations, or to give high-level directives.
+    - **How**:
+        1.  Create `src/agents/ceoAgent.js` `handleChat(message)` method.
+        2.  Create API endpoint `POST /api/chat/ceo`.
+        3.  Update `admin.html` with a chat widget (bottom right or dedicated tab).

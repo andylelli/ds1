@@ -56,6 +56,7 @@ This document tracks the development status of the system, organized by function
 | **Live Session Viewer** | ❌ | 🤖 Agent | **New**: Real-time view of simulated customers browsing the store. |
 | **Email/SMS Inbox** | ❌ | 🤖 Agent | **New**: UI to view marketing emails and support tickets sent by agents. |
 | **Supplier Portal** | ❌ | 🤖 Agent | **New**: Dashboard to track order fulfillment status and shipping delays. |
+| **CEO Chat Interface** | ❌ | 🤖 Agent | **New**: Direct chat window to ask the CEO Agent questions or give commands. |
 
 ### 🔌 External Integrations
 | Component | Status | Action Owner | Description |
