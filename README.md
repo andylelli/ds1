@@ -4,13 +4,13 @@ An autonomous multi-agent system designed to simulate and execute dropshipping b
 
 ## 📚 Documentation
 
-The project documentation is organized into **Live** (Active Management) and **Reference** (Guides & Context) folders.
+The project documentation is organized into **PMO** (Project Management Office), **Blueprints** (Architecture), and **Reference** (Guides & Context) folders.
 
-### 🟢 Live Documents (Active Project Management)
-*   [**Project Status & Roadmap**](Documentation/Live/PROJECT_STATUS.md) - The master tracker of what is built vs. pending.
-*   [**Things To Do**](Documentation/Live/THINGS_TO_DO.md) - Granular task checklist.
-*   [**RAID Log**](Documentation/Live/RAID_LOG.md) - Risks, Assumptions, Issues, and Dependencies.
-*   [**Technical Debt**](Documentation/Live/TECHNICAL_DEBT.md) - Architectural shortcuts and refactoring plans.
+### 🟢 PMO Documents (Project Management Office)
+*   [**Project Status & Roadmap**](Documentation/PMO/PROJECT_STATUS.md) - The master tracker of what is built vs. pending.
+*   [**Things To Do**](Documentation/PMO/THINGS_TO_DO.md) - Granular task checklist.
+*   [**RAID Log**](Documentation/PMO/RAID_LOG.md) - Risks, Assumptions, Issues, and Dependencies.
+*   [**Technical Debt**](Documentation/PMO/TECHNICAL_DEBT.md) - Architectural shortcuts and refactoring plans.
 
 ### 📘 Reference Documents (Guides & Context)
 *   [**Dummies Guide**](Documentation/Reference/DUMMIES_GUIDE.md) - Simple explanation of the project.
