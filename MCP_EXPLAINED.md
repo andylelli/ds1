@@ -329,5 +329,29 @@ MCP is the language that allows our DropShip agents to talk to each other and th
 
 You are now equipped to read the code in `src/mcp/` and `src/agents/` with full understanding of *how* and *why* the pieces fit together.
 
+---
+
+## 10. Appendix: Syntax Quick Reference
+
+Use this table for a quick lookup of the JSON structures used in DS1.
+
+### **A. Message Envelopes**
+| Type | JSON Structure |
+| :--- | :--- |
+| **Request** | `{"jsonrpc": "2.0", "id": <number>, "method": "<string>", "params": {...}}` |
+| **Response** | `{"jsonrpc": "2.0", "id": <number>, "result": {...}}` |
+| **Error** | `{"jsonrpc": "2.0", "id": <number>, "error": {"code": <int>, "message": "<string>"}}` |
+| **Notification** | `{"jsonrpc": "2.0", "method": "<string>", "params": {...}}` |
+
+### **B. Method Reference**
+| Method | Params (`params`) | Result (`result`) |
+| :--- | :--- | :--- |
+| `tools/call` | `{ "name": string, "arguments": object }` | `{ "content": [{ "type": "text", "text": string }] }` |
+| `resources/read` | `{ "uri": string }` | `{ "contents": [{ "uri": string, "mimeType": string, "text": string }] }` |
+| `notifications/message` | `{ "level": string, "data": any }` | *None (Notification)* |
+| `agent/plan` | `{ "goal": string, "context": object }` | `{ "content": [{ "type": "text", "text": string }] }` |
+| `agent/critique` | `{ "task": string, "output": string, "criteria": string[] }` | `{ "content": [{ "type": "text", "text": string }] }` |
+
+
 
 
