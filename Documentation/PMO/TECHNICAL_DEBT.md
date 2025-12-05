@@ -1,6 +1,6 @@
 # 🧹 Technical Debt & Refactoring Plan
 **Project:** DropShip AI Agent Swarm (DS1)  
-**Last Updated:** December 4, 2025
+**Last Updated:** December 5, 2025
 
 This document tracks architectural shortcuts, "hacks," and limitations that were accepted for speed but must be addressed for the system to scale.
 
@@ -20,16 +20,13 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
         3.  `AnalyticsAgent` (listening) -> Wakes up, logs revenue.
     *   This allows agents to sleep until needed, saving compute/API costs.
 
-### 2. JSON Database Scalability
+### 2. JSON Database Scalability (Partially Addressed)
 *   **Severity:** 🔸 Medium
-*   **Description:** We use `sandbox_db.json` and `fs.writeFileSync` for persistence.
-*   **The Problem:**
-    *   **Performance:** Reading/writing the whole file for every log entry is slow (O(n)).
-    *   **Concurrency:** Race conditions will occur if we move to async agents.
-    *   **Querying:** We cannot easily query "Orders from last Tuesday" without loading everything.
-*   **Proposed Solution:** Abstract the DB layer to support **SQLite** (local) or **MongoDB** (cloud).
-    *   Create a `DatabaseInterface` class.
-    *   Swap the backend implementation without changing agent code.
+*   **Description:** We use `sandbox_db.json` for simulation persistence.
+*   **Status:** 🚧 **In Progress**. We have implemented the `PersistencePort` and `PostgresAdapter`, allowing us to switch to Postgres.
+*   **Remaining Debt:**
+    *   **Schema Management:** We currently rely on manual table creation or raw SQL in the adapter. We need a proper migration tool (Knex/TypeORM) to manage schema changes safely.
+    *   **Mock Parity:** The `MockAdapter` (JSON) and `PostgresAdapter` (SQL) might drift apart if we don't enforce strict interface compliance tests.
 
 ### 3. "Happy Path" Error Handling
 *   **Severity:** 🔸 Medium
@@ -70,11 +67,6 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 
 ## 🧹 Code Quality & Maintenance
 
-### 6. Hardcoded Configuration
-*   **Severity:** 🔹 Low
-*   **Description:** Some simulation parameters (e.g., "Smart Home" category, Ad Budgets) are hardcoded in `simulation.js`.
-*   **Proposed Solution:** Move all simulation parameters to `config.json` or a `SimulationProfile` object so we can run different scenarios without changing code.
-
 ### 7. Logging Granularity
 *   **Severity:** 🔹 Low
 *   **Description:** `saveAgentLog` saves everything to one big list.
@@ -85,3 +77,9 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 *   **Description:** The `admin.html` dashboard likely uses `setInterval` to fetch logs every few seconds.
 *   **The Problem:** This creates unnecessary server load and latency.
 *   **Proposed Solution:** Switch to **WebSockets** (Socket.io) for real-time log streaming from the server to the browser.
+
+### 9. Type Safety (TypeScript)
+*   **Severity:** 🔸 Medium
+*   **Description:** The codebase is a mix of JS and TS.
+*   **The Problem:** `any` types are used frequently in the new Adapters to bypass strict checks.
+*   **Proposed Solution:** Enable `noImplicitAny` in `tsconfig.json` and properly type all DTOs (Data Transfer Objects) between the Frontend and Backend.

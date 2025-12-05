@@ -4,46 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Mock Shop</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; background: #f9f9f9; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        h1 { color: #333; margin: 0; }
-        .nav-link { text-decoration: none; color: #007bff; font-weight: bold; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .card:hover { transform: translateY(-5px); }
-        
-        .card-img { width: 100%; height: 250px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 3rem; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .card-body { padding: 1.5rem; }
-        .card-title { font-size: 1.25rem; margin: 0 0 0.5rem 0; color: #222; }
-        .card-price { font-size: 1.5rem; color: #28a745; font-weight: bold; margin-bottom: 1rem; }
-        .card-desc { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; }
-        
-        .btn { display: block; width: 100%; padding: 0.75rem; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; text-align: center; text-decoration: none; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-primary:hover { background: #0056b3; }
-        
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 1rem 2rem; border-radius: 8px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-        .toast.show { opacity: 1; }
-    </style>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <header>
-        <h1>🛍️ DS1 Mock Shop</h1>
-        <a href="admin.html" class="nav-link">⚙️ Control Panel</a>
-    </header>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
 
-    <div id="productGrid" class="grid">
-        <!-- Products will be injected here -->
-        <p>Loading products...</p>
+    <!-- Main Content -->
+    <div class="main">
+        <div class="page-header">
+            <h1 class="page-title">Product Catalog</h1>
+            <div class="badge badge-blue">Live Preview</div>
+        </div>
+
+        <div id="productGrid" class="grid">
+            <!-- Products will be injected here -->
+            <div class="card" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                <p style="color: #6b7280;">Loading products...</p>
+            </div>
+        </div>
     </div>
 
-    <div id="toast" class="toast">Order placed successfully!</div>
+    <div id="statusMsg" class="status-msg"></div>
 
     <script>
+        function showStatus(msg, type = 'success') {
+            const el = document.getElementById('statusMsg');
+            el.textContent = msg;
+            el.className = 'status-msg ' + (type === 'success' ? 'status-success' : 'status-error');
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+
         async function loadProducts() {
             const grid = document.getElementById('productGrid');
             try {
@@ -51,38 +45,41 @@
                 const products = await res.json();
 
                 if (products.length === 0) {
-                    grid.innerHTML = '<p>No products available. Run a simulation in the Control Panel first.</p>';
+                    grid.innerHTML = `
+                        <div class="card" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                            <p style="color: #6b7280; margin-bottom: 1rem;">No products available.</p>
+                            <a href="admin.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Run a simulation in the Control Panel &rarr;</a>
+                        </div>
+                    `;
                     return;
                 }
 
                 grid.innerHTML = products.map(p => {
-                    // Use a placeholder if no image or if image is a placeholder URL
                     const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : null;
                     const imgTag = imgUrl 
                         ? `<img src="${imgUrl}" alt="${p.name}">` 
                         : `<span>📦</span>`;
                     
-                    // Mock price if not present (simulation might not set it on the product object directly)
                     const price = p.price || 49.99; 
 
                     return `
-                    <div class="card">
+                    <div class="product-card">
                         <div class="card-img">${imgTag}</div>
                         <div class="card-body">
                             <h3 class="card-title">${p.name}</h3>
                             <div class="card-price">$${price}</div>
-                            <p class="card-desc">
-                                Potential: <strong>${p.potential}</strong><br>
-                                Margin: ${p.margin}
-                            </p>
-                            <button class="btn btn-primary" onclick="buyProduct('${p.name}', ${price})">Buy Now</button>
+                            <div class="card-meta">
+                                <div>Potential: <strong>${p.potential}</strong></div>
+                                <div>Margin: ${p.margin}</div>
+                            </div>
+                            <button class="btn-buy" onclick="buyProduct('${p.name}', ${price})">Buy Now</button>
                         </div>
                     </div>
                     `;
                 }).join('');
 
             } catch (e) {
-                grid.innerHTML = `<p style="color:red">Error loading products: ${e.message}</p>`;
+                grid.innerHTML = `<div class="card" style="color: #ef4444; padding: 1rem;">Error loading products: ${e.message}</div>`;
             }
         }
 
@@ -95,25 +92,18 @@
                 });
                 
                 if (res.ok) {
-                    showToast(`Order placed for ${name}!`);
+                    showStatus(`Order placed for ${name}!`, 'success');
                 } else {
-                    showToast('Failed to place order.', true);
+                    showStatus('Failed to place order.', 'error');
                 }
             } catch (e) {
-                showToast('Error connecting to server.', true);
+                showStatus('Error placing order.', 'error');
             }
-        }
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.background = isError ? '#dc3545' : '#28a745';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // Load on start
         loadProducts();
     </script>
+    <script src="sidebar.js"></script>
 </body>
 </html>

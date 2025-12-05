@@ -65,7 +65,7 @@ export class MockAdapter implements PersistencePort {
     await this.saveItem("Products", product);
   }
 
-  async getProducts(): Promise<Product[]> {
+  async getProducts(source?: string): Promise<Product[]> {
     return await this.getItems("Products");
   }
 
@@ -73,7 +73,7 @@ export class MockAdapter implements PersistencePort {
     await this.saveItem("Orders", order);
   }
 
-  async getOrders(): Promise<Order[]> {
+  async getOrders(source?: string): Promise<Order[]> {
     return await this.getItems("Orders");
   }
 
@@ -81,7 +81,7 @@ export class MockAdapter implements PersistencePort {
     await this.saveItem("Ads", campaign);
   }
 
-  async getCampaigns(): Promise<Campaign[]> {
+  async getCampaigns(source?: string): Promise<Campaign[]> {
     return await this.getItems("Ads");
   }
 
@@ -98,5 +98,29 @@ export class MockAdapter implements PersistencePort {
   async getRecentLogs(limit: number): Promise<any[]> {
     const logs = await this.getItems("AgentMemory");
     return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);
+  }
+
+  async saveEvent(topic: string, type: string, payload: any): Promise<void> {
+    await this.saveItem("Events", {
+      topic,
+      type,
+      payload,
+      id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      created_at: new Date().toISOString()
+    });
+  }
+
+  async getEvents(topic?: string, source?: string): Promise<any[]> {
+    const events = await this.getItems("Events");
+    if (topic) {
+      return events.filter(e => e.topic === topic);
+    }
+    return events;
+  }
+
+  async getTopics(source?: string): Promise<string[]> {
+    const events = await this.getItems("Events");
+    const topics = new Set(events.map(e => e.topic));
+    return Array.from(topics);
   }
 }

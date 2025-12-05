@@ -19,11 +19,11 @@ export class PostgresAdapter {
         }
     }
     async saveProduct(product) {
-        // Default to Live pool for now, or maybe we need a way to distinguish?
-        // For now, we mirror db.js behavior: save to Live pool.
-        if (this.pgPool) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'mock' ? this.simPool : this.pgPool;
+        if (pool) {
             try {
-                await this.pgPool.query(`INSERT INTO products (id, name, description, price, potential, margin, data, created_at)
+                await pool.query(`INSERT INTO products (id, name, description, price, potential, margin, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
            ON CONFLICT (id) DO UPDATE SET 
              name = EXCLUDED.name, 
@@ -40,14 +40,14 @@ export class PostgresAdapter {
                 ]);
             }
             catch (e) {
-                console.error("Failed to save product to PG:", e.message);
+                console.error(`Failed to save product to PG (${mode}):`, e.message);
             }
         }
     }
-    async getProducts() {
+    async getProducts(source) {
         let items = [];
         // 1. Sim Pool
-        if (this.simPool) {
+        if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
             try {
                 const res = await this.simPool.query("SELECT * FROM products ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
@@ -57,7 +57,7 @@ export class PostgresAdapter {
             }
         }
         // 2. Live Pool
-        if (this.pgPool) {
+        if (this.pgPool && (source === 'live' || !source)) {
             try {
                 const res = await this.pgPool.query("SELECT * FROM products ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -69,9 +69,11 @@ export class PostgresAdapter {
         return items;
     }
     async saveOrder(order) {
-        if (this.pgPool) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'mock' ? this.simPool : this.pgPool;
+        if (pool) {
             try {
-                await this.pgPool.query(`INSERT INTO orders (id, product_id, amount, status, source, data, created_at)
+                await pool.query(`INSERT INTO orders (id, product_id, amount, status, source, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`, [
                     order.id,
                     order.productId || 'unknown',
@@ -82,13 +84,13 @@ export class PostgresAdapter {
                 ]);
             }
             catch (e) {
-                console.error("Failed to save order to PG:", e.message);
+                console.error(`Failed to save order to PG (${mode}):`, e.message);
             }
         }
     }
-    async getOrders() {
+    async getOrders(source) {
         let items = [];
-        if (this.simPool) {
+        if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
             try {
                 const res = await this.simPool.query("SELECT * FROM orders ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
@@ -97,7 +99,7 @@ export class PostgresAdapter {
                 console.error("SimPool orders error:", e.message);
             }
         }
-        if (this.pgPool) {
+        if (this.pgPool && (source === 'live' || !source)) {
             try {
                 const res = await this.pgPool.query("SELECT * FROM orders ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -109,9 +111,11 @@ export class PostgresAdapter {
         return items;
     }
     async saveCampaign(campaign) {
-        if (this.pgPool) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'mock' ? this.simPool : this.pgPool;
+        if (pool) {
             try {
-                await this.pgPool.query(`INSERT INTO ads (id, platform, product, budget, status, data, created_at)
+                await pool.query(`INSERT INTO ads (id, platform, product, budget, status, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`, [
                     campaign.id,
                     campaign.platform,
@@ -122,13 +126,13 @@ export class PostgresAdapter {
                 ]);
             }
             catch (e) {
-                console.error("Failed to save ad to PG:", e.message);
+                console.error(`Failed to save ad to PG (${mode}):`, e.message);
             }
         }
     }
-    async getCampaigns() {
+    async getCampaigns(source) {
         let items = [];
-        if (this.simPool) {
+        if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
             try {
                 const res = await this.simPool.query("SELECT * FROM ads ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
@@ -137,7 +141,7 @@ export class PostgresAdapter {
                 console.error("SimPool ads error:", e.message);
             }
         }
-        if (this.pgPool) {
+        if (this.pgPool && (source === 'live' || !source)) {
             try {
                 const res = await this.pgPool.query("SELECT * FROM ads ORDER BY created_at DESC");
                 items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -157,5 +161,57 @@ export class PostgresAdapter {
     async getRecentLogs(limit) {
         // Not implemented for PG in db.js
         return [];
+    }
+    async saveEvent(topic, type, payload) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'mock' ? this.simPool : this.pgPool;
+        if (pool) {
+            try {
+                await pool.query(`INSERT INTO events (topic, type, payload, created_at) VALUES ($1, $2, $3, NOW())`, [topic, type, JSON.stringify(payload)]);
+            }
+            catch (e) {
+                console.error(`Failed to save event to PG (${mode}):`, e.message);
+            }
+        }
+    }
+    async getEvents(topic, source) {
+        let items = [];
+        const query = topic
+            ? "SELECT * FROM events WHERE topic = $1 ORDER BY created_at DESC"
+            : "SELECT * FROM events ORDER BY created_at DESC";
+        const params = topic ? [topic] : [];
+        if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
+            try {
+                const res = await this.simPool.query(query, params);
+                items = items.concat(res.rows);
+            }
+            catch (e) { }
+        }
+        if (this.pgPool && (source === 'live' || !source)) {
+            try {
+                const res = await this.pgPool.query(query, params);
+                items = items.concat(res.rows);
+            }
+            catch (e) { }
+        }
+        return items;
+    }
+    async getTopics(source) {
+        const topics = new Set();
+        if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
+            try {
+                const res = await this.simPool.query("SELECT DISTINCT topic FROM events");
+                res.rows.forEach((r) => topics.add(r.topic));
+            }
+            catch (e) { }
+        }
+        if (this.pgPool && (source === 'live' || !source)) {
+            try {
+                const res = await this.pgPool.query("SELECT DISTINCT topic FROM events");
+                res.rows.forEach((r) => topics.add(r.topic));
+            }
+            catch (e) { }
+        }
+        return Array.from(topics);
     }
 }

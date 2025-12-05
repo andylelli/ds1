@@ -2,6 +2,7 @@ import { MCPServer } from '../core/mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../core/mcp/protocol.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { configService } from '../infra/config/ConfigService.js';
+import { logger } from '../infra/logging/LoggerService.js';
 
 const LOG_LEVELS: Record<string, number> = { debug: 0, info: 1, warn: 2, error: 3 };
 
@@ -25,18 +26,29 @@ export abstract class BaseAgent extends MCPServer {
     else if (type === 'warning') level = 'warn';
     else if (type === 'debug') level = 'debug';
 
-    if (LOG_LEVELS[level] >= LOG_LEVELS[currentLevel]) {
-      console.log(`[${this.name}] ${type}:`, JSON.stringify(data, null, 2));
+    // Use the new Logger Service
+    const logMsg = typeof data === 'string' ? data : JSON.stringify(data);
+    const context = { agent: this.name, type };
+
+    if (level === 'error') logger.error(logMsg, context);
+    else if (level === 'warn') logger.warn(logMsg, context);
+    else if (level === 'debug') logger.debug(logMsg, context);
+    else logger.info(logMsg, context);
+
+    // Determine message and data for storage
+    let message = type;
+    let storageData = data;
+
+    // If data is a string, use it as the message for better readability
+    if (typeof data === 'string') {
+        message = data;
+        storageData = { type }; // Keep the original type in data
     }
 
     try {
-      // Map 'type' to message and 'level' to level
-      // The original code passed 'type' as the message type (e.g. 'tool_execution')
-      // and inferred level.
-      // PersistencePort.saveLog(agent, message, level, data)
-      await this.db.saveLog(this.name, type, level, data);
+      await this.db.saveLog(this.name, message, level, storageData);
     } catch (err: any) {
-      console.error(`[${this.name}] Failed to save log to DB:`, err.message);
+      logger.error(`[${this.name}] Failed to save log to DB:`, err.message);
     }
   }
 

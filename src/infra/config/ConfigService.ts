@@ -3,20 +3,36 @@ import path from 'path';
 
 export interface AppConfig {
   dbMode: 'mock' | 'live';
+  adsMode: 'mock' | 'test' | 'live';
+  shopMode: 'mock' | 'test' | 'live';
+  trendsMode: 'mock' | 'live';
+  researchMode: 'mock' | 'live';
+  fulfilmentMode: 'mock' | 'live';
+  emailMode: 'mock' | 'live';
+  loggingMode: 'console' | 'file';
   logLevel: 'debug' | 'info' | 'warn' | 'error';
   useSimulatedEndpoints: boolean;
   openaiEnabled: boolean;
   databaseUrl?: string;
   simulatorDatabaseUrl?: string;
+  trafficScale?: number;
 }
 
 const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
 
 const defaults: AppConfig = {
   dbMode: 'mock',
+  adsMode: 'mock',
+  shopMode: 'mock',
+  trendsMode: 'mock',
+  researchMode: 'mock',
+  fulfilmentMode: 'mock',
+  emailMode: 'mock',
+  loggingMode: 'console',
   logLevel: 'info',
   useSimulatedEndpoints: true,
-  openaiEnabled: true
+  openaiEnabled: true,
+  trafficScale: 1.0
 };
 
 export class ConfigService {

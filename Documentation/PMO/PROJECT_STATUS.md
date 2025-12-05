@@ -1,7 +1,7 @@
 # 🚀 Project Status & Roadmap
 
 **Project Name:** DropShip AI Agent Swarm (DS1)
-**Last Updated:** December 4, 2025
+**Last Updated:** December 5, 2025
 
 This document tracks the development status of the system, organized by functional area. It indicates whether the next steps require **User Action** (setting up accounts/keys) or **Agent Action** (coding).
 
@@ -48,10 +48,11 @@ This document tracks the development status of the system, organized by function
 ### 🖥️ Frontend & Visualization
 | Component | Status | Action Owner | Description |
 | :--- | :---: | :---: | :--- |
-| **Control Panel** | ✅ | - | `admin.html`: Start/Stop sim, view logs, reset DB. |
+| **Control Panel** | ✅ | - | `admin.html`: Sim control, Logs, **Database Inspector** (Live/Sim view). |
 | **Mock Shop** | ✅ | - | `shop.html`: Simulates product page and conversion flow. |
 | **Social Feed** | ✅ | - | `social.html`: Simulates TikTok/FB/IG feeds with ads. |
 | **Platform Tabs** | ✅ | - | UI to switch between social platforms in the feed. |
+| **Sidebar Navigation** | ✅ | - | Unified `sidebar.js` and `admin.css` for consistent layout. |
 | **Analytics Dashboard** | ❌ | 🤖 Agent | **New**: Visual charts for Revenue, Profit, ROAS, and Traffic sources. |
 | **Live Session Viewer** | ❌ | 🤖 Agent | **New**: Real-time view of simulated customers browsing the store. |
 | **Email/SMS Inbox** | ❌ | 🤖 Agent | **New**: UI to view marketing emails and support tickets sent by agents. |
@@ -77,10 +78,11 @@ This document tracks the development status of the system, organized by function
 ### 🛡️ Infrastructure
 | Component | Status | Action Owner | Description |
 | :--- | :---: | :---: | :--- |
-| **Express Server** | ✅ | - | Serves frontend and REST APIs (`/api/logs`, etc.). |
+| **Express Server** | ✅ | - | Serves frontend and REST APIs. Added `Cache-Control` headers. |
 | **CLI Runner** | ✅ | - | Run simulation from terminal (`node src/run_simulation_cli.js`). |
+| **Persistence Layer** | ✅ | - | `PersistencePort` implemented with `PostgresAdapter` & `MockAdapter`. |
 | **Dockerization** | ❌ | 🤖 Agent | Containerizing the app for easy deployment. |
-| **Persistent DB** | ❌ | 🤝 Both | Agent writes migration code. User provides DB Host (e.g., Mongo Atlas). |
+| **Persistent DB** | 🚧 | 🤝 Both | Postgres connection logic ready. Needs migration/schema management. |
 | **CI/CD Pipeline** | ❌ | 🤝 Both | **New**: Automated testing and deployment (GitHub Actions). |
 | **Event Bus / Message Queue** | ❌ | 🤖 Agent | **Critical**: Decouples agents for real-time async handling (Webhooks). |
 | **Task Queue (Redis)** | ❌ | 🤖 Agent | **New**: For handling background jobs (emails, scraping) without blocking. |

@@ -3,9 +3,17 @@ import path from 'path';
 const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
 const defaults = {
     dbMode: 'mock',
+    adsMode: 'mock',
+    shopMode: 'mock',
+    trendsMode: 'mock',
+    researchMode: 'mock',
+    fulfilmentMode: 'mock',
+    emailMode: 'mock',
+    loggingMode: 'console',
     logLevel: 'info',
     useSimulatedEndpoints: true,
-    openaiEnabled: true
+    openaiEnabled: true,
+    trafficScale: 1.0
 };
 export class ConfigService {
     config;

@@ -10,30 +10,133 @@ import { CustomerServiceAgent } from './agents/CustomerServiceAgent.js';
 import { OperationsAgent } from './agents/OperationsAgent.js';
 import { AnalyticsAgent } from './agents/AnalyticsAgent.js';
 import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
+import { MockAdapter } from './infra/db/MockAdapter.js';
 import { MockShopAdapter } from './infra/shop/MockShopAdapter.js';
+import { TestShopAdapter } from './infra/shop/TestShopAdapter.js';
+import { LiveShopAdapter } from './infra/shop/LiveShopAdapter.js';
 import { MockAdsAdapter } from './infra/ads/MockAdsAdapter.js';
+import { TestAdsAdapter } from './infra/ads/TestAdsAdapter.js';
+import { LiveAdsAdapter } from './infra/ads/LiveAdsAdapter.js';
+import { MockTrendAdapter } from './infra/trends/MockTrendAdapter.js';
+import { LiveTrendAdapter } from './infra/trends/LiveTrendAdapter.js';
+import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
+import { LiveCompetitorAdapter } from './infra/research/LiveCompetitorAdapter.js';
+import { MockFulfilmentAdapter } from './infra/fulfilment/MockFulfilmentAdapter.js';
+import { LiveFulfilmentAdapter } from './infra/fulfilment/LiveFulfilmentAdapter.js';
+import { MockEmailAdapter } from './infra/email/MockEmailAdapter.js';
+import { LiveEmailAdapter } from './infra/email/LiveEmailAdapter.js';
 import { configService } from './infra/config/ConfigService.js';
+import { SimulationService } from './core/services/SimulationService.js';
 // Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
-app.use(express.static('public')); // Serve admin panel
+// Serve static files with explicit path and logging
+const publicPath = path.resolve(process.cwd(), 'public');
+console.log(`Serving static files from: ${publicPath}`);
+app.use(express.static(publicPath));
+// Prevent caching for API routes
+app.use('/api', (req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next();
+});
+// Redirect root to admin panel
+app.get('/', (req, res) => {
+    res.redirect('/admin.html');
+});
 // Initialize Adapters
-const db = new PostgresAdapter();
-const shopAdapter = new MockShopAdapter();
-const adsAdapter = new MockAdsAdapter();
+let db;
+const dbMode = configService.get('dbMode');
+if (dbMode === 'live' || dbMode === 'mock') {
+    console.log(`Using ${dbMode === 'live' ? 'Live' : 'Simulation'} Database (Postgres)`);
+    db = new PostgresAdapter();
+}
+else {
+    console.log("Using Mock Database (File) - Fallback");
+    db = new MockAdapter();
+}
+let shopAdapter;
+const shopMode = configService.get('shopMode');
+if (shopMode === 'live') {
+    console.log("Using Live Shop Adapter");
+    shopAdapter = new LiveShopAdapter();
+}
+else if (shopMode === 'test') {
+    console.log("Using Test Shop Adapter");
+    shopAdapter = new TestShopAdapter();
+}
+else {
+    console.log("Using Mock Shop Adapter");
+    shopAdapter = new MockShopAdapter();
+}
+let adsAdapter;
+const adsMode = configService.get('adsMode');
+if (adsMode === 'live') {
+    console.log("Using Live Ads Adapter");
+    adsAdapter = new LiveAdsAdapter();
+}
+else if (adsMode === 'test') {
+    console.log("Using Test Ads Adapter");
+    adsAdapter = new TestAdsAdapter();
+}
+else {
+    console.log("Using Mock Ads Adapter");
+    adsAdapter = new MockAdsAdapter();
+}
+let trendAdapter;
+const trendsMode = configService.get('trendsMode');
+if (trendsMode === 'live') {
+    console.log("Using Live Trend Adapter");
+    trendAdapter = new LiveTrendAdapter();
+}
+else {
+    console.log("Using Mock Trend Adapter");
+    trendAdapter = new MockTrendAdapter();
+}
+let competitorAdapter;
+const researchMode = configService.get('researchMode');
+if (researchMode === 'live') {
+    console.log("Using Live Competitor Adapter");
+    competitorAdapter = new LiveCompetitorAdapter();
+}
+else {
+    console.log("Using Mock Competitor Adapter");
+    competitorAdapter = new MockCompetitorAdapter();
+}
+let fulfilmentAdapter;
+const fulfilmentMode = configService.get('fulfilmentMode');
+if (fulfilmentMode === 'live') {
+    console.log("Using Live Fulfilment Adapter");
+    fulfilmentAdapter = new LiveFulfilmentAdapter();
+}
+else {
+    console.log("Using Mock Fulfilment Adapter");
+    fulfilmentAdapter = new MockFulfilmentAdapter();
+}
+let emailAdapter;
+const emailMode = configService.get('emailMode');
+if (emailMode === 'live') {
+    console.log("Using Live Email Adapter");
+    emailAdapter = new LiveEmailAdapter();
+}
+else {
+    console.log("Using Mock Email Adapter");
+    emailAdapter = new MockEmailAdapter();
+}
 // Initialize Agents
 const agents = {
     ceo: new CEOAgent(db),
-    research: new ProductResearchAgent(db),
-    supplier: new SupplierAgent(db),
+    research: new ProductResearchAgent(db, trendAdapter, competitorAdapter),
+    supplier: new SupplierAgent(db, fulfilmentAdapter),
     store: new StoreBuildAgent(db, shopAdapter),
     marketing: new MarketingAgent(db, adsAdapter),
-    support: new CustomerServiceAgent(db),
+    support: new CustomerServiceAgent(db, emailAdapter),
     ops: new OperationsAgent(db),
     analytics: new AnalyticsAgent(db)
 };
+// Initialize Services
+const simulationService = new SimulationService(db, agents);
 // --- Configuration API ---
 app.get('/api/config', (req, res) => {
     res.json(configService.getAll());
@@ -44,6 +147,97 @@ app.post('/api/config', (req, res) => {
     res.json({ status: 'ok', config: configService.getAll() });
 });
 // --- Data APIs ---
+app.get('/api/agents', (req, res) => {
+    const trendsMode = configService.get('trendsMode');
+    const researchMode = configService.get('researchMode');
+    const adsMode = configService.get('adsMode');
+    const shopMode = configService.get('shopMode');
+    const fulfilmentMode = configService.get('fulfilmentMode');
+    const emailMode = configService.get('emailMode');
+    const agentMetadata = [
+        {
+            id: 'ceo',
+            name: 'CEO Agent',
+            role: 'Strategy & Oversight',
+            subscriptions: ['market.trends', 'finance.report', 'system.error'],
+            capabilities: ['Set Strategy', 'Approve Budget', 'Review Performance'],
+            externalEndpoints: ['OpenAI API']
+        },
+        {
+            id: 'research',
+            name: 'Product Researcher',
+            role: 'Market Research',
+            subscriptions: ['market.trends', 'competitor.update'],
+            capabilities: ['Find Winning Products', 'Analyze Trends', 'Check Saturation', 'Analyze Competitors'],
+            externalEndpoints: [
+                trendsMode === 'live' ? 'Google Trends (Live)' : 'Google Trends (Mock)',
+                researchMode === 'live' ? 'Competitor Spy (Live)' : 'Competitor Spy (Mock)',
+                'OpenAI API'
+            ]
+        },
+        {
+            id: 'supplier',
+            name: 'Supplier Manager',
+            role: 'Sourcing',
+            subscriptions: ['product.selected', 'supplier.negotiation'],
+            capabilities: ['Find Suppliers', 'Negotiate Price', 'Check Inventory'],
+            externalEndpoints: fulfilmentMode === 'live'
+                ? ['AliExpress API (Live)', 'CJ Dropshipping API (Live)']
+                : ['AliExpress API (Mock)', 'CJ Dropshipping API (Mock)']
+        },
+        {
+            id: 'store',
+            name: 'Store Builder',
+            role: 'Web Development',
+            subscriptions: ['product.sourced', 'content.generated'],
+            capabilities: ['Create Product Page', 'Optimize SEO', 'Setup Checkout'],
+            externalEndpoints: shopMode === 'live'
+                ? ['Shopify API (Live)', 'OpenAI API']
+                : shopMode === 'test'
+                    ? ['Shopify API (Dev Store)', 'OpenAI API']
+                    : ['Shopify API (Mock)', 'OpenAI API']
+        },
+        {
+            id: 'marketing',
+            name: 'Marketing Agent',
+            role: 'Advertising',
+            subscriptions: ['store.published', 'campaign.performance'],
+            capabilities: ['Create Ad Campaigns', 'Optimize Budget', 'Generate Creatives'],
+            externalEndpoints: adsMode === 'live'
+                ? ['Facebook Ads API (Live)', 'TikTok Ads API (Live)', 'Instagram Ads API (Live)']
+                : adsMode === 'test'
+                    ? ['Facebook Ads API (Sandbox)', 'TikTok Ads API (Sandbox)', 'Instagram Ads API (Sandbox)']
+                    : ['Facebook Ads API (Mock)', 'TikTok Ads API (Mock)', 'Instagram Ads API (Mock)']
+        },
+        {
+            id: 'support',
+            name: 'Customer Support',
+            role: 'Customer Service',
+            subscriptions: ['order.created', 'customer.inquiry'],
+            capabilities: ['Answer Questions', 'Process Refunds', 'Handle Disputes', 'Check Emails'],
+            externalEndpoints: emailMode === 'live'
+                ? ['OpenAI API', 'SendGrid/SMTP (Live)']
+                : ['OpenAI API', 'Mock Email System']
+        },
+        {
+            id: 'ops',
+            name: 'Operations Agent',
+            role: 'Fulfillment',
+            subscriptions: ['order.paid', 'inventory.low'],
+            capabilities: ['Fulfill Orders', 'Track Shipments', 'Manage Returns'],
+            externalEndpoints: ['FedEx API (Simulated)', 'UPS API (Simulated)']
+        },
+        {
+            id: 'analytics',
+            name: 'Analytics Agent',
+            role: 'Data Analysis',
+            subscriptions: ['*'],
+            capabilities: ['Generate Reports', 'Calculate Profit', 'Predict Trends'],
+            externalEndpoints: ['Internal Database']
+        }
+    ];
+    res.json(agentMetadata);
+});
 app.get('/api/logs', async (req, res) => {
     try {
         const logs = await db.getRecentLogs(50);
@@ -72,37 +266,58 @@ app.get('/api/orders', async (req, res) => {
         res.status(500).json({ error: "Failed to fetch orders" });
     }
 });
+app.get('/api/ads', async (req, res) => {
+    console.log("GET /api/ads called");
+    try {
+        const ads = await db.getCampaigns();
+        res.json(ads);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to fetch ads" });
+    }
+});
+app.get('/api/db/topics', async (req, res) => {
+    try {
+        const dbSource = req.query.db;
+        const topics = await db.getTopics(dbSource);
+        res.json(topics);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to fetch topics" });
+    }
+});
+app.get('/api/db/table/:table', async (req, res) => {
+    const { table } = req.params;
+    const { topic, db: dbSource } = req.query;
+    try {
+        let data = [];
+        if (table === 'events') {
+            data = await db.getEvents(topic, dbSource);
+        }
+        else if (table === 'products') {
+            data = await db.getProducts(dbSource);
+        }
+        else if (table === 'orders') {
+            data = await db.getOrders(dbSource);
+        }
+        else if (table === 'ads') {
+            data = await db.getCampaigns(dbSource);
+        }
+        else {
+            res.status(400).json({ error: "Unknown table" });
+            return;
+        }
+        res.json(data);
+    }
+    catch (error) {
+        res.status(500).json({ error: `Failed to fetch ${table}` });
+    }
+});
 // --- Simulation API ---
 app.post('/api/simulation/start', async (req, res) => {
-    // TODO: Implement Simulation Service
-    // runProductLifecycle(agents, db).catch(console.error);
-    // For now, just trigger a simple test flow
     console.log("Starting simulation flow...");
     // Async background task
-    (async () => {
-        try {
-            // 1. Research
-            const researchResult = await agents.research.findWinningProducts({ category: 'Fitness' });
-            if (!researchResult || !researchResult.products) {
-                console.error("No products found");
-                return;
-            }
-            const product = researchResult.products[0];
-            await db.saveProduct({ ...product, price: 29.99 }); // Save initial product
-            // 2. Source
-            await agents.supplier.findSuppliers({ product_id: product.id });
-            // 3. Build Store
-            const page = await agents.store.createProductPage({ product_data: product });
-            // 4. Marketing
-            await agents.marketing.createAdCampaign({ platform: 'Facebook', budget: 100, product: product.name });
-            // 5. Traffic (Simulated)
-            // ...
-            console.log("Simulation flow completed.");
-        }
-        catch (e) {
-            console.error("Simulation failed:", e);
-        }
-    })();
+    simulationService.runSimulationFlow().catch(console.error);
     res.json({ status: 'started', message: 'Simulation running in background.' });
 });
 // Start Server

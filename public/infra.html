@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 Infrastructure Manager</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+    <!-- Main Content -->
+    <div class="main" style="padding-bottom: 5rem;">
+        <div class="page-header">
+            <h1 class="page-title">Infrastructure Configuration</h1>
+            <div class="badge badge-yellow">Restart Required on Change</div>
+        </div>
+
+        <div class="warning-box">
+            <span>⚠️</span>
+            <span><strong>Note:</strong> Changing infrastructure modes requires a server restart to take effect.</span>
+        </div>
+
+        <div id="statusMsg" class="status-msg"></div>
+
+        <form id="configForm">
+            <div class="grid">
+                <!-- Shop & Ads -->
+                <div class="card">
+                    <h2>🛍️ Commerce & Marketing</h2>
+                    
+                    <label for="shopMode">Shop Platform</label>
+                    <select id="shopMode" name="shopMode">
+                        <option value="mock">Mock (Local Simulation)</option>
+                        <option value="test">Test (Shopify Dev Store)</option>
+                        <option value="live">Live (Real Shopify Store)</option>
+                    </select>
+                    <div class="description">Controls where products are created and orders are fetched from.</div>
+
+                    <label for="adsMode">Advertising Platform</label>
+                    <select id="adsMode" name="adsMode">
+                        <option value="mock">Mock (Local Simulation)</option>
+                        <option value="test">Test (Sandbox APIs)</option>
+                        <option value="live">Live (Real Ad Spend)</option>
+                    </select>
+                    <div class="description">Controls where ad campaigns are deployed.</div>
+                </div>
+
+                <!-- Research & Trends -->
+                <div class="card">
+                    <h2>🔍 Research & Intelligence</h2>
+                    
+                    <label for="trendsMode">Market Trends</label>
+                    <select id="trendsMode" name="trendsMode">
+                        <option value="mock">Mock (Static Data)</option>
+                        <option value="live">Live (Google Trends/AI)</option>
+                    </select>
+                    <div class="description">Source of viral trend data.</div>
+
+                    <label for="researchMode">Competitor Analysis</label>
+                    <select id="researchMode" name="researchMode">
+                        <option value="mock">Mock (Static Data)</option>
+                        <option value="live">Live (Ad Spy/Scraping)</option>
+                    </select>
+                    <div class="description">Source of competitor intelligence.</div>
+                </div>
+
+                <!-- Operations -->
+                <div class="card">
+                    <h2>📦 Operations & Support</h2>
+                    
+                    <label for="fulfilmentMode">Fulfilment</label>
+                    <select id="fulfilmentMode" name="fulfilmentMode">
+                        <option value="mock">Mock (Instant)</option>
+                        <option value="live">Live (AliExpress/CJ)</option>
+                    </select>
+                    <div class="description">How orders are fulfilled with suppliers.</div>
+
+                    <label for="emailMode">Email System</label>
+                    <select id="emailMode" name="emailMode">
+                        <option value="mock">Mock (Console Log)</option>
+                        <option value="live">Live (SMTP/SendGrid)</option>
+                    </select>
+                    <div class="description">How customer emails are sent and received.</div>
+                </div>
+
+                <!-- System -->
+                <div class="card">
+                    <h2>⚙️ System Settings</h2>
+                    
+                    <label for="loggingMode">Logging Output</label>
+                    <select id="loggingMode" name="loggingMode">
+                        <option value="console">Console (Standard Output)</option>
+                        <option value="file">File (logs/app.log)</option>
+                    </select>
+                    <div class="description">Where agent logs are written.</div>
+
+                    <label for="trafficScale">Traffic Scale (0.1 - 1.0)</label>
+                    <select id="trafficScale" name="trafficScale">
+                        <option value="0.1">Low (10%)</option>
+                        <option value="0.5">Medium (50%)</option>
+                        <option value="1.0">Full (100%)</option>
+                    </select>
+                    <div class="description">Volume of simulated traffic.</div>
+                </div>
+            </div>
+
+            <div class="save-bar">
+                <span style="color: #6b7280; font-size: 0.9rem;">Changes will apply after restart</span>
+                <button type="submit">💾 Save Configuration</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('configForm');
+
+        function showStatus(msg, type = 'success') {
+            const el = document.getElementById('statusMsg');
+            el.textContent = msg;
+            el.className = 'status-msg ' + (type === 'success' ? 'status-success' : 'status-error');
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+
+        // Load current config
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                
+                // Populate fields
+                const fields = ['shopMode', 'adsMode', 'trendsMode', 'researchMode', 'fulfilmentMode', 'emailMode', 'loggingMode', 'trafficScale'];
+                fields.forEach(field => {
+                    const el = document.getElementById(field);
+                    if (el && config[field]) {
+                        el.value = config[field];
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to load config', err);
+                showStatus('Failed to load configuration.', 'error');
+            }
+        }
+
+        // Save config
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {};
+            
+            const selects = form.querySelectorAll('select');
+            selects.forEach(select => {
+                data[select.name] = select.value;
+            });
+
+            if (data.trafficScale) data.trafficScale = parseFloat(data.trafficScale);
+
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    showStatus('Configuration saved successfully! Please restart the server.', 'success');
+                } else {
+                    showStatus('Failed to save configuration.', 'error');
+                }
+            } catch (err) {
+                console.error('Failed to save config', err);
+                showStatus('Error saving configuration.', 'error');
+            }
+        });
+
+        loadConfig();
+    </script>
+    <script src="sidebar.js"></script>
+</body>
+</html>

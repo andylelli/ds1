@@ -27,11 +27,12 @@ export class PostgresAdapter implements PersistencePort {
   }
 
   async saveProduct(product: Product): Promise<void> {
-    // Default to Live pool for now, or maybe we need a way to distinguish?
-    // For now, we mirror db.js behavior: save to Live pool.
-    if (this.pgPool) {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'mock' ? this.simPool : this.pgPool;
+
+    if (pool) {
       try {
-        await this.pgPool.query(
+        await pool.query(
           `INSERT INTO products (id, name, description, price, potential, margin, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
            ON CONFLICT (id) DO UPDATE SET 
@@ -50,16 +51,16 @@ export class PostgresAdapter implements PersistencePort {
           ]
         );
       } catch (e: any) {
-        console.error("Failed to save product to PG:", e.message);
+        console.error(`Failed to save product to PG (${mode}):`, e.message);
       }
     }
   }
 
-  async getProducts(): Promise<Product[]> {
+  async getProducts(source?: string): Promise<Product[]> {
     let items: Product[] = [];
 
     // 1. Sim Pool
-    if (this.simPool) {
+    if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
       try {
         const res = await this.simPool.query("SELECT * FROM products ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
@@ -67,7 +68,7 @@ export class PostgresAdapter implements PersistencePort {
     }
 
     // 2. Live Pool
-    if (this.pgPool) {
+    if (this.pgPool && (source === 'live' || !source)) {
       try {
         const res = await this.pgPool.query("SELECT * FROM products ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -78,9 +79,12 @@ export class PostgresAdapter implements PersistencePort {
   }
 
   async saveOrder(order: Order): Promise<void> {
-    if (this.pgPool) {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'mock' ? this.simPool : this.pgPool;
+
+    if (pool) {
       try {
-        await this.pgPool.query(
+        await pool.query(
           `INSERT INTO orders (id, product_id, amount, status, source, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
           [
@@ -93,22 +97,22 @@ export class PostgresAdapter implements PersistencePort {
           ]
         );
       } catch (e: any) {
-        console.error("Failed to save order to PG:", e.message);
+        console.error(`Failed to save order to PG (${mode}):`, e.message);
       }
     }
   }
 
-  async getOrders(): Promise<Order[]> {
+  async getOrders(source?: string): Promise<Order[]> {
     let items: Order[] = [];
 
-    if (this.simPool) {
+    if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
       try {
         const res = await this.simPool.query("SELECT * FROM orders ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
       } catch (e: any) { console.error("SimPool orders error:", e.message); }
     }
 
-    if (this.pgPool) {
+    if (this.pgPool && (source === 'live' || !source)) {
       try {
         const res = await this.pgPool.query("SELECT * FROM orders ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -119,9 +123,12 @@ export class PostgresAdapter implements PersistencePort {
   }
 
   async saveCampaign(campaign: Campaign): Promise<void> {
-    if (this.pgPool) {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'mock' ? this.simPool : this.pgPool;
+
+    if (pool) {
       try {
-        await this.pgPool.query(
+        await pool.query(
           `INSERT INTO ads (id, platform, product, budget, status, data, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
           [
@@ -134,22 +141,22 @@ export class PostgresAdapter implements PersistencePort {
           ]
         );
       } catch (e: any) {
-        console.error("Failed to save ad to PG:", e.message);
+        console.error(`Failed to save ad to PG (${mode}):`, e.message);
       }
     }
   }
 
-  async getCampaigns(): Promise<Campaign[]> {
+  async getCampaigns(source?: string): Promise<Campaign[]> {
     let items: Campaign[] = [];
 
-    if (this.simPool) {
+    if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
       try {
         const res = await this.simPool.query("SELECT * FROM ads ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'sim' })));
       } catch (e: any) { console.error("SimPool ads error:", e.message); }
     }
 
-    if (this.pgPool) {
+    if (this.pgPool && (source === 'live' || !source)) {
       try {
         const res = await this.pgPool.query("SELECT * FROM ads ORDER BY created_at DESC");
         items = items.concat(res.rows.map(r => ({ ...r.data, timestamp: r.created_at, _db: 'live' })));
@@ -169,5 +176,60 @@ export class PostgresAdapter implements PersistencePort {
   async getRecentLogs(limit: number): Promise<any[]> {
     // Not implemented for PG in db.js
     return [];
+  }
+
+  async saveEvent(topic: string, type: string, payload: any): Promise<void> {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'mock' ? this.simPool : this.pgPool;
+
+    if (pool) {
+      try {
+        await pool.query(
+          `INSERT INTO events (topic, type, payload, created_at) VALUES ($1, $2, $3, NOW())`,
+          [topic, type, JSON.stringify(payload)]
+        );
+      } catch (e: any) {
+        console.error(`Failed to save event to PG (${mode}):`, e.message);
+      }
+    }
+  }
+
+  async getEvents(topic?: string, source?: string): Promise<any[]> {
+    let items: any[] = [];
+    const query = topic 
+      ? "SELECT * FROM events WHERE topic = $1 ORDER BY created_at DESC" 
+      : "SELECT * FROM events ORDER BY created_at DESC";
+    const params = topic ? [topic] : [];
+
+    if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
+      try {
+        const res = await this.simPool.query(query, params);
+        items = items.concat(res.rows);
+      } catch (e) {}
+    }
+    if (this.pgPool && (source === 'live' || !source)) {
+      try {
+        const res = await this.pgPool.query(query, params);
+        items = items.concat(res.rows);
+      } catch (e) {}
+    }
+    return items;
+  }
+
+  async getTopics(source?: string): Promise<string[]> {
+    const topics = new Set<string>();
+    if (this.simPool && (source === 'sim' || source === 'mock' || !source)) {
+      try {
+        const res = await this.simPool.query("SELECT DISTINCT topic FROM events");
+        res.rows.forEach((r: any) => topics.add(r.topic));
+      } catch (e) {}
+    }
+    if (this.pgPool && (source === 'live' || !source)) {
+      try {
+        const res = await this.pgPool.query("SELECT DISTINCT topic FROM events");
+        res.rows.forEach((r: any) => topics.add(r.topic));
+      } catch (e) {}
+    }
+    return Array.from(topics);
   }
 }

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 Agent Monitor</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="page-header">
+            <h1 class="page-title">Agent Network Status</h1>
+            <div class="badge badge-green">Live Monitoring</div>
+        </div>
+
+        <div class="master-detail">
+            <!-- Agent List -->
+            <div class="agent-list" id="agentList">
+                <div style="padding:1rem; text-align:center; color: #6b7280;">Loading agents...</div>
+            </div>
+
+            <!-- Agent Details -->
+            <div class="agent-details" id="agentDetails">
+                <div class="card" style="text-align: center; padding: 3rem;">
+                    <p style="color: #6b7280;">Select an agent to view details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let agents = [];
+        let logs = [];
+        let selectedAgentId = null;
+
+        // Fetch Data
+        async function fetchData() {
+            try {
+                const [agentsRes, logsRes] = await Promise.all([
+                    fetch('/api/agents'),
+                    fetch('/api/logs')
+                ]);
+                agents = await agentsRes.json();
+                logs = await logsRes.json();
+                
+                renderSidebar();
+                if (selectedAgentId) {
+                    renderDetails(selectedAgentId);
+                } else if (agents.length > 0 && !selectedAgentId) {
+                    selectAgent(agents[0].id);
+                }
+            } catch (e) {
+                console.error("Failed to fetch data", e);
+            }
+        }
+
+        function renderSidebar() {
+            const list = document.getElementById('agentList');
+            list.innerHTML = agents.map(agent => `
+                <div class="agent-item ${selectedAgentId === agent.id ? 'active' : ''}" onclick="selectAgent('${agent.id}')">
+                    <span class="agent-name">${agent.name}</span>
+                    <span class="agent-role">${agent.role}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectAgent(id) {
+            selectedAgentId = id;
+            renderSidebar();
+            renderDetails(id);
+        }
+
+        function renderDetails(id) {
+            const agent = agents.find(a => a.id === id);
+            if (!agent) return;
+
+            const container = document.getElementById('agentDetails');
+            
+            // Filter logs logic
+            const agentLogs = logs.filter(l => 
+                l.agent === agent.name || 
+                l.agent === agent.id ||
+                (agent.id === 'research' && l.agent === 'ProductResearcher') ||
+                (agent.id === 'supplier' && l.agent === 'SupplierManager') ||
+                (agent.id === 'store' && l.agent === 'StoreBuilder') ||
+                (agent.id === 'marketing' && l.agent === 'Marketer') ||
+                (agent.id === 'ops' && l.agent === 'Operations') ||
+                (agent.id === 'analytics' && l.agent === 'Analytics') ||
+                (agent.id === 'ceo' && l.agent === 'SimulationDirector')
+            );
+
+            container.innerHTML = `
+                <div class="card">
+                    <h2>${agent.name}</h2>
+                    <p style="color: #4b5563;"><strong>Role:</strong> ${agent.role}</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="card">
+                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">📡 Inputs (Topics)</h3>
+                        <div class="tag-container">
+                            ${agent.subscriptions.map(sub => `<span class="tag tag-sub">${sub}</span>`).join('')}
+                        </div>
+                        <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Events this agent listens for.</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">⚡ Outputs (Capabilities)</h3>
+                        <div class="tag-container">
+                            ${agent.capabilities.map(cap => `<span class="tag tag-cap">${cap}</span>`).join('')}
+                        </div>
+                        <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Actions this agent can perform.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">🌐 External Endpoints</h3>
+                    <div class="tag-container">
+                        ${(agent.externalEndpoints || []).map(ext => `<span class="tag tag-ext">${ext}</span>`).join('')}
+                    </div>
+                    <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Third-party APIs and services this agent interacts with.</div>
+                </div>
+
+                <div class="card" style="flex:1; display:flex; flex-direction:column;">
+                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">📜 Activity Log</h3>
+                    <div id="agentLogs">
+                        ${agentLogs.length > 0 ? agentLogs.map(log => `
+                            <div class="log-entry">
+                                <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
+                                <span class="log-level-${log.level || 'info'}">[${(log.level || 'INFO').toUpperCase()}]</span>
+                                <span class="log-msg">${log.message || log.type}</span>
+                                ${log.data ? `<pre style="font-size:0.8em; color:#9ca3af; margin-top:0.25rem;">${JSON.stringify(log.data).substring(0, 100)}...</pre>` : ''}
+                            </div>
+                        `).join('') : '<div style="padding:1rem; color:#6b7280;">No recent activity found.</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initial Load
+        fetchData();
+        // Poll for updates
+        setInterval(fetchData, 5000);
+
+    </script>
+    <script src="sidebar.js"></script>
+</body>
+</html>

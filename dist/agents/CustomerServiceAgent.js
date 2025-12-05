@@ -1,17 +1,28 @@
 import { BaseAgent } from './BaseAgent.js';
 export class CustomerServiceAgent extends BaseAgent {
-    constructor(db) {
+    email;
+    constructor(db, email) {
         super('CustomerService', db);
+        this.email = email;
         this.registerTool('handle_ticket', this.handleTicket.bind(this));
         this.registerTool('generate_faq', this.generateFAQ.bind(this));
+        this.registerTool('check_emails', this.checkEmails.bind(this));
+    }
+    async checkEmails() {
+        const emails = await this.email.receiveEmails();
+        this.log('info', `Checked emails, found ${emails.length}`);
+        return { emails };
     }
     async handleTicket(args) {
         const { ticket_id, message } = args;
         this.log('info', `Processing ticket ${ticket_id}`);
         // Simple sentiment analysis simulation
         const sentiment = message.toLowerCase().includes('angry') ? 'negative' : 'neutral';
+        const responseText = sentiment === 'negative' ? 'We apologize for the inconvenience.' : 'Thank you for reaching out.';
+        // Send email response
+        await this.email.sendEmail('customer@example.com', `Re: Ticket ${ticket_id}`, responseText);
         return {
-            response: sentiment === 'negative' ? 'We apologize for the inconvenience.' : 'Thank you for reaching out.',
+            response: responseText,
             action: sentiment === 'negative' ? 'escalate' : 'resolve'
         };
     }

@@ -4,159 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Control Panel</title>
-    <style>
-        body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; background: #f4f4f9; }
-        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 1rem; }
-        h1 { color: #333; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        select, button { padding: 0.5rem; font-size: 1rem; margin-bottom: 1rem; width: 100%; }
-        button { background: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .status { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; display: none; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-        
-        /* Tabs */
-        .tabs { display: flex; margin-bottom: 1rem; border-bottom: 2px solid #ddd; }
-        .tab { padding: 1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-        .tab.active { border-bottom-color: #007bff; font-weight: bold; color: #007bff; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Logs */
-        #logViewer { background: #1e1e1e; color: #d4d4d4; padding: 1rem; height: 400px; overflow-y: auto; font-family: monospace; border-radius: 4px; }
-        .log-entry { margin-bottom: 0.5rem; border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
-        .log-time { color: #569cd6; margin-right: 0.5rem; }
-        .log-agent { color: #4ec9b0; font-weight: bold; margin-right: 0.5rem; }
-        .log-msg { color: #ce9178; }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; font-weight: bold; }
-        tr:hover { background-color: #f1f1f1; }
-        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
-        .badge-high { background: #d4edda; color: #155724; }
-        .badge-pending { background: #fff3cd; color: #856404; }
-        .badge-shipped { background: #cce5ff; color: #004085; }
-    </style>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>🎛️ DS1 Control Panel</h1>
-        <div>
-            <a href="social.html" target="_blank" style="text-decoration: none; background: #fe2c55; color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; margin-right: 10px;">📱 Social Feed</a>
-            <a href="shop.html" target="_blank" style="text-decoration: none; background: #28a745; color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold;">🛍️ Open Mock Shop</a>
-        </div>
-    </div>
-    
-    <div id="statusMessage" class="status"></div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('settings')">Settings</div>
-        <div class="tab" onclick="switchTab('simulation')">Simulation</div>
-        <div class="tab" onclick="switchTab('products')">Products</div>
-        <div class="tab" onclick="switchTab('orders')">Orders</div>
-        <div class="tab" onclick="switchTab('database')">Database</div>
-    </div>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
 
-    <!-- SETTINGS TAB -->
-    <div id="settings" class="tab-content active">
-        <div class="card">
-            <h2>Environment Settings</h2>
-            
-            <label for="dbMode">Database Mode</label>
-            <select id="dbMode">
-                <option value="mock">Mock (Sandbox)</option>
-                <option value="live">Live (Azure Cosmos DB)</option>
-            </select>
-            <small>Switching modes will reconnect the database immediately.</small>
+    <!-- Main Content -->
+    <main class="main">
+        <div id="statusMessage" class="status-msg"></div>
 
-            <br><br>
-
-            <label for="logLevel">Log Level</label>
-            <select id="logLevel">
-                <option value="debug">Debug (Verbose)</option>
-                <option value="info">Info (Standard)</option>
-                <option value="warn">Warning</option>
-                <option value="error">Error Only</option>
-            </select>
-
-            <br><br>
-
-            <label for="useSimulatedEndpoints">3rd Party Integrations</label>
-            <select id="useSimulatedEndpoints">
-                <option value="true">Simulated (Mock APIs)</option>
-                <option value="false">Real (Live APIs)</option>
-            </select>
-
-            <br><br>
-            <button onclick="saveConfig()">Save & Apply Changes</button>
-        </div>
-    </div>
-
-    <!-- SIMULATION TAB -->
-    <div id="simulation" class="tab-content">
-        <div class="card">
-            <h2>Product Lifecycle Simulation</h2>
-            <p>Click below to run a full end-to-end simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="startSimulation()" style="background: #28a745;">▶ Start Simulation</button>
-                <button onclick="clearLogDisplay()" style="background: #6c757d;">🧹 Clear</button>
-                <button onclick="showAllLogs()" style="background: #17a2b8;">📜 History</button>
+        <!-- SIMULATION -->
+        <div id="simulation" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Simulation Control</h1>
+            </div>
+            <div class="card">
+                <h2>Run Simulation</h2>
+                <p style="margin-bottom: 1.5rem; color: #6b7280;">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="startSimulation()">▶ Start New Simulation</button>
+                    <button class="secondary" onclick="clearLogDisplay()">🧹 Clear Logs</button>
+                    <button class="secondary" onclick="showAllLogs()">📜 Show History</button>
+                </div>
             </div>
             
-            <h3>Live Logs</h3>
-            <div id="logViewer">Waiting for logs...</div>
-        </div>
-    </div>
-
-    <!-- PRODUCTS TAB -->
-    <div id="products" class="tab-content">
-        <div class="card">
-            <h2>Winning Products</h2>
-            <button onclick="fetchProducts()">🔄 Refresh List</button>
-            <div id="productsList">Loading...</div>
-        </div>
-    </div>
-
-    <!-- ORDERS TAB -->
-    <div id="orders" class="tab-content">
-        <div class="card">
-            <h2>Order History</h2>
-            <button onclick="fetchOrders()">🔄 Refresh List</button>
-            <div id="ordersList">Loading...</div>
-        </div>
-    </div>
-
-    <!-- DATABASE TAB -->
-    <div id="database" class="tab-content">
-        <div class="card">
-            <h2>Event Bus (Postgres)</h2>
-            <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                <select id="dbSelector" onchange="fetchDbTopics(); fetchDbData()">
-                    <option value="live">Live Database</option>
-                    <option value="sim">Simulator Database</option>
-                </select>
-                <select id="dbTableSelector" onchange="handleTableChange()">
-                    <option value="events">Events</option>
-                    <option value="products">Products</option>
-                    <option value="orders">Orders</option>
-                    <option value="ads">Ads</option>
-                </select>
-                <select id="dbTopicFilter" onchange="fetchDbData()">
-                    <option value="">All Topics</option>
-                </select>
-                <button onclick="fetchDbData()" style="width: auto;">🔄 Refresh</button>
+            <div class="card" style="height: calc(100vh - 350px); display: flex; flex-direction: column;">
+                <h2 style="margin-bottom: 0.5rem; border: none;">Live Agent Logs</h2>
+                <div id="logViewer">Waiting for logs...</div>
             </div>
-            <div id="dbEventsList">Loading...</div>
         </div>
-    </div>
+
+        <!-- PRODUCTS -->
+        <div id="products" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">Winning Products</h1>
+                <button onclick="fetchProducts()">🔄 Refresh</button>
+            </div>
+            <div class="card">
+                <div id="productsList" class="table-container">Loading...</div>
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="orders" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">Order History</h1>
+                <button onclick="fetchOrders()">🔄 Refresh</button>
+            </div>
+            <div class="card">
+                <div id="ordersList" class="table-container">Loading...</div>
+            </div>
+        </div>
+
+        <!-- ADS -->
+        <div id="ads" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">Ad Campaigns</h1>
+                <button onclick="fetchAds()">🔄 Refresh</button>
+            </div>
+            <div class="card">
+                <div id="adsList" class="table-container">
+                    <p style="color: #6b7280; text-align: center; padding: 2rem;">No active ad campaigns found.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="settings" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">System Settings</h1>
+            </div>
+            <div class="card" style="max-width: 600px;">
+                <h2>Environment Configuration</h2>
+                
+                <label for="dbMode">Database Mode</label>
+                <select id="dbMode">
+                    <option value="mock">Mock (Sandbox)</option>
+                    <option value="live">Live (Azure Cosmos DB)</option>
+                </select>
+                <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1.5rem;">Switching modes will reconnect the database immediately.</p>
+
+                <label for="logLevel">Log Level</label>
+                <select id="logLevel">
+                    <option value="debug">Debug (Verbose)</option>
+                    <option value="info">Info (Standard)</option>
+                    <option value="warn">Warning</option>
+                    <option value="error">Error Only</option>
+                </select>
+
+                <label for="useSimulatedEndpoints">3rd Party Integrations</label>
+                <select id="useSimulatedEndpoints">
+                    <option value="true">Simulated (Mock APIs)</option>
+                    <option value="false">Real (Live APIs)</option>
+                </select>
+
+                <div style="margin-top: 2rem;">
+                    <button onclick="saveConfig()">💾 Save & Apply Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE -->
+        <div id="database" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">Database Inspector</h1>
+            </div>
+            <div class="card">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label>Source</label>
+                        <select id="dbSelector" onchange="fetchDbTopics(); fetchDbData()" style="margin-bottom: 0;">
+                            <option value="live">Live Database</option>
+                            <option value="sim">Simulator Database</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label>Table</label>
+                        <select id="dbTableSelector" onchange="handleTableChange()" style="margin-bottom: 0;">
+                            <option value="events">Events</option>
+                            <option value="products">Products</option>
+                            <option value="orders">Orders</option>
+                            <option value="ads">Ads</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label>Topic Filter</label>
+                        <select id="dbTopicFilter" onchange="fetchDbData()" style="margin-bottom: 0;">
+                            <option value="">All Topics</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button onclick="fetchDbData()" style="height: 42px;">🔄 Refresh Data</button>
+                    </div>
+                </div>
+                <div id="dbEventsList" class="table-container">Loading...</div>
+            </div>
+        </div>
+
+    </main>
 
     <script>
         let logInterval = null;
-        let logStartTime = 0; // Timestamp to filter logs
+        let logStartTime = 0;
 
+        // --- Navigation ---
+        function switchTab(tabId) {
+            // Update Content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            const tab = document.getElementById(tabId);
+            if (tab) {
+                tab.classList.remove('hidden');
+            }
+
+            // Handle Simulation Logs
+            if (tabId === 'simulation') {
+                fetchLogs();
+                if (!logInterval) logInterval = setInterval(fetchLogs, 2000);
+            } else {
+                if (logInterval) {
+                    clearInterval(logInterval);
+                    logInterval = null;
+                }
+            }
+
+            // Auto-refresh data
+            if (tabId === 'products') fetchProducts();
+            if (tabId === 'orders') fetchOrders();
+            if (tabId === 'ads') fetchAds();
+            if (tabId === 'database') { fetchDbTopics(); fetchDbData(); }
+        }
+
+        // Handle initial hash
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                switchTab(hash);
+            } else {
+                switchTab('simulation');
+            }
+        });
+
+        // --- Simulation & Logs ---
         function clearLogDisplay() {
             logStartTime = Date.now();
             fetchLogs();
@@ -169,41 +199,105 @@
             showStatus('Showing full history.', 'success');
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            // Find the tab element that was clicked (or corresponds to tabId)
-            const tabEl = Array.from(document.querySelectorAll('.tab')).find(t => t.textContent.toLowerCase().includes(tabId));
-            if(tabEl) tabEl.classList.add('active');
-            
-            const contentEl = document.getElementById(tabId);
-            if(contentEl) contentEl.classList.add('active');
-
-            // Handle Simulation Logs
-            if (tabId === 'simulation') {
+        async function startSimulation() {
+            try {
+                logStartTime = Date.now() - 2000;
+                const res = await fetch('/api/simulation/start', { method: 'POST' });
+                const data = await res.json();
+                showStatus(data.message, 'success');
                 fetchLogs();
-                logInterval = setInterval(fetchLogs, 2000);
-            } else {
-                if (logInterval) clearInterval(logInterval);
+            } catch (e) {
+                showStatus('Failed to start simulation.', 'error');
             }
-
-            // Auto-refresh data
-            if (tabId === 'products') fetchProducts();
-            if (tabId === 'orders') fetchOrders();
-            if (tabId === 'database') { fetchDbTopics(); fetchDbData(); }
         }
 
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                const logs = await res.json();
+                const filteredLogs = logs.filter(log => new Date(log.timestamp).getTime() >= logStartTime);
+                const viewer = document.getElementById('logViewer');
+                
+                if (filteredLogs.length === 0) {
+                    viewer.innerHTML = `<div style="padding:1rem; color: #666;">No new logs...</div>`;
+                    return;
+                }
+
+                viewer.innerHTML = filteredLogs.map(log => `
+                    <div class="log-entry">
+                        <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
+                        <span class="log-agent">${log.agent}</span>
+                        <span class="log-msg">${log.message}</span>
+                        ${log.data ? `<pre style="font-size:0.8em; color:#9cdcfe; margin-top:0.2rem;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                    </div>
+                `).join('');
+                
+                // Auto scroll to bottom
+                viewer.scrollTop = viewer.scrollHeight;
+            } catch (e) { console.error("Log fetch failed", e); }
+        }
+
+        // --- Data Fetching ---
+        async function fetchProducts() {
+            const list = document.getElementById('productsList');
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                if (products.length === 0) { list.innerHTML = '<p style="padding:1rem">No products found.</p>'; return; }
+
+                let html = `<table><thead><tr><th>Name</th><th>Potential</th><th>Margin</th><th>Found At</th></tr></thead><tbody>`;
+                products.forEach(p => {
+                    html += `<tr>
+                        <td><strong>${p.name}</strong></td>
+                        <td><span class="badge badge-green">${p.potential}</span></td>
+                        <td>${p.margin}</td>
+                        <td>${new Date(p.timestamp).toLocaleString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
+        }
+
+        async function fetchOrders() {
+            const list = document.getElementById('ordersList');
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                if (orders.length === 0) { list.innerHTML = '<p style="padding:1rem">No orders found.</p>'; return; }
+
+                let html = `<table><thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                orders.forEach(o => {
+                    const badgeClass = o.status === 'shipped' ? 'badge-blue' : 'badge-yellow';
+                    html += `<tr>
+                        <td>${o.id}</td>
+                        <td>${o.product}</td>
+                        <td>$${o.amount}</td>
+                        <td><span class="badge ${badgeClass}">${o.status}</span></td>
+                        <td>${new Date(o.timestamp).toLocaleString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
+        }
+
+        async function fetchAds() {
+             // Placeholder for Ads fetching logic
+             const list = document.getElementById('adsList');
+             // For now, just show empty state or mock data if available
+             // list.innerHTML = ...
+        }
+
+        // --- Database ---
         function handleTableChange() {
             const table = document.getElementById('dbTableSelector').value;
             const topicFilter = document.getElementById('dbTopicFilter');
-            
-            // Only show topic filter for 'events' table
             if (table === 'events') {
-                topicFilter.style.display = 'inline-block';
+                topicFilter.parentElement.style.display = 'block';
                 fetchDbTopics();
             } else {
-                topicFilter.style.display = 'none';
+                topicFilter.parentElement.style.display = 'none';
             }
             fetchDbData();
         }
@@ -215,14 +309,9 @@
                 const topics = await res.json();
                 const select = document.getElementById('dbTopicFilter');
                 const current = select.value;
-                
-                select.innerHTML = '<option value="">All Topics</option>' + 
-                    topics.map(t => `<option value="${t}">${t}</option>`).join('');
-                
+                select.innerHTML = '<option value="">All Topics</option>' + topics.map(t => `<option value="${t}">${t}</option>`).join('');
                 if (topics.includes(current)) select.value = current;
-            } catch (e) {
-                console.error("Error fetching topics", e);
-            }
+            } catch (e) { console.error("Error fetching topics", e); }
         }
 
         async function fetchDbData() {
@@ -233,69 +322,33 @@
             
             try {
                 let url = `/api/db/table/${table}?db=${db}`;
-                if (table === 'events' && topic) {
-                    url += `&topic=${encodeURIComponent(topic)}`;
-                }
+                if (table === 'events' && topic) url += `&topic=${encodeURIComponent(topic)}`;
 
                 const res = await fetch(url);
                 const data = await res.json();
                 
-                if (data.length === 0) {
-                    list.innerHTML = '<p>No records found.</p>';
-                    return;
-                }
+                if (data.length === 0) { list.innerHTML = '<p style="padding:1rem">No records found.</p>'; return; }
 
                 let html = '<table><thead><tr>';
-                
-                // Dynamic Headers based on table
-                if (table === 'events') {
-                    html += '<th>ID</th><th>Topic</th><th>Type</th><th>Payload</th><th>Time</th>';
-                } else if (table === 'products') {
-                    html += '<th>ID</th><th>Name</th><th>Price</th><th>Margin</th><th>Time</th>';
-                } else if (table === 'orders') {
-                    html += '<th>ID</th><th>Product ID</th><th>Amount</th><th>Status</th><th>Time</th>';
-                } else if (table === 'ads') {
-                    html += '<th>ID</th><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th>';
-                } else {
-                    // Fallback for unknown tables
-                    Object.keys(data[0]).forEach(k => html += `<th>${k}</th>`);
-                }
+                if (table === 'events') html += '<th>ID</th><th>Topic</th><th>Type</th><th>Payload</th><th>Time</th>';
+                else if (table === 'products') html += '<th>ID</th><th>Name</th><th>Price</th><th>Margin</th><th>Time</th>';
+                else if (table === 'orders') html += '<th>ID</th><th>Product ID</th><th>Amount</th><th>Status</th><th>Time</th>';
+                else if (table === 'ads') html += '<th>ID</th><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th>';
+                else Object.keys(data[0]).forEach(k => html += `<th>${k}</th>`);
                 html += '</tr></thead><tbody>';
 
                 data.forEach(row => {
                     html += '<tr>';
                     if (table === 'events') {
-                        html += `
-                            <td>${row.id}</td>
-                            <td><span class="badge badge-shipped">${row.topic}</span></td>
-                            <td>${row.type}</td>
+                        html += `<td>${row.id}</td><td><span class="badge badge-blue">${row.topic}</span></td><td>${row.type}</td>
                             <td><pre style="font-size:0.8em; margin:0; max-height:100px; overflow:auto;">${JSON.stringify(row.payload, null, 2)}</pre></td>
-                            <td>${new Date(row.created_at).toLocaleString()}</td>
-                        `;
+                            <td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'products') {
-                        html += `
-                            <td>${row.id}</td>
-                            <td><strong>${row.name}</strong></td>
-                            <td>$${row.price}</td>
-                            <td>${row.margin}</td>
-                            <td>${new Date(row.created_at).toLocaleString()}</td>
-                        `;
+                        html += `<td>${row.id}</td><td><strong>${row.name}</strong></td><td>$${row.price}</td><td>${row.margin}</td><td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'orders') {
-                        html += `
-                            <td>${row.id}</td>
-                            <td>${row.product_id}</td>
-                            <td>$${row.amount}</td>
-                            <td><span class="badge badge-pending">${row.status}</span></td>
-                            <td>${new Date(row.created_at).toLocaleString()}</td>
-                        `;
+                        html += `<td>${row.id}</td><td>${row.product_id}</td><td>$${row.amount}</td><td><span class="badge badge-yellow">${row.status}</span></td><td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'ads') {
-                        html += `
-                            <td>${row.id}</td>
-                            <td>${row.platform}</td>
-                            <td>${row.product}</td>
-                            <td>$${row.budget}</td>
-                            <td>${row.status}</td>
-                        `;
+                        html += `<td>${row.id}</td><td>${row.platform}</td><td>${row.product}</td><td>$${row.budget}</td><td>${row.status}</td>`;
                     } else {
                          Object.values(row).forEach(v => html += `<td>${typeof v === 'object' ? JSON.stringify(v) : v}</td>`);
                     }
@@ -303,120 +356,18 @@
                 });
                 html += '</tbody></table>';
                 list.innerHTML = html;
-            } catch (e) {
-                list.innerHTML = `<p class="error">Error fetching data: ${e.message}</p>`;
-            }
+            } catch (e) { list.innerHTML = `<p class="error">Error fetching data: ${e.message}</p>`; }
         }
 
-        async function fetchProducts() {
-            const list = document.getElementById('productsList');
-            try {
-                const res = await fetch('/api/products');
-                const products = await res.json();
-                
-                if (products.length === 0) {
-                    list.innerHTML = '<p>No products found. Run a simulation first.</p>';
-                    return;
-                }
-
-                let html = `<table><thead><tr><th>Name</th><th>Potential</th><th>Margin</th><th>Found At</th></tr></thead><tbody>`;
-                products.forEach(p => {
-                    html += `<tr>
-                        <td><strong>${p.name}</strong></td>
-                        <td><span class="badge badge-high">${p.potential}</span></td>
-                        <td>${p.margin}</td>
-                        <td>${new Date(p.timestamp).toLocaleString()}</td>
-                    </tr>`;
-                });
-                html += '</tbody></table>';
-                list.innerHTML = html;
-            } catch (e) {
-                list.innerHTML = `<p class="error">Error fetching products: ${e.message}</p>`;
-            }
-        }
-
-        async function fetchOrders() {
-            const list = document.getElementById('ordersList');
-            try {
-                const res = await fetch('/api/orders');
-                const orders = await res.json();
-                
-                if (orders.length === 0) {
-                    list.innerHTML = '<p>No orders found.</p>';
-                    return;
-                }
-
-                let html = `<table><thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
-                orders.forEach(o => {
-                    const statusClass = o.status === 'shipped' ? 'badge-shipped' : 'badge-pending';
-                    html += `<tr>
-                        <td>${o.id}</td>
-                        <td>${o.product}</td>
-                        <td>$${o.amount}</td>
-                        <td><span class="badge ${statusClass}">${o.status}</span></td>
-                        <td>${new Date(o.timestamp).toLocaleString()}</td>
-                    </tr>`;
-                });
-                html += '</tbody></table>';
-                list.innerHTML = html;
-            } catch (e) {
-                list.innerHTML = `<p class="error">Error fetching orders: ${e.message}</p>`;
-            }
-        }
-
-        async function startSimulation() {
-            try {
-                // Clear logs on new run (with 2s buffer to catch immediate logs)
-                logStartTime = Date.now() - 2000;
-                
-                const res = await fetch('/api/simulation/start', { method: 'POST' });
-                const data = await res.json();
-                showStatus(data.message, 'success');
-                fetchLogs(); // Immediate update
-            } catch (e) {
-                showStatus('Failed to start simulation.', 'error');
-            }
-        }
-
-        async function fetchLogs() {
-            try {
-                const res = await fetch('/api/logs');
-                const logs = await res.json();
-                
-                // Filter logs based on clear time
-                const filteredLogs = logs.filter(log => new Date(log.timestamp).getTime() >= logStartTime);
-
-                const viewer = document.getElementById('logViewer');
-                if (filteredLogs.length === 0) {
-                    const hiddenCount = logs.length - filteredLogs.length;
-                    viewer.innerHTML = `<div style="padding:1rem">No new logs... (${hiddenCount} hidden)</div>`;
-                    return;
-                }
-
-                viewer.innerHTML = filteredLogs.map(log => `
-                    <div class="log-entry">
-                        <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
-                        <span class="log-agent">${log.agent}</span>: 
-                        <span class="log-msg">${log.message}</span>
-                        ${log.data ? `<pre style="font-size:0.8em; color:#9cdcfe">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
-                    </div>
-                `).join('');
-            } catch (e) {
-                console.error("Log fetch failed", e);
-            }
-        }
-
+        // --- Config ---
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
                 const config = await res.json();
-                
                 document.getElementById('dbMode').value = config.dbMode;
                 document.getElementById('logLevel').value = config.logLevel;
                 document.getElementById('useSimulatedEndpoints').value = config.useSimulatedEndpoints.toString();
-            } catch (e) {
-                showStatus('Failed to load configuration.', 'error');
-            }
+            } catch (e) { showStatus('Failed to load configuration.', 'status-error'); }
         }
 
         async function saveConfig() {
@@ -425,33 +376,35 @@
                 logLevel: document.getElementById('logLevel').value,
                 useSimulatedEndpoints: document.getElementById('useSimulatedEndpoints').value === 'true'
             };
-
             try {
                 const res = await fetch('/api/config', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newConfig)
                 });
-                
-                if (res.ok) {
-                    showStatus('Configuration saved and applied successfully!', 'success');
-                } else {
-                    showStatus('Error saving configuration.', 'error');
-                }
-            } catch (e) {
-                showStatus('Network error.', 'error');
-            }
+                if (res.ok) showStatus('Configuration saved successfully!', 'status-success');
+                else showStatus('Error saving configuration.', 'status-error');
+            } catch (e) { showStatus('Network error.', 'status-error'); }
         }
 
         function showStatus(msg, type) {
             const el = document.getElementById('statusMessage');
             el.textContent = msg;
-            el.className = 'status ' + type;
+            el.className = 'status-msg ' + type;
             el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 3000);
         }
 
+        // Init
         loadConfig();
+        // Handle hash changes
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                switchTab(hash);
+            }
+        });
     </script>
+    <script src="sidebar.js"></script>
 </body>
 </html>

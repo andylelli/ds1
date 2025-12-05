@@ -18,13 +18,19 @@ This document outlines the external services, APIs, and websites that need to be
         3.  Refactor `simulation.js` to emit events (`EVENT_TICK`, `EVENT_ORDER_PAID`) instead of running a linear script.
         4.  Update Agents to subscribe to relevant events.
 
-### 2. Database Migration
-- [ ] **Migrate from JSON to SQLite/MongoDB**
-    - **Why**: `sandbox_db.json` will become slow and corrupt with concurrent writes in Live Mode.
+### 2. Database Persistence Layer
+- [x] **Implement Persistence Port & Adapters**
+    - **Why**: Decouple the application from the specific database implementation (Hexagonal Architecture).
     - **How**:
-        1.  Choose SQLite (easier) or MongoDB (better for JSON docs).
-        2.  Create `src/lib/db_adapter.js` to abstract the database calls.
-        3.  Replace `fs.writeFileSync` calls with SQL/Mongoose queries.
+        1.  Create `PersistencePort` interface.
+        2.  Implement `PostgresAdapter` for live data.
+        3.  Implement `MockAdapter` for simulation.
+- [ ] **Database Schema Management / Migrations**
+    - **Why**: We need a reliable way to create tables and apply schema changes in the Live Postgres DB.
+    - **How**:
+        1.  Use a tool like `knex` or `db-migrate`.
+        2.  Create migration scripts for `products`, `orders`, `events`, `ads`.
+        3.  Add a startup check to ensure DB schema is up to date.
 
 ### 3. Security & Compliance
 - [ ] **Implement PII Redaction**
@@ -290,6 +296,11 @@ This document outlines the external services, APIs, and websites that need to be
 ## 🖥️ Frontend & Visualization
 
 ### 1. Admin Panel Features
+- [x] **Database Inspector**
+    - **Why**: To verify data integrity and debug issues between Simulator and Live modes.
+    - **How**:
+        1.  Create `Database Inspector` tab in `admin.html`.
+        2.  Implement backend API to filter by `source` (Live/Sim).
 - [ ] **Implement CEO Chat Interface**
     - **Why**: To allow the human user to query the CEO Agent directly for status updates, strategy explanations, or to give high-level directives.
     - **How**:

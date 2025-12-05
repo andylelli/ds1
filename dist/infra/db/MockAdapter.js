@@ -52,19 +52,19 @@ export class MockAdapter {
     async saveProduct(product) {
         await this.saveItem("Products", product);
     }
-    async getProducts() {
+    async getProducts(source) {
         return await this.getItems("Products");
     }
     async saveOrder(order) {
         await this.saveItem("Orders", order);
     }
-    async getOrders() {
+    async getOrders(source) {
         return await this.getItems("Orders");
     }
     async saveCampaign(campaign) {
         await this.saveItem("Ads", campaign);
     }
-    async getCampaigns() {
+    async getCampaigns(source) {
         return await this.getItems("Ads");
     }
     async saveLog(agent, message, level, data) {
@@ -79,5 +79,26 @@ export class MockAdapter {
     async getRecentLogs(limit) {
         const logs = await this.getItems("AgentMemory");
         return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);
+    }
+    async saveEvent(topic, type, payload) {
+        await this.saveItem("Events", {
+            topic,
+            type,
+            payload,
+            id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            created_at: new Date().toISOString()
+        });
+    }
+    async getEvents(topic, source) {
+        const events = await this.getItems("Events");
+        if (topic) {
+            return events.filter(e => e.topic === topic);
+        }
+        return events;
+    }
+    async getTopics(source) {
+        const events = await this.getItems("Events");
+        const topics = new Set(events.map(e => e.topic));
+        return Array.from(topics);
     }
 }

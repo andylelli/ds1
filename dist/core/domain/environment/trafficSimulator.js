@@ -1,10 +1,10 @@
-export function simulateTraffic(product, activeCampaigns, marketEvent = null) {
+export function simulateTraffic(product, activeCampaigns, marketEvent = null, scale = 1.0) {
     const sources = [
         { name: 'Direct', baseTraffic: 50, conversionRate: 0.02, variance: 20 },
         { name: 'SEO', baseTraffic: 80, conversionRate: 0.03, variance: 30 }
     ];
     // Apply Market Modifiers
-    const modTraffic = marketEvent ? marketEvent.impact.traffic : 1.0;
+    const modTraffic = (marketEvent ? marketEvent.impact.traffic : 1.0) * scale;
     const modCR = marketEvent ? marketEvent.impact.cr : 1.0;
     const modCPC = marketEvent ? marketEvent.impact.cpc : 1.0;
     const trafficStreams = [];

@@ -1,6 +1,6 @@
 # 🛡️ RAID Log
 **Project:** DropShip AI Agent Swarm (DS1)  
-**Last Updated:** December 4, 2025
+**Last Updated:** December 5, 2025
 
 This document tracks **Risks**, **Assumptions**, **Issues**, and **Dependencies** to ensure project stability and foresight.
 
@@ -14,6 +14,7 @@ This document tracks **Risks**, **Assumptions**, **Issues**, and **Dependencies*
 | **R-05** | **Runaway Feedback Loops**: `AnalyticsAgent` might react to a temporary market dip (simulated or real) by aggressively increasing ad spend, draining funds. | 5 | 3 | Implement "Circuit Breakers" that freeze spending if ROAS drops below 1.0 for >1 hour. |
 | **R-06** | **OAuth Token Expiry**: Long-running agents will fail if access tokens (Shopify/Meta) expire and refresh logic is missing. | 5 | 5 | Implement robust OAuth2 token refresh handlers in the `BaseAgent` class. |
 | **R-07** | **GDPR/Privacy Leaks**: Logging real customer PII (names, addresses) to text files or console violates privacy laws. | 5 | 5 | Implement PII redaction in the `saveAgentLog` function before "Live Mode". |
+| **R-08** | **Database Connection Failure**: In "Live Mode", if the Postgres DB is unreachable, the app might crash or lose data. | 5 | 2 | Implement connection retry logic and fallback to local buffering/queueing. |
 
 ## 🟡 Assumptions (Things we believe to be true)
 | ID | Assumption | Validation Date | Status |
@@ -23,13 +24,15 @@ This document tracks **Risks**, **Assumptions**, **Issues**, and **Dependencies*
 | **A-03** | The current Node.js single-process architecture can handle the load of a single store simulation. | 2025-12-04 | Valid |
 | **A-04** | **LLM Context Limits**: We assume standard context windows (128k) are sufficient for agent memory. | TBD | Risk |
 | **A-05** | **Supplier Integrity**: We assume supplier APIs return accurate inventory levels (often false in dropshipping). | TBD | Risk |
+| **A-06** | **Database Availability**: We assume the user has a local Postgres instance or Azure Cosmos DB for "Live" mode. | 2025-12-05 | Open |
 
 ## 🟠 Issues (Current problems that need solving)
 | ID | Issue Description | Priority | Owner | Status |
 | :--- | :--- | :---: | :---: | :--- |
 | **I-01** | **Linear Execution**: The simulation runs sequentially. If one step hangs, the whole business stops. | High | Dev | Open |
-| **I-02** | **Lack of Persistence**: `sandbox_db.json` is not suitable for long-term data storage or complex queries. | Medium | Dev | Open |
+| **I-02** | **Lack of Persistence**: `sandbox_db.json` is not suitable for long-term data storage or complex queries. | Medium | Dev | ✅ Closed |
 | **I-03** | **Hardcoded Business Logic**: Traffic simulation parameters (CPC, CR) are hardcoded, making it hard to test different niches. | Low | Dev | Open |
+| **I-04** | **Browser Caching**: API responses were being cached, causing the Admin Panel to show stale data. | Medium | Dev | ✅ Closed |
 
 ## 🔵 Dependencies (External factors we rely on)
 | ID | Dependency | Impact if Missing | Status |
@@ -38,3 +41,4 @@ This document tracks **Risks**, **Assumptions**, **Issues**, and **Dependencies*
 | **D-02** | **Shopify Partner Account**: Required to create development stores and test APIs. | Critical | 🚧 Pending |
 | **D-03** | **Meta Business Manager**: Required to generate real ad tokens. | High | 🚧 Pending |
 | **D-04** | **Payment Gateway (Stripe)**: Dropshipping accounts are high-risk and prone to rejection. | Critical | ❌ Missing |
+| **D-05** | **PostgreSQL Database**: Required for "Live Mode" persistence. | High | 🚧 Pending |

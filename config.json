@@ -4,5 +4,13 @@
   "simulatorDatabaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship_sim",
   "logLevel": "info",
   "useSimulatedEndpoints": true,
-  "openaiEnabled": true
+  "openaiEnabled": true,
+  "trafficScale": 0.1,
+  "adsMode": "mock",
+  "shopMode": "mock",
+  "trendsMode": "mock",
+  "researchMode": "mock",
+  "fulfilmentMode": "mock",
+  "emailMode": "mock",
+  "loggingMode": "console"
 }
