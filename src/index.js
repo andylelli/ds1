@@ -26,7 +26,9 @@ import { MCP_MESSAGE_TYPES } from './mcp/protocol.js';
 import { initDatabase, switchDatabaseMode, getRecentLogs, getProducts, getOrders, saveOrder, getAds } from './lib/db.js';
 import { config } from './lib/config.js';
 import { runProductLifecycle } from './simulation.js';
+import pg from 'pg';
 
+const { Pool } = pg;
 const app = express();
 app.use(express.json());
 app.use(express.static('public')); // Serve admin panel
@@ -45,6 +47,16 @@ const agents = {
 
 // Initialize DB connection
 initDatabase().catch(console.error);
+
+// Initialize Postgres Pool for Event Bus
+const pgPool = new Pool({
+  connectionString: config.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship"
+});
+
+// Initialize Simulator Postgres Pool
+const simPool = new Pool({
+  connectionString: config.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim"
+});
 
 // --- Configuration API ---
 app.get('/api/config', (req, res) => {
@@ -69,7 +81,7 @@ app.post('/api/config', async (req, res) => {
 // --- Simulation API ---
 app.post('/api/simulation/start', (req, res) => {
   // Run asynchronously, don't wait for it to finish
-  runProductLifecycle(agents).catch(console.error);
+  runProductLifecycle(agents, simPool).catch(console.error);
   res.json({ status: 'started', message: 'Simulation running in background.' });
 });
 
@@ -91,6 +103,60 @@ app.get('/api/orders', async (req, res) => {
 app.get('/api/ads', async (req, res) => {
   const ads = await getAds();
   res.json(ads);
+});
+
+// --- Event Bus & DB Viewer API ---
+app.get('/api/db/table/:tableName', async (req, res) => {
+  try {
+    const { tableName } = req.params;
+    const allowedTables = ['events', 'products', 'orders', 'ads', 'consumer_offsets'];
+    if (!allowedTables.includes(tableName)) {
+      return res.status(400).json({ error: "Invalid table name" });
+    }
+
+    const limit = parseInt(req.query.limit) || 50;
+    const dbType = req.query.db || 'live'; // 'live' or 'sim'
+    const poolToUse = dbType === 'sim' ? simPool : pgPool;
+
+    let query = `SELECT * FROM ${tableName}`;
+    const params = [];
+    
+    // Specific filtering for events
+    if (tableName === 'events' && req.query.topic) {
+      query += ' WHERE topic = $1';
+      params.push(req.query.topic);
+    }
+
+    // Order by logic
+    if (tableName === 'consumer_offsets') {
+      query += ' ORDER BY updated_at DESC';
+    } else {
+      // Most tables have created_at or id
+      query += ' ORDER BY created_at DESC';
+    }
+    
+    query += ' LIMIT $' + (params.length + 1);
+    params.push(limit);
+    
+    const result = await poolToUse.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(`Error fetching table ${req.params.tableName}:`, err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/db/topics', async (req, res) => {
+  try {
+    const dbType = req.query.db || 'live';
+    const poolToUse = dbType === 'sim' ? simPool : pgPool;
+    
+    const result = await poolToUse.query('SELECT DISTINCT topic FROM events ORDER BY topic');
+    res.json(result.rows.map(r => r.topic));
+  } catch (err) {
+    console.error('Error fetching topics:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/orders', async (req, res) => {

@@ -57,6 +57,7 @@
         <div class="tab" onclick="switchTab('simulation')">Simulation</div>
         <div class="tab" onclick="switchTab('products')">Products</div>
         <div class="tab" onclick="switchTab('orders')">Orders</div>
+        <div class="tab" onclick="switchTab('database')">Database</div>
     </div>
 
     <!-- SETTINGS TAB -->
@@ -128,6 +129,30 @@
         </div>
     </div>
 
+    <!-- DATABASE TAB -->
+    <div id="database" class="tab-content">
+        <div class="card">
+            <h2>Event Bus (Postgres)</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                <select id="dbSelector" onchange="fetchDbTopics(); fetchDbData()">
+                    <option value="live">Live Database</option>
+                    <option value="sim">Simulator Database</option>
+                </select>
+                <select id="dbTableSelector" onchange="handleTableChange()">
+                    <option value="events">Events</option>
+                    <option value="products">Products</option>
+                    <option value="orders">Orders</option>
+                    <option value="ads">Ads</option>
+                </select>
+                <select id="dbTopicFilter" onchange="fetchDbData()">
+                    <option value="">All Topics</option>
+                </select>
+                <button onclick="fetchDbData()" style="width: auto;">🔄 Refresh</button>
+            </div>
+            <div id="dbEventsList">Loading...</div>
+        </div>
+    </div>
+
     <script>
         let logInterval = null;
         let logStartTime = 0; // Timestamp to filter logs
@@ -166,6 +191,121 @@
             // Auto-refresh data
             if (tabId === 'products') fetchProducts();
             if (tabId === 'orders') fetchOrders();
+            if (tabId === 'database') { fetchDbTopics(); fetchDbData(); }
+        }
+
+        function handleTableChange() {
+            const table = document.getElementById('dbTableSelector').value;
+            const topicFilter = document.getElementById('dbTopicFilter');
+            
+            // Only show topic filter for 'events' table
+            if (table === 'events') {
+                topicFilter.style.display = 'inline-block';
+                fetchDbTopics();
+            } else {
+                topicFilter.style.display = 'none';
+            }
+            fetchDbData();
+        }
+
+        async function fetchDbTopics() {
+            try {
+                const db = document.getElementById('dbSelector').value;
+                const res = await fetch(`/api/db/topics?db=${db}`);
+                const topics = await res.json();
+                const select = document.getElementById('dbTopicFilter');
+                const current = select.value;
+                
+                select.innerHTML = '<option value="">All Topics</option>' + 
+                    topics.map(t => `<option value="${t}">${t}</option>`).join('');
+                
+                if (topics.includes(current)) select.value = current;
+            } catch (e) {
+                console.error("Error fetching topics", e);
+            }
+        }
+
+        async function fetchDbData() {
+            const list = document.getElementById('dbEventsList');
+            const table = document.getElementById('dbTableSelector').value;
+            const topic = document.getElementById('dbTopicFilter').value;
+            const db = document.getElementById('dbSelector').value;
+            
+            try {
+                let url = `/api/db/table/${table}?db=${db}`;
+                if (table === 'events' && topic) {
+                    url += `&topic=${encodeURIComponent(topic)}`;
+                }
+
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    list.innerHTML = '<p>No records found.</p>';
+                    return;
+                }
+
+                let html = '<table><thead><tr>';
+                
+                // Dynamic Headers based on table
+                if (table === 'events') {
+                    html += '<th>ID</th><th>Topic</th><th>Type</th><th>Payload</th><th>Time</th>';
+                } else if (table === 'products') {
+                    html += '<th>ID</th><th>Name</th><th>Price</th><th>Margin</th><th>Time</th>';
+                } else if (table === 'orders') {
+                    html += '<th>ID</th><th>Product ID</th><th>Amount</th><th>Status</th><th>Time</th>';
+                } else if (table === 'ads') {
+                    html += '<th>ID</th><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th>';
+                } else {
+                    // Fallback for unknown tables
+                    Object.keys(data[0]).forEach(k => html += `<th>${k}</th>`);
+                }
+                html += '</tr></thead><tbody>';
+
+                data.forEach(row => {
+                    html += '<tr>';
+                    if (table === 'events') {
+                        html += `
+                            <td>${row.id}</td>
+                            <td><span class="badge badge-shipped">${row.topic}</span></td>
+                            <td>${row.type}</td>
+                            <td><pre style="font-size:0.8em; margin:0; max-height:100px; overflow:auto;">${JSON.stringify(row.payload, null, 2)}</pre></td>
+                            <td>${new Date(row.created_at).toLocaleString()}</td>
+                        `;
+                    } else if (table === 'products') {
+                        html += `
+                            <td>${row.id}</td>
+                            <td><strong>${row.name}</strong></td>
+                            <td>$${row.price}</td>
+                            <td>${row.margin}</td>
+                            <td>${new Date(row.created_at).toLocaleString()}</td>
+                        `;
+                    } else if (table === 'orders') {
+                        html += `
+                            <td>${row.id}</td>
+                            <td>${row.product_id}</td>
+                            <td>$${row.amount}</td>
+                            <td><span class="badge badge-pending">${row.status}</span></td>
+                            <td>${new Date(row.created_at).toLocaleString()}</td>
+                        `;
+                    } else if (table === 'ads') {
+                        html += `
+                            <td>${row.id}</td>
+                            <td>${row.platform}</td>
+                            <td>${row.product}</td>
+                            <td>$${row.budget}</td>
+                            <td>${row.status}</td>
+                        `;
+                    } else {
+                         Object.values(row).forEach(v => html += `<td>${typeof v === 'object' ? JSON.stringify(v) : v}</td>`);
+                    }
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) {
+                list.innerHTML = `<p class="error">Error fetching data: ${e.message}</p>`;
+            }
         }
 
         async function fetchProducts() {

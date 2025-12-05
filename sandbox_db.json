@@ -11808,6 +11808,2641 @@
         "type": "info",
         "data": null,
         "timestamp": "2025-12-04T20:41:29.733Z"
+      },
+      {
+        "id": "item_1764951987340_caif9gtku",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.325Z"
+      },
+      {
+        "id": "item_1764951987377_6navygak9",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "🌍 MARKET EVENT: Holiday Shopping Season",
+        "type": "info",
+        "data": {
+          "name": "Holiday Shopping Season",
+          "description": "It's Q4! People are in a buying mood.",
+          "impact": {
+            "traffic": 1.5,
+            "cr": 1.3,
+            "cpc": 1.4
+          },
+          "probability": 0.15
+        },
+        "timestamp": "2025-12-05T16:26:27.365Z"
+      },
+      {
+        "id": "item_1764951987414_wia6oxhrv",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "   > It's Q4! People are in a buying mood.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.396Z"
+      },
+      {
+        "id": "item_1764951987448_yrfxbglc9",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.430Z"
+      },
+      {
+        "id": "item_1764951987481_ubcotekxe",
+        "_ts": 1764951987,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.465Z"
+      },
+      {
+        "id": "item_1764951987512_34d0a8jt2",
+        "_ts": 1764951987,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.498Z"
+      },
+      {
+        "id": "item_1764951987545_tftqla3xn",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ],
+          "price": 49.99
+        },
+        "timestamp": "2025-12-05T16:26:27.526Z"
+      },
+      {
+        "id": "item_1764951987606_6k7s9ljot",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.589Z"
+      },
+      {
+        "id": "item_1764951987636_12gz11h0t",
+        "_ts": 1764951987,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "[MOCK] Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.622Z"
+      },
+      {
+        "id": "item_1764951987669_g17lzwuz4",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-05T16:26:27.651Z"
+      },
+      {
+        "id": "item_1764951987705_8p5bld8h2",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.686Z"
+      },
+      {
+        "id": "item_1764951987734_a3d7jsxee",
+        "_ts": 1764951987,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.725Z"
+      },
+      {
+        "id": "item_1764951987762_fmw3m08fd",
+        "_ts": 1764951987,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "[MOCK] Shopify integration disabled by config. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.746Z"
+      },
+      {
+        "id": "item_1764951987795_f8hzm067b",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-05T16:26:27.777Z"
+      },
+      {
+        "id": "item_1764951987824_4f5x9zefo",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaigns...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.807Z"
+      },
+      {
+        "id": "item_1764951987876_nvi2xh5mu",
+        "_ts": 1764951987,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.859Z"
+      },
+      {
+        "id": "item_1764951987906_co00jow0x",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "📢 TikTok Ads Running. Campaign ID: cmp_561",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_561",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:26:27.891Z"
+      },
+      {
+        "id": "item_1764951987960_jlsp9amt5",
+        "_ts": 1764951987,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating Facebook campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:27.943Z"
+      },
+      {
+        "id": "item_1764951987993_td2e26a69",
+        "_ts": 1764951987,
+        "agent": "SimulationDirector",
+        "message": "📢 Facebook Ads Running. Campaign ID: cmp_8071",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_8071",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:26:27.975Z"
+      },
+      {
+        "id": "item_1764951988057_k6qu7v9aa",
+        "_ts": 1764951988,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating Instagram campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:28.040Z"
+      },
+      {
+        "id": "item_1764951988091_2b2z23aiw",
+        "_ts": 1764951988,
+        "agent": "SimulationDirector",
+        "message": "📢 Instagram Ads Running. Campaign ID: cmp_5552",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_5552",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:26:28.073Z"
+      },
+      {
+        "id": "item_1764951988156_z3q13mx4z",
+        "_ts": 1764951988,
+        "agent": "SimulationDirector",
+        "message": "Step 5: Simulating customer traffic...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:28.140Z"
+      },
+      {
+        "id": "item_1764951989186_viwj2x3h2",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "👥 Traffic Report: 713 Visitors generated.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.176Z"
+      },
+      {
+        "id": "item_1764951989206_cku25dza6",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "🎉 SUCCESS! Generated 21 orders.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.197Z"
+      },
+      {
+        "id": "item_1764951989226_2k31c3sqt",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-50580 ($49.99) via Direct",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.214Z"
+      },
+      {
+        "id": "item_1764951989267_ofk4nnjax",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-40072 ($49.99) via Direct",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.256Z"
+      },
+      {
+        "id": "item_1764951989311_6k7dzbr5q",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-89551 ($49.99) via Direct",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.299Z"
+      },
+      {
+        "id": "item_1764951989362_ato8bk03t",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-83455 ($49.99) via SEO",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.348Z"
+      },
+      {
+        "id": "item_1764951989412_vmw33lt8u",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-55221 ($49.99) via SEO",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.403Z"
+      },
+      {
+        "id": "item_1764951989453_1v7j619xn",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-60281 ($49.99) via SEO",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.439Z"
+      },
+      {
+        "id": "item_1764951989498_px3ot52y6",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-65140 ($49.99) via SEO",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.488Z"
+      },
+      {
+        "id": "item_1764951989544_pmo0w3m7l",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-10969 ($49.99) via Paid - TikTok",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.527Z"
+      },
+      {
+        "id": "item_1764951989605_jprnl8n9i",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-42498 ($49.99) via Paid - TikTok",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.592Z"
+      },
+      {
+        "id": "item_1764951989666_3p81d0b09",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-10030 ($49.99) via Paid - TikTok",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.648Z"
+      },
+      {
+        "id": "item_1764951989725_jw37qyzx4",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-83506 ($49.99) via Paid - TikTok",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.708Z"
+      },
+      {
+        "id": "item_1764951989781_rm5iui60o",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-28785 ($49.99) via Paid - Facebook",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.770Z"
+      },
+      {
+        "id": "item_1764951989838_s0vvmlnie",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-33024 ($49.99) via Paid - Facebook",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.821Z"
+      },
+      {
+        "id": "item_1764951989897_d5cgdkumf",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-89943 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.879Z"
+      },
+      {
+        "id": "item_1764951989956_pgw3301m3",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-49804 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.943Z"
+      },
+      {
+        "id": "item_1764951989999_vedhjlgrr",
+        "_ts": 1764951989,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-41483 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:29.986Z"
+      },
+      {
+        "id": "item_1764951990030_o81l1nxy4",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-72275 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.021Z"
+      },
+      {
+        "id": "item_1764951990068_13nd1pb1v",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-42613 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.055Z"
+      },
+      {
+        "id": "item_1764951990122_90w8hqzqy",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-44402 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.108Z"
+      },
+      {
+        "id": "item_1764951990160_zjitnsz5f",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-36999 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.147Z"
+      },
+      {
+        "id": "item_1764951990207_sdqrlpn7d",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-47624 ($49.99) via Paid - Instagram",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.196Z"
+      },
+      {
+        "id": "item_1764951990255_op0lf6lzs",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling orders...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.246Z"
+      },
+      {
+        "id": "item_1764951990279_601e1sm27",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-50580",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.267Z"
+      },
+      {
+        "id": "item_1764951990310_deme9zd47",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-50580 Shipped. Tracking: TRK402367",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-50580",
+          "tracking_number": "TRK402367",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.290Z"
+      },
+      {
+        "id": "item_1764951990343_xrrtvx1kp",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-40072",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.323Z"
+      },
+      {
+        "id": "item_1764951990388_wfp9aekcm",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-40072 Shipped. Tracking: TRK215826",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-40072",
+          "tracking_number": "TRK215826",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.363Z"
+      },
+      {
+        "id": "item_1764951990414_ff0p18u4g",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-89551",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.399Z"
+      },
+      {
+        "id": "item_1764951990442_41b4vhg2o",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-89551 Shipped. Tracking: TRK167916",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-89551",
+          "tracking_number": "TRK167916",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.427Z"
+      },
+      {
+        "id": "item_1764951990474_e8mrzt3mx",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-83455",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.456Z"
+      },
+      {
+        "id": "item_1764951990498_d1enhrtov",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-83455 Shipped. Tracking: TRK517096",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-83455",
+          "tracking_number": "TRK517096",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.486Z"
+      },
+      {
+        "id": "item_1764951990531_tuc6ln0j9",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-55221",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.517Z"
+      },
+      {
+        "id": "item_1764951990555_0fh3ofm5r",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-55221 Shipped. Tracking: TRK615239",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-55221",
+          "tracking_number": "TRK615239",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.545Z"
+      },
+      {
+        "id": "item_1764951990578_ehi8p26nx",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-60281",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.565Z"
+      },
+      {
+        "id": "item_1764951990605_lt3ts6azi",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-60281 Shipped. Tracking: TRK149340",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-60281",
+          "tracking_number": "TRK149340",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.592Z"
+      },
+      {
+        "id": "item_1764951990625_a7td8l7c0",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-65140",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.615Z"
+      },
+      {
+        "id": "item_1764951990650_vvyx4tvfo",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-65140 Shipped. Tracking: TRK233582",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-65140",
+          "tracking_number": "TRK233582",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.634Z"
+      },
+      {
+        "id": "item_1764951990675_zgpyg57zc",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-10969",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.662Z"
+      },
+      {
+        "id": "item_1764951990709_izggq0hly",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-10969 Shipped. Tracking: TRK50700",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-10969",
+          "tracking_number": "TRK50700",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.693Z"
+      },
+      {
+        "id": "item_1764951990735_k686y8iz5",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-42498",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.722Z"
+      },
+      {
+        "id": "item_1764951990768_3zlglib2v",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-42498 Shipped. Tracking: TRK928583",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-42498",
+          "tracking_number": "TRK928583",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.748Z"
+      },
+      {
+        "id": "item_1764951990802_jbqcgqtzt",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-10030",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.786Z"
+      },
+      {
+        "id": "item_1764951990837_ohjpwynb9",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-10030 Shipped. Tracking: TRK556484",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-10030",
+          "tracking_number": "TRK556484",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.817Z"
+      },
+      {
+        "id": "item_1764951990881_19r9477ky",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-83506",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.859Z"
+      },
+      {
+        "id": "item_1764951990919_oo99n3mis",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-83506 Shipped. Tracking: TRK901457",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-83506",
+          "tracking_number": "TRK901457",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.896Z"
+      },
+      {
+        "id": "item_1764951990958_toclyimb9",
+        "_ts": 1764951990,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-28785",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:30.935Z"
+      },
+      {
+        "id": "item_1764951990999_eyyqo6wt2",
+        "_ts": 1764951990,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-28785 Shipped. Tracking: TRK970943",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-28785",
+          "tracking_number": "TRK970943",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:30.981Z"
+      },
+      {
+        "id": "item_1764951991036_uihky6jpj",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-33024",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.014Z"
+      },
+      {
+        "id": "item_1764951991066_8u3g5kf7c",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-33024 Shipped. Tracking: TRK42503",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-33024",
+          "tracking_number": "TRK42503",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.050Z"
+      },
+      {
+        "id": "item_1764951991104_lxaagirq0",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-89943",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.082Z"
+      },
+      {
+        "id": "item_1764951991144_evpysn3wy",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-89943 Shipped. Tracking: TRK402394",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-89943",
+          "tracking_number": "TRK402394",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.126Z"
+      },
+      {
+        "id": "item_1764951991180_qv4mtgpns",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-49804",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.158Z"
+      },
+      {
+        "id": "item_1764951991214_9m54k5m0y",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-49804 Shipped. Tracking: TRK49712",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-49804",
+          "tracking_number": "TRK49712",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.195Z"
+      },
+      {
+        "id": "item_1764951991243_qejzvh6tk",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-41483",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.231Z"
+      },
+      {
+        "id": "item_1764951991274_2pna20w8n",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-41483 Shipped. Tracking: TRK208544",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-41483",
+          "tracking_number": "TRK208544",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.258Z"
+      },
+      {
+        "id": "item_1764951991306_u1yfilnk7",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-72275",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.286Z"
+      },
+      {
+        "id": "item_1764951991337_yvh6cr1uf",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-72275 Shipped. Tracking: TRK821903",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-72275",
+          "tracking_number": "TRK821903",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.319Z"
+      },
+      {
+        "id": "item_1764951991368_3x9u5gwb6",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-42613",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.351Z"
+      },
+      {
+        "id": "item_1764951991400_rkzrqe61q",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-42613 Shipped. Tracking: TRK894026",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-42613",
+          "tracking_number": "TRK894026",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.381Z"
+      },
+      {
+        "id": "item_1764951991435_xn1vlardc",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-44402",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.416Z"
+      },
+      {
+        "id": "item_1764951991468_3a315acr0",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-44402 Shipped. Tracking: TRK291291",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-44402",
+          "tracking_number": "TRK291291",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.451Z"
+      },
+      {
+        "id": "item_1764951991501_x1ixi8vqd",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-36999",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.484Z"
+      },
+      {
+        "id": "item_1764951991530_oir7jow7s",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-36999 Shipped. Tracking: TRK725366",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-36999",
+          "tracking_number": "TRK725366",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.513Z"
+      },
+      {
+        "id": "item_1764951991562_uuy42a9jq",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-47624",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.545Z"
+      },
+      {
+        "id": "item_1764951991598_xs96ydgf0",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-47624 Shipped. Tracking: TRK695593",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-47624",
+          "tracking_number": "TRK695593",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:26:31.579Z"
+      },
+      {
+        "id": "item_1764951991631_jigbjwofr",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "Step 6.5: Monitoring for post-sale issues...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.613Z"
+      },
+      {
+        "id": "item_1764951991664_flhrdhziq",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "⚠️ ALERT: 18 issues detected!",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.645Z"
+      },
+      {
+        "id": "item_1764951991699_1qatvkh82",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   > [REFUND_REQUEST] Order ORD-40072: Customer changed mind and wants to return the item.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.681Z"
+      },
+      {
+        "id": "item_1764951991733_6fkey76rd",
+        "_ts": 1764951991,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-51273",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.717Z"
+      },
+      {
+        "id": "item_1764951991764_7bnrezrh0",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.749Z"
+      },
+      {
+        "id": "item_1764951991797_qz3xtth7w",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-89551: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.778Z"
+      },
+      {
+        "id": "item_1764951991825_f9wpzxr7i",
+        "_ts": 1764951991,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-89551: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.810Z"
+      },
+      {
+        "id": "item_1764951991861_p6ckiimsv",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-819778",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.840Z"
+      },
+      {
+        "id": "item_1764951991896_7zqs9v1n0",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   > [REFUND_REQUEST] Order ORD-83455: Customer changed mind and wants to return the item.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.878Z"
+      },
+      {
+        "id": "item_1764951991926_jbqszpa2c",
+        "_ts": 1764951991,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-84399",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.910Z"
+      },
+      {
+        "id": "item_1764951991960_21hrz6p9c",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.943Z"
+      },
+      {
+        "id": "item_1764951991997_yl1y0pspp",
+        "_ts": 1764951991,
+        "agent": "SimulationDirector",
+        "message": "   > [PRODUCT_DEFECT] Order ORD-55221: Product arrived broken or not working.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:31.978Z"
+      },
+      {
+        "id": "item_1764951992028_ar28itihi",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-90937",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.013Z"
+      },
+      {
+        "id": "item_1764951992058_qo7bcy003",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.042Z"
+      },
+      {
+        "id": "item_1764951992090_jj4phdb9t",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-60281: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.075Z"
+      },
+      {
+        "id": "item_1764951992122_43tbapkdx",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-85016",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.101Z"
+      },
+      {
+        "id": "item_1764951992154_4qvwqc9uk",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.133Z"
+      },
+      {
+        "id": "item_1764951992183_vs4m6fuid",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [REFUND_REQUEST] Order ORD-65140: Customer changed mind and wants to return the item.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.165Z"
+      },
+      {
+        "id": "item_1764951992213_k776ttaf4",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-39970",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.198Z"
+      },
+      {
+        "id": "item_1764951992245_shoeskain",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.229Z"
+      },
+      {
+        "id": "item_1764951992272_4mkhk3mt7",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-10969: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.256Z"
+      },
+      {
+        "id": "item_1764951992302_iqjoags6v",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-52724",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.285Z"
+      },
+      {
+        "id": "item_1764951992332_c3odfjupk",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.316Z"
+      },
+      {
+        "id": "item_1764951992362_zxm95iqox",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-42498: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.343Z"
+      },
+      {
+        "id": "item_1764951992399_nyerm1qss",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-41137",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.381Z"
+      },
+      {
+        "id": "item_1764951992432_z9x7m9obq",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.414Z"
+      },
+      {
+        "id": "item_1764951992474_9swfntvqu",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-10030: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.449Z"
+      },
+      {
+        "id": "item_1764951992542_pq3w4j99d",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-68127",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.505Z"
+      },
+      {
+        "id": "item_1764951992592_gtn2dwfzx",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.563Z"
+      },
+      {
+        "id": "item_1764951992662_l7w8ocjz3",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-83506: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.618Z"
+      },
+      {
+        "id": "item_1764951992716_35y85pk17",
+        "_ts": 1764951992,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-83506: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.684Z"
+      },
+      {
+        "id": "item_1764951992772_pe7rznj2a",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-891495",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.743Z"
+      },
+      {
+        "id": "item_1764951992822_sf8w12tyx",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-33024: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.798Z"
+      },
+      {
+        "id": "item_1764951992862_2wbu6lk16",
+        "_ts": 1764951992,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-33024: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.834Z"
+      },
+      {
+        "id": "item_1764951992905_l28kst73k",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-806226",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.885Z"
+      },
+      {
+        "id": "item_1764951992939_3h6lfpef7",
+        "_ts": 1764951992,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-89943: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.922Z"
+      },
+      {
+        "id": "item_1764951992973_nb27if362",
+        "_ts": 1764951992,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-16968",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.954Z"
+      },
+      {
+        "id": "item_1764951993009_lwjl9mymz",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:32.991Z"
+      },
+      {
+        "id": "item_1764951993042_24rffyxjq",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-49804: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.024Z"
+      },
+      {
+        "id": "item_1764951993074_5kuuxslsh",
+        "_ts": 1764951993,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-49804: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.055Z"
+      },
+      {
+        "id": "item_1764951993103_pvpzbvcja",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-597258",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.087Z"
+      },
+      {
+        "id": "item_1764951993131_xcwvyxgr0",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-41483: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.115Z"
+      },
+      {
+        "id": "item_1764951993162_ii9tvls84",
+        "_ts": 1764951993,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-79234",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.144Z"
+      },
+      {
+        "id": "item_1764951993198_u48jsz4sv",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.181Z"
+      },
+      {
+        "id": "item_1764951993228_jyvns0icc",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-42613: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.213Z"
+      },
+      {
+        "id": "item_1764951993263_ec7970fit",
+        "_ts": 1764951993,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-74245",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.242Z"
+      },
+      {
+        "id": "item_1764951993300_48mnalfge",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.280Z"
+      },
+      {
+        "id": "item_1764951993333_4708t6koj",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [PRODUCT_DEFECT] Order ORD-44402: Product arrived broken or not working.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.316Z"
+      },
+      {
+        "id": "item_1764951993367_dloc91dmn",
+        "_ts": 1764951993,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-14261",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.350Z"
+      },
+      {
+        "id": "item_1764951993404_qwt6af2e1",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.383Z"
+      },
+      {
+        "id": "item_1764951993440_i2eyelet2",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-36999: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.418Z"
+      },
+      {
+        "id": "item_1764951993473_k9vp0uop3",
+        "_ts": 1764951993,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-99714",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.456Z"
+      },
+      {
+        "id": "item_1764951993504_j1tl7bpi8",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.488Z"
+      },
+      {
+        "id": "item_1764951993533_4kcd2gskm",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-47624: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.517Z"
+      },
+      {
+        "id": "item_1764951993560_j4uajaksh",
+        "_ts": 1764951993,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-47624: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.546Z"
+      },
+      {
+        "id": "item_1764951993583_nl87mcoyk",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-288332",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.571Z"
+      },
+      {
+        "id": "item_1764951993612_3o5z6jncv",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.596Z"
+      },
+      {
+        "id": "item_1764951993645_t2i3sjnrt",
+        "_ts": 1764951993,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.626Z"
+      },
+      {
+        "id": "item_1764951993678_6u0re73ml",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "📊 Run Summary: Revenue $1049.79 | Profit $749.79",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 1049.79,
+          "costs": 8000,
+          "profit": 749.79,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-05T16:26:33.658Z"
+      },
+      {
+        "id": "item_1764951993706_tqk6wkg37",
+        "_ts": 1764951993,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": null,
+        "timestamp": "2025-12-05T16:26:33.692Z"
+      },
+      {
+        "id": "item_1764952338998_qdrnujwy1",
+        "_ts": 1764952338,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:18.980Z"
+      },
+      {
+        "id": "item_1764952339110_mjlwgny6q",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "🌍 MARKET EVENT: Ad Platform Algorithm Update",
+        "type": "info",
+        "data": {
+          "name": "Ad Platform Algorithm Update",
+          "description": "Meta/TikTok updated their algo. Reach is down.",
+          "impact": {
+            "traffic": 0.6,
+            "cr": 1,
+            "cpc": 1.5
+          },
+          "probability": 0.2
+        },
+        "timestamp": "2025-12-05T16:32:19.096Z"
+      },
+      {
+        "id": "item_1764952339156_9adgo5rs4",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "   > Meta/TikTok updated their algo. Reach is down.",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:19.138Z"
+      },
+      {
+        "id": "item_1764952339197_q1kdql3rp",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:19.182Z"
+      },
+      {
+        "id": "item_1764952339235_sxzz5v6vn",
+        "_ts": 1764952339,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "type": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.220Z"
+      },
+      {
+        "id": "item_1764952339270_cnt83y6ws",
+        "_ts": 1764952339,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "type": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.252Z"
+      },
+      {
+        "id": "item_1764952339308_fs9qmz1ca",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "type": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ],
+          "price": 49.99
+        },
+        "timestamp": "2025-12-05T16:32:19.290Z"
+      },
+      {
+        "id": "item_1764952339382_nnrq5p3ji",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:19.365Z"
+      },
+      {
+        "id": "item_1764952339414_xgb8mat2k",
+        "_ts": 1764952339,
+        "agent": "SupplierManager",
+        "message": "info",
+        "type": "[MOCK] Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.401Z"
+      },
+      {
+        "id": "item_1764952339444_4f48uw6c9",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "type": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-05T16:32:19.426Z"
+      },
+      {
+        "id": "item_1764952339480_4kk53skzk",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:19.464Z"
+      },
+      {
+        "id": "item_1764952339520_t9tued94s",
+        "_ts": 1764952339,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.503Z"
+      },
+      {
+        "id": "item_1764952339558_q5g3lib0t",
+        "_ts": 1764952339,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "type": "[MOCK] Shopify integration disabled by config. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.537Z"
+      },
+      {
+        "id": "item_1764952339592_vbingv75z",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "type": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-05T16:32:19.575Z"
+      },
+      {
+        "id": "item_1764952339639_h2ar5t74c",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaigns...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:19.619Z"
+      },
+      {
+        "id": "item_1764952339694_26r8up0vy",
+        "_ts": 1764952339,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.668Z"
+      },
+      {
+        "id": "item_1764952339731_a6sv2oamb",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "📢 TikTok Ads Running. Campaign ID: cmp_7949",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_7949",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:32:19.715Z"
+      },
+      {
+        "id": "item_1764952339811_4oaqj7g4x",
+        "_ts": 1764952339,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating Facebook campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.794Z"
+      },
+      {
+        "id": "item_1764952339869_j9t7vih2d",
+        "_ts": 1764952339,
+        "agent": "SimulationDirector",
+        "message": "📢 Facebook Ads Running. Campaign ID: cmp_1499",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_1499",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:32:19.827Z"
+      },
+      {
+        "id": "item_1764952339975_6f4uyij1j",
+        "_ts": 1764952339,
+        "agent": "Marketer",
+        "message": "info",
+        "type": "[MOCK] Creating Instagram campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:19.959Z"
+      },
+      {
+        "id": "item_1764952340009_a97zhj1ts",
+        "_ts": 1764952340,
+        "agent": "SimulationDirector",
+        "message": "📢 Instagram Ads Running. Campaign ID: cmp_5387",
+        "type": "info",
+        "data": {
+          "campaign_id": "cmp_5387",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:32:19.992Z"
+      },
+      {
+        "id": "item_1764952340082_9kbqexq3z",
+        "_ts": 1764952340,
+        "agent": "SimulationDirector",
+        "message": "Step 5: Simulating customer traffic...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:20.066Z"
+      },
+      {
+        "id": "item_1764952341140_2tiu7j3pu",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "👥 Traffic Report: 278 Visitors generated.",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:21.121Z"
+      },
+      {
+        "id": "item_1764952341185_6s9190jo7",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🎉 SUCCESS! Generated 5 orders.",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:21.164Z"
+      },
+      {
+        "id": "item_1764952341233_hqymuxpna",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-97569 ($49.99) via Direct",
+        "type": "info",
+        "data": {
+          "id": "ORD-97569",
+          "source": "Direct",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:32:21.119Z"
+        },
+        "timestamp": "2025-12-05T16:32:21.215Z"
+      },
+      {
+        "id": "item_1764952341303_1mqlbbdph",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-36175 ($49.99) via SEO",
+        "type": "info",
+        "data": {
+          "id": "ORD-36175",
+          "source": "SEO",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:32:21.120Z"
+        },
+        "timestamp": "2025-12-05T16:32:21.284Z"
+      },
+      {
+        "id": "item_1764952341373_3bkngld02",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-96675 ($49.99) via SEO",
+        "type": "info",
+        "data": {
+          "id": "ORD-96675",
+          "source": "SEO",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:32:21.120Z"
+        },
+        "timestamp": "2025-12-05T16:32:21.356Z"
+      },
+      {
+        "id": "item_1764952341446_trx0tb8mw",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-39451 ($49.99) via SEO",
+        "type": "info",
+        "data": {
+          "id": "ORD-39451",
+          "source": "SEO",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:32:21.120Z"
+        },
+        "timestamp": "2025-12-05T16:32:21.428Z"
+      },
+      {
+        "id": "item_1764952341512_wi2bjl00z",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-83528 ($49.99) via Paid - Facebook",
+        "type": "info",
+        "data": {
+          "id": "ORD-83528",
+          "source": "Paid - Facebook",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:32:21.120Z"
+        },
+        "timestamp": "2025-12-05T16:32:21.496Z"
+      },
+      {
+        "id": "item_1764952341573_yh494mzwb",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling orders...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:21.558Z"
+      },
+      {
+        "id": "item_1764952341606_qd1euu9fz",
+        "_ts": 1764952341,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-97569",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:21.592Z"
+      },
+      {
+        "id": "item_1764952341640_g398qomsb",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-97569 Shipped. Tracking: TRK911585",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-97569",
+          "tracking_number": "TRK911585",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:32:21.624Z"
+      },
+      {
+        "id": "item_1764952341678_2be078gcw",
+        "_ts": 1764952341,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-36175",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:21.661Z"
+      },
+      {
+        "id": "item_1764952341706_u8pfcq7bd",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-36175 Shipped. Tracking: TRK42346",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-36175",
+          "tracking_number": "TRK42346",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:32:21.690Z"
+      },
+      {
+        "id": "item_1764952341740_vndyitpbz",
+        "_ts": 1764952341,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-96675",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:21.725Z"
+      },
+      {
+        "id": "item_1764952341774_8zhtxk306",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-96675 Shipped. Tracking: TRK529683",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-96675",
+          "tracking_number": "TRK529683",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:32:21.760Z"
+      },
+      {
+        "id": "item_1764952341804_f9z9hj5z9",
+        "_ts": 1764952341,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-39451",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:21.790Z"
+      },
+      {
+        "id": "item_1764952341829_iwuj7zrou",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-39451 Shipped. Tracking: TRK883709",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-39451",
+          "tracking_number": "TRK883709",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:32:21.817Z"
+      },
+      {
+        "id": "item_1764952341882_r71omntsn",
+        "_ts": 1764952341,
+        "agent": "Operations",
+        "message": "info",
+        "type": "[MOCK] Fulfilling order ORD-83528",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:21.869Z"
+      },
+      {
+        "id": "item_1764952341907_891ipupdo",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-83528 Shipped. Tracking: TRK399501",
+        "type": "info",
+        "data": {
+          "order_id": "ORD-83528",
+          "tracking_number": "TRK399501",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:32:21.894Z"
+      },
+      {
+        "id": "item_1764952341942_yjq6iupau",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "Step 6.5: Monitoring for post-sale issues...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:21.926Z"
+      },
+      {
+        "id": "item_1764952341976_oi435vqty",
+        "_ts": 1764952341,
+        "agent": "SimulationDirector",
+        "message": "⚠️ ALERT: 3 issues detected!",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:21.961Z"
+      },
+      {
+        "id": "item_1764952342011_b5hha89ac",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-97569: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": {
+          "id": "TICKET-13443",
+          "orderId": "ORD-97569",
+          "type": "SHIPPING_DELAY",
+          "description": "Tracking has not updated in 10 days. Customer is angry.",
+          "agent": "CustomerService",
+          "customer": "Customer_97569"
+        },
+        "timestamp": "2025-12-05T16:32:21.996Z"
+      },
+      {
+        "id": "item_1764952342044_hdj6ohq0c",
+        "_ts": 1764952342,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-13443",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:22.029Z"
+      },
+      {
+        "id": "item_1764952342067_8dcy48syh",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": {
+          "response": "We apologize for the inconvenience.",
+          "action": "escalate"
+        },
+        "timestamp": "2025-12-05T16:32:22.057Z"
+      },
+      {
+        "id": "item_1764952342098_akvqr5qpf",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-96675: Customer claims package never arrived despite tracking saying delivered.",
+        "type": "info",
+        "data": {
+          "id": "TICKET-67502",
+          "orderId": "ORD-96675",
+          "type": "LOST_PACKAGE",
+          "description": "Customer claims package never arrived despite tracking saying delivered.",
+          "agent": "Operations",
+          "customer": "Customer_96675"
+        },
+        "timestamp": "2025-12-05T16:32:22.085Z"
+      },
+      {
+        "id": "item_1764952342131_shj4ldfcf",
+        "_ts": 1764952342,
+        "agent": "Operations",
+        "message": "warn",
+        "type": "Handling shipping issue for ORD-96675: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:22.118Z"
+      },
+      {
+        "id": "item_1764952342160_h3k22n30u",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-788496",
+        "type": "info",
+        "data": {
+          "action": "reship",
+          "new_tracking": "TRK-REPLACEMENT-788496"
+        },
+        "timestamp": "2025-12-05T16:32:22.144Z"
+      },
+      {
+        "id": "item_1764952342196_0e1e25xrm",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-39451: Tracking has not updated in 10 days. Customer is angry.",
+        "type": "info",
+        "data": {
+          "id": "TICKET-63350",
+          "orderId": "ORD-39451",
+          "type": "SHIPPING_DELAY",
+          "description": "Tracking has not updated in 10 days. Customer is angry.",
+          "agent": "CustomerService",
+          "customer": "Customer_39451"
+        },
+        "timestamp": "2025-12-05T16:32:22.180Z"
+      },
+      {
+        "id": "item_1764952342235_wgbkhp5ev",
+        "_ts": 1764952342,
+        "agent": "CustomerService",
+        "message": "info",
+        "type": "Processing ticket TICKET-63350",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:22.217Z"
+      },
+      {
+        "id": "item_1764952342266_wty6wehlv",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "type": "info",
+        "data": {
+          "response": "We apologize for the inconvenience.",
+          "action": "escalate"
+        },
+        "timestamp": "2025-12-05T16:32:22.250Z"
+      },
+      {
+        "id": "item_1764952342307_ta7gxtthx",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:22.289Z"
+      },
+      {
+        "id": "item_1764952342346_qpgswncnj",
+        "_ts": 1764952342,
+        "agent": "Analytics",
+        "message": "info",
+        "type": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-05T16:32:22.329Z"
+      },
+      {
+        "id": "item_1764952342375_0xvl04c4i",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "📊 Run Summary: Revenue $249.95 | Profit $-50.05",
+        "type": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 249.95000000000002,
+          "costs": 8000,
+          "profit": -50.04999999999998,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-05T16:32:22.361Z"
+      },
+      {
+        "id": "item_1764952342414_0ymi5s5km",
+        "_ts": 1764952342,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "type": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:32:22.397Z"
+      },
+      {
+        "id": "item_1764952884312_gh8x2tmzg",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "🚀 STARTING PRODUCT LIFECYCLE SIMULATION",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.307Z"
+      },
+      {
+        "id": "item_1764952884340_ncvqxo026",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "🌍 MARKET EVENT: Ad Platform Algorithm Update",
+        "level": "info",
+        "data": {
+          "name": "Ad Platform Algorithm Update",
+          "description": "Meta/TikTok updated their algo. Reach is down.",
+          "impact": {
+            "traffic": 0.6,
+            "cr": 1,
+            "cpc": 1.5
+          },
+          "probability": 0.2
+        },
+        "timestamp": "2025-12-05T16:41:24.333Z"
+      },
+      {
+        "id": "item_1764952884357_gbgwtuw2r",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "   > Meta/TikTok updated their algo. Reach is down.",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.351Z"
+      },
+      {
+        "id": "item_1764952884374_v7d39jf1b",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "Step 1: Researching winning products...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.368Z"
+      },
+      {
+        "id": "item_1764952884391_g0q4duww1",
+        "_ts": 1764952884,
+        "agent": "ProductResearcher",
+        "message": "info",
+        "level": "Searching for winning products in category: Smart Home",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.386Z"
+      },
+      {
+        "id": "item_1764952884415_t8lqwdj8m",
+        "_ts": 1764952884,
+        "agent": "ProductResearcher",
+        "message": "error",
+        "level": "AI Research failed: AZURE_OPENAI_ENDPOINT is not set",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.402Z"
+      },
+      {
+        "id": "item_1764952884430_7jhfjmo5w",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "🏆 Winner Found: Smart Posture Corrector (Fallback)",
+        "level": "info",
+        "data": {
+          "id": "p1",
+          "name": "Smart Posture Corrector (Fallback)",
+          "potential": "High",
+          "margin": "65%",
+          "images": [
+            "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+          ],
+          "price": 49.99
+        },
+        "timestamp": "2025-12-05T16:41:24.424Z"
+      },
+      {
+        "id": "item_1764952884470_n7iskwmge",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "Step 2: Finding suppliers...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.463Z"
+      },
+      {
+        "id": "item_1764952884494_r2d64db73",
+        "_ts": 1764952884,
+        "agent": "SupplierManager",
+        "message": "info",
+        "level": "[MOCK] Finding suppliers for product: p1",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.488Z"
+      },
+      {
+        "id": "item_1764952884508_o13wbcx7i",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "🤝 Supplier Selected: AliExpress Vendor A",
+        "level": "info",
+        "data": {
+          "id": "s1",
+          "name": "AliExpress Vendor A",
+          "rating": 4.8,
+          "shippingTime": "12-20 days"
+        },
+        "timestamp": "2025-12-05T16:41:24.501Z"
+      },
+      {
+        "id": "item_1764952884536_yfgohd65l",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "Step 3: Building product page...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.528Z"
+      },
+      {
+        "id": "item_1764952884564_xwffo76c0",
+        "_ts": 1764952884,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "level": "Creating product page for: Smart Posture Corrector (Fallback)",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.552Z"
+      },
+      {
+        "id": "item_1764952884587_hc2fpsb2m",
+        "_ts": 1764952884,
+        "agent": "StoreBuilder",
+        "message": "info",
+        "level": "[MOCK] Shopify integration disabled by config. Returning mock data.",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.575Z"
+      },
+      {
+        "id": "item_1764952884609_vkg426lcy",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "🏪 Store Page Live: /products/smart-posture-corrector-(fallback)",
+        "level": "info",
+        "data": {
+          "url": "/products/smart-posture-corrector-(fallback)",
+          "status": "published (mock)",
+          "generated_description": "The amazing Smart Posture Corrector (Fallback) defies gravity!"
+        },
+        "timestamp": "2025-12-05T16:41:24.596Z"
+      },
+      {
+        "id": "item_1764952884639_uxxtj67ki",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "Step 4: Launching ad campaigns...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.629Z"
+      },
+      {
+        "id": "item_1764952884655_hp1k19zg1",
+        "_ts": 1764952884,
+        "agent": "Marketer",
+        "message": "info",
+        "level": "[MOCK] Creating TikTok campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.649Z"
+      },
+      {
+        "id": "item_1764952884676_1ngl2grir",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "📢 TikTok Ads Running. Campaign ID: cmp_7094",
+        "level": "info",
+        "data": {
+          "campaign_id": "cmp_7094",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:41:24.661Z"
+      },
+      {
+        "id": "item_1764952884737_9m4oxzrmn",
+        "_ts": 1764952884,
+        "agent": "Marketer",
+        "message": "info",
+        "level": "[MOCK] Creating Facebook campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.725Z"
+      },
+      {
+        "id": "item_1764952884756_iht3xa9ei",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "📢 Facebook Ads Running. Campaign ID: cmp_6903",
+        "level": "info",
+        "data": {
+          "campaign_id": "cmp_6903",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:41:24.746Z"
+      },
+      {
+        "id": "item_1764952884792_fvyqwsbek",
+        "_ts": 1764952884,
+        "agent": "Marketer",
+        "message": "info",
+        "level": "[MOCK] Creating Instagram campaign for Smart Posture Corrector (Fallback) with budget $100",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:24.783Z"
+      },
+      {
+        "id": "item_1764952884812_xarp8wdcq",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "📢 Instagram Ads Running. Campaign ID: cmp_2806",
+        "level": "info",
+        "data": {
+          "campaign_id": "cmp_2806",
+          "status": "draft",
+          "estimated_reach": 50000
+        },
+        "timestamp": "2025-12-05T16:41:24.801Z"
+      },
+      {
+        "id": "item_1764952884859_366o20hng",
+        "_ts": 1764952884,
+        "agent": "SimulationDirector",
+        "message": "Step 5: Simulating customer traffic...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:24.849Z"
+      },
+      {
+        "id": "item_1764952885905_c8pgg3hh3",
+        "_ts": 1764952885,
+        "agent": "SimulationDirector",
+        "message": "👥 Traffic Report: 264 Visitors generated.",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:25.892Z"
+      },
+      {
+        "id": "item_1764952885930_666vq9p8c",
+        "_ts": 1764952885,
+        "agent": "SimulationDirector",
+        "message": "🎉 SUCCESS! Generated 3 orders.",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:25.920Z"
+      },
+      {
+        "id": "item_1764952885955_5ymyt5ssw",
+        "_ts": 1764952885,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-97164 ($49.99) via Paid - TikTok",
+        "level": "info",
+        "data": {
+          "id": "ORD-97164",
+          "source": "Paid - TikTok",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:41:25.892Z"
+        },
+        "timestamp": "2025-12-05T16:41:25.947Z"
+      },
+      {
+        "id": "item_1764952886007_rh9t77944",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-54254 ($49.99) via Paid - Facebook",
+        "level": "info",
+        "data": {
+          "id": "ORD-54254",
+          "source": "Paid - Facebook",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:41:25.892Z"
+        },
+        "timestamp": "2025-12-05T16:41:25.997Z"
+      },
+      {
+        "id": "item_1764952886058_sf91cbvkg",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "💰 NEW ORDER! ORD-38175 ($49.99) via Paid - Instagram",
+        "level": "info",
+        "data": {
+          "id": "ORD-38175",
+          "source": "Paid - Instagram",
+          "product": "Smart Posture Corrector (Fallback)",
+          "amount": 49.99,
+          "status": "pending",
+          "timestamp": "2025-12-05T16:41:25.892Z"
+        },
+        "timestamp": "2025-12-05T16:41:26.049Z"
+      },
+      {
+        "id": "item_1764952886109_stlm1l9sh",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "Step 6: Fulfilling orders...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:26.098Z"
+      },
+      {
+        "id": "item_1764952886136_z6kqzkpjz",
+        "_ts": 1764952886,
+        "agent": "Operations",
+        "message": "info",
+        "level": "[MOCK] Fulfilling order ORD-97164",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.126Z"
+      },
+      {
+        "id": "item_1764952886155_nj76tzjb2",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-97164 Shipped. Tracking: TRK80036",
+        "level": "info",
+        "data": {
+          "order_id": "ORD-97164",
+          "tracking_number": "TRK80036",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:41:26.144Z"
+      },
+      {
+        "id": "item_1764952886182_wtxnjdlfk",
+        "_ts": 1764952886,
+        "agent": "Operations",
+        "message": "info",
+        "level": "[MOCK] Fulfilling order ORD-54254",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.171Z"
+      },
+      {
+        "id": "item_1764952886202_hf3ylmehn",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-54254 Shipped. Tracking: TRK236430",
+        "level": "info",
+        "data": {
+          "order_id": "ORD-54254",
+          "tracking_number": "TRK236430",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:41:26.192Z"
+      },
+      {
+        "id": "item_1764952886238_2f0r2gnor",
+        "_ts": 1764952886,
+        "agent": "Operations",
+        "message": "info",
+        "level": "[MOCK] Fulfilling order ORD-38175",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.224Z"
+      },
+      {
+        "id": "item_1764952886251_ub1e2bfiz",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "🚚 Order ORD-38175 Shipped. Tracking: TRK535461",
+        "level": "info",
+        "data": {
+          "order_id": "ORD-38175",
+          "tracking_number": "TRK535461",
+          "status": "shipped"
+        },
+        "timestamp": "2025-12-05T16:41:26.246Z"
+      },
+      {
+        "id": "item_1764952886268_c017q3tap",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "Step 6.5: Monitoring for post-sale issues...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:26.263Z"
+      },
+      {
+        "id": "item_1764952886283_uv2wtve36",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "⚠️ ALERT: 3 issues detected!",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:26.277Z"
+      },
+      {
+        "id": "item_1764952886295_iw0qv0djo",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   > [REFUND_REQUEST] Order ORD-97164: Customer changed mind and wants to return the item.",
+        "level": "info",
+        "data": {
+          "id": "TICKET-25630",
+          "orderId": "ORD-97164",
+          "type": "REFUND_REQUEST",
+          "description": "Customer changed mind and wants to return the item.",
+          "agent": "CustomerService",
+          "customer": "Customer_97164"
+        },
+        "timestamp": "2025-12-05T16:41:26.290Z"
+      },
+      {
+        "id": "item_1764952886307_ep4439dp7",
+        "_ts": 1764952886,
+        "agent": "CustomerService",
+        "message": "info",
+        "level": "Processing ticket TICKET-25630",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.303Z"
+      },
+      {
+        "id": "item_1764952886321_5jhj1edfn",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: Thank you for reaching out. [Action: resolve]",
+        "level": "info",
+        "data": {
+          "response": "Thank you for reaching out.",
+          "action": "resolve"
+        },
+        "timestamp": "2025-12-05T16:41:26.312Z"
+      },
+      {
+        "id": "item_1764952886339_2cwsla1ju",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   > [LOST_PACKAGE] Order ORD-54254: Customer claims package never arrived despite tracking saying delivered.",
+        "level": "info",
+        "data": {
+          "id": "TICKET-43699",
+          "orderId": "ORD-54254",
+          "type": "LOST_PACKAGE",
+          "description": "Customer claims package never arrived despite tracking saying delivered.",
+          "agent": "Operations",
+          "customer": "Customer_54254"
+        },
+        "timestamp": "2025-12-05T16:41:26.332Z"
+      },
+      {
+        "id": "item_1764952886355_0gy8f33t9",
+        "_ts": 1764952886,
+        "agent": "Operations",
+        "message": "warn",
+        "level": "Handling shipping issue for ORD-54254: LOST_PACKAGE",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.350Z"
+      },
+      {
+        "id": "item_1764952886371_8b0fbglo2",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   ✅ Ops Resolution: Reshipped. New Tracking: TRK-REPLACEMENT-3828",
+        "level": "info",
+        "data": {
+          "action": "reship",
+          "new_tracking": "TRK-REPLACEMENT-3828"
+        },
+        "timestamp": "2025-12-05T16:41:26.362Z"
+      },
+      {
+        "id": "item_1764952886396_efb3re7ex",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   > [SHIPPING_DELAY] Order ORD-38175: Tracking has not updated in 10 days. Customer is angry.",
+        "level": "info",
+        "data": {
+          "id": "TICKET-19230",
+          "orderId": "ORD-38175",
+          "type": "SHIPPING_DELAY",
+          "description": "Tracking has not updated in 10 days. Customer is angry.",
+          "agent": "CustomerService",
+          "customer": "Customer_38175"
+        },
+        "timestamp": "2025-12-05T16:41:26.387Z"
+      },
+      {
+        "id": "item_1764952886417_9mvnnv6z5",
+        "_ts": 1764952886,
+        "agent": "CustomerService",
+        "message": "info",
+        "level": "Processing ticket TICKET-19230",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.409Z"
+      },
+      {
+        "id": "item_1764952886436_4y6tv64wy",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "   ✅ CS Resolution: We apologize for the inconvenience. [Action: escalate]",
+        "level": "info",
+        "data": {
+          "response": "We apologize for the inconvenience.",
+          "action": "escalate"
+        },
+        "timestamp": "2025-12-05T16:41:26.426Z"
+      },
+      {
+        "id": "item_1764952886459_uj8y5gnu2",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "Step 7: Generating post-mortem report...",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:26.451Z"
+      },
+      {
+        "id": "item_1764952886477_etiacx8an",
+        "_ts": 1764952886,
+        "agent": "Analytics",
+        "message": "info",
+        "level": "Generating report for Simulation Run",
+        "data": null,
+        "timestamp": "2025-12-05T16:41:26.471Z"
+      },
+      {
+        "id": "item_1764952886495_buzb3w5m8",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "📊 Run Summary: Revenue $149.97 | Profit $-150.03",
+        "level": "info",
+        "data": {
+          "period": "Simulation Run",
+          "revenue": 149.97,
+          "costs": 8000,
+          "profit": -150.03,
+          "top_product": "Smart Posture Corrector"
+        },
+        "timestamp": "2025-12-05T16:41:26.486Z"
+      },
+      {
+        "id": "item_1764952886518_2li6ps40u",
+        "_ts": 1764952886,
+        "agent": "SimulationDirector",
+        "message": "✅ SIMULATION COMPLETE",
+        "level": "info",
+        "data": {},
+        "timestamp": "2025-12-05T16:41:26.509Z"
       }
     ],
     "Products": [
@@ -12126,6 +14761,42 @@
         ],
         "price": 49.99,
         "timestamp": "2025-12-04T20:41:27.732Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764951987,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "price": 49.99,
+        "timestamp": "2025-12-05T16:26:27.559Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764952339,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "price": 49.99,
+        "timestamp": "2025-12-05T16:32:19.329Z"
+      },
+      {
+        "id": "p1",
+        "_ts": 1764952884,
+        "name": "Smart Posture Corrector (Fallback)",
+        "potential": "High",
+        "margin": "65%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Posture+Corrector"
+        ],
+        "price": 49.99,
+        "timestamp": "2025-12-05T16:41:24.449Z"
       }
     ],
     "Orders": [
@@ -12990,6 +15661,267 @@
         "amount": 49.99,
         "status": "pending",
         "timestamp": "2025-12-04T20:41:29.233Z"
+      },
+      {
+        "id": "ORD-50580",
+        "_ts": 1764951989,
+        "source": "Direct",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.236Z"
+      },
+      {
+        "id": "ORD-40072",
+        "_ts": 1764951989,
+        "source": "Direct",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.279Z"
+      },
+      {
+        "id": "ORD-89551",
+        "_ts": 1764951989,
+        "source": "Direct",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.321Z"
+      },
+      {
+        "id": "ORD-83455",
+        "_ts": 1764951989,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.375Z"
+      },
+      {
+        "id": "ORD-55221",
+        "_ts": 1764951989,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.421Z"
+      },
+      {
+        "id": "ORD-60281",
+        "_ts": 1764951989,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.461Z"
+      },
+      {
+        "id": "ORD-65140",
+        "_ts": 1764951989,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.507Z"
+      },
+      {
+        "id": "ORD-10969",
+        "_ts": 1764951989,
+        "source": "Paid - TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.555Z"
+      },
+      {
+        "id": "ORD-42498",
+        "_ts": 1764951989,
+        "source": "Paid - TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.616Z"
+      },
+      {
+        "id": "ORD-10030",
+        "_ts": 1764951989,
+        "source": "Paid - TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.678Z"
+      },
+      {
+        "id": "ORD-83506",
+        "_ts": 1764951989,
+        "source": "Paid - TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.736Z"
+      },
+      {
+        "id": "ORD-28785",
+        "_ts": 1764951989,
+        "source": "Paid - Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.791Z"
+      },
+      {
+        "id": "ORD-33024",
+        "_ts": 1764951989,
+        "source": "Paid - Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.850Z"
+      },
+      {
+        "id": "ORD-89943",
+        "_ts": 1764951989,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.911Z"
+      },
+      {
+        "id": "ORD-49804",
+        "_ts": 1764951989,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:29.967Z"
+      },
+      {
+        "id": "ORD-41483",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.005Z"
+      },
+      {
+        "id": "ORD-72275",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.038Z"
+      },
+      {
+        "id": "ORD-42613",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.081Z"
+      },
+      {
+        "id": "ORD-44402",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.130Z"
+      },
+      {
+        "id": "ORD-36999",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.170Z"
+      },
+      {
+        "id": "ORD-47624",
+        "_ts": 1764951990,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:26:30.215Z"
+      },
+      {
+        "id": "ORD-97569",
+        "_ts": 1764952341,
+        "source": "Direct",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:32:21.255Z"
+      },
+      {
+        "id": "ORD-36175",
+        "_ts": 1764952341,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:32:21.324Z"
+      },
+      {
+        "id": "ORD-96675",
+        "_ts": 1764952341,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:32:21.398Z"
+      },
+      {
+        "id": "ORD-39451",
+        "_ts": 1764952341,
+        "source": "SEO",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:32:21.466Z"
+      },
+      {
+        "id": "ORD-83528",
+        "_ts": 1764952341,
+        "source": "Paid - Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:32:21.531Z"
+      },
+      {
+        "id": "ORD-97164",
+        "_ts": 1764952885,
+        "source": "Paid - TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:41:25.975Z"
+      },
+      {
+        "id": "ORD-54254",
+        "_ts": 1764952886,
+        "source": "Paid - Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:41:26.031Z"
+      },
+      {
+        "id": "ORD-38175",
+        "_ts": 1764952886,
+        "source": "Paid - Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "amount": 49.99,
+        "status": "pending",
+        "timestamp": "2025-12-05T16:41:26.079Z"
       }
     ],
     "Ads": [
@@ -13828,6 +16760,105 @@
         "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
         "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
         "timestamp": "2025-12-04T20:41:28.017Z"
+      },
+      {
+        "id": "cmp_561",
+        "_ts": 1764951987,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:26:27.917Z"
+      },
+      {
+        "id": "cmp_8071",
+        "_ts": 1764951988,
+        "platform": "Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:26:28.009Z"
+      },
+      {
+        "id": "cmp_5552",
+        "_ts": 1764951988,
+        "platform": "Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:26:28.106Z"
+      },
+      {
+        "id": "cmp_7949",
+        "_ts": 1764952339,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:32:19.760Z"
+      },
+      {
+        "id": "cmp_1499",
+        "_ts": 1764952339,
+        "platform": "Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:32:19.928Z"
+      },
+      {
+        "id": "cmp_5387",
+        "_ts": 1764952340,
+        "platform": "Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:32:20.035Z"
+      },
+      {
+        "id": "cmp_7094",
+        "_ts": 1764952884,
+        "platform": "TikTok",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Check out the Smart Posture Corrector (Fallback)!",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:41:24.700Z"
+      },
+      {
+        "id": "cmp_6903",
+        "_ts": 1764952884,
+        "platform": "Facebook",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:41:24.770Z"
+      },
+      {
+        "id": "cmp_2806",
+        "_ts": 1764952884,
+        "platform": "Instagram",
+        "product": "Smart Posture Corrector (Fallback)",
+        "budget": 100,
+        "status": "active",
+        "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
+        "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
+        "timestamp": "2025-12-05T16:41:24.830Z"
       }
     ]
   }

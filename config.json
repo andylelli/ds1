@@ -1,5 +1,7 @@
 {
   "dbMode": "mock",
+  "databaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship",
+  "simulatorDatabaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship_sim",
   "logLevel": "info",
   "useSimulatedEndpoints": true,
   "openaiEnabled": true
