@@ -11,7 +11,7 @@
 ```mermaid
 graph TD
     User[User Command: 'Find Pet Product'] -->|Trigger| CEO[CEO Agent]
-    CEO -->|Event: WORKFLOW_STARTED {category: 'Pet'}| Research[Phase 1: Research Agent]
+    CEO -->|Event: WORKFLOW_STARTED - Pet| Research[Phase 1: Research Agent]
     
     subgraph "Phase 1: Opportunity"
         Research -->|Tools: Google Trends, Amazon Scraper| Trends[Analyze Trends]
