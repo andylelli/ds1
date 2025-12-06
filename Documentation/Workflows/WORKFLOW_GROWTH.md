@@ -10,17 +10,34 @@
 
 ```mermaid
 graph TD
-    A[Event: WORKFLOW_STARTED] --> B[Phase 1: Research]
-    B --> C[Event: RESEARCH_COMPLETED]
-    C --> D[Phase 2: Sourcing]
-    D --> E[Event: SOURCING_COMPLETED]
-    E --> F{Phase 3: Approval Gate}
-    F -- Rejected --> G[Event: PRODUCT_REJECTED]
-    F -- Approved --> H[Event: PRODUCT_APPROVED]
-    H --> I[Phase 4: Build Store]
-    I --> J[Event: PRODUCT_PUBLISHED]
-    J --> K[Phase 5: Marketing Launch]
-    K --> L[Event: CAMPAIGN_LAUNCHED]
+    User[User Command: 'Find Pet Product'] -->|Trigger| CEO[CEO Agent]
+    CEO -->|Event: WORKFLOW_STARTED {category: 'Pet'}| Research[Phase 1: Research Agent]
+    
+    subgraph "Phase 1: Opportunity"
+        Research -->|Tools: Google Trends, Amazon Scraper| Trends[Analyze Trends]
+        Trends -->|Tools: Ad Library| Competitor[Check Competitors]
+        Competitor -->|Event: RESEARCH_COMPLETED| Sourcing[Phase 2: Supplier Agent]
+    end
+
+    subgraph "Phase 2: Feasibility"
+        Sourcing -->|Tools: AliExpress Search| FindSup[Find Suppliers]
+        FindSup -->|Tools: Cost Calculator| Calc[Calculate Margin]
+        Calc -->|Event: SOURCING_COMPLETED| Gate{Phase 3: Approval Gate}
+    end
+
+    subgraph "Phase 3: Decision"
+        Gate -- "Margin < 30%" --> Reject[Event: PRODUCT_REJECTED]
+        Gate -- "Margin > 30%" --> Notify[Notify User]
+        Notify -->|User Input: 'YES'| Approve[Event: PRODUCT_APPROVED]
+    end
+
+    subgraph "Phase 4: Execution"
+        Approve -->|Event: PRODUCT_APPROVED| Builder[Phase 4: Store Build Agent]
+        Builder -->|Tools: Shopify API, TinyPNG| Store[Create Product Page]
+        Store -->|Event: PRODUCT_PUBLISHED| Marketer[Phase 5: Marketing Agent]
+        Marketer -->|Tools: Meta Ads API| Ads[Create Campaign]
+        Ads -->|Event: CAMPAIGN_LAUNCHED| Monitor[End: Monitoring Mode]
+    end
 ```
 
 ---

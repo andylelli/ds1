@@ -10,16 +10,39 @@
 
 ```mermaid
 graph TD
-    A[Event: OPTIMIZATION_TICK] --> B[Phase 1: Data Aggregation]
-    B --> C[Event: DATA_READY]
-    C --> D{Phase 2: Decision Logic}
-    D -- ROAS < 1.5 --> E[Phase 3a: Kill Ad]
-    D -- ROAS > 3.0 --> F[Phase 3b: Scale Budget]
-    D -- ROAS 1.5-3.0 --> G[Phase 3c: Creative Refresh]
-    E --> H[Event: AD_PAUSED]
-    F --> I[Event: BUDGET_INCREASED]
-    G --> J[Event: CREATIVE_REQUESTED]
-    H & I & J --> K[Phase 4: Strategic Review]
+    subgraph "Trigger: Schedule"
+        Cron[Cron Job / Timer] -->|Event: OPTIMIZATION_TICK| Analyst[Phase 1: Analytics Agent]
+    end
+
+    subgraph "Phase 1: Data Aggregation"
+        Analyst -->|Tools: Meta Ads API| Ads[Fetch Spend & Clicks]
+        Analyst -->|Tools: Shopify API| Sales[Fetch Revenue & Orders]
+        Ads & Sales -->|Tools: Calculator| ROAS[Compute ROAS & Net Profit]
+        ROAS -->|Event: DATA_READY| Decision{Phase 2: Decision Logic}
+    end
+
+    subgraph "Phase 2: The Rules"
+        Decision -- "Spend > $50 & 0 Orders" --> Kill[Kill Candidate]
+        Decision -- "ROAS < 1.5 (Loss)" --> Kill
+        Decision -- "ROAS > 3.0 (Winner)" --> Scale[Scale Candidate]
+        Decision -- "ROAS 1.5-3.0 (Mid)" --> Hold[Hold Candidate]
+    end
+
+    subgraph "Phase 3: Execution"
+        Kill -->|Tools: Meta Ads API| Pause[Action: Pause Ad Set]
+        Pause -->|Event: AD_PAUSED| Report
+        
+        Scale -->|Tools: Meta Ads API| Boost[Action: Increase Budget 20%]
+        Boost -->|Event: BUDGET_INCREASED| Report
+
+        Hold -->|Tools: GenAI Image| Creative[Action: Generate New Creative]
+        Creative -->|Event: CREATIVE_REQUESTED| Report
+    end
+
+    subgraph "Phase 4: Strategic Review"
+        Report[Log Decision] -->|Tools: DB Ledger| DB[Save Snapshot]
+        DB -->|Event: OPTIMIZATION_COMPLETE| Done[End: Cycle Complete]
+    end
 ```
 
 ---

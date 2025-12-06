@@ -10,15 +10,41 @@
 
 ```mermaid
 graph TD
-    A[Event: ORDER_PAID] --> B[Phase 1: Fulfillment]
-    B --> C[Event: ORDER_FULFILLED]
-    C --> D[Phase 2: Tracking Update]
-    
-    E[Event: TICKET_CREATED] --> F[Phase 3: Triage & Context]
-    F --> G{Phase 4: Resolution Gate}
-    G -- Standard --> H[Phase 5: Auto-Reply]
-    G -- Critical --> I[Phase 6: Escalation]
-    H --> J[Event: TICKET_SOLVED]
+    subgraph "Trigger: New Order"
+        Webhook[Shopify Webhook] -->|Event: ORDER_PAID| Ops[Phase 1: Operations Agent]
+    end
+
+    subgraph "Phase 1: Fulfillment"
+        Ops -->|Tools: Supplier API| Purchase[Place Order @ AliExpress]
+        Purchase -->|Tools: DB Ledger| Log[Log COGS Expense]
+        Log -->|Event: SUPPLIER_ORDER_PLACED| Wait[Wait for Shipping]
+    end
+
+    subgraph "Phase 2: Tracking"
+        Wait -->|Event: SUPPLIER_SHIPPED| Sync[Sync Tracking to Shopify]
+        Sync -->|Tools: Email API| Notify[Email Customer]
+        Notify -->|Event: ORDER_FULFILLED| Done1[End: Order Complete]
+    end
+
+    subgraph "Trigger: Customer Support"
+        Email[Incoming Email] -->|Event: TICKET_CREATED| CS[Phase 3: CS Agent]
+    end
+
+    subgraph "Phase 3: Triage"
+        CS -->|Tools: DB History| Context[Build Context]
+        Context -->|Tools: Sentiment Analysis| Intent[Detect Intent & Mood]
+        Intent -->|Event: TICKET_TRIAGED| Gate{Phase 4: Resolution Gate}
+    end
+
+    subgraph "Phase 4: Resolution"
+        Gate -- "Standard Query" --> Reply[Phase 5: Auto-Reply]
+        Reply -->|Tools: LLM + SMTP| Send[Send Response]
+        Send -->|Event: TICKET_SOLVED| Done2[End: Ticket Closed]
+
+        Gate -- "Critical/Angry" --> Escalate[Phase 6: Escalation]
+        Escalate -->|Tools: Slack/SMS| Alert[Alert Human CEO]
+        Alert -->|Action: Pause Ads| Safety[Event: CAMPAIGN_PAUSED]
+    end
 ```
 
 ---
