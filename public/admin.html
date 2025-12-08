@@ -394,25 +394,26 @@
             appendMessage('user', message);
             input.value = '';
 
-            // 2. Simulate API Call (or real one if available)
-            // In a real scenario: const res = await fetch('/api/ceo/chat', { method: 'POST', body: JSON.stringify({ message }) });
-            
-            // Simulate "Thinking" delay
+            // 2. Call API
             const thinkingId = appendMessage('ceo', 'Thinking...', true);
             
             try {
-                // TODO: Replace with actual API call to the Event Bus / CEO Agent
-                await new Promise(r => setTimeout(r, 1500)); 
+                const res = await fetch('/api/ceo/chat', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message }) 
+                });
+                
+                const data = await res.json();
                 
                 // Remove thinking bubble
                 document.getElementById(thinkingId).remove();
 
-                // Mock Response logic
-                let response = "I've received your request. As the CEO, I'm analyzing the implications.";
-                if (message.toLowerCase().includes('status')) response = "Current System Status: All agents are operational. 3 products are in the research pipeline.";
-                if (message.toLowerCase().includes('approve')) response = "I need to review the margin analysis first. Please provide the Product ID.";
-                
-                appendMessage('ceo', response);
+                if (res.ok) {
+                    appendMessage('ceo', data.response);
+                } else {
+                    appendMessage('ceo', "Error: " + (data.error || "Unknown error"));
+                }
 
             } catch (e) {
                 document.getElementById(thinkingId).remove();

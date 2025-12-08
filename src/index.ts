@@ -33,6 +33,9 @@ import { TrendAnalysisPort } from './core/domain/ports/TrendAnalysisPort.js';
 import { CompetitorAnalysisPort } from './core/domain/ports/CompetitorAnalysisPort.js';
 import { FulfilmentPort } from './core/domain/ports/FulfilmentPort.js';
 import { EmailPort } from './core/domain/ports/EmailPort.js';
+import { AiPort } from './core/domain/ports/AiPort.js';
+import { LiveAiAdapter } from './infra/ai/LiveAiAdapter.js';
+import { MockAiAdapter } from './infra/ai/MockAiAdapter.js';
 
 import { SimulationService } from './core/services/SimulationService.js';
 
@@ -136,9 +139,19 @@ if (emailMode === 'live') {
     emailAdapter = new MockEmailAdapter();
 }
 
+let aiAdapter: AiPort;
+const ceoMode = configService.get('ceoMode');
+if (ceoMode === 'live') {
+    console.log("Using Live AI Adapter (OpenAI)");
+    aiAdapter = new LiveAiAdapter();
+} else {
+    console.log("Using Mock AI Adapter");
+    aiAdapter = new MockAiAdapter();
+}
+
 // Initialize Agents
 const agents = {
-  ceo: new CEOAgent(db),
+  ceo: new CEOAgent(db, aiAdapter),
   research: new ProductResearchAgent(db, trendAdapter, competitorAdapter),
   supplier: new SupplierAgent(db, fulfilmentAdapter),
   store: new StoreBuildAgent(db, shopAdapter),
@@ -291,6 +304,22 @@ app.get('/api/ads', async (req, res) => {
     res.json(ads);
   } catch (error: any) {
     res.status(500).json({ error: "Failed to fetch ads" });
+  }
+});
+
+app.post('/api/ceo/chat', async (req, res) => {
+  const { message } = req.body;
+  if (!message) {
+    res.status(400).json({ error: "Message is required" });
+    return;
+  }
+
+  try {
+    const response = await agents.ceo.chat(message);
+    res.json({ response });
+  } catch (error: any) {
+    console.error("CEO Chat Error:", error);
+    res.status(500).json({ error: "Failed to chat with CEO" });
   }
 });
 

@@ -1,10 +1,13 @@
 import { BaseAgent } from './BaseAgent.js';
-import { openAIService } from '../infra/ai/OpenAIService.js';
+import { AiPort } from '../core/domain/ports/AiPort.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 
 export class CEOAgent extends BaseAgent {
-  constructor(db: PersistencePort) {
+  private ai: AiPort;
+
+  constructor(db: PersistencePort, ai: AiPort) {
     super('CEO', db);
+    this.ai = ai;
   }
 
   async chat(userMessage: string) {
@@ -16,23 +19,15 @@ export class CEOAgent extends BaseAgent {
       const context = logs.map((l: any) => `[${l.timestamp}] ${l.agent} (${l.level}): ${JSON.stringify(l.data)}`).join('\n');
 
       // 2. Ask AI
-      const client = openAIService.getClient();
-      const messages = [
-        { role: "system", content: `You are the CEO of a dropshipping company. You have access to the recent activity logs of your autonomous agent team. 
+      const systemPrompt = `You are the CEO of a dropshipping company. You have access to the recent activity logs of your autonomous agent team. 
         
         Recent Activity Logs:
         ${context}
         
-        Answer the user's question based on these logs. Be professional, insightful, and authoritative. If you don't know, say so.` },
-        { role: "user", content: userMessage }
-      ];
+        Answer the user's question based on these logs. Be professional, insightful, and authoritative. If you don't know, say so.`;
 
-      const result = await client.chat.completions.create({
-        model: openAIService.deploymentName,
-        messages: messages as any,
-      });
-
-      const answer = result.choices[0].message.content;
+      const answer = await this.ai.chat(systemPrompt, userMessage);
+      
       await this.log('chat_response', { answer });
       
       return answer;
@@ -49,17 +44,9 @@ export class CEOAgent extends BaseAgent {
     this.log('info', `CEO is strategizing for goal: ${goal}`);
     
     try {
-      const client = openAIService.getClient();
-      const messages = [
-        { role: "system", content: "You are the CEO of a dropshipping company. Your goal is to orchestrate a team of agents (Product Research, Supplier, Store Build, Marketing, Customer Service, Operations, Analytics). Break down the user's goal into a high-level strategy and assign tasks to these departments. Return a JSON object with a 'strategy' field and a 'delegations' array." },
-        { role: "user", content: goal }
-      ];
-
-      const result = await client.chat.completions.create({
-        model: openAIService.deploymentName,
-        messages: messages as any,
-      });
-      const content = result.choices[0].message.content;
+      const systemPrompt = "You are the CEO of a dropshipping company. Your goal is to orchestrate a team of agents (Product Research, Supplier, Store Build, Marketing, Customer Service, Operations, Analytics). Break down the user's goal into a high-level strategy and assign tasks to these departments. Return a JSON object with a 'strategy' field and a 'delegations' array.";
+      
+      const content = await this.ai.chat(systemPrompt, goal);
       
       if (!content) throw new Error("No content from AI");
 
