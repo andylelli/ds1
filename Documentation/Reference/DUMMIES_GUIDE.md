@@ -76,7 +76,7 @@ Think of Azure Container Apps as a massive, infinite office building.
 
 #### 1.4 The Nervous System: Model Context Protocol (MCP)
 
-In a company with 10 employees, communication is key. If the Marketing Manager speaks French and the CEO speaks Japanese, nothing gets done. In software, this problem is even worse. If the CEO Agent sends a message saying "Do marketing," the Marketing Agent might ask "What budget? Which platform? What image?"
+In a company with 10 employees, communication is key. If the CEO Agent sends a message saying "Do marketing," the Marketing Agent might ask "What budget? Which platform? What image?"
 
 To solve this, we use the **Model Context Protocol (MCP)**.
 MCP is a standardized way for AI agents to talk to each other. It defines a strict structure for requests and responses.
@@ -85,21 +85,21 @@ MCP is a standardized way for AI agents to talk to each other. It defines a stri
 
 By enforcing this protocol, we ensure that our agents are "modular." You can fire the Marketing Agent and hire a better one (update the code), and as long as the new one speaks MCP, the CEO won't even notice the difference. It allows us to build a complex system out of simple, interchangeable parts.
 
-#### 1.5 The Memory: Azure Cosmos DB
+#### 1.5 The Memory: PostgreSQL (The Ledger)
 
 Finally, we need to talk about memory.
 LLMs are "stateless." This means they have amnesia. Every time you send a request to GPT-4, it has no memory of what you asked it 5 minutes ago. It treats every interaction as a blank slate. A CEO with amnesia is useless. "Did we launch that product?" "I don't know."
 
-To fix this, we give the organization an external memory: **Azure Cosmos DB**.
-Cosmos DB is a "NoSQL" database. Unlike a spreadsheet (SQL) which has rigid rows and columns, a NoSQL database is like a giant bucket where you can throw any kind of document.
+To fix this, we give the organization an external memory: **PostgreSQL**.
+PostgreSQL is a powerful, open-source Relational Database. Unlike a simple spreadsheet, it enforces strict rules to ensure our financial data is accurate.
 
-We use a technique called "Event Logging." We don't just store the current state ("We have 50 widgets"). We store the *story* of how we got there.
-*   *Log 1*: Researcher found Widget X.
-*   *Log 2*: Supplier quoted $5.
-*   *Log 3*: CEO approved purchase.
-*   *Log 4*: Inventory updated to 50.
+We use a technique called "Event Sourcing." We don't just store the current state ("We have 50 widgets"). We store the *story* of how we got there.
+*   *Event 1*: Researcher found Widget X.
+*   *Event 2*: Supplier quoted $5.
+*   *Event 3*: CEO approved purchase.
+*   *Event 4*: Inventory updated to 50.
 
-When you ask the CEO "What is the status?", it doesn't just guess. It reads these logs. It "remembers" the history of the company. This gives our agents continuity. It allows them to learn from the past (e.g., "We tried Facebook Ads last month and failed, let's try TikTok").
+When you ask the CEO "What is the status?", it doesn't just guess. It reads these events. It "remembers" the history of the company. This gives our agents continuity. It allows them to learn from the past (e.g., "We tried Facebook Ads last month and failed, let's try TikTok").
 
 #### Summary
 
@@ -108,7 +108,7 @@ So, here is the architecture of your new empire:
 2.  **LLM (GPT-4)**: The intelligence that guides their decisions.
 3.  **Azure Container Apps**: The office where they live 24/7, scaling to zero when idle.
 4.  **MCP**: The language they use to communicate clearly.
-5.  **Cosmos DB**: The memory that records their history and gives them context.
+5.  **PostgreSQL**: The memory that records their history and gives them context.
 
 In the next chapter, we will start building the workbench needed to construct this machine.
 
@@ -370,54 +370,42 @@ We need a password to let our code talk to this brain.
 3.  Copy **KEY 1** and the **Endpoint** (e.g., `https://oai-ds1-prod.openai.azure.com/`).
 4.  Paste these into a Notepad file for now. We will need them in Chapter 6.
 
-#### 4.2 The Memory: Azure Cosmos DB
+#### 4.2 The Memory: Azure Database for PostgreSQL
 
 **What is it?**
-Azure Cosmos DB is a "NoSQL" database.
-*   **SQL (Traditional)**: Think of Excel. You have rows and columns. If you want to store a customer, you must define columns for Name, Age, Address. If a customer has a "Middle Name" and you didn't create a column for it, you get an error.
-*   **NoSQL (Modern)**: Think of a cardboard box. You can throw any document into it. One document can have a Name. Another can have a Name and a Favorite Color. This flexibility is perfect for AI, because AI agents often generate unpredictable data structures.
+PostgreSQL is the world's most advanced open-source relational database.
+*   **SQL (Structured)**: Think of a strict accountant. You have tables with defined columns (Product Name, Price, SKU). If you try to save a product without a price, the database rejects it. This strictness prevents "bad data" from corrupting your business reports.
+*   **Why not NoSQL?**: In the early days, we used NoSQL (Cosmos DB). But as the system grew, we needed complex queries like "Show me all products with ROAS > 2.0 sold in the last 7 days." SQL is perfect for this.
 
-**Why Serverless?**
-Databases are usually expensive because they run 24/7.
-**Cosmos DB Serverless** is different. It sits there, asleep, costing $0. When an agent wants to save a log, it wakes up, saves it (costing maybe $0.00001), and goes back to sleep. For a startup or a test project, this is the only logical choice.
-
-**Step 1: Create the Account**
-1.  Search for "Azure Cosmos DB" in the portal.
+**Step 1: Create the Server**
+1.  Search for "Azure Database for PostgreSQL" in the portal.
 2.  Click "+ Create".
-3.  **Select API**: Choose **Azure Cosmos DB for NoSQL** (it's usually the first option). Click "Create".
+3.  Select **Flexible Server** (This is the modern, cost-effective option).
 4.  **Basics Tab**:
     *   **Resource Group**: `rg-ds1-prod`.
-    *   **Account Name**: `cosmos-ds1-prod-unique` (This needs to be globally unique, so add some random numbers).
-    *   **Location**: `East US`.
-    *   **Capacity Mode**: **Serverless**. (Do not miss this! If you pick "Provisioned Throughput", you will pay ~$25/month minimum. Serverless is pay-per-use).
-5.  Click "Review + create", then "Create".
-    *   *Coffee Break*: This deployment can take 5-10 minutes.
+    *   **Server name**: `psql-ds1-prod-unique` (Add random numbers).
+    *   **Region**: `East US`.
+    *   **Workload type**: Select "Development" (This picks the cheapest tier).
+    *   **Compute + storage**: Click "Configure server". Select **Burstable (B1ms)**. This is often free for the first 12 months.
+5.  **Authentication**:
+    *   **Username**: `ds1admin`.
+    *   **Password**: Create a strong password. **Write this down!**
+6.  **Networking Tab**:
+    *   Check "Allow public access from any Azure service within Azure to this server". (This lets our agents talk to the DB).
+    *   Check "Add current client IP address" (This lets YOU talk to the DB from your laptop).
+7.  Click "Review + create", then "Create".
 
-**Step 2: Create the Database and Container**
-The "Account" is the building. Now we need a filing cabinet (Database) and a drawer (Container).
-1.  Go to your new Cosmos DB resource.
-2.  Click **Data Explorer** on the left menu.
-3.  Click "New Container".
-4.  **New Database**:
-    *   Database id: `ds1-db`.
-5.  **Container**:
-    *   Container id: `logs`.
-    *   **Partition key**: `/agent`.
-        *   *What is this?*: Cosmos DB splits data across many hard drives. It needs to know how to group data. We are grouping it by "Agent Name" so all the CEO's logs stay together.
-6.  Click "OK".
-
-**Step 3: Get the Keys**
-1.  Click "Keys" on the left menu.
-2.  Copy the **URI** and the **PRIMARY KEY**.
-3.  Add these to your Notepad file.
+**Step 2: Get the Connection Details**
+1.  Go to your new Postgres resource.
+2.  On the "Overview" page, copy the **Server name** (e.g., `psql-ds1-prod.postgres.database.azure.com`).
+3.  Your connection string will look like:
+    `postgres://ds1admin:YOUR_PASSWORD@psql-ds1-prod.postgres.database.azure.com:5432/postgres`
 
 #### Summary
 
 You have now provisioned the two most powerful tools in modern computing:
 1.  **GPT-4o**: A reasoning engine capable of passing the Bar Exam.
-2.  **Cosmos DB**: A globally distributed database capable of handling millions of requests per second.
-
-And because you chose "Serverless" and "Pay-As-You-Go," this entire setup is currently costing you **$0.00**.
+2.  **PostgreSQL**: A robust financial ledger for your business data.
 
 In the next chapter, we will dive into the code that connects these two giants.
 
@@ -443,11 +431,8 @@ AZURE_OPENAI_ENDPOINT=https://oai-ds1-prod.openai.azure.com/
 AZURE_OPENAI_API_KEY=your_key_1_here
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 
-# Azure Cosmos DB Configuration
-COSMOS_DB_ENDPOINT=https://cosmos-ds1-prod-unique.documents.azure.com:443/
-COSMOS_DB_KEY=your_primary_key_here
-COSMOS_DB_DATABASE=ds1-db
-COSMOS_DB_CONTAINER=logs
+# Database Configuration (PostgreSQL)
+POSTGRES_CONNECTION_STRING=postgres://ds1admin:YOUR_PASSWORD@psql-ds1-prod.postgres.database.azure.com:5432/postgres
 ```
 
 **Installing Dependencies**
@@ -461,39 +446,46 @@ Our code relies on tools built by other people (libraries).
 Open `package.json`. This is the manifest for our project. You will see a section called `"dependencies"`. Here are the key players:
 
 *   **`openai`**: The official library for talking to GPT-4. It handles the complex HTTP requests for us.
-*   **`@azure/cosmos`**: The driver for our database. It allows us to save and retrieve JSON documents.
-*   **`express`**: A web server framework. It allows our application to listen for incoming requests (like "Hey CEO, start working").
+*   **`pg`**: The driver for PostgreSQL. It allows us to run SQL queries like `SELECT * FROM orders`.
+*   **`express`**: A web server framework. It allows our application to listen for incoming requests.
 *   **`dotenv`**: A tiny utility that reads your `.env` file and makes those variables available to the code.
 
-#### 5.3 The Architecture
+#### 5.3 The Architecture (Hexagonal)
 
-Our project follows a clean, modular structure. We separate "concerns" so the code doesn't become a tangled mess.
+Our project follows a professional design pattern called **Hexagonal Architecture** (or Ports & Adapters). This separates the "Business Logic" from the "Tools".
 
-**1. The Entry Point: `src/index.js`**
-This is the front door. When you start the app, this file runs first.
-*   It starts the **Express** web server.
-*   It listens for API calls (e.g., `POST /api/chat`).
-*   It acts as the **Router**. If a message is for the CEO, it forwards it to the CEO agent. If it's for the Researcher, it forwards it there.
+**1. The Core (`src/core/`)**
+This is the brain. It contains the pure business rules.
+*   **`domain/`**: Defines what a "Product" or "Order" looks like.
+*   **`services/`**: Contains the logic for running the simulation.
 
-**2. The Utility Belt: `src/lib/`**
-This folder contains helper code that doesn't belong to any specific agent.
-*   **`ai.js`**: This is our wrapper around the OpenAI library. Why wrap it? Because if we ever want to switch from Azure OpenAI to another provider, or if we want to add global error handling (like "retry if the AI is busy"), we only have to change it in this one file.
-*   **`db.js`**: This manages the connection to Cosmos DB. It ensures we are connected before we try to save anything. It also provides a simple `log()` function that all agents use to write to the database.
+**2. The Infrastructure (`src/infra/`)**
+This is the toolbox. It contains the code that talks to the outside world.
+*   **`db/`**: Code that talks to PostgreSQL.
+*   **`ai/`**: Code that talks to OpenAI.
+*   **`shop/`**: Code that talks to Shopify.
+
+**3. The Agents (`src/agents/`)**
+These are the employees. Each agent is a class that inherits from `BaseAgent`.
+*   **`CEOAgent.ts`**: The boss.
+*   **`AnalyticsAgent.ts`**: The accountant.
+*   **`MarketingAgent.ts`**: The ad manager.
+*   (And 5 others: Operations, Research, Supplier, Store, Support).
 
 #### 5.4 The Agent Model (Object-Oriented Programming)
 
 This is the heart of the system. We use a programming concept called **Inheritance**.
 
-**The Parent: `src/agents/base.js`**
+**The Parent: `src/agents/BaseAgent.ts`**
 Imagine a generic employee. Every employee needs to:
 1.  Have a name.
 2.  Remember their job description (System Prompt).
 3.  Log their work to the database.
 4.  Handle errors.
 
-Instead of writing this code 5 times (for CEO, CFO, CTO, etc.), we write it ONCE in `BaseAgent`.
+Instead of writing this code 8 times, we write it ONCE in `BaseAgent`.
 
-**The Child: `src/agents/ceoAgent.js`**
+**The Child: `src/agents/CEOAgent.ts`**
 The CEO is a specific type of employee. It "extends" the `BaseAgent`.
 *   It inherits all the logging and error handling capabilities for free.
 *   It adds its own special logic: the `chat()` method.
@@ -574,8 +566,7 @@ While we are here, we need to add the environment variables so the robot can put
 
 *   `AZURE_OPENAI_API_KEY`
 *   `AZURE_OPENAI_ENDPOINT`
-*   `COSMOS_DB_ENDPOINT`
-*   `COSMOS_DB_KEY`
+*   `POSTGRES_CONNECTION_STRING`
 
 #### 6.4 The Instruction Manual (`deploy.yaml`)
 
@@ -621,100 +612,62 @@ If you see green, congratulations. Your autonomous corporation is now running on
 
 ### Chapter 7: Your First Board Meeting
 
-Your agents are alive. They are running in a Microsoft data center, waiting for your command. But how do you talk to them?
+Your agents are alive. They are running, waiting for your command. But how do you talk to them?
 
-We haven't built a website (frontend) yet. Right now, our corporation is "Headless." We will interact with it the way developers do: via **API (Application Programming Interface)**.
+We have built a **Web Admin Panel** to make this easy.
 
-#### 7.1 The Tool: Postman
+#### 7.1 The Admin Panel
 
-To talk to an API, you need an API Client. The industry standard is **Postman**.
-1.  Download and install Postman (it's free).
-2.  Open it and create a new "Collection" named `DropShip AI`.
-3.  This tool allows us to send raw data (JSON) to our agents and see exactly what they reply.
+1.  Open your browser and go to `http://localhost:3000/admin.html`.
+2.  You will see a dashboard with a chat window and a log stream.
+3.  This is your "Mission Control."
 
-#### 7.2 Finding Your Address
-
-Before we can call the agents, we need their phone number.
-1.  Go to the Azure Portal.
-2.  Navigate to your **Container App** resource (`aca-ds1-prod`).
-3.  On the "Overview" page, look for the **Application Url** on the right side.
-4.  It will look like: `https://aca-ds1-prod.happyriver-12345.eastus.azurecontainerapps.io`.
-5.  Copy this URL.
-
-#### 7.3 Agenda Item 1: The Strategy Session
+#### 7.2 Agenda Item 1: The Strategy Session
 
 Let's convene a meeting with the CEO. We want to start a business selling "Ergonomic Office Chairs."
 
-**Configure the Request in Postman:**
-*   **Method**: Select `POST` (we are sending data).
-*   **URL**: Paste your URL and add `/api/chat` at the end.
-    *   e.g., `https://.../api/chat`
-*   **Body Tab**:
-    *   Select **raw**.
-    *   Select **JSON** from the dropdown (it might say "Text" by default).
-    *   Paste this JSON:
-        ```json
-        {
-          "message": "I have $5,000. I want to start a dropshipping business selling high-end ergonomic office chairs. Create a launch strategy."
-        }
-        ```
-*   Click **Send**.
+1.  In the chat box, type: *"I have $5,000. I want to start a dropshipping business selling high-end ergonomic office chairs. Create a launch strategy."*
+2.  Click **Send**.
 
 **The Response:**
-Wait a few seconds. The CEO is thinking (querying GPT-4o). You should get a response like:
-```json
-{
-  "agent": "CEO",
-  "response": "Here is the strategic plan for 'ChairCorp'...\n1. Market Analysis...\n2. Sourcing...\n3. Branding..."
-}
-```
+Wait a few seconds. The CEO is thinking (querying GPT-4o). You should see a response appear in the chat window:
+> "Here is the strategic plan for 'ChairCorp'...\n1. Market Analysis...\n2. Sourcing...\n3. Branding..."
 
 **What just happened?**
-1.  Your request hit the Azure Container App.
-2.  The `index.js` file saw `/api/chat` and woke up the `CeoAgent`.
-3.  The `CeoAgent` downloaded the conversation history from Cosmos DB (it was empty).
+1.  Your request hit the Express server.
+2.  The `index.ts` file saw the request and woke up the `CEOAgent`.
+3.  The `CEOAgent` downloaded the conversation history from PostgreSQL.
 4.  It combined your message with its System Prompt ("You are a CEO...").
 5.  It sent this bundle to Azure OpenAI (`gpt-4o`).
 6.  GPT-4o hallucinated a brilliant business plan.
-7.  The `CeoAgent` saved this plan to Cosmos DB and sent it back to you.
+7.  The `CEOAgent` saved this plan to the database and sent it back to you.
 
-#### 7.4 Agenda Item 2: Market Research
+#### 7.3 Agenda Item 2: Market Research
 
 The CEO's plan says "Step 1: Find a supplier." The CEO doesn't do this work; they delegate. Let's manually trigger the **Product Researcher** agent.
 
-**Configure the Request:**
-*   **Method**: `POST`
-*   **URL**: `https://.../api/agent/research/call`
-    *   Note the URL structure: `/api/agent/{agentName}/call`.
-*   **Body**:
-    ```json
-    {
-      "function_name": "find_winning_products",
-      "arguments": {
-        "category": "Office Furniture",
-        "criteria": "High margin, low shipping weight"
-      }
-    }
-    ```
-*   Click **Send**.
+1.  In the Admin Panel, look for the "Agent Actions" dropdown.
+2.  Select **Product Researcher**.
+3.  Select Action: **Find Winning Products**.
+4.  Enter Arguments: `{ "category": "Office Furniture" }`.
+5.  Click **Execute**.
 
 **The Response:**
 The Researcher will reply with a list of potential products (simulated or real, depending on how we coded the tool).
 
-#### 7.5 Verifying the Minutes (Logs)
+#### 7.4 Verifying the Minutes (Logs)
 
 Did the meeting actually happen if no one took notes?
-1.  Go to the Azure Portal -> **Azure Cosmos DB**.
-2.  Open **Data Explorer**.
-3.  Expand `ds1-db` -> `logs` -> **Items**.
-4.  You will see new documents appearing. Click on one.
-    *   You will see the `timestamp`, the `agent` name, and the `message` content.
-    *   This is the permanent memory of your corporation. Even if you delete the Container App, this memory survives.
+1.  Look at the **Live Log Stream** on the right side of the Admin Panel.
+2.  You will see new lines appearing:
+    *   `[INFO] CEO Agent received message...`
+    *   `[INFO] Product Researcher found 5 items...`
+3.  This is the permanent memory of your corporation. Even if you restart the server, this memory survives in PostgreSQL.
 
 #### Summary
 
 You have successfully:
-1.  Located your cloud application.
+1.  Opened your Mission Control.
 2.  Sent a high-level strategic command to the AI CEO.
 3.  Sent a specific tactical command to the AI Researcher.
 4.  Verified that the corporate memory is working.
@@ -748,14 +701,14 @@ To sell things, we need a store.
     SHOPIFY_STORE_URL=my-cool-store.myshopify.com
     SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxx
     ```
-4.  **The Code (`src/tools/shopify.js`)**:
-    We write a simple function that uses the `fetch` command to talk to Shopify.
-    ```javascript
-    async function createProduct(title, price) {
+4.  **The Code (`src/infra/shop/ShopifyAdapter.ts`)**:
+    We write a simple class that uses the `fetch` command to talk to Shopify.
+    ```typescript
+    async createProduct(title: string, price: number) {
        // Code to POST to Shopify API
     }
     ```
-5.  **Register the Tool**: We tell the `ProductManagerAgent`: "You now have the ability to `createProduct`."
+5.  **Register the Tool**: We tell the `StoreBuildAgent`: "You now have the ability to `createProduct`."
 
 #### 8.3 Deep Dive: Stripe (The Bank)
 
@@ -809,20 +762,18 @@ If the CEO Agent stops responding, how do you know why? Is it dead? Is it thinki
 
 **The Live Feed (Log Stream)**
 This is like watching the Matrix code. You can see the raw thoughts of your agents in real-time.
-1.  Go to the Azure Portal.
-2.  Navigate to your Container App (`aca-ds1-prod`).
-3.  On the left menu, under "Monitoring", click **Log stream**.
-4.  You will see a black console window.
-5.  Send a request via Postman.
-6.  Watch the text fly by. You'll see:
+1.  Open the **Web Admin Panel** (`localhost:3000/admin.html`).
+2.  Look at the "System Logs" panel on the right.
+3.  Send a request via the Chat.
+4.  Watch the text fly by. You'll see:
     *   `[INFO] Incoming request from...`
     *   `[DEBUG] CEO Agent querying OpenAI...`
     *   `[ERROR] OpenAI API timed out...` (if something goes wrong).
 
-**The Black Box (Cosmos DB)**
+**The Black Box (PostgreSQL)**
 The Log Stream is ephemeral (it disappears when you close the window). For permanent records, we use the database.
-*   If you want to audit a decision the CEO made last Tuesday, go to **Cosmos DB Data Explorer**.
-*   Query the `logs` container: `SELECT * FROM c WHERE c.agent = 'CEO'`.
+*   If you want to audit a decision the CEO made last Tuesday, connect to your Postgres database using a tool like **pgAdmin** or **DBeaver**.
+*   Query the `logs` table: `SELECT * FROM logs WHERE agent = 'CEO'`.
 
 #### 9.2 Cost Management: The CFO's Job
 
@@ -835,10 +786,10 @@ You are running enterprise-grade infrastructure. If you aren't careful, it can g
     *   After 30 minutes of silence, the app shuts down completely.
     *   **Cost when idle**: $0.00.
 
-**2. Azure Cosmos DB Serverless (The Memory)**
-*   **Pricing Model**: You pay for "Request Units" (RUs). 1 RU is roughly equal to reading a 1KB document.
-*   **Cost**: ~$0.25 per 1,000,000 RUs.
-*   **Reality**: Unless you have millions of customers, your bill will likely be pennies.
+**2. Azure Database for PostgreSQL (The Memory)**
+*   **Pricing Model**: You pay for the compute tier and storage.
+*   **Cost**: The "Burstable B1ms" tier is often free for the first 12 months. After that, it's ~$15/month.
+*   **Alternative**: You can use a serverless Postgres provider like Neon.tech for a free tier.
 
 **3. Azure OpenAI (The Brain)**
 *   **Pricing Model**: You pay per "Token" (roughly 0.75 words).
