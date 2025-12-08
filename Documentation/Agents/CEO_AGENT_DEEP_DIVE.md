@@ -31,6 +31,7 @@ The CEO is the final line of defense against "hallucinations" and wasted budget.
 The CEO is the only agent the user talks to directly.
 *   **Synthesis:** Aggregates logs from 7 other agents into a concise "Morning Briefing."
 *   **Command Line:** Translates natural language ("Stop all ads") into system commands (`marketing.pause_all_campaigns()`).
+*   **Reporting:** Proactively generates business intelligence reports (P&L, Performance, Forecasts) for the user.
 
 ---
 
@@ -55,6 +56,7 @@ The CEO has a unique set of "Meta-Tools" to control the simulation.
 *   `ceo.reject_product(id, reason)`: Marks product as `REJECTED` and logs the reason.
 *   `ceo.pause_system()`: A "Red Button" that sends a halt signal to all agents.
 *   `ceo.query_metrics(metric)`: Queries the `AnalyticsAgent` for specific data points (e.g., "Current ROAS").
+*   `ceo.generate_report(type)`: Compiles data into a human-readable format (e.g., "Daily P&L", "Weekly Summary").
 
 ---
 
@@ -86,6 +88,15 @@ The CEO has a unique set of "Meta-Tools" to control the simulation.
     *   *Internal Thought:* "We are losing money fast. Pause immediately."
     *   **Action:** Calls `marketing.pause_campaign(999)`.
     *   **Action:** Emits `USER_NOTIFICATION { msg: "I paused Campaign 999 due to low ROAS." }`.
+
+### Scenario C: Reporting & Intelligence
+1.  **User:** "Give me the weekly performance report."
+2.  **CEO:**
+    *   Calls `analytics.generate_report({ period: '7d' })`.
+    *   Calls `marketing.get_campaign_performance({ period: '7d' })`.
+    *   *Internal Thought:* "Revenue is up 15%, but ad costs rose 20%. Net profit is flat."
+    *   **Action:** Generates a Markdown-formatted report highlighting the margin compression issue.
+    *   **Action:** Returns the report to the Chat Interface.
 
 ---
 
