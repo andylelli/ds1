@@ -142,3 +142,68 @@ The system relies on two core architectural pillars:
 *   **Emits:** `RESEARCH_COMPLETED`, `TREND_DETECTED`
 
 ---
+
+### 🎧 Customer Service Agent
+**Role:** The Support Representative
+**Objective:** To resolve customer inquiries quickly and empathetically, maintaining a high Trustpilot score and preventing chargebacks.
+
+#### 📋 Key Responsibilities
+*   **Ticket Triage:** Reads incoming emails/messages and categorizes them by intent (e.g., "Where is my order?", "Refund Request", "Product Question").
+*   **Sentiment Analysis:** Detects the customer's mood. If a customer is "Angry" or "Threatening Legal Action," it escalates the ticket immediately.
+*   **Auto-Response:** Uses LLMs to draft and send personalized replies to common queries (WISMO - Where Is My Order) without human intervention.
+*   **FAQ Generation:** Proactively creates Help Center articles based on recurring questions about a new product.
+
+#### 🛠️ Tools & Capabilities
+*   `support.check_emails()`: Fetches unread messages from the support inbox.
+*   `support.handle_ticket(ticket_id, message)`: Analyzes the content and drafts a reply or action plan.
+*   `support.send_reply(email, content)`: Dispatches the final response to the customer.
+*   `support.issue_refund(order_id)`: Triggers a refund in Shopify (requires strict rules/approval).
+
+#### ⚡ Event Interactions
+*   **Listens For:** `TICKET_CREATED`, `ORDER_FULFILLED` (to send proactive updates)
+*   **Emits:** `TICKET_TRIAGED`, `TICKET_SOLVED`, `ESCALATION_TRIGGERED`
+
+---
+
+### 🏗️ Store Build Agent
+**Role:** The Developer & Designer
+**Objective:** To create high-converting Shopify product pages that look professional and trustworthy.
+
+#### 📋 Key Responsibilities
+*   **Product Page Creation:** Takes raw product data (name, images) and builds a complete Shopify listing.
+*   **Copy Generation:** Uses AI to write compelling product descriptions, benefit bullets, and "Why Buy From Us" sections.
+*   **SEO Optimization:** Generates meta titles, descriptions, and URL handles to improve organic search visibility.
+*   **Image Optimization:** (Planned) Compresses and renames images for faster load times and better SEO.
+
+#### 🛠️ Tools & Capabilities
+*   `store.create_product_page(product_data)`: Pushes a new product to the Shopify store via API.
+*   `store.generate_description(product_name)`: Calls an LLM to write sales copy.
+*   `store.optimize_seo(product_id)`: Updates the search engine listing preview.
+*   `store.set_pricing(product_id, price, compare_at_price)`: Configures the visible price and "sale" price.
+
+#### ⚡ Event Interactions
+*   **Listens For:** `PRODUCT_APPROVED`
+*   **Emits:** `PRODUCT_PUBLISHED`
+
+---
+
+### 🚚 Supplier Agent
+**Role:** The Sourcing Manager
+**Objective:** To secure the best possible unit cost (COGS) and shipping times for approved products.
+
+#### 📋 Key Responsibilities
+*   **Supplier Discovery:** Searches AliExpress, CJ Dropshipping, and other databases to find vendors for a specific product.
+*   **Vetting:** Evaluates suppliers based on their rating, years in business, and shipping speed (e.g., "Must offer 10-day shipping to USA").
+*   **Margin Calculation:** Computes the gross margin by comparing the supplier's cost + shipping against the target retail price.
+*   **Negotiation:** (Planned) Simulates messaging suppliers to ask for bulk discounts.
+
+#### 🛠️ Tools & Capabilities
+*   `supplier.find_suppliers(product_name)`: Returns a list of potential vendors with pricing and shipping info.
+*   `supplier.negotiate_price(supplier_id, target_price)`: Attempts to lower the unit cost.
+*   `supplier.calculate_margin(retail_price, unit_cost, shipping_cost)`: Returns the profit margin percentage.
+
+#### ⚡ Event Interactions
+*   **Listens For:** `RESEARCH_COMPLETED`
+*   **Emits:** `SOURCING_COMPLETED`
+
+---
