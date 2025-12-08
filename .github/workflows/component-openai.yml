@@ -22,7 +22,7 @@ on:
       suffix:
         description: 'Unique Suffix (must be unique globally for DNS)'
         required: true
-        default: 'ds1dev'
+        default: 'ds1sweden'
 
 permissions:
   id-token: write

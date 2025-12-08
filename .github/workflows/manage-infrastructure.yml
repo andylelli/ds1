@@ -31,7 +31,7 @@ on:
       suffix:
         description: 'Unique Suffix (for naming)'
         required: true
-        default: 'ds1dev'
+        default: 'ds1sweden'
 
 permissions:
   id-token: write
