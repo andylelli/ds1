@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropShip AI: Audio Narratives</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .track-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 6px solid #3498db;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .track-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .track-card:nth-child(2) { border-left-color: #9b59b6; }
+        .track-card:nth-child(3) { border-left-color: #e67e22; }
+
+        .track-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .track-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .track-number {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .track-desc {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .tags {
+            display: flex;
+            gap: 10px;
+        }
+        .tag {
+            background: #f0f2f5;
+            color: #666;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .instructions {
+            margin-top: 50px;
+            background: #e8f6f3;
+            border: 1px solid #d1f2eb;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #16a085;
+        }
+        code {
+            background: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎧 DropShip AI Narratives</h1>
+        <div class="subtitle">Audio-First Documentation Series</div>
+    </header>
+
+    <div class="playlist">
+        <!-- Track 1 -->
+        <a href="DUMMIES_GUIDE_AUDIO.md" class="track-card">
+            <div class="track-header">
+                <h2 class="track-title">The Dummies Guide to Autonomous Dropshipping</h2>
+                <span class="track-number">Track 01</span>
+            </div>
+            <p class="track-desc">
+                <strong>Start Here.</strong> A high-level overview of the business model, the "Brain in a Box" analogy, and why we use Hexagonal Architecture.
+            </p>
+            <div class="tags">
+                <span class="tag">Business</span>
+                <span class="tag">Architecture</span>
+                <span class="tag">Intro</span>
+            </div>
+        </a>
+
+        <!-- Track 2 -->
+        <a href="EVENT_BUS_AND_MCP_AUDIO.md" class="track-card">
+            <div class="track-header">
+                <h2 class="track-title">The Nervous System & The Hands</h2>
+                <span class="track-number">Track 02</span>
+            </div>
+            <p class="track-desc">
+                <strong>Technical Deep Dive.</strong> Explaining the invisible wiring (Event Bus) and the tool interface (MCP) that powers the agents.
+            </p>
+            <div class="tags">
+                <span class="tag">Technical</span>
+                <span class="tag">Events</span>
+                <span class="tag">MCP</span>
+            </div>
+        </a>
+
+        <!-- Track 3 -->
+        <a href="AGENT_ROLES_AUDIO.md" class="track-card">
+            <div class="track-header">
+                <h2 class="track-title">The Cast of Characters</h2>
+                <span class="track-number">Track 03</span>
+            </div>
+            <p class="track-desc">
+                <strong>The Workforce.</strong> A guided tour of the 8 specialized agents, defining their personalities, tools, and responsibilities.
+            </p>
+            <div class="tags">
+                <span class="tag">Agents</span>
+                <span class="tag">Roles</span>
+                <span class="tag">Personality</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="instructions">
+        <h3>🛠️ How to Use</h3>
+        <p>These files are written specifically for <strong>Text-to-Speech (TTS)</strong> engines.</p>
+        <ol>
+            <li>Click a card above to open the Markdown file.</li>
+            <li>Copy the raw text content.</li>
+            <li>Paste it into your preferred TTS tool (e.g., ElevenLabs, OpenAI, Azure Speech).</li>
+            <li><strong>Recommended Settings:</strong> Use a "Documentary" or "News Anchor" style voice at 1.0x speed.</li>
+        </ol>
+    </div>
+</body>
+</html>
