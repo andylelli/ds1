@@ -23,7 +23,7 @@ on:
       resource_group:
         description: 'Azure Resource Group Name'
         required: true
-        default: 'dropship-1-rg'
+        default: 'dropship-1-uksouth'
       location:
         description: 'Azure Region'
         required: true
@@ -57,7 +57,7 @@ jobs:
         uses: azure/arm-deploy@v2
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: ${{ inputs.resource_group }}
+          resourceGroupName: 'dropship-1-swedencentral'
           template: ./infra/modules/openai.bicep
           parameters: location=swedencentral suffix=${{ inputs.suffix }}
 
@@ -66,7 +66,7 @@ jobs:
         run: |
           RESOURCE_NAME="openai-${{ inputs.suffix }}"
           echo "⚠️ Deleting OpenAI Account: $RESOURCE_NAME..."
-          az cognitiveservices account delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes
+          az cognitiveservices account delete --name $RESOURCE_NAME --resource-group dropship-1-swedencentral --yes
           echo "✅ Resource deleted."
 
   manage-cosmos:
