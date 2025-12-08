@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -147,6 +149,8 @@ const agents = {
     ops: new OperationsAgent(db),
     analytics: new AnalyticsAgent(db)
 };
+// Inject team into CEO
+agents.ceo.setTeam(agents);
 // Initialize Services
 const simulationService = new SimulationService(db, agents);
 // --- Configuration API ---

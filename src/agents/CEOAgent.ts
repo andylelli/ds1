@@ -2,8 +2,20 @@ import { BaseAgent } from './BaseAgent.js';
 import { AiPort, ToolDefinition } from '../core/domain/ports/AiPort.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 
+// Define a Team interface to avoid circular imports if possible, or just use any for now
+interface Team {
+    research: any;
+    supplier: any;
+    store: any;
+    marketing: any;
+    support: any;
+    ops: any;
+    analytics: any;
+}
+
 export class CEOAgent extends BaseAgent {
   private ai: AiPort;
+  private team: Team | null = null;
   
   private aiTools: ToolDefinition[] = [
     {
@@ -27,12 +39,62 @@ export class CEOAgent extends BaseAgent {
         },
         required: ['reason']
       }
+    },
+    {
+        name: 'startProductResearch',
+        description: 'Instruct the Research Agent to find winning products in a specific category.',
+        parameters: {
+            type: 'object',
+            properties: {
+                category: { type: 'string', description: 'The niche or category to research (e.g., "Fitness", "Pet Supplies")' }
+            },
+            required: ['category']
+        }
+    },
+    {
+        name: 'sourceProduct',
+        description: 'Instruct the Supplier Agent to find suppliers for a specific product.',
+        parameters: {
+            type: 'object',
+            properties: {
+                productId: { type: 'string', description: 'The ID of the product to source' }
+            },
+            required: ['productId']
+        }
+    },
+    {
+        name: 'buildStorePage',
+        description: 'Instruct the Store Agent to create a product page.',
+        parameters: {
+            type: 'object',
+            properties: {
+                productId: { type: 'string', description: 'The ID of the product to build a page for' }
+            },
+            required: ['productId']
+        }
+    },
+    {
+        name: 'launchMarketingCampaign',
+        description: 'Instruct the Marketing Agent to launch an ad campaign.',
+        parameters: {
+            type: 'object',
+            properties: {
+                productId: { type: 'string', description: 'The ID of the product to market' },
+                platform: { type: 'string', description: 'The ad platform (Facebook, TikTok, Instagram)' },
+                budget: { type: 'number', description: 'The budget for the campaign' }
+            },
+            required: ['productId', 'platform', 'budget']
+        }
     }
   ];
 
   constructor(db: PersistencePort, ai: AiPort) {
     super('CEO', db);
     this.ai = ai;
+  }
+
+  public setTeam(team: Team) {
+      this.team = team;
   }
 
   async chat(userMessage: string) {
@@ -75,35 +137,17 @@ export class CEOAgent extends BaseAgent {
         Instructions:
         1. Answer the user's question based strictly on the data above.
         2. Be professional, insightful, and authoritative.
-        3. You have access to tools to approve/reject products. Use them when explicitly asked.
-        4. If you don't know the answer, say so.`;
+        3. You have access to tools to manage the entire business lifecycle:
+           - Research new products
+           - Approve/Reject products
+           - Source products
+           - Build store pages
+           - Launch marketing campaigns
+        4. Use these tools when the user asks you to perform an action.
+        5. If you don't know the answer, say so.`;
 
       // 4. Define Tools
-      const tools: ToolDefinition[] = [
-        {
-            name: "approveProduct",
-            description: "Approves a product for the next stage (e.g., Sourcing or Marketing).",
-            parameters: {
-                type: "object",
-                properties: {
-                    productId: { type: "string", description: "The ID of the product to approve" }
-                },
-                required: ["productId"]
-            }
-        },
-        {
-            name: "rejectProduct",
-            description: "Rejects a product and stops further work on it.",
-            parameters: {
-                type: "object",
-                properties: {
-                    productId: { type: "string", description: "The ID of the product to reject" },
-                    reason: { type: "string", description: "The reason for rejection" }
-                },
-                required: ["productId", "reason"]
-            }
-        }
-      ];
+      const tools = this.aiTools;
 
       const response = await this.ai.chat(systemPrompt, userMessage, tools);
       
@@ -117,6 +161,39 @@ export class CEOAgent extends BaseAgent {
               if (tool.name === 'rejectProduct') {
                   await this.rejectProduct(tool.arguments.productId, tool.arguments.reason);
                   return `I have rejected product ${tool.arguments.productId}. Reason: ${tool.arguments.reason}`;
+              }
+              if (tool.name === 'startProductResearch') {
+                  if (!this.team) return "I cannot start research because my team is not assembled.";
+                  // Run in background to avoid timeout
+                  this.team.research.findWinningProducts({ category: tool.arguments.category }).catch((err: any) => console.error(err));
+                  return `I have instructed the Research team to look for products in the ${tool.arguments.category} category. Check back in a moment for results.`;
+              }
+              if (tool.name === 'sourceProduct') {
+                  if (!this.team) return "I cannot source products because my team is not assembled.";
+                  this.team.supplier.findSuppliers({ product_id: tool.arguments.productId }).catch((err: any) => console.error(err));
+                  return `I have instructed the Supplier team to find suppliers for product ${tool.arguments.productId}.`;
+              }
+              if (tool.name === 'buildStorePage') {
+                  if (!this.team) return "I cannot build the store because my team is not assembled.";
+                  const products = await this.db.getProducts();
+                  const product = products.find((p: any) => p.id === tool.arguments.productId);
+                  if (!product) return `Product ${tool.arguments.productId} not found.`;
+                  
+                  this.team.store.createProductPage({ product_data: product }).catch((err: any) => console.error(err));
+                  return `I have instructed the Store team to build the page for ${product.name}.`;
+              }
+              if (tool.name === 'launchMarketingCampaign') {
+                  if (!this.team) return "I cannot launch campaigns because my team is not assembled.";
+                  const products = await this.db.getProducts();
+                  const product = products.find((p: any) => p.id === tool.arguments.productId);
+                  if (!product) return `Product ${tool.arguments.productId} not found.`;
+
+                  this.team.marketing.createAdCampaign({
+                      platform: tool.arguments.platform,
+                      budget: tool.arguments.budget,
+                      product: product.name
+                  }).catch((err: any) => console.error(err));
+                  return `I have instructed the Marketing team to launch a ${tool.arguments.platform} campaign for ${product.name} with a budget of $${tool.arguments.budget}.`;
               }
           }
       }
