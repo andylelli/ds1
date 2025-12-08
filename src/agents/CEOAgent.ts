@@ -98,6 +98,8 @@ export class CEOAgent extends BaseAgent {
   }
 
   async chat(userMessage: string) {
+    console.log('[CEOAgent.chat] called with:', userMessage);
+      console.log('[CEOAgent] Using AI adapter:', this.ai);
     await this.log('chat_request', { message: userMessage });
 
     try {

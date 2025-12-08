@@ -80,6 +80,8 @@ export class CEOAgent extends BaseAgent {
         this.team = team;
     }
     async chat(userMessage) {
+        console.log('[CEOAgent.chat] called with:', userMessage);
+        console.log('[CEOAgent] Using AI adapter:', this.ai);
         await this.log('chat_request', { message: userMessage });
         try {
             // 1. Retrieve comprehensive context

@@ -1,6 +1,28 @@
+// Ensure dotenv loads before anything else
 import dotenv from 'dotenv';
 dotenv.config();
+// Minimal, gated environment debug to avoid secret leakage.
+// Set `DEBUG_ENV=true` to enable a filtered, partially-masked dump of relevant vars.
+const showDebugEnv = process.env.DEBUG_ENV === 'true';
+function _mask(v?: string) {
+  if (!v) return '<unset>';
+  if (v.length <= 8) return '****';
+  return `${v.slice(0, 4)}...${v.slice(-4)}`;
+}
+if (showDebugEnv) {
+  console.log('ENV DEBUG (filtered, masked):', Object.keys(process.env)
+    .filter(k => k.includes('OPENAI') || k.includes('AZURE') || k.includes('KEY'))
+    .reduce((acc, k) => {
+      const val = process.env[k];
+      // Show full value for endpoints (urls), otherwise mask
+      (acc as { [key: string]: string | undefined })[k] = typeof val === 'string' && /^https?:\/\//.test(val) ? val : _mask(val);
+      return acc;
+    }, {} as { [key: string]: string | undefined }));
+} else {
+  console.log('ENV DEBUG: disabled (set DEBUG_ENV=true to enable filtered env output)');
+}
 import express from 'express';
+import { openAIService } from './infra/ai/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { CEOAgent } from './agents/CEOAgent.js';
@@ -47,6 +69,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+
+// --- Startup validation (fail fast if critical env missing)
+const requiredEnv = ['AZURE_OPENAI_ENDPOINT', 'AZURE_OPENAI_DEPLOYMENT_NAME'];
+const missing = requiredEnv.filter(k => !process.env[k]);
+if (missing.length) {
+  console.error('Missing required environment variables:', missing.join(', '));
+  console.error('Aborting startup. Set these env vars and restart.');
+  process.exit(1);
+}
 
 // Serve static files with explicit path and logging
 const publicPath = path.resolve(process.cwd(), 'public');
@@ -313,6 +344,7 @@ app.get('/api/ads', async (req, res) => {
 });
 
 app.post('/api/ceo/chat', async (req, res) => {
+  console.log('[API] /api/ceo/chat called with body:', req.body);
   const { message } = req.body;
   if (!message) {
     res.status(400).json({ error: "Message is required" });
@@ -323,8 +355,25 @@ app.post('/api/ceo/chat', async (req, res) => {
     const response = await agents.ceo.chat(message);
     res.json({ response });
   } catch (error: any) {
-    console.error("CEO Chat Error:", error);
-    res.status(500).json({ error: "Failed to chat with CEO" });
+    console.error('[API] /api/ceo/chat error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Health & readiness endpoints
+app.get('/health', (req, res) => res.sendStatus(200));
+app.get('/ready', async (req, res) => {
+  try {
+    // lightweight readiness check: ensure AI client can be constructed
+    try {
+      openAIService.getClient();
+    } catch (err: any) {
+      console.warn('Ready check: openAI client not ready', err && err.message ? err.message : String(err));
+      return res.status(503).json({ ready: false, reason: 'AI client not ready' });
+    }
+    return res.json({ ready: true });
+  } catch (err: any) {
+    return res.status(500).json({ ready: false, error: err.message });
   }
 });
 
@@ -378,3 +427,16 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Admin Panel: http://localhost:${PORT}`);
 });
+
+// --- Global error handlers ---
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// --- Keep-alive interval to prevent process exit ---
+setInterval(() => {
+  // This does nothing but keeps the event loop alive
+}, 1000 * 60 * 5); // 5 minutes
