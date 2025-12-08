@@ -27,7 +27,7 @@ on:
       location:
         description: 'Azure Region'
         required: true
-        default: 'swedencentral'
+        default: 'uksouth'
       suffix:
         description: 'Unique Suffix (for naming)'
         required: true
@@ -59,7 +59,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ inputs.resource_group }}
           template: ./infra/modules/openai.bicep
-          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+          parameters: location=swedencentral suffix=${{ inputs.suffix }}
 
       - name: Destroy OpenAI
         if: ${{ inputs.action == 'destroy' }}
