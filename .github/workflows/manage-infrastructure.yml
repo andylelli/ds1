@@ -27,7 +27,7 @@ on:
       location:
         description: 'Azure Region'
         required: true
-        default: 'eastus2'
+        default: 'uksouth'
       suffix:
         description: 'Unique Suffix (for naming)'
         required: true
