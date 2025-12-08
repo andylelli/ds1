@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Infrastructure Manager</title>
     <link rel="stylesheet" href="admin.css">
+    <style>
+        .config-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .config-table th, .config-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .config-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .config-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Mode Colors */
+        tr.mode-mock td:nth-child(2) { background-color: #f3f4f6; color: #4b5563; }
+        tr.mode-test td:nth-child(2) { background-color: #fffbeb; color: #92400e; }
+        tr.mode-live td:nth-child(2) { background-color: #ecfdf5; color: #065f46; }
+        
+        /* Indicator strip */
+        tr.mode-mock td:first-child { border-left: 4px solid #9ca3af; }
+        tr.mode-test td:first-child { border-left: 4px solid #f59e0b; }
+        tr.mode-live td:first-child { border-left: 4px solid #10b981; }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: white;
+        }
+    </style>
 </head>
 <body>
     <!-- Sidebar -->
@@ -25,95 +67,129 @@
         <div id="statusMsg" class="status-msg"></div>
 
         <form id="configForm">
-            <div class="grid">
-                <!-- Shop & Ads -->
-                <div class="card">
-                    <h2>🛍️ Commerce & Marketing</h2>
-                    
-                    <label for="shopMode">Shop Platform</label>
-                    <select id="shopMode" name="shopMode">
-                        <option value="mock">Mock (Local Simulation)</option>
-                        <option value="test">Test (Shopify Dev Store)</option>
-                        <option value="live">Live (Real Shopify Store)</option>
-                    </select>
-                    <div class="description">Controls where products are created and orders are fetched from.</div>
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%">Component</th>
+                        <th style="width: 30%">Configuration Mode</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Shop -->
+                    <tr class="config-row">
+                        <td><strong>Shop Platform</strong></td>
+                        <td>
+                            <select id="shopMode" name="shopMode">
+                                <option value="mock">Mock (Local Simulation)</option>
+                                <option value="test">Test (Shopify Dev Store)</option>
+                                <option value="live">Live (Real Shopify Store)</option>
+                            </select>
+                        </td>
+                        <td>Controls where products are created and orders are fetched from.</td>
+                    </tr>
 
-                    <label for="adsMode">Advertising Platform</label>
-                    <select id="adsMode" name="adsMode">
-                        <option value="mock">Mock (Local Simulation)</option>
-                        <option value="test">Test (Sandbox APIs)</option>
-                        <option value="live">Live (Real Ad Spend)</option>
-                    </select>
-                    <div class="description">Controls where ad campaigns are deployed.</div>
-                </div>
+                    <!-- Ads -->
+                    <tr class="config-row">
+                        <td><strong>Advertising Platform</strong></td>
+                        <td>
+                            <select id="adsMode" name="adsMode">
+                                <option value="mock">Mock (Local Simulation)</option>
+                                <option value="test">Test (Sandbox APIs)</option>
+                                <option value="live">Live (Real Ad Spend)</option>
+                            </select>
+                        </td>
+                        <td>Controls where ad campaigns are deployed.</td>
+                    </tr>
 
-                <!-- Research & Trends -->
-                <div class="card">
-                    <h2>🔍 Research & Intelligence</h2>
-                    
-                    <label for="trendsMode">Market Trends</label>
-                    <select id="trendsMode" name="trendsMode">
-                        <option value="mock">Mock (Static Data)</option>
-                        <option value="live">Live (Google Trends/AI)</option>
-                    </select>
-                    <div class="description">Source of viral trend data.</div>
+                    <!-- Trends -->
+                    <tr class="config-row">
+                        <td><strong>Market Trends</strong></td>
+                        <td>
+                            <select id="trendsMode" name="trendsMode">
+                                <option value="mock">Mock (Static Data)</option>
+                                <option value="live">Live (Google Trends/AI)</option>
+                            </select>
+                        </td>
+                        <td>Source of viral trend data.</td>
+                    </tr>
 
-                    <label for="researchMode">Competitor Analysis</label>
-                    <select id="researchMode" name="researchMode">
-                        <option value="mock">Mock (Static Data)</option>
-                        <option value="live">Live (Ad Spy/Scraping)</option>
-                    </select>
-                    <div class="description">Source of competitor intelligence.</div>
-                </div>
+                    <!-- Research -->
+                    <tr class="config-row">
+                        <td><strong>Competitor Analysis</strong></td>
+                        <td>
+                            <select id="researchMode" name="researchMode">
+                                <option value="mock">Mock (Static Data)</option>
+                                <option value="live">Live (Ad Spy/Scraping)</option>
+                            </select>
+                        </td>
+                        <td>Source of competitor intelligence.</td>
+                    </tr>
 
-                <!-- Operations -->
-                <div class="card">
-                    <h2>📦 Operations & Support</h2>
-                    
-                    <label for="fulfilmentMode">Fulfilment</label>
-                    <select id="fulfilmentMode" name="fulfilmentMode">
-                        <option value="mock">Mock (Instant)</option>
-                        <option value="live">Live (AliExpress/CJ)</option>
-                    </select>
-                    <div class="description">How orders are fulfilled with suppliers.</div>
+                    <!-- Fulfilment -->
+                    <tr class="config-row">
+                        <td><strong>Fulfilment</strong></td>
+                        <td>
+                            <select id="fulfilmentMode" name="fulfilmentMode">
+                                <option value="mock">Mock (Instant)</option>
+                                <option value="live">Live (AliExpress/CJ)</option>
+                            </select>
+                        </td>
+                        <td>How orders are fulfilled with suppliers.</td>
+                    </tr>
 
-                    <label for="emailMode">Email System</label>
-                    <select id="emailMode" name="emailMode">
-                        <option value="mock">Mock (Console Log)</option>
-                        <option value="live">Live (SMTP/SendGrid)</option>
-                    </select>
-                    <div class="description">How customer emails are sent and received.</div>
-                </div>
+                    <!-- Email -->
+                    <tr class="config-row">
+                        <td><strong>Email System</strong></td>
+                        <td>
+                            <select id="emailMode" name="emailMode">
+                                <option value="mock">Mock (Console Log)</option>
+                                <option value="live">Live (SMTP/SendGrid)</option>
+                            </select>
+                        </td>
+                        <td>How customer emails are sent and received.</td>
+                    </tr>
 
-                <!-- System -->
-                <div class="card">
-                    <h2>⚙️ System Settings</h2>
-                    
-                    <label for="ceoMode">CEO Agent Mode</label>
-                    <select id="ceoMode" name="ceoMode">
-                        <option value="mock">Mock (Scripted Responses)</option>
-                        <option value="live">Live (OpenAI LLM)</option>
-                    </select>
-                    <div class="description">Controls the intelligence level of the CEO Chat.</div>
+                    <!-- CEO -->
+                    <tr class="config-row">
+                        <td><strong>CEO Agent Mode</strong></td>
+                        <td>
+                            <select id="ceoMode" name="ceoMode">
+                                <option value="mock">Mock (Scripted Responses)</option>
+                                <option value="live">Live (OpenAI LLM)</option>
+                            </select>
+                        </td>
+                        <td>Controls the intelligence level of the CEO Chat.</td>
+                    </tr>
 
-                    <label for="loggingMode">Logging Output</label>
-                    <select id="loggingMode" name="loggingMode">
-                        <option value="console">Console (Standard Output)</option>
-                        <option value="file">File (logs/app.log)</option>
-                    </select>
-                    <div class="description">Where agent logs are written.</div>
+                    <!-- Logging -->
+                    <tr class="config-row">
+                        <td><strong>Logging Output</strong></td>
+                        <td>
+                            <select id="loggingMode" name="loggingMode">
+                                <option value="console">Console (Standard Output)</option>
+                                <option value="file">File (logs/app.log)</option>
+                            </select>
+                        </td>
+                        <td>Where agent logs are written.</td>
+                    </tr>
 
-                    <label for="trafficScale">Traffic Scale (0.1 - 1.0)</label>
-                    <select id="trafficScale" name="trafficScale">
-                        <option value="0.1">Low (10%)</option>
-                        <option value="0.5">Medium (50%)</option>
-                        <option value="1.0">Full (100%)</option>
-                    </select>
-                    <div class="description">Volume of simulated traffic.</div>
-                </div>
-            </div>
+                    <!-- Traffic -->
+                    <tr class="config-row">
+                        <td><strong>Traffic Scale</strong></td>
+                        <td>
+                            <select id="trafficScale" name="trafficScale">
+                                <option value="0.1">Low (10%)</option>
+                                <option value="0.5">Medium (50%)</option>
+                                <option value="1.0">Full (100%)</option>
+                            </select>
+                        </td>
+                        <td>Volume of simulated traffic.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="save-bar">
+            <div class="save-bar" style="margin-top: 2rem;">
                 <span style="color: #6b7280; font-size: 0.9rem;">Changes will apply after restart</span>
                 <button type="submit">💾 Save Configuration</button>
             </div>
@@ -122,6 +198,23 @@
 
     <script>
         const form = document.getElementById('configForm');
+
+        function updateRowColor(select) {
+            const row = select.closest('tr');
+            const val = select.value;
+            
+            // Remove existing mode classes
+            row.classList.remove('mode-mock', 'mode-test', 'mode-live');
+            
+            // Add new class based on value
+            if (val === 'mock' || val === 'console' || val === '0.1') {
+                row.classList.add('mode-mock');
+            } else if (val === 'test' || val === '0.5') {
+                row.classList.add('mode-test');
+            } else if (val === 'live' || val === 'file' || val === '1.0') {
+                row.classList.add('mode-live');
+            }
+        }
 
         function showStatus(msg, type = 'success') {
             const el = document.getElementById('statusMsg');
@@ -145,6 +238,7 @@
                     const el = document.getElementById(field);
                     if (el && config[field]) {
                         el.value = config[field];
+                        updateRowColor(el); // Update color on load
                     }
                 });
             } catch (err) {
@@ -152,6 +246,11 @@
                 showStatus('Failed to load configuration.', 'error');
             }
         }
+
+        // Add event listeners for color updates
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', () => updateRowColor(select));
+        });
 
         // Save config
         form.addEventListener('submit', async (e) => {

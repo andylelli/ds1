@@ -29,7 +29,7 @@ const defaults: AppConfig = {
   researchMode: 'mock',
   fulfilmentMode: 'mock',
   emailMode: 'mock',
-  ceoMode: 'mock',
+  ceoMode: 'live',
   loggingMode: 'console',
   logLevel: 'info',
   useSimulatedEndpoints: true,
