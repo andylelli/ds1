@@ -26,6 +26,13 @@ const sidebarHTML = `
     </div>
 
     <div class="nav-section">
+        <div class="nav-label">Executive</div>
+        <a href="/admin.html#ceo-chat" class="nav-item" data-tab="ceo-chat">
+            <span style="color: red;">☎️</span> <span>Chat with CEO</span>
+        </a>
+    </div>
+
+    <div class="nav-section">
         <div class="nav-label">System</div>
         <a href="/infra.html" class="nav-item" data-page="infra.html">
             <span>🏗️</span> <span>Infra Manager</span>

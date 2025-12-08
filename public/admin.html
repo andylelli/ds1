@@ -36,6 +36,26 @@
             </div>
         </div>
 
+        <!-- CEO CHAT -->
+        <div id="ceo-chat" class="tab-content hidden">
+            <div class="page-header">
+                <h1 class="page-title">Chat with CEO</h1>
+                <span style="color: #6b7280; font-size: 0.9rem;">Direct line to the Chief Executive Agent</span>
+            </div>
+            <div class="chat-container">
+                <div id="chatHistory" class="chat-history">
+                    <div class="chat-message ceo">
+                        <div class="sender-name">CEO Agent</div>
+                        Hello. I am ready to discuss business strategy, approve products, or review performance metrics. How can I assist you today?
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="ceoChatInput" placeholder="Type your message here..." onkeypress="handleChatKey(event)">
+                    <button onclick="sendCeoMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
         <!-- PRODUCTS -->
         <div id="products" class="tab-content hidden">
             <div class="page-header">
@@ -174,6 +194,7 @@
             if (tabId === 'orders') fetchOrders();
             if (tabId === 'ads') fetchAds();
             if (tabId === 'database') { fetchDbTopics(); fetchDbData(); }
+            if (tabId === 'ceo-chat') setTimeout(() => document.getElementById('ceoChatInput').focus(), 100);
         }
 
         // Handle initial hash
@@ -357,6 +378,60 @@
                 html += '</tbody></table>';
                 list.innerHTML = html;
             } catch (e) { list.innerHTML = `<p class="error">Error fetching data: ${e.message}</p>`; }
+        }
+
+        // --- CEO Chat ---
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendCeoMessage();
+        }
+
+        async function sendCeoMessage() {
+            const input = document.getElementById('ceoChatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 1. Add User Message
+            appendMessage('user', message);
+            input.value = '';
+
+            // 2. Simulate API Call (or real one if available)
+            // In a real scenario: const res = await fetch('/api/ceo/chat', { method: 'POST', body: JSON.stringify({ message }) });
+            
+            // Simulate "Thinking" delay
+            const thinkingId = appendMessage('ceo', 'Thinking...', true);
+            
+            try {
+                // TODO: Replace with actual API call to the Event Bus / CEO Agent
+                await new Promise(r => setTimeout(r, 1500)); 
+                
+                // Remove thinking bubble
+                document.getElementById(thinkingId).remove();
+
+                // Mock Response logic
+                let response = "I've received your request. As the CEO, I'm analyzing the implications.";
+                if (message.toLowerCase().includes('status')) response = "Current System Status: All agents are operational. 3 products are in the research pipeline.";
+                if (message.toLowerCase().includes('approve')) response = "I need to review the margin analysis first. Please provide the Product ID.";
+                
+                appendMessage('ceo', response);
+
+            } catch (e) {
+                document.getElementById(thinkingId).remove();
+                appendMessage('ceo', "Error: Unable to reach the CEO Agent.");
+            }
+        }
+
+        function appendMessage(sender, text, isTemp = false) {
+            const history = document.getElementById('chatHistory');
+            const div = document.createElement('div');
+            div.className = `chat-message ${sender}`;
+            if (isTemp) div.id = 'msg-' + Date.now();
+            
+            const name = sender === 'user' ? 'You' : 'CEO Agent';
+            div.innerHTML = `<div class="sender-name">${name}</div>${text}`;
+            
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+            return div.id;
         }
 
         // --- Config ---

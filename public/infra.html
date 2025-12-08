@@ -89,6 +89,13 @@
                 <div class="card">
                     <h2>⚙️ System Settings</h2>
                     
+                    <label for="ceoMode">CEO Agent Mode</label>
+                    <select id="ceoMode" name="ceoMode">
+                        <option value="mock">Mock (Scripted Responses)</option>
+                        <option value="live">Live (OpenAI LLM)</option>
+                    </select>
+                    <div class="description">Controls the intelligence level of the CEO Chat.</div>
+
                     <label for="loggingMode">Logging Output</label>
                     <select id="loggingMode" name="loggingMode">
                         <option value="console">Console (Standard Output)</option>
@@ -133,7 +140,7 @@
                 const config = await res.json();
                 
                 // Populate fields
-                const fields = ['shopMode', 'adsMode', 'trendsMode', 'researchMode', 'fulfilmentMode', 'emailMode', 'loggingMode', 'trafficScale'];
+                const fields = ['shopMode', 'adsMode', 'trendsMode', 'researchMode', 'fulfilmentMode', 'emailMode', 'loggingMode', 'trafficScale', 'ceoMode'];
                 fields.forEach(field => {
                     const el = document.getElementById(field);
                     if (el && config[field]) {

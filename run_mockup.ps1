@@ -5,4 +5,4 @@ Write-Host "Database: sandbox_db.json" -ForegroundColor Green
 Write-Host ""
 
 $env:DS1_MODE = "mock"
-node src/index.js
+node dist/index.js
