@@ -9,6 +9,7 @@ export interface AppConfig {
   researchMode: 'mock' | 'live';
   fulfilmentMode: 'mock' | 'live';
   emailMode: 'mock' | 'live';
+  ceoMode: 'mock' | 'live';
   loggingMode: 'console' | 'file';
   logLevel: 'debug' | 'info' | 'warn' | 'error';
   useSimulatedEndpoints: boolean;
@@ -28,6 +29,7 @@ const defaults: AppConfig = {
   researchMode: 'mock',
   fulfilmentMode: 'mock',
   emailMode: 'mock',
+  ceoMode: 'mock',
   loggingMode: 'console',
   logLevel: 'info',
   useSimulatedEndpoints: true,

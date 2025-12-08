@@ -1,20 +1,16 @@
-import { AiPort, AiResponse, ToolDefinition } from '../../core/domain/ports/AiPort.js';
 import { openAIService } from './OpenAIService.js';
-
-export class LiveAiAdapter implements AiPort {
-    async chat(systemPrompt: string, userMessage: string, tools?: ToolDefinition[]): Promise<AiResponse> {
+export class LiveAiAdapter {
+    async chat(systemPrompt, userMessage, tools) {
         try {
             const client = openAIService.getClient();
             const messages = [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userMessage }
             ];
-
-            const request: any = {
+            const request = {
                 model: openAIService.deploymentName,
                 messages: messages,
             };
-
             if (tools && tools.length > 0) {
                 request.tools = tools.map(t => ({
                     type: 'function',
@@ -25,20 +21,18 @@ export class LiveAiAdapter implements AiPort {
                     }
                 }));
             }
-
             const result = await client.chat.completions.create(request);
             const choice = result.choices[0];
-
             return {
                 content: choice.message.content,
                 toolCalls: choice.message.tool_calls?.map(tc => ({
                     id: tc.id,
-                    name: (tc as any).function.name,
-                    arguments: JSON.parse((tc as any).function.arguments)
+                    name: tc.function.name,
+                    arguments: JSON.parse(tc.function.arguments)
                 }))
             };
-
-        } catch (error: any) {
+        }
+        catch (error) {
             console.error("OpenAI Error:", error);
             return { content: `Error communicating with AI: ${error.message}` };
         }

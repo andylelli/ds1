@@ -1,6 +1,7 @@
 import { PersistencePort } from '../domain/ports/PersistencePort.js';
 import { ShopPlatformPort } from '../domain/ports/ShopPlatformPort.js';
 import { AdsPlatformPort } from '../domain/ports/AdsPlatformPort.js';
+import { CEOAgent } from '../../agents/CEOAgent.js';
 import { ProductResearchAgent } from '../../agents/ProductResearchAgent.js';
 import { SupplierAgent } from '../../agents/SupplierAgent.js';
 import { StoreBuildAgent } from '../../agents/StoreBuildAgent.js';
@@ -12,6 +13,7 @@ export class SimulationService {
   constructor(
     private db: PersistencePort,
     private agents: {
+      ceo: CEOAgent;
       research: ProductResearchAgent;
       supplier: SupplierAgent;
       store: StoreBuildAgent;
@@ -38,6 +40,24 @@ export class SimulationService {
 
       // Save initial product state
       await this.db.saveProduct({ ...productData, price: 29.99 });
+
+      // 1.5 CEO Approval
+      console.log(`[Simulation] Requesting CEO Approval for: ${productData.name}`);
+      const approval = await this.agents.ceo.evaluateProduct(productData);
+      
+      if (!approval.approved) {
+          console.log(`[Simulation] CEO Rejected Product: ${approval.reason}`);
+          await this.db.saveLog('Simulation', 'Product Rejected by CEO', 'warning', { 
+              product: productData.name,
+              reason: approval.reason 
+          });
+          return;
+      }
+      console.log(`[Simulation] CEO Approved Product: ${approval.reason}`);
+      await this.db.saveLog('Simulation', 'Product Approved by CEO', 'success', { 
+          product: productData.name,
+          reason: approval.reason 
+      });
 
       // 2. Source
       await this.agents.supplier.findSuppliers({ product_id: productData.id });

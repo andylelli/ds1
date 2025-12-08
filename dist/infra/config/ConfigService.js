@@ -9,6 +9,7 @@ const defaults = {
     researchMode: 'mock',
     fulfilmentMode: 'mock',
     emailMode: 'mock',
+    ceoMode: 'mock',
     loggingMode: 'console',
     logLevel: 'info',
     useSimulatedEndpoints: true,

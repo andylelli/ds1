@@ -27,6 +27,22 @@ export class SimulationService {
             console.log(`[Simulation] Selected Product: ${productData.name}`);
             // Save initial product state
             await this.db.saveProduct({ ...productData, price: 29.99 });
+            // 1.5 CEO Approval
+            console.log(`[Simulation] Requesting CEO Approval for: ${productData.name}`);
+            const approval = await this.agents.ceo.evaluateProduct(productData);
+            if (!approval.approved) {
+                console.log(`[Simulation] CEO Rejected Product: ${approval.reason}`);
+                await this.db.saveLog('Simulation', 'Product Rejected by CEO', 'warning', {
+                    product: productData.name,
+                    reason: approval.reason
+                });
+                return;
+            }
+            console.log(`[Simulation] CEO Approved Product: ${approval.reason}`);
+            await this.db.saveLog('Simulation', 'Product Approved by CEO', 'success', {
+                product: productData.name,
+                reason: approval.reason
+            });
             // 2. Source
             await this.agents.supplier.findSuppliers({ product_id: productData.id });
             // 3. Build Store

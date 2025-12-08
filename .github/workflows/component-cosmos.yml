@@ -1,0 +1,78 @@
+name: Component - Cosmos DB
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'create'
+        type: choice
+        options:
+        - create
+        - destroy
+      resource_group:
+        description: 'Azure Resource Group Name'
+        required: true
+        default: 'ds1-rg'
+      location:
+        description: 'Azure Region'
+        required: true
+        default: 'eastus2'
+      suffix:
+        description: 'Unique Suffix'
+        required: true
+        default: 'ds1dev'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  manage-cosmos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Cosmos DB
+        if: ${{ inputs.action == 'create' }}
+        uses: azure/arm-deploy@v2
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resource_group }}
+          template: ./infra/modules/cosmos.bicep
+          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+
+      - name: Display Connection Details
+        if: ${{ inputs.action == 'create' }}
+        run: |
+          RESOURCE_NAME="cosmos-${{ inputs.suffix }}"
+          echo "Retrieving details for $RESOURCE_NAME..."
+          
+          ENDPOINT=$(az cosmosdb show --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --query documentEndpoint -o tsv)
+          KEY=$(az cosmosdb keys list --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --query primaryMasterKey -o tsv)
+          
+          echo "--------------------------------------------------"
+          echo "✅ Cosmos DB Deployed Successfully"
+          echo "--------------------------------------------------"
+          echo "Endpoint: $ENDPOINT"
+          
+          echo "::notice title=Cosmos Endpoint::$ENDPOINT"
+          echo "::add-mask::$KEY"
+          echo "::notice title=Cosmos Key::$KEY"
+
+      - name: Destroy Cosmos DB
+        if: ${{ inputs.action == 'destroy' }}
+        run: |
+          RESOURCE_NAME="cosmos-${{ inputs.suffix }}"
+          echo "⚠️ Deleting Cosmos DB: $RESOURCE_NAME..."
+          az cosmosdb delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes --verbose
+          echo "✅ Resource deleted."
