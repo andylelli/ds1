@@ -14,7 +14,7 @@ on:
       resource_group:
         description: 'Azure Resource Group Name'
         required: true
-        default: 'ds1-rg'
+        default: 'dropship-1-rg'
       location:
         description: 'Azure Region'
         required: true

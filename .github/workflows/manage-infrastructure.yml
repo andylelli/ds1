@@ -1,0 +1,163 @@
+name: Manage Infrastructure Components
+
+on:
+  workflow_dispatch:
+    inputs:
+      component:
+        description: 'Component to Manage'
+        required: true
+        type: choice
+        options:
+        - openai
+        - cosmos
+        - acr
+        - host
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'create'
+        type: choice
+        options:
+        - create
+        - destroy
+      resource_group:
+        description: 'Azure Resource Group Name'
+        required: true
+        default: 'dropship-1-rg'
+      location:
+        description: 'Azure Region'
+        required: true
+        default: 'eastus2'
+      suffix:
+        description: 'Unique Suffix (for naming)'
+        required: true
+        default: 'ds1dev'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  manage-openai:
+    if: ${{ inputs.component == 'openai' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create OpenAI
+        if: ${{ inputs.action == 'create' }}
+        uses: azure/arm-deploy@v2
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resource_group }}
+          template: ./infra/modules/openai.bicep
+          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+
+      - name: Destroy OpenAI
+        if: ${{ inputs.action == 'destroy' }}
+        run: |
+          RESOURCE_NAME="openai-${{ inputs.suffix }}"
+          echo "⚠️ Deleting OpenAI Account: $RESOURCE_NAME..."
+          az cognitiveservices account delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes
+          echo "✅ Resource deleted."
+
+  manage-cosmos:
+    if: ${{ inputs.component == 'cosmos' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Cosmos DB
+        if: ${{ inputs.action == 'create' }}
+        uses: azure/arm-deploy@v2
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resource_group }}
+          template: ./infra/modules/cosmos.bicep
+          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+
+      - name: Destroy Cosmos DB
+        if: ${{ inputs.action == 'destroy' }}
+        run: |
+          RESOURCE_NAME="cosmos-${{ inputs.suffix }}"
+          echo "⚠️ Deleting Cosmos DB Account: $RESOURCE_NAME..."
+          az cosmosdb delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes
+          echo "✅ Resource deleted."
+
+  manage-acr:
+    if: ${{ inputs.component == 'acr' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create ACR
+        if: ${{ inputs.action == 'create' }}
+        uses: azure/arm-deploy@v2
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resource_group }}
+          template: ./infra/modules/acr.bicep
+          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+
+      - name: Destroy ACR
+        if: ${{ inputs.action == 'destroy' }}
+        run: |
+          RESOURCE_NAME="acr${{ inputs.suffix }}"
+          echo "⚠️ Deleting ACR: $RESOURCE_NAME..."
+          az acr delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes
+          echo "✅ Resource deleted."
+
+  manage-host:
+    if: ${{ inputs.component == 'host' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Environment
+        if: ${{ inputs.action == 'create' }}
+        uses: azure/arm-deploy@v2
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ inputs.resource_group }}
+          template: ./infra/modules/host.bicep
+          parameters: location=${{ inputs.location }} suffix=${{ inputs.suffix }}
+
+      - name: Destroy Environment
+        if: ${{ inputs.action == 'destroy' }}
+        run: |
+          RESOURCE_NAME="cae-${{ inputs.suffix }}"
+          echo "⚠️ Deleting Container Apps Environment: $RESOURCE_NAME..."
+          az containerapp env delete --name $RESOURCE_NAME --resource-group ${{ inputs.resource_group }} --yes
+          echo "✅ Resource deleted."
