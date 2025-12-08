@@ -27,7 +27,7 @@ jobs:
         id: infra
         run: |
           # We assume the 'dev' environment for the main branch
-          RG_NAME="rg-ds1-dev"
+          RG_NAME="dropship-1-uksouth"
           APP_NAME="ds1-agent-dev"
           
           # Get ACR details dynamically
