@@ -5,9 +5,10 @@ The DropShip AI (DS1) system operates as a **multi-agent swarm**, where speciali
 
 This document serves as the definitive reference for each agent's role, defining what they do, what tools they can access, and how they interact with the rest of the system.
 
-The system relies on two core architectural pillars:
+The system relies on three core architectural pillars:
 1.  **Event Bus:** An asynchronous messaging backbone that allows agents to react to system changes (e.g., `ORDER_PAID`) without tight coupling.
 2.  **Model Context Protocol (MCP):** A standardized interface that gives agents safe, structured access to external tools (Shopify, Meta Ads, Database) and local resources.
+3.  **OpenAI (LLM):** The cognitive engine powering the agents' decision-making, copywriting, and data synthesis capabilities.
 
 ---
 
@@ -43,7 +44,7 @@ The system relies on two core architectural pillars:
 *   **Reporting Interface:** Serves as the primary conversational interface for the human user. It synthesizes logs from all other agents into coherent status updates, translating technical logs into business insights.
 
 #### 🛠️ Tools & Capabilities
-*   `ceo.chat(message)`: Analyzes system-wide logs to answer human queries about business health.
+*   `ceo.chat(message)`: Uses **OpenAI** to analyze system-wide logs and answer human queries about business health.
 *   `ceo.approve_product(productId)`: Authorizes the Store Builder and Marketing agents to proceed with a launch.
 *   `ceo.reject_product(productId)`: Terminates a product candidate to prevent wasted ad spend.
 *   `ceo.pause_simulation()`: Emergency stop mechanism that halts all agent activities.
@@ -111,7 +112,7 @@ The system relies on two core architectural pillars:
 
 #### 🛠️ Tools & Capabilities
 *   `marketing.create_ad_campaign(platform, budget, product)`: Initializes a new campaign structure.
-*   `marketing.write_copy(product, angle)`: Generates text for ads (e.g., "Fear of Missing Out" angle vs. "Benefit-Driven").
+*   `marketing.write_copy(product, angle)`: Uses **OpenAI** to generate persuasive ad copy and headlines (e.g., "Fear of Missing Out" angle vs. "Benefit-Driven").
 *   `marketing.update_budget(campaign_id, new_amount)`: Scales spend up or down.
 *   `marketing.pause_ad(ad_id)`: Stops spending on a specific ad creative.
 
@@ -150,7 +151,7 @@ The system relies on two core architectural pillars:
 #### 📋 Key Responsibilities
 *   **Ticket Triage:** Reads incoming emails/messages and categorizes them by intent (e.g., "Where is my order?", "Refund Request", "Product Question").
 *   **Sentiment Analysis:** Detects the customer's mood. If a customer is "Angry" or "Threatening Legal Action," it escalates the ticket immediately.
-*   **Auto-Response:** Uses LLMs to draft and send personalized replies to common queries (WISMO - Where Is My Order) without human intervention.
+*   **Auto-Response:** Uses **OpenAI** to draft and send personalized replies to common queries (WISMO - Where Is My Order) without human intervention.
 *   **FAQ Generation:** Proactively creates Help Center articles based on recurring questions about a new product.
 
 #### 🛠️ Tools & Capabilities
@@ -177,7 +178,7 @@ The system relies on two core architectural pillars:
 
 #### 🛠️ Tools & Capabilities
 *   `store.create_product_page(product_data)`: Pushes a new product to the Shopify store via API.
-*   `store.generate_description(product_name)`: Calls an LLM to write sales copy.
+*   `store.generate_description(product_name)`: Calls **OpenAI** to write high-converting sales copy.
 *   `store.optimize_seo(product_id)`: Updates the search engine listing preview.
 *   `store.set_pricing(product_id, price, compare_at_price)`: Configures the visible price and "sale" price.
 
@@ -199,7 +200,7 @@ The system relies on two core architectural pillars:
 
 #### 🛠️ Tools & Capabilities
 *   `supplier.find_suppliers(product_name)`: Returns a list of potential vendors with pricing and shipping info.
-*   `supplier.negotiate_price(supplier_id, target_price)`: Attempts to lower the unit cost.
+*   `supplier.negotiate_price(supplier_id, target_price)`: Uses **OpenAI** to simulate messaging suppliers and attempt to lower the unit cost.
 *   `supplier.calculate_margin(retail_price, unit_cost, shipping_cost)`: Returns the profit margin percentage.
 
 #### ⚡ Event Interactions

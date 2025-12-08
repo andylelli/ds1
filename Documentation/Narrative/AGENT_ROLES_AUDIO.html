@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cast of Characters: Meet the Agents - Audio Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { color: #2c3e50; font-size: 2.5em; margin-bottom: 0.2em; }
+        h2 { color: #3498db; margin-top: 40px; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; }
+        h3 { color: #2c3e50; margin-top: 30px; font-weight: 600; }
+        h4 { color: #7f8c8d; margin-top: 20px; font-style: italic; }
+        p { margin-bottom: 20px; font-size: 1.1em; }
+        ul { margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+        
+        /* The "Copy" Button */
+        .controls {
+            position: sticky;
+            top: 20px;
+            float: right;
+            z-index: 100;
+        }
+        .btn-copy {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-copy:hover { background-color: #27ae60; transform: translateY(-2px); }
+        .btn-copy:active { transform: translateY(0); }
+        
+        .highlight { background-color: #fff3cd; padding: 2px 5px; border-radius: 3px; }
+        .code-concept { font-family: 'Consolas', monospace; color: #e74c3c; background: #f9f9f9; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button class="btn-copy" onclick="copyScript()">
+            📋 Copy Script for TTS
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>🎧 The Cast of Characters: Meet the Agents</h1>
+        <h4>An Audio Tour of the Autonomous Workforce</h4>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+        <h3>Introduction</h3>
+        <p>Welcome back. In our previous sessions, we built the office building (the Architecture) and installed the wiring (the Event Bus). Now, it is time to meet the employees.</p>
+        <p>In Project DS1, we don't have a single "AI" that does everything. We have a swarm of specialized agents. Think of them as a team of experts, each with their own desk, their own tools, and their own personality.</p>
+        <p>Today, we are going to walk through the office and interview each of the eight core agents. We will learn what drives them, what tools they hold in their hands, and how they make decisions when you aren't watching.</p>
+
+        <h2>1. The CEO Agent: The Conductor</h2>
+        <p>We start in the corner office. This is the domain of the <strong>CEO Agent</strong>.</p>
+        <p>In many AI systems, the "Main Loop" is just a simple <span class="code-concept">while(true)</span> script. But in DS1, the CEO is a distinct persona. Its role is <strong>Orchestration and Risk Management</strong>.</p>
+        <p>Imagine a conductor in front of an orchestra. The conductor doesn't play the violin. They don't hit the drums. But without them, the music is just noise. The CEO Agent decides <em>when</em> the violin plays.</p>
+        <p><strong>A Day in the Life:</strong><br>The CEO spends most of its time listening. It is subscribed to the high-level channels of the Event Bus. It hears "Research Complete." It hears "Campaign Launched." It hears "Profit Margin Dropping."</p>
+        <p>Its primary job is to make the "Go/No-Go" decisions that are too risky for other agents.<br>For example, the Research Agent might find a product that looks great: a "Galaxy Projector." The data looks good. But the CEO Agent has a broader context. It might check the bank account and see we only have $500 left. It knows that launching a new product costs $200 in testing ads.<br>A junior agent might say "Launch it!" The CEO says, "No. We need to conserve cash. Reject."</p>
+        <p>The CEO is also the <strong>Interface to You</strong>. When you type "How are we doing?" into the chat, you are talking to the CEO. It doesn't guess the answer. It queries the logs of the other seven agents, synthesizes the chaos into a clean executive summary, and presents it to you. It is the only agent allowed to speak directly to the human owner.</p>
+
+        <h2>2. The Product Research Agent: The Hunter</h2>
+        <p>Next, we move to the R&D lab. This is where the <strong>Product Research Agent</strong> lives.</p>
+        <p>This agent is an insatiable hunter. It never sleeps. Its objective is simple but difficult: <strong>Find the Winners.</strong></p>
+        <p>Most dropshipping businesses fail because they sell what <em>they</em> like, not what the <em>market</em> wants. The Research Agent removes emotion from the equation. It is purely data-driven.</p>
+        <p><strong>How it Works:</strong><br>The Hunter uses the Model Context Protocol to scan the outside world. It looks at TikTok trends, Amazon "Movers and Shakers" lists, and Google Trends data.<br>It isn't just looking for "cool stuff." It is looking for <strong>Arbitrage</strong>.<br>It looks for a gap between "Perceived Value" and "Sourcing Cost."</p>
+        <p>Let's say it finds a "Posture Corrector."<br>It sees that on TikTok, videos about posture are getting millions of views. The engagement is high. People are commenting "Where can I buy this?"<br>Then, it checks the competition. It sees that existing stores are selling it for $40.<br>It runs a quick check and estimates we can source it for $5.<br>That is a $35 gap. The Hunter's eyes light up.</p>
+        <p>It compiles a dossier. It grabs the viral videos, the competitor pricing, and the keyword data. It packages this into a <span class="code-concept">RESEARCH_COMPLETED</span> event and slides it across the desk to the Supplier Agent. It doesn't care if we actually sell it; its job is just to find the potential.</p>
+
+        <h2>3. The Supplier Agent: The Negotiator</h2>
+        <p>Sitting right next to the Hunter is the <strong>Supplier Agent</strong>.</p>
+        <p>If the Hunter is the visionary, the Supplier Agent is the pragmatist. Its job is to answer one question: <strong>"Can we actually sell this?"</strong></p>
+        <p>The Hunter might find a beautiful "Glass Chess Set." It's viral. Everyone wants it.<br>The Supplier Agent takes one look and shakes its head. "Too heavy. Shipping will cost $50. Too fragile. It will break in transit. Returns will kill us."</p>
+        <p><strong>The Vetting Process:</strong><br>The Supplier Agent uses tools to search AliExpress, CJ Dropshipping, and other wholesale databases. It isn't just looking for the lowest price. It is looking for <strong>Reliability</strong>.<br>It filters suppliers: "Must have 4.5 stars or higher." "Must have been in business for 2+ years." "Must ship to the USA in under 12 days."</p>
+        <p>It performs the crucial <strong>Margin Calculation</strong>.<br>It takes the potential retail price ($40) and subtracts the Product Cost ($5), the Shipping Cost ($8), and the estimated Ad Cost ($15).<br>$40 minus $28 equals $12 profit.<br>It stamps the dossier: "APPROVED. Gross Margin 30%."</p>
+        <p>If the margin was only $2, it would stamp "REJECTED" and the workflow would end there. This agent saves us from bankruptcy by preventing us from selling unprofitable items.</p>
+
+        <h2>4. The Store Build Agent: The Architect</h2>
+        <p>Once a product is approved by the CEO and vetted by the Supplier, it goes to the <strong>Store Build Agent</strong>.</p>
+        <p>This agent is a designer, a copywriter, and a developer wrapped in one. Its goal is <strong>Conversion</strong>. It needs to build a webpage that convinces a stranger to give us their credit card info in under 30 seconds.</p>
+        <p><strong>The Construction Phase:</strong><br>The Architect doesn't just copy-paste the description from AliExpress. That is a recipe for failure. AliExpress descriptions are full of broken English and technical jargon like "Material: ABS Plastic."<br>The Architect uses a Large Language Model to rewrite this into <em>marketing</em> copy.<br>It focuses on benefits, not features. Instead of "ABS Plastic," it writes "Durable, lightweight design that lasts for years."</p>
+        <p>It builds the "Why Buy From Us" section. It generates the SEO meta-tags so Google can find the page. It sets the pricing rules, creating that psychological "Compare At" price to show a discount.</p>
+        <p>Finally, it uses the Shopify MCP Tool to push this data into the real world. It uploads the images, sets the inventory policy, and publishes the page. It then emits the <span class="code-concept">PRODUCT_PUBLISHED</span> event. The store is open for business.</p>
+
+        <h2>5. The Marketing Agent: The Megaphone</h2>
+        <p>Now that the store is built, we need traffic. Enter the <strong>Marketing Agent</strong>.</p>
+        <p>This is the most expensive employee we have. It has access to the company credit card. Its job is to buy attention.</p>
+        <p><strong>The Creative Process:</strong><br>The Marketing Agent is a psychologist. It looks at the product—let's say the Posture Corrector—and thinks about <em>angles</em>.<br>Angle 1: "Pain Relief." (Stop your back from hurting).<br>Angle 2: "Confidence." (Stand tall and look better).<br>Angle 3: "Gift." (Perfect for your slouching gamer boyfriend).</p>
+        <p>It writes three different ad captions. It selects three different video clips. It mixes and matches them to create a "Campaign."</p>
+        <p><strong>The Optimization Loop:</strong><br>This is where the Marketing Agent shines. It doesn't just launch and leave. It watches.<br>It checks the data every hour.<br>"Ad Set A has spent $10 and got zero sales. Kill it."<br>"Ad Set B has spent $10 and got 2 sales. Double the budget."</p>
+        <p>It is ruthless. It has no emotional attachment to the creative work. If an ad doesn't make money, it dies. This constant pruning of the garden is what allows the system to achieve high ROAS (Return on Ad Spend).</p>
+
+        <h2>6. The Operations Agent: The Engine</h2>
+        <p>While the Marketing Agent is noisy and flashy, the <strong>Operations Agent</strong> is the quiet hero.</p>
+        <p>This agent lives in the basement. It handles the dirty work: <strong>Fulfillment and Logistics.</strong></p>
+        <p><strong>The Fulfillment Flow:</strong><br>When a customer places an order, the Operations Agent wakes up. It sees "Order #1001: Posture Corrector. Ship to Alice in New York."<br>It immediately turns around and talks to the Supplier. It places a corresponding order: "Ship one Posture Corrector to Alice in New York."<br>It pays the supplier.</p>
+        <p>But its job isn't done. It waits.<br>Three days later, the supplier ships the item and provides a tracking number: <span class="code-concept">LZ123456CN</span>.<br>The Operations Agent grabs this number, logs back into Shopify, and updates Order #1001. It triggers the "Your Order Has Shipped" email to Alice.</p>
+        <p>It also handles the messiness of reality. What if the supplier is out of stock? The Operations Agent triggers an alert. What if the package is lost? It flags the order for the Customer Service Agent. It keeps the physical gears of the business turning.</p>
+
+        <h2>7. The Analytics Agent: The Scorekeeper</h2>
+        <p>The <strong>Analytics Agent</strong> is the accountant. It doesn't sell anything. It doesn't build anything. It just <strong>Counts</strong>.</p>
+        <p>In a complex system with ads running on Facebook, sales happening on Shopify, and bills being paid on AliExpress, it is easy to lose track of the truth. You might see $1000 in sales and think you are rich, forgetting that you spent $1200 on ads.</p>
+        <p><strong>The Single Source of Truth:</strong><br>The Analytics Agent pulls data from everywhere.<br>It asks Meta: "How much did we spend today?"<br>It asks Shopify: "How much revenue did we make?"<br>It asks the Operations Agent: "What was the Cost of Goods Sold?"</p>
+        <p>It does the math: Revenue - Ad Spend - Product Cost - Transaction Fees = <strong>Net Profit</strong>.</p>
+        <p>It generates the P&L (Profit and Loss) statement. If the Net Profit is negative for three days in a row, it pulls the fire alarm. It emits an <span class="code-concept">ALERT_LOW_MARGIN</span> event that forces the CEO to intervene. It is the guardian of the bank account.</p>
+
+        <h2>8. The Customer Service Agent: The Diplomat</h2>
+        <p>Finally, we meet the <strong>Customer Service Agent</strong>.</p>
+        <p>This agent is the face of the company. It deals with humans, and humans are messy. They type typos. They get angry. They lie.</p>
+        <p><strong>The Empathy Engine:</strong><br>The Diplomat reads every incoming email. It uses Sentiment Analysis to gauge the mood.<br>If a customer says, "Where is my stuff?", the agent checks the tracking number from the Operations Agent and replies politely: "Hi! It is currently in Chicago. You should have it by Tuesday."</p>
+        <p>If a customer says, "This product is garbage, I want a refund!", the agent has a decision to make.<br>It checks the policy. Is it within 30 days? Yes.<br>It checks the cost. Is the item worth returning?<br>If the item cost us $3, it might be cheaper to just let them keep it and refund the money, rather than paying for return shipping.<br>The Diplomat makes this call instantly. "I'm so sorry you didn't like it. I have issued a full refund. No need to return it."</p>
+        <p>This turns an angry customer into a loyal fan, all without human intervention.</p>
+
+        <h2>Conclusion</h2>
+        <p>These are your eight employees.<br>The <strong>CEO</strong> directs.<br>The <strong>Hunter</strong> finds.<br>The <strong>Negotiator</strong> vets.<br>The <strong>Architect</strong> builds.<br>The <strong>Megaphone</strong> sells.<br>The <strong>Engine</strong> delivers.<br>The <strong>Scorekeeper</strong> counts.<br>The <strong>Diplomat</strong> resolves.</p>
+        <p>Together, they form a closed loop. A self-correcting, self-driving business machine. As you listen to the rest of this documentation, remember which agent is responsible for which part of the code. It will help you understand the architecture much better.</p>
+        <p><strong>End of Guide.</strong></p>
+    </div>
+
+    <script>
+        function copyScript() {
+            const scriptText = `# 🎧 The Cast of Characters: Meet the Agents
+## An Audio Tour of the Autonomous Workforce
+
+### Introduction
+
+Welcome back. In our previous sessions, we built the office building (the Architecture) and installed the wiring (the Event Bus). Now, it is time to meet the employees.
+
+In Project DS1, we don't have a single "AI" that does everything. We have a swarm of specialized agents. Think of them as a team of experts, each with their own desk, their own tools, and their own personality.
+
+Today, we are going to walk through the office and interview each of the eight core agents. We will learn what drives them, what tools they hold in their hands, and how they make decisions when you aren't watching.
+
+---
+
+### 1. The CEO Agent: The Conductor
+
+We start in the corner office. This is the domain of the **CEO Agent**.
+
+In many AI systems, the "Main Loop" is just a simple \`while(true)\` script. But in DS1, the CEO is a distinct persona. Its role is **Orchestration and Risk Management**.
+
+Imagine a conductor in front of an orchestra. The conductor doesn't play the violin. They don't hit the drums. But without them, the music is just noise. The CEO Agent decides *when* the violin plays.
+
+**A Day in the Life:**
+The CEO spends most of its time listening. It is subscribed to the high-level channels of the Event Bus. It hears "Research Complete." It hears "Campaign Launched." It hears "Profit Margin Dropping."
+
+Its primary job is to make the "Go/No-Go" decisions that are too risky for other agents.
+For example, the Research Agent might find a product that looks great: a "Galaxy Projector." The data looks good. But the CEO Agent has a broader context. It might check the bank account and see we only have $500 left. It knows that launching a new product costs $200 in testing ads.
+A junior agent might say "Launch it!" The CEO says, "No. We need to conserve cash. Reject."
+
+The CEO is also the **Interface to You**. When you type "How are we doing?" into the chat, you are talking to the CEO. It doesn't guess the answer. It queries the logs of the other seven agents, synthesizes the chaos into a clean executive summary, and presents it to you. It is the only agent allowed to speak directly to the human owner.
+
+---
+
+### 2. The Product Research Agent: The Hunter
+
+Next, we move to the R&D lab. This is where the **Product Research Agent** lives.
+
+This agent is an insatiable hunter. It never sleeps. Its objective is simple but difficult: **Find the Winners.**
+
+Most dropshipping businesses fail because they sell what *they* like, not what the *market* wants. The Research Agent removes emotion from the equation. It is purely data-driven.
+
+**How it Works:**
+The Hunter uses the Model Context Protocol to scan the outside world. It looks at TikTok trends, Amazon "Movers and Shakers" lists, and Google Trends data.
+It isn't just looking for "cool stuff." It is looking for **Arbitrage**.
+It looks for a gap between "Perceived Value" and "Sourcing Cost."
+
+Let's say it finds a "Posture Corrector."
+It sees that on TikTok, videos about posture are getting millions of views. The engagement is high. People are commenting "Where can I buy this?"
+Then, it checks the competition. It sees that existing stores are selling it for $40.
+It runs a quick check and estimates we can source it for $5.
+That is a $35 gap. The Hunter's eyes light up.
+
+It compiles a dossier. It grabs the viral videos, the competitor pricing, and the keyword data. It packages this into a \`RESEARCH_COMPLETED\` event and slides it across the desk to the Supplier Agent. It doesn't care if we actually sell it; its job is just to find the potential.
+
+---
+
+### 3. The Supplier Agent: The Negotiator
+
+Sitting right next to the Hunter is the **Supplier Agent**.
+
+If the Hunter is the visionary, the Supplier Agent is the pragmatist. Its job is to answer one question: **"Can we actually sell this?"**
+
+The Hunter might find a beautiful "Glass Chess Set." It's viral. Everyone wants it.
+The Supplier Agent takes one look and shakes its head. "Too heavy. Shipping will cost $50. Too fragile. It will break in transit. Returns will kill us."
+
+**The Vetting Process:**
+The Supplier Agent uses tools to search AliExpress, CJ Dropshipping, and other wholesale databases. It isn't just looking for the lowest price. It is looking for **Reliability**.
+It filters suppliers: "Must have 4.5 stars or higher." "Must have been in business for 2+ years." "Must ship to the USA in under 12 days."
+
+It performs the crucial **Margin Calculation**.
+It takes the potential retail price ($40) and subtracts the Product Cost ($5), the Shipping Cost ($8), and the estimated Ad Cost ($15).
+$40 minus $28 equals $12 profit.
+It stamps the dossier: "APPROVED. Gross Margin 30%."
+
+If the margin was only $2, it would stamp "REJECTED" and the workflow would end there. This agent saves us from bankruptcy by preventing us from selling unprofitable items.
+
+---
+
+### 4. The Store Build Agent: The Architect
+
+Once a product is approved by the CEO and vetted by the Supplier, it goes to the **Store Build Agent**.
+
+This agent is a designer, a copywriter, and a developer wrapped in one. Its goal is **Conversion**. It needs to build a webpage that convinces a stranger to give us their credit card info in under 30 seconds.
+
+**The Construction Phase:**
+The Architect doesn't just copy-paste the description from AliExpress. That is a recipe for failure. AliExpress descriptions are full of broken English and technical jargon like "Material: ABS Plastic."
+The Architect uses a Large Language Model to rewrite this into *marketing* copy.
+It focuses on benefits, not features. Instead of "ABS Plastic," it writes "Durable, lightweight design that lasts for years."
+
+It builds the "Why Buy From Us" section. It generates the SEO meta-tags so Google can find the page. It sets the pricing rules, creating that psychological "Compare At" price to show a discount.
+
+Finally, it uses the Shopify MCP Tool to push this data into the real world. It uploads the images, sets the inventory policy, and publishes the page. It then emits the \`PRODUCT_PUBLISHED\` event. The store is open for business.
+
+---
+
+### 5. The Marketing Agent: The Megaphone
+
+Now that the store is built, we need traffic. Enter the **Marketing Agent**.
+
+This is the most expensive employee we have. It has access to the company credit card. Its job is to buy attention.
+
+**The Creative Process:**
+The Marketing Agent is a psychologist. It looks at the product—let's say the Posture Corrector—and thinks about *angles*.
+Angle 1: "Pain Relief." (Stop your back from hurting).
+Angle 2: "Confidence." (Stand tall and look better).
+Angle 3: "Gift." (Perfect for your slouching gamer boyfriend).
+
+It writes three different ad captions. It selects three different video clips. It mixes and matches them to create a "Campaign."
+
+**The Optimization Loop:**
+This is where the Marketing Agent shines. It doesn't just launch and leave. It watches.
+It checks the data every hour.
+"Ad Set A has spent $10 and got zero sales. Kill it."
+"Ad Set B has spent $10 and got 2 sales. Double the budget."
+
+It is ruthless. It has no emotional attachment to the creative work. If an ad doesn't make money, it dies. This constant pruning of the garden is what allows the system to achieve high ROAS (Return on Ad Spend).
+
+---
+
+### 6. The Operations Agent: The Engine
+
+While the Marketing Agent is noisy and flashy, the **Operations Agent** is the quiet hero.
+
+This agent lives in the basement. It handles the dirty work: **Fulfillment and Logistics.**
+
+**The Fulfillment Flow:**
+When a customer places an order, the Operations Agent wakes up. It sees "Order #1001: Posture Corrector. Ship to Alice in New York."
+It immediately turns around and talks to the Supplier. It places a corresponding order: "Ship one Posture Corrector to Alice in New York."
+It pays the supplier.
+
+But its job isn't done. It waits.
+Three days later, the supplier ships the item and provides a tracking number: \`LZ123456CN\`.
+The Operations Agent grabs this number, logs back into Shopify, and updates Order #1001. It triggers the "Your Order Has Shipped" email to Alice.
+
+It also handles the messiness of reality. What if the supplier is out of stock? The Operations Agent triggers an alert. What if the package is lost? It flags the order for the Customer Service Agent. It keeps the physical gears of the business turning.
+
+---
+
+### 7. The Analytics Agent: The Scorekeeper
+
+The **Analytics Agent** is the accountant. It doesn't sell anything. It doesn't build anything. It just **Counts**.
+
+In a complex system with ads running on Facebook, sales happening on Shopify, and bills being paid on AliExpress, it is easy to lose track of the truth. You might see $1000 in sales and think you are rich, forgetting that you spent $1200 on ads.
+
+**The Single Source of Truth:**
+The Analytics Agent pulls data from everywhere.
+It asks Meta: "How much did we spend today?"
+It asks Shopify: "How much revenue did we make?"
+It asks the Operations Agent: "What was the Cost of Goods Sold?"
+
+It does the math: Revenue - Ad Spend - Product Cost - Transaction Fees = **Net Profit**.
+
+It generates the P&L (Profit and Loss) statement. If the Net Profit is negative for three days in a row, it pulls the fire alarm. It emits an \`ALERT_LOW_MARGIN\` event that forces the CEO to intervene. It is the guardian of the bank account.
+
+---
+
+### 8. The Customer Service Agent: The Diplomat
+
+Finally, we meet the **Customer Service Agent**.
+
+This agent is the face of the company. It deals with humans, and humans are messy. They type typos. They get angry. They lie.
+
+**The Empathy Engine:**
+The Diplomat reads every incoming email. It uses Sentiment Analysis to gauge the mood.
+If a customer says, "Where is my stuff?", the agent checks the tracking number from the Operations Agent and replies politely: "Hi! It is currently in Chicago. You should have it by Tuesday."
+
+If a customer says, "This product is garbage, I want a refund!", the agent has a decision to make.
+It checks the policy. Is it within 30 days? Yes.
+It checks the cost. Is the item worth returning?
+If the item cost us $3, it might be cheaper to just let them keep it and refund the money, rather than paying for return shipping.
+The Diplomat makes this call instantly. "I'm so sorry you didn't like it. I have issued a full refund. No need to return it."
+
+This turns an angry customer into a loyal fan, all without human intervention.
+
+---
+
+### Conclusion
+
+These are your eight employees.
+The **CEO** directs.
+The **Hunter** finds.
+The **Negotiator** vets.
+The **Architect** builds.
+The **Megaphone** sells.
+The **Engine** delivers.
+The **Scorekeeper** counts.
+The **Diplomat** resolves.
+
+Together, they form a closed loop. A self-correcting, self-driving business machine. As you listen to the rest of this documentation, remember which agent is responsible for which part of the code. It will help you understand the architecture much better.
+
+**End of Guide.**`;
+
+            navigator.clipboard.writeText(scriptText).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                const originalText = btn.innerText;
+                btn.innerText = "✅ Copied!";
+                btn.style.backgroundColor = "#27ae60";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "#2ecc71";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
