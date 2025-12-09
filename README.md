@@ -27,18 +27,28 @@ The project documentation is organized into **PMO** (Project Management Office),
     npm install
     ```
 
-2.  **Run Simulation (CLI)**:
+2.  **Build TypeScript**:
     ```bash
-    node src/run_simulation_cli.js
+    npm run build
     ```
 
-3.  **Start Web Admin Panel**:
-    ```bash
-    node src/index.js
-    ```
-    Visit `http://localhost:3000/admin.html`
+3.  **Start Control Panel** (Recommended):
+    - **Windows**: Double-click `run_control_panel.bat`
+    - **Manual**: 
+      ```bash
+      npm start
+      ```
+    Visit `http://localhost:3000`
+
+4.  **Database Setup** (Optional):
+    - Start PostgreSQL via Docker:
+      ```bash
+      docker-compose up -d
+      ```
+    - Or use the Database Inspector in the Control Panel to start/stop the database
 
 ## 🏗️ Architecture
 The system uses a swarm of specialized agents (CEO, Marketing, Operations, etc.) orchestrated by a central simulation loop.
-- **Mock Mode**: Uses simulated APIs and local JSON DB (Default).
-- **Live Mode**: Connects to real Shopify/Meta APIs (Requires Config).
+- **Test Mode**: Uses PostgreSQL simulator database (Recommended for development).
+- **Mock Mode**: Uses local JSON file storage (Lightweight testing).
+- **Live Mode**: Connects to production database and real APIs (Requires configuration).

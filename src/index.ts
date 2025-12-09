@@ -1,6 +1,28 @@
+// Ensure dotenv loads before anything else
 import dotenv from 'dotenv';
 dotenv.config();
+// Minimal, gated environment debug to avoid secret leakage.
+// Set `DEBUG_ENV=true` to enable a filtered, partially-masked dump of relevant vars.
+const showDebugEnv = process.env.DEBUG_ENV === 'true';
+function _mask(v?: string) {
+  if (!v) return '<unset>';
+  if (v.length <= 8) return '****';
+  return `${v.slice(0, 4)}...${v.slice(-4)}`;
+}
+if (showDebugEnv) {
+  console.log('ENV DEBUG (filtered, masked):', Object.keys(process.env)
+    .filter(k => k.includes('OPENAI') || k.includes('AZURE') || k.includes('KEY'))
+    .reduce((acc, k) => {
+      const val = process.env[k];
+      // Show full value for endpoints (urls), otherwise mask
+      (acc as { [key: string]: string | undefined })[k] = typeof val === 'string' && /^https?:\/\//.test(val) ? val : _mask(val);
+      return acc;
+    }, {} as { [key: string]: string | undefined }));
+} else {
+  console.log('ENV DEBUG: disabled (set DEBUG_ENV=true to enable filtered env output)');
+}
 import express from 'express';
+import { openAIService } from './infra/ai/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { CEOAgent } from './agents/CEOAgent.js';
@@ -12,7 +34,6 @@ import { CustomerServiceAgent } from './agents/CustomerServiceAgent.js';
 import { OperationsAgent } from './agents/OperationsAgent.js';
 import { AnalyticsAgent } from './agents/AnalyticsAgent.js';
 import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
-import { MockAdapter } from './infra/db/MockAdapter.js';
 import { MockShopAdapter } from './infra/shop/MockShopAdapter.js';
 import { TestShopAdapter } from './infra/shop/TestShopAdapter.js';
 import { LiveShopAdapter } from './infra/shop/LiveShopAdapter.js';
@@ -48,6 +69,15 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
+// --- Startup validation (fail fast if critical env missing)
+const requiredEnv = ['AZURE_OPENAI_ENDPOINT', 'AZURE_OPENAI_DEPLOYMENT_NAME'];
+const missing = requiredEnv.filter(k => !process.env[k]);
+if (missing.length) {
+  console.error('Missing required environment variables:', missing.join(', '));
+  console.error('Aborting startup. Set these env vars and restart.');
+  process.exit(1);
+}
+
 // Serve static files with explicit path and logging
 const publicPath = path.resolve(process.cwd(), 'public');
 console.log(`Serving static files from: ${publicPath}`);
@@ -66,13 +96,16 @@ app.get('/', (req, res) => {
 
 // Initialize Adapters
 let db: PersistencePort;
-const dbMode = configService.get('dbMode');
-if (dbMode === 'live' || dbMode === 'mock') {
-    console.log(`Using ${dbMode === 'live' ? 'Live' : 'Simulation'} Database (Postgres)`);
-    db = new PostgresAdapter();
+const dbMode = String(configService.get('dbMode') || 'test');
+// dbMode mapping:
+// - 'live'  => use production Postgres
+// - 'test'  => use test Postgres (default)
+if (dbMode === 'live' || dbMode === 'test') {
+  console.log(`Using ${dbMode === 'live' ? 'Live' : 'Test'} Database (Postgres)`);
+  db = new PostgresAdapter();
 } else {
-    console.log("Using Mock Database (File) - Fallback");
-    db = new MockAdapter();
+  console.log("Using Test Database (Postgres) - Fallback");
+  db = new PostgresAdapter();
 }
 
 let shopAdapter: ShopPlatformPort;
@@ -229,7 +262,7 @@ app.get('/api/agents', (req, res) => {
       externalEndpoints: shopMode === 'live' 
         ? ['Shopify API (Live)', 'OpenAI API'] 
         : shopMode === 'test' 
-          ? ['Shopify API (Dev Store)', 'OpenAI API'] 
+          ? ['Shopify API (Test)', 'OpenAI API'] 
           : ['Shopify API (Mock)', 'OpenAI API']
     },
     { 
@@ -241,7 +274,7 @@ app.get('/api/agents', (req, res) => {
       externalEndpoints: adsMode === 'live' 
         ? ['Facebook Ads API (Live)', 'TikTok Ads API (Live)', 'Instagram Ads API (Live)'] 
         : adsMode === 'test' 
-          ? ['Facebook Ads API (Sandbox)', 'TikTok Ads API (Sandbox)', 'Instagram Ads API (Sandbox)'] 
+          ? ['Facebook Ads API (Test)', 'TikTok Ads API (Test)', 'Instagram Ads API (Test)'] 
           : ['Facebook Ads API (Mock)', 'TikTok Ads API (Mock)', 'Instagram Ads API (Mock)']
     },
     { 
@@ -276,7 +309,9 @@ app.get('/api/agents', (req, res) => {
 
 app.get('/api/logs', async (req, res) => {
   try {
+    console.log('[API] Fetching logs...');
     const logs = await db.getRecentLogs(50);
+    console.log(`[API] Returning ${logs.length} logs`);
     res.json(logs);
   } catch (error: any) {
     console.error("Error fetching logs:", error);
@@ -313,18 +348,35 @@ app.get('/api/ads', async (req, res) => {
 });
 
 app.post('/api/ceo/chat', async (req, res) => {
-  const { message } = req.body;
+  console.log('[API] /api/ceo/chat called with body:', req.body);
+  const { message, mode } = req.body;
   if (!message) {
     res.status(400).json({ error: "Message is required" });
     return;
   }
 
   try {
-    const response = await agents.ceo.chat(message);
+    // mode: 'simulation' for sim data, undefined/null for live data
+    const response = await agents.ceo.chat(message, mode);
     res.json({ response });
   } catch (error: any) {
-    console.error("CEO Chat Error:", error);
-    res.status(500).json({ error: "Failed to chat with CEO" });
+    console.error('[API] /api/ceo/chat error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/ready', async (req, res) => {
+  try {
+    // Check: ensure AI client can be constructed
+    try {
+      openAIService.getClient();
+    } catch (err: any) {
+      console.warn('Ready check: openAI client not ready', err && err.message ? err.message : String(err));
+      return res.status(503).json({ ready: false, reason: 'AI client not ready' });
+    }
+    return res.json({ ready: true });
+  } catch (err: any) {
+    return res.status(500).json({ ready: false, error: err.message });
   }
 });
 
@@ -362,6 +414,47 @@ app.get('/api/db/table/:table', async (req, res) => {
   }
 });
 
+// --- Docker Control API ---
+app.get('/api/docker/status', async (req, res) => {
+  const { exec } = await import('child_process');
+  const { promisify } = await import('util');
+  const execAsync = promisify(exec);
+  
+  try {
+    const { stdout } = await execAsync('docker ps --format "{{.Names}}" --filter name=ds1-db-1');
+    const isRunning = stdout.trim() === 'ds1-db-1';
+    res.json({ running: isRunning });
+  } catch (e) {
+    res.json({ running: false });
+  }
+});
+
+app.post('/api/docker/start', async (req, res) => {
+  const { exec } = await import('child_process');
+  const { promisify } = await import('util');
+  const execAsync = promisify(exec);
+  
+  try {
+    await execAsync('docker-compose up -d', { cwd: process.cwd() });
+    res.json({ status: 'success', message: 'Database container started' });
+  } catch (e: any) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
+app.post('/api/docker/stop', async (req, res) => {
+  const { exec } = await import('child_process');
+  const { promisify } = await import('util');
+  const execAsync = promisify(exec);
+  
+  try {
+    await execAsync('docker-compose down', { cwd: process.cwd() });
+    res.json({ status: 'success', message: 'Database container stopped' });
+  } catch (e: any) {
+    res.status(500).json({ status: 'error', message: e.message });
+  }
+});
+
 // --- Simulation API ---
 app.post('/api/simulation/start', async (req, res) => {
   console.log("Starting simulation flow...");
@@ -372,9 +465,33 @@ app.post('/api/simulation/start', async (req, res) => {
   res.json({ status: 'started', message: 'Simulation running in background.' });
 });
 
+app.post('/api/simulation/clear', async (req, res) => {
+  console.log("Clearing simulation database...");
+  try {
+    await simulationService.clearSimulationData();
+    res.json({ status: 'success', message: 'Simulation database cleared successfully.' });
+  } catch (error: any) {
+    console.error('[API] Failed to clear simulation database:', error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+});
+
 // Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Admin Panel: http://localhost:${PORT}`);
 });
+
+// --- Global error handlers ---
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// --- Keep-alive interval to prevent process exit ---
+setInterval(() => {
+  // This does nothing but keeps the event loop alive
+}, 1000 * 60 * 5); // 5 minutes

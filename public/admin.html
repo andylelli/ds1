@@ -13,26 +13,51 @@
 
     <!-- Main Content -->
     <main class="main">
-        <div id="statusMessage" class="status-msg"></div>
-
         <!-- SIMULATION -->
         <div id="simulation" class="tab-content">
             <div class="page-header">
                 <h1 class="page-title">Simulation Control</h1>
             </div>
-            <div class="card">
-                <h2>Run Simulation</h2>
-                <p style="margin-bottom: 1.5rem; color: #6b7280;">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="startSimulation()">▶ Start New Simulation</button>
-                    <button class="secondary" onclick="clearLogDisplay()">🧹 Clear Logs</button>
-                    <button class="secondary" onclick="showAllLogs()">📜 Show History</button>
-                </div>
-            </div>
             
-            <div class="card" style="height: calc(100vh - 350px); display: flex; flex-direction: column;">
-                <h2 style="margin-bottom: 0.5rem; border: none;">Live Agent Logs</h2>
-                <div id="logViewer">Waiting for logs...</div>
+            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 1rem;">
+                <!-- Left: Simulation Control & Logs -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; min-width: 0;">
+                    <div class="card">
+                        <h2>Run Simulation</h2>
+                        <p style="margin-bottom: 1.5rem; color: #6b7280;">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button onclick="startSimulation()">▶ Start New Simulation</button>
+                            <button class="secondary" onclick="clearSimulationDb()">🗑️ Clear Sim DB</button>
+                            <button class="secondary" onclick="clearLogDisplay()">🧹 Clear Logs</button>
+                            <button class="secondary" onclick="showAllLogs()">📜 Show History</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="display: flex; flex-direction: column; min-width: 0;">
+                        <h2 style="margin-bottom: 0.5rem; border: none;">Simulation Logs</h2>
+                        <div id="logViewer" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; min-width: 0;">Waiting for logs...</div>
+                    </div>
+                </div>
+                
+                <!-- Right: CEO Chat -->
+                <div class="card" style="display: flex; flex-direction: column; height: 600px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="margin: 0; border: none;">CEO Chat</h2>
+                        <span id="simCeoMode" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #e5e7eb; color: #6b7280;">Loading...</span>
+                    </div>
+                    <div class="chat-container" style="flex: 1; min-height: 0;">
+                        <div id="simChatHistory" class="chat-history">
+                            <div class="chat-message ceo">
+                                <div class="sender-name">CEO Agent</div>
+                                Ready to discuss simulation strategy and approve decisions.
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="simChatInput" placeholder="Ask the CEO about the simulation..." onkeypress="if(event.key==='Enter') sendSimChatMessage()">
+                            <button onclick="sendSimChatMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -101,23 +126,19 @@
                 
                 <label for="dbMode">Database Mode</label>
                 <select id="dbMode">
-                    <option value="mock">Mock (Sandbox)</option>
-                    <option value="live">Live (Azure Cosmos DB)</option>
+                    <option value="test">Test (PostgreSQL Simulator Database)</option>
+                    <option value="live">Live (PostgreSQL Production Database)</option>
                 </select>
-                <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 1.5rem;">Switching modes will reconnect the database immediately.</p>
-
-                <label for="logLevel">Log Level</label>
+                <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+                    Select which database the system should use for operations.
+                </p>
+                
+                <label for="logLevel" style="margin-top: 1.5rem;">Log Level</label>
                 <select id="logLevel">
                     <option value="debug">Debug (Verbose)</option>
                     <option value="info">Info (Standard)</option>
                     <option value="warn">Warning</option>
                     <option value="error">Error Only</option>
-                </select>
-
-                <label for="useSimulatedEndpoints">3rd Party Integrations</label>
-                <select id="useSimulatedEndpoints">
-                    <option value="true">Simulated (Mock APIs)</option>
-                    <option value="false">Real (Live APIs)</option>
                 </select>
 
                 <div style="margin-top: 2rem;">
@@ -131,6 +152,29 @@
             <div class="page-header">
                 <h1 class="page-title">Database Inspector</h1>
             </div>
+            
+            <!-- Docker Status Card -->
+            <div class="card" style="margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 1.5rem;">PostgreSQL Database Container</h2>
+                
+                <div style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div id="dbStatusIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: #9ca3af;"></div>
+                            <span id="dbStatusText" style="font-weight: 600; color: #6b7280;">Checking...</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="startDocker()" style="padding: 8px 16px; font-size: 0.875rem;">▶ Start</button>
+                            <button onclick="stopDocker()" class="secondary" style="padding: 8px 16px; font-size: 0.875rem;">⏹ Stop</button>
+                            <button onclick="checkDockerStatus()" class="secondary" style="padding: 8px 16px; font-size: 0.875rem;">🔄 Refresh</button>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.875rem; color: #6b7280; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
+                        <strong>Databases:</strong> dropship (Live), dropship_sim (Simulator)
+                    </div>
+                </div>
+            </div>
+            
             <div class="card">
                 <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 200px;">
@@ -181,7 +225,7 @@
             // Handle Simulation Logs
             if (tabId === 'simulation') {
                 fetchLogs();
-                if (!logInterval) logInterval = setInterval(fetchLogs, 2000);
+                if (!logInterval) logInterval = setInterval(fetchLogs, 5000);
             } else {
                 if (logInterval) {
                     clearInterval(logInterval);
@@ -193,7 +237,7 @@
             if (tabId === 'products') fetchProducts();
             if (tabId === 'orders') fetchOrders();
             if (tabId === 'ads') fetchAds();
-            if (tabId === 'database') { fetchDbTopics(); fetchDbData(); }
+            if (tabId === 'database') { checkDockerStatus(); fetchDbTopics(); fetchDbData(); }
             if (tabId === 'ceo-chat') setTimeout(() => document.getElementById('ceoChatInput').focus(), 100);
         }
 
@@ -232,6 +276,22 @@
             }
         }
 
+        async function clearSimulationDb() {
+            if (!confirm('Are you sure you want to clear all simulation database data (products, orders, campaigns, logs)?')) {
+                return;
+            }
+            try {
+                const res = await fetch('/api/simulation/clear', { method: 'POST' });
+                const data = await res.json();
+                showStatus(data.message, 'success');
+                // Refresh logs display
+                await fetchLogs();
+            } catch (e) {
+                showStatus('Failed to clear simulation database.', 'error');
+                console.error('Clear simulation error:', e);
+            }
+        }
+
         async function fetchLogs() {
             try {
                 const res = await fetch('/api/logs');
@@ -240,21 +300,26 @@
                 const viewer = document.getElementById('logViewer');
                 
                 if (filteredLogs.length === 0) {
-                    viewer.innerHTML = `<div style="padding:1rem; color: #666;">No new logs...</div>`;
+                    viewer.innerHTML = `<div style="padding:1rem; color: #e6edf3;">No new logs...</div>`;
                     return;
                 }
 
-                viewer.innerHTML = filteredLogs.map(log => `
+                // Remember if user was at top (within 50px tolerance)
+                const wasAtTop = viewer.scrollTop < 50;
+                
+                viewer.innerHTML = filteredLogs.reverse().map(log => `
                     <div class="log-entry">
                         <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
                         <span class="log-agent">${log.agent}</span>
                         <span class="log-msg">${log.message}</span>
-                        ${log.data ? `<pre style="font-size:0.8em; color:#9cdcfe; margin-top:0.2rem;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                        ${log.data ? `<pre style="font-size:0.75em; color:#e6edf3; margin-top:0.2rem; margin-bottom:0;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
                     </div>
                 `).join('');
                 
-                // Auto scroll to bottom
-                viewer.scrollTop = viewer.scrollHeight;
+                // Only auto-scroll to top if user was already at top, otherwise preserve scroll position
+                if (wasAtTop) {
+                    viewer.scrollTop = 0;
+                }
             } catch (e) { console.error("Log fetch failed", e); }
         }
 
@@ -435,22 +500,90 @@
             return div.id;
         }
 
+        // --- Simulation CEO Chat ---
+        async function sendSimChatMessage() {
+            const input = document.getElementById('simChatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 1. Add User Message
+            appendSimMessage('user', message);
+            input.value = '';
+
+            // 2. Call API
+            const thinkingId = appendSimMessage('ceo', 'Thinking...', true);
+            
+            try {
+                const res = await fetch('/api/ceo/chat', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message }) 
+                });
+                
+                const data = await res.json();
+                
+                // Remove thinking bubble
+                document.getElementById(thinkingId).remove();
+
+                if (res.ok) {
+                    appendSimMessage('ceo', data.response);
+                } else {
+                    appendSimMessage('ceo', "Error: " + (data.error || "Unknown error"));
+                }
+
+            } catch (e) {
+                document.getElementById(thinkingId).remove();
+                appendSimMessage('ceo', "Error: Unable to reach the CEO Agent.");
+            }
+        }
+
+        function appendSimMessage(sender, text, isTemp = false) {
+            const history = document.getElementById('simChatHistory');
+            const div = document.createElement('div');
+            div.className = `chat-message ${sender}`;
+            if (isTemp) div.id = 'sim-msg-' + Date.now();
+            
+            const name = sender === 'user' ? 'You' : 'CEO Agent';
+            div.innerHTML = `<div class="sender-name">${name}</div>${text}`;
+            
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+            return div.id;
+        }
+
         // --- Config ---
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
                 const config = await res.json();
-                document.getElementById('dbMode').value = config.dbMode;
+                document.getElementById('dbMode').value = config.dbMode || 'test';
                 document.getElementById('logLevel').value = config.logLevel;
-                document.getElementById('useSimulatedEndpoints').value = config.useSimulatedEndpoints.toString();
+                
+                // Update CEO mode badge
+                updateCeoModeBadge(config.ceoMode);
             } catch (e) { showStatus('Failed to load configuration.', 'status-error'); }
+        }
+
+        function updateCeoModeBadge(mode) {
+            const badge = document.getElementById('simCeoMode');
+            
+            if (badge) {
+                if (mode === 'live') {
+                    badge.textContent = 'CEO: Live (Azure OpenAI)';
+                    badge.style.background = '#10b981';
+                    badge.style.color = '#fff';
+                } else {
+                    badge.textContent = 'CEO: Mock (Simulated)';
+                    badge.style.background = '#f59e0b';
+                    badge.style.color = '#fff';
+                }
+            }
         }
 
         async function saveConfig() {
             const newConfig = {
                 dbMode: document.getElementById('dbMode').value,
-                logLevel: document.getElementById('logLevel').value,
-                useSimulatedEndpoints: document.getElementById('useSimulatedEndpoints').value === 'true'
+                logLevel: document.getElementById('logLevel').value
             };
             try {
                 const res = await fetch('/api/config', {
@@ -469,6 +602,80 @@
             el.className = 'status-msg ' + type;
             el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        // --- Docker Control ---
+        async function checkDockerStatus() {
+            try {
+                const res = await fetch('/api/docker/status');
+                const data = await res.json();
+                updateDbStatus(data.running);
+            } catch (e) {
+                updateDbStatus(null);
+            }
+        }
+
+        function updateDbStatus(running) {
+            const indicator = document.getElementById('dbStatusIndicator');
+            const text = document.getElementById('dbStatusText');
+            
+            if (running === true) {
+                indicator.style.background = '#10b981';
+                text.textContent = 'Running';
+                text.style.color = '#10b981';
+            } else if (running === false) {
+                indicator.style.background = '#ef4444';
+                text.textContent = 'Stopped';
+                text.style.color = '#ef4444';
+            } else {
+                indicator.style.background = '#9ca3af';
+                text.textContent = 'Unknown';
+                text.style.color = '#9ca3af';
+            }
+        }
+
+        async function startDocker() {
+            const indicator = document.getElementById('dbStatusIndicator');
+            const text = document.getElementById('dbStatusText');
+            
+            try {
+                indicator.style.background = '#f59e0b';
+                text.textContent = 'Starting...';
+                text.style.color = '#f59e0b';
+                
+                const res = await fetch('/api/docker/start', { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    setTimeout(checkDockerStatus, 2000);
+                } else {
+                    setTimeout(checkDockerStatus, 1000);
+                }
+            } catch (e) {
+                setTimeout(checkDockerStatus, 1000);
+            }
+        }
+
+        async function stopDocker() {
+            const indicator = document.getElementById('dbStatusIndicator');
+            const text = document.getElementById('dbStatusText');
+            
+            try {
+                indicator.style.background = '#f59e0b';
+                text.textContent = 'Stopping...';
+                text.style.color = '#f59e0b';
+                
+                const res = await fetch('/api/docker/stop', { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    setTimeout(checkDockerStatus, 2000);
+                } else {
+                    setTimeout(checkDockerStatus, 1000);
+                }
+            } catch (e) {
+                setTimeout(checkDockerStatus, 1000);
+            }
         }
 
         // Init

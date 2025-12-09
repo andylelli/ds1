@@ -1,7 +1,7 @@
 @echo off
-title DS1 Mock Server
+title DS1 Control Panel
 echo ==========================================
-echo      Starting DS1 in MOCK UP mode
+echo      Starting DS1 Control Panel
 echo ==========================================
 echo.
 
@@ -25,20 +25,26 @@ if not exist "node_modules" (
     )
 )
 
-REM Set Environment
-set DS1_MODE=mock
+REM Build TypeScript
+echo [System] Building application...
+call npm run build 2>> error.log
+if %errorlevel% neq 0 (
+    echo [Error] Build failed. Check error.log.
+    pause
+    exit /b
+)
 
 REM Open Browser (wait 3 seconds for server to boot)
 echo [System] Opening Control Panel in 3 seconds...
 timeout /t 3 /nobreak >nul
-start "" "http://localhost:3000/admin.html"
+start "" "http://localhost:3000"
 
 REM Start Server
 echo [System] Starting Server...
 echo.
-echo Database: sandbox_db.json
+echo Control Panel: http://localhost:3000
 echo Errors are being logged to: error.log
 echo.
-node src/index.js 2>> error.log
+npm start 2>> error.log
 
 pause

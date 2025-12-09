@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
 const defaults = {
-    dbMode: 'mock',
+    dbMode: 'test',
     adsMode: 'mock',
     shopMode: 'mock',
     trendsMode: 'mock',
@@ -35,13 +35,13 @@ export class ConfigService {
         }
     }
     loadEnvOverrides() {
-        if (process.env.DS1_MODE === 'mock') {
-            this.config.dbMode = 'mock';
-            this.config.useSimulatedEndpoints = true;
-        }
-        else if (process.env.DS1_MODE === 'live') {
+        if (process.env.DS1_MODE === 'live') {
             this.config.dbMode = 'live';
             this.config.useSimulatedEndpoints = false;
+        }
+        else if (process.env.DS1_MODE === 'test') {
+            this.config.dbMode = 'test';
+            this.config.useSimulatedEndpoints = true;
         }
         if (process.env.DATABASE_URL) {
             this.config.databaseUrl = process.env.DATABASE_URL;

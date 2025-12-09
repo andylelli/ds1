@@ -97,16 +97,21 @@ export class CEOAgent extends BaseAgent {
       this.team = team;
   }
 
-  async chat(userMessage: string) {
-    await this.log('chat_request', { message: userMessage });
+  async chat(userMessage: string, mode?: string) {
+    console.log('[CEOAgent.chat] called with:', userMessage, 'mode:', mode);
+      console.log('[CEOAgent] Using AI adapter:', this.ai);
+    await this.log('chat_request', { message: userMessage, mode });
 
     try {
       // 1. Retrieve comprehensive context
+      // If mode='simulation', only get sim data; otherwise get live data
+      const source = mode === 'simulation' ? 'sim' : 'live';
+      
       const [logs, products, orders, campaigns] = await Promise.all([
         this.db.getRecentLogs(50),
-        this.db.getProducts(),
-        this.db.getOrders(),
-        this.db.getCampaigns()
+        this.db.getProducts(source),
+        this.db.getOrders(source),
+        this.db.getCampaigns(source)
       ]);
 
       // 2. Format Context for AI
@@ -122,8 +127,14 @@ export class CEOAgent extends BaseAgent {
       Recent Revenue: $${orders.reduce((acc: number, o: any) => acc + (o.amount || 0), 0).toFixed(2)}
       `;
 
+      const modeContext = mode === 'simulation' 
+        ? '⚠️ SIMULATION MODE: You are reviewing SIMULATION data only (test database). This is separate from live production operations.'
+        : '🔴 LIVE MODE: You are reviewing LIVE PRODUCTION data. Real orders, real campaigns, real revenue.';
+
       // 3. Construct System Prompt
       const systemPrompt = `You are the CEO of a dropshipping company. You have access to the real-time state of your business.
+        
+        ${modeContext}
         
         === 📊 BUSINESS SNAPSHOT ===
         ${financialContext}
@@ -224,11 +235,29 @@ export class CEOAgent extends BaseAgent {
   }
 
   async evaluateProduct(product: any): Promise<{ approved: boolean; reason: string }> {
+    console.log('[CEO.evaluateProduct] Product data:', JSON.stringify(product, null, 2));
+    
+    // In simulation mode, auto-approve for faster progression
+    if (this.mode === 'simulation') {
+      console.log('[CEO.evaluateProduct] Simulation mode - auto-approving');
+      await this.approveProduct(product.id);
+      return { approved: true, reason: "Auto-approved in simulation mode" };
+    }
+    
     const systemPrompt = "You are a strict CEO. Evaluate the product proposal.";
     const userMessage = `Product: ${product.name}. Description: ${product.description}. Price: ${product.price}. Should we sell this?`;
+    console.log('[CEO.evaluateProduct] User message:', userMessage);
     
     try {
-      const response = await this.ai.chat(systemPrompt, userMessage, this.aiTools);
+      // Add 30 second timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('CEO evaluation timeout after 30s')), 30000)
+      );
+      
+      const response = await Promise.race([
+        this.ai.chat(systemPrompt, userMessage, this.aiTools),
+        timeoutPromise
+      ]) as any;
 
       // Check for tool calls
       if (response.toolCalls && response.toolCalls.length > 0) {

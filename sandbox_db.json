@@ -33828,6 +33828,184 @@
         "id": "log_1764958059671_vkpm8f8iq",
         "timestamp": "2025-12-05T18:07:39.680Z",
         "_ts": 1764958059
+      },
+      {
+        "agent": "Simulation",
+        "message": "Flow Started",
+        "level": "info",
+        "data": {
+          "category": "Fitness"
+        },
+        "id": "log_1765231091645_7fupjhqe1",
+        "timestamp": "2025-12-08T21:58:11.657Z",
+        "_ts": 1765231091
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Searching for winning products in category: Fitness",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765231091671_l34tvm7yq",
+        "timestamp": "2025-12-08T21:58:11.684Z",
+        "_ts": 1765231091
+      },
+      {
+        "agent": "CEO",
+        "message": "action",
+        "level": "info",
+        "data": {
+          "action": "reject_product",
+          "productId": "mock_p1",
+          "reason": "The product lacks a proper description and price, making it insufficient and unclear for approval."
+        },
+        "id": "log_1765231092563_2v2zlnkj4",
+        "timestamp": "2025-12-08T21:58:12.579Z",
+        "_ts": 1765231092
+      },
+      {
+        "agent": "Simulation",
+        "message": "Product Rejected by CEO",
+        "level": "warning",
+        "data": {
+          "product": "Mock Fitness Product 1",
+          "reason": "The product lacks a proper description and price, making it insufficient and unclear for approval."
+        },
+        "id": "log_1765231092592_g0vexaxsq",
+        "timestamp": "2025-12-08T21:58:12.604Z",
+        "_ts": 1765231092
+      },
+      {
+        "agent": "Simulation",
+        "message": "Flow Started",
+        "level": "info",
+        "data": {
+          "category": "Fitness"
+        },
+        "id": "log_1765303810248_ffykmms7g",
+        "timestamp": "2025-12-09T18:10:10.256Z",
+        "_ts": 1765303810
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Searching for winning products in category: Fitness",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303810268_lgfm8p41w",
+        "timestamp": "2025-12-09T18:10:10.276Z",
+        "_ts": 1765303810
+      },
+      {
+        "agent": "CEO",
+        "message": "action",
+        "level": "info",
+        "data": {
+          "action": "approve_product",
+          "productId": "prod_001"
+        },
+        "id": "log_1765303811262_v7mm7cesm",
+        "timestamp": "2025-12-09T18:10:11.271Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "Simulation",
+        "message": "Product Approved by CEO",
+        "level": "success",
+        "data": {
+          "product": "Premium Fitness Resistance Bands Set",
+          "reason": "Fitness and home workout products have a strong market demand. The added accessories and durable material make it a good value for the price."
+        },
+        "id": "log_1765303811279_d3hhehakt",
+        "timestamp": "2025-12-09T18:10:11.287Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Finding suppliers for product: prod_001",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303811294_rk840l9sw",
+        "timestamp": "2025-12-09T18:10:11.303Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Creating product page for: Premium Fitness Resistance Bands Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303811312_8kjaq0i62",
+        "timestamp": "2025-12-09T18:10:11.321Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "[MOCK] Using injected Shop Adapter (should be mock).",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303811330_0eherp5l6",
+        "timestamp": "2025-12-09T18:10:11.340Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Successfully created product ID: shop_prod_1765303811349_3pg6w",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303811350_34oawtto5",
+        "timestamp": "2025-12-09T18:10:11.358Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "Marketer",
+        "message": "[MOCK] Creating Facebook campaign for Premium Fitness Resistance Bands Set with budget $100",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765303811368_12s1ajyrx",
+        "timestamp": "2025-12-09T18:10:11.377Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "Simulation",
+        "message": "Traffic Run",
+        "level": "info",
+        "data": {
+          "totalVisitors": 23,
+          "orders": [],
+          "logs": [
+            "Traffic Source: Direct sending ~5 visitors...",
+            "Traffic Source: SEO sending ~10 visitors...",
+            "Traffic Source: Paid - Facebook sending ~8 visitors..."
+          ]
+        },
+        "id": "log_1765303811403_2c3o64ez0",
+        "timestamp": "2025-12-09T18:10:11.411Z",
+        "_ts": 1765303811
+      },
+      {
+        "agent": "Simulation",
+        "message": "Flow Completed",
+        "level": "success",
+        "data": {
+          "product": "Premium Fitness Resistance Bands Set",
+          "visitors": 23,
+          "orders": 0
+        },
+        "id": "log_1765303811419_11k0berjq",
+        "timestamp": "2025-12-09T18:10:11.427Z",
+        "_ts": 1765303811
       }
     ],
     "Products": [
@@ -34219,6 +34397,31 @@
         ],
         "price": 49.99,
         "timestamp": "2025-12-05T17:02:54.918Z"
+      },
+      {
+        "id": "mock_p1",
+        "name": "Mock Fitness Product 1",
+        "potential": "High",
+        "margin": "60%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Mock+Fitness"
+        ],
+        "price": 29.99,
+        "timestamp": "2025-12-08T21:58:11.708Z",
+        "_ts": 1765231091
+      },
+      {
+        "id": "prod_001",
+        "name": "Premium Fitness Resistance Bands Set",
+        "description": "Professional-grade resistance bands perfect for home workouts and physical therapy. Includes 5 resistance levels, door anchor, and carrying case. Made from durable latex-free material.",
+        "price": 29.99,
+        "potential": "High",
+        "margin": "60%",
+        "images": [
+          "https://via.placeholder.com/600x600.png?text=Fitness+Bands"
+        ],
+        "timestamp": "2025-12-09T18:10:10.294Z",
+        "_ts": 1765303810
       }
     ],
     "Orders": [

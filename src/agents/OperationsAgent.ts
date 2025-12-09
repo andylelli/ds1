@@ -29,7 +29,7 @@ export class OperationsAgent extends BaseAgent {
   }
 
   async _fulfillOrderMock(order_id: string) {
-    this.log('info', `[MOCK] Fulfilling order ${order_id}`);
+    this.log('info', `Fulfilling order ${order_id}`);
     return {
       order_id,
       tracking_number: 'TRK' + Math.floor(Math.random() * 1000000),

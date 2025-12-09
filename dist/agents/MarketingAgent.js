@@ -18,7 +18,7 @@ export class MarketingAgent extends BaseAgent {
         }
     }
     async _createAdCampaignMock(platform, budget, product) {
-        this.log('info', `[MOCK] Creating ${platform} campaign for ${product} with budget $${budget}`);
+        this.log('info', `Creating ${platform} campaign for ${product} with budget $${budget}`);
         const campaign = {
             platform: platform,
             product: product,
