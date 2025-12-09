@@ -291,9 +291,7 @@ app.get('/api/agents', (req, res) => {
 });
 app.get('/api/logs', async (req, res) => {
     try {
-        console.log('[API] Fetching logs...');
         const logs = await db.getRecentLogs(50);
-        console.log(`[API] Returning ${logs.length} logs`);
         res.json(logs);
     }
     catch (error) {

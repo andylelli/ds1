@@ -21,8 +21,6 @@ export class PostgresAdapter {
     async saveProduct(product) {
         const mode = configService.get('dbMode');
         const pool = (mode === 'test') ? this.simPool : this.pgPool;
-        const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-        console.log(`[PostgresAdapter.saveProduct] mode=${mode}, using ${poolName}`);
         if (pool) {
             try {
                 await pool.query(`INSERT INTO products (id, name, description, price, potential, margin, data, created_at)
@@ -75,8 +73,6 @@ export class PostgresAdapter {
     async saveOrder(order) {
         const mode = configService.get('dbMode');
         const pool = (mode === 'test') ? this.simPool : this.pgPool;
-        const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-        console.log(`[PostgresAdapter.saveOrder] mode=${mode}, using ${poolName}`);
         if (pool) {
             try {
                 await pool.query(`INSERT INTO orders (id, product_id, amount, status, source, data, created_at)
@@ -122,8 +118,6 @@ export class PostgresAdapter {
     async saveCampaign(campaign) {
         const mode = configService.get('dbMode');
         const pool = mode === 'test' ? this.simPool : this.pgPool;
-        const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-        console.log(`[PostgresAdapter.saveCampaign] mode=${mode}, using ${poolName}`);
         if (pool) {
             try {
                 await pool.query(`INSERT INTO ads (id, platform, product, budget, status, data, created_at)
@@ -169,7 +163,6 @@ export class PostgresAdapter {
     async saveLog(agent, message, level, data) {
         const mode = configService.get('dbMode');
         const pool = mode === 'test' ? this.simPool : this.pgPool;
-        console.log(`[PG-Log] ${agent}: ${message}`, data);
         if (!pool)
             return;
         try {
@@ -182,9 +175,7 @@ export class PostgresAdapter {
     async getRecentLogs(limit) {
         const mode = configService.get('dbMode');
         const pool = mode === 'test' ? this.simPool : this.pgPool;
-        console.log(`[PostgresAdapter.getRecentLogs] mode=${mode}, pool=${pool ? 'exists' : 'null'}`);
         if (!pool) {
-            console.log('[PostgresAdapter.getRecentLogs] Pool is null, returning empty array');
             return [];
         }
         try {
@@ -192,7 +183,6 @@ export class PostgresAdapter {
          FROM events 
          ORDER BY created_at DESC 
          LIMIT $1`, [limit]);
-            console.log(`[PostgresAdapter.getRecentLogs] Found ${result.rows.length} logs in database (mode: ${mode})`);
             return result.rows.map(row => ({
                 agent: row.topic,
                 message: row.type,
