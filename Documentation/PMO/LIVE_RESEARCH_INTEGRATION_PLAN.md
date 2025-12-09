@@ -12,16 +12,17 @@ This document outlines the complete plan for integrating live research endpoints
 2. [Target Architecture](#2-target-architecture)
 3. [Integration Priorities](#3-integration-priorities)
 4. [Phase 1: Google Trends Integration](#4-phase-1-google-trends-integration)
-5. [Phase 2: Meta Ad Library Integration](#5-phase-2-meta-ad-library-integration)
-6. [Phase 3: TikTok Creative Center](#6-phase-3-tiktok-creative-center)
-7. [Phase 4: Premium Data Sources](#7-phase-4-premium-data-sources)
-8. [Configuration & Environment Variables](#8-configuration--environment-variables)
-9. [Error Handling & Fallbacks](#9-error-handling--fallbacks)
-10. [Testing Strategy](#10-testing-strategy)
-11. [Cost Analysis](#11-cost-analysis)
-12. [Timeline & Milestones](#12-timeline--milestones)
-13. [Risk Assessment](#13-risk-assessment)
-14. [Success Metrics](#14-success-metrics)
+5. [**Staging Area & Review Workflow**](#5-staging-area--review-workflow) ⭐ NEW
+6. [Phase 2: Meta Ad Library Integration](#6-phase-2-meta-ad-library-integration)
+7. [Phase 3: TikTok Creative Center](#7-phase-3-tiktok-creative-center)
+8. [Phase 4: Premium Data Sources](#8-phase-4-premium-data-sources)
+9. [Configuration & Environment Variables](#9-configuration--environment-variables)
+10. [Error Handling & Fallbacks](#10-error-handling--fallbacks)
+11. [Testing Strategy](#11-testing-strategy)
+12. [Cost Analysis](#12-cost-analysis)
+13. [Timeline & Milestones](#13-timeline--milestones)
+14. [Risk Assessment](#14-risk-assessment)
+15. [Success Metrics](#15-success-metrics)
 
 ---
 
@@ -412,15 +413,1155 @@ private async fallbackToAIOnly(category: string): Promise<any[]> {
 
 ---
 
-## 5. Phase 2: Meta Ad Library Integration
+## 5. Staging Area & Review Workflow
 
 ### 5.1 Overview
+
+**Goal:** Provide a human-in-the-loop review process where research results are staged for review before being used by the system. This ensures quality control and prevents AI hallucinations or low-quality suggestions from polluting the product pipeline.
+
+**Key Principle:** Research results go to a staging area → Human reviews → Approved items proceed to main workflow
+
+### 5.2 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Research Pipeline                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Google Trends ──┐                                              │
+│                  │                                              │
+│  Meta Ad Library ├──► STAGING AREA ──► HUMAN REVIEW ──► APPROVED│
+│                  │    (Pending)         (Accept/Reject)  (Active)│
+│  TikTok/AdSpy ───┘                                              │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Review Dashboard                             │
+├─────────────────────────────────────────────────────────────────┤
+│  📋 Pending Items: 5                                            │
+│  ────────────────────────────────────────────────────────────── │
+│  │ Product Name       │ Source       │ Score │ Actions        │ │
+│  │ LED Posture Belt   │ Google Trends│ 85    │ [✓] [✗] [?]   │ │
+│  │ Resistance Band Set│ Meta Ads     │ 72    │ [✓] [✗] [?]   │ │
+│  │ Smart Jump Rope    │ AI Synthesis │ 68    │ [✓] [✗] [?]   │ │
+│  ────────────────────────────────────────────────────────────── │
+│  [Approve All High-Score] [Reject All Low-Score] [Refresh]      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 5.3 Database Schema
+
+**New Tables for Staging:**
+
+```sql
+-- Research staging table
+CREATE TABLE research_staging (
+    id SERIAL PRIMARY KEY,
+    session_id VARCHAR(50) NOT NULL,           -- Links to research session
+    item_type VARCHAR(50) NOT NULL,            -- 'product', 'trend', 'competitor'
+    
+    -- Core data
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    raw_data JSONB NOT NULL,                   -- Full API response
+    
+    -- Analysis results
+    confidence_score INTEGER CHECK (confidence_score >= 0 AND confidence_score <= 100),
+    source VARCHAR(50) NOT NULL,               -- 'google_trends', 'meta_ads', 'ai_synthesis'
+    trend_evidence TEXT,                       -- Why this item was flagged
+    
+    -- Review workflow
+    status VARCHAR(20) DEFAULT 'pending',      -- 'pending', 'approved', 'rejected', 'needs_info'
+    reviewed_by VARCHAR(100),
+    reviewed_at TIMESTAMP,
+    review_notes TEXT,
+    
+    -- Metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,                      -- Auto-expire old items
+    
+    CONSTRAINT valid_status CHECK (status IN ('pending', 'approved', 'rejected', 'needs_info'))
+);
+
+-- Research sessions (groups of staging items)
+CREATE TABLE research_sessions (
+    id VARCHAR(50) PRIMARY KEY,
+    category VARCHAR(100) NOT NULL,
+    research_type VARCHAR(50) NOT NULL,        -- 'product_discovery', 'trend_analysis', 'competitor'
+    source_modes JSONB,                        -- Which adapters were used
+    
+    -- Summary stats
+    total_items INTEGER DEFAULT 0,
+    pending_items INTEGER DEFAULT 0,
+    approved_items INTEGER DEFAULT 0,
+    rejected_items INTEGER DEFAULT 0,
+    
+    -- Timestamps
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
+    reviewed_at TIMESTAMP,
+    
+    status VARCHAR(20) DEFAULT 'in_progress'   -- 'in_progress', 'awaiting_review', 'reviewed', 'expired'
+);
+
+-- Index for quick lookups
+CREATE INDEX idx_staging_status ON research_staging(status);
+CREATE INDEX idx_staging_session ON research_staging(session_id);
+CREATE INDEX idx_staging_type ON research_staging(item_type);
+CREATE INDEX idx_sessions_status ON research_sessions(status);
+```
+
+### 5.4 Staging Service Implementation
+
+**File:** `src/core/services/ResearchStagingService.ts`
+
+```typescript
+import { Pool } from 'pg';
+import { v4 as uuidv4 } from 'uuid';
+
+export interface StagedItem {
+  id: number;
+  sessionId: string;
+  itemType: 'product' | 'trend' | 'competitor';
+  name: string;
+  description: string;
+  rawData: any;
+  confidenceScore: number;
+  source: string;
+  trendEvidence: string;
+  status: 'pending' | 'approved' | 'rejected' | 'needs_info';
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  reviewNotes?: string;
+  createdAt: Date;
+}
+
+export interface ResearchSession {
+  id: string;
+  category: string;
+  researchType: string;
+  sourceModes: { trends: string; research: string };
+  totalItems: number;
+  pendingItems: number;
+  approvedItems: number;
+  rejectedItems: number;
+  status: string;
+  startedAt: Date;
+}
+
+export class ResearchStagingService {
+  constructor(private pool: Pool) {}
+
+  // === Session Management ===
+
+  async createSession(category: string, researchType: string, sourceModes: any): Promise<string> {
+    const sessionId = `research_${uuidv4().slice(0, 8)}`;
+    
+    await this.pool.query(`
+      INSERT INTO research_sessions (id, category, research_type, source_modes, status)
+      VALUES ($1, $2, $3, $4, 'in_progress')
+    `, [sessionId, category, researchType, JSON.stringify(sourceModes)]);
+    
+    return sessionId;
+  }
+
+  async getSession(sessionId: string): Promise<ResearchSession | null> {
+    const result = await this.pool.query(`
+      SELECT * FROM research_sessions WHERE id = $1
+    `, [sessionId]);
+    
+    return result.rows[0] ? this.mapSession(result.rows[0]) : null;
+  }
+
+  async getAllSessions(status?: string): Promise<ResearchSession[]> {
+    let query = 'SELECT * FROM research_sessions';
+    const params: any[] = [];
+    
+    if (status) {
+      query += ' WHERE status = $1';
+      params.push(status);
+    }
+    
+    query += ' ORDER BY started_at DESC LIMIT 50';
+    
+    const result = await this.pool.query(query, params);
+    return result.rows.map(r => this.mapSession(r));
+  }
+
+  async completeSession(sessionId: string): Promise<void> {
+    await this.pool.query(`
+      UPDATE research_sessions 
+      SET status = 'awaiting_review', completed_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+    `, [sessionId]);
+  }
+
+  // === Staging Items ===
+
+  async stageItem(sessionId: string, item: Partial<StagedItem>): Promise<number> {
+    const result = await this.pool.query(`
+      INSERT INTO research_staging 
+        (session_id, item_type, name, description, raw_data, confidence_score, source, trend_evidence, expires_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP + INTERVAL '7 days')
+      RETURNING id
+    `, [
+      sessionId,
+      item.itemType,
+      item.name,
+      item.description,
+      JSON.stringify(item.rawData),
+      item.confidenceScore,
+      item.source,
+      item.trendEvidence
+    ]);
+    
+    // Update session counters
+    await this.pool.query(`
+      UPDATE research_sessions 
+      SET total_items = total_items + 1, pending_items = pending_items + 1
+      WHERE id = $1
+    `, [sessionId]);
+    
+    return result.rows[0].id;
+  }
+
+  async stageMultiple(sessionId: string, items: Partial<StagedItem>[]): Promise<number[]> {
+    const ids: number[] = [];
+    for (const item of items) {
+      const id = await this.stageItem(sessionId, item);
+      ids.push(id);
+    }
+    return ids;
+  }
+
+  async getStagedItems(sessionId?: string, status?: string): Promise<StagedItem[]> {
+    let query = 'SELECT * FROM research_staging WHERE 1=1';
+    const params: any[] = [];
+    let paramIndex = 1;
+    
+    if (sessionId) {
+      query += ` AND session_id = $${paramIndex++}`;
+      params.push(sessionId);
+    }
+    
+    if (status) {
+      query += ` AND status = $${paramIndex++}`;
+      params.push(status);
+    }
+    
+    query += ' ORDER BY confidence_score DESC, created_at DESC';
+    
+    const result = await this.pool.query(query, params);
+    return result.rows.map(r => this.mapStagedItem(r));
+  }
+
+  async getPendingCount(): Promise<number> {
+    const result = await this.pool.query(`
+      SELECT COUNT(*) FROM research_staging WHERE status = 'pending'
+    `);
+    return parseInt(result.rows[0].count);
+  }
+
+  // === Review Actions ===
+
+  async approveItem(itemId: number, reviewedBy: string, notes?: string): Promise<void> {
+    await this.updateItemStatus(itemId, 'approved', reviewedBy, notes);
+  }
+
+  async rejectItem(itemId: number, reviewedBy: string, notes?: string): Promise<void> {
+    await this.updateItemStatus(itemId, 'rejected', reviewedBy, notes);
+  }
+
+  async requestMoreInfo(itemId: number, reviewedBy: string, notes: string): Promise<void> {
+    await this.updateItemStatus(itemId, 'needs_info', reviewedBy, notes);
+  }
+
+  async bulkApprove(itemIds: number[], reviewedBy: string): Promise<void> {
+    for (const id of itemIds) {
+      await this.approveItem(id, reviewedBy, 'Bulk approved');
+    }
+  }
+
+  async bulkReject(itemIds: number[], reviewedBy: string): Promise<void> {
+    for (const id of itemIds) {
+      await this.rejectItem(id, reviewedBy, 'Bulk rejected');
+    }
+  }
+
+  async approveHighScore(sessionId: string, threshold: number, reviewedBy: string): Promise<number> {
+    const result = await this.pool.query(`
+      UPDATE research_staging 
+      SET status = 'approved', reviewed_by = $1, reviewed_at = CURRENT_TIMESTAMP, review_notes = 'Auto-approved (high score)'
+      WHERE session_id = $2 AND status = 'pending' AND confidence_score >= $3
+      RETURNING id
+    `, [reviewedBy, sessionId, threshold]);
+    
+    await this.updateSessionCounters(sessionId);
+    return result.rowCount || 0;
+  }
+
+  async rejectLowScore(sessionId: string, threshold: number, reviewedBy: string): Promise<number> {
+    const result = await this.pool.query(`
+      UPDATE research_staging 
+      SET status = 'rejected', reviewed_by = $1, reviewed_at = CURRENT_TIMESTAMP, review_notes = 'Auto-rejected (low score)'
+      WHERE session_id = $2 AND status = 'pending' AND confidence_score < $3
+      RETURNING id
+    `, [reviewedBy, sessionId, threshold]);
+    
+    await this.updateSessionCounters(sessionId);
+    return result.rowCount || 0;
+  }
+
+  // === Get Approved Items for Use ===
+
+  async getApprovedProducts(sessionId?: string): Promise<any[]> {
+    let query = `
+      SELECT raw_data, name, description, confidence_score, source, trend_evidence
+      FROM research_staging 
+      WHERE status = 'approved' AND item_type = 'product'
+    `;
+    const params: any[] = [];
+    
+    if (sessionId) {
+      query += ' AND session_id = $1';
+      params.push(sessionId);
+    }
+    
+    query += ' ORDER BY confidence_score DESC';
+    
+    const result = await this.pool.query(query, params);
+    return result.rows.map(r => ({
+      ...r.raw_data,
+      name: r.name,
+      description: r.description,
+      confidenceScore: r.confidence_score,
+      source: r.source,
+      reviewStatus: 'approved'
+    }));
+  }
+
+  // === Private Helpers ===
+
+  private async updateItemStatus(itemId: number, status: string, reviewedBy: string, notes?: string): Promise<void> {
+    const item = await this.pool.query('SELECT session_id FROM research_staging WHERE id = $1', [itemId]);
+    
+    await this.pool.query(`
+      UPDATE research_staging 
+      SET status = $1, reviewed_by = $2, reviewed_at = CURRENT_TIMESTAMP, review_notes = $3
+      WHERE id = $4
+    `, [status, reviewedBy, notes, itemId]);
+    
+    if (item.rows[0]) {
+      await this.updateSessionCounters(item.rows[0].session_id);
+    }
+  }
+
+  private async updateSessionCounters(sessionId: string): Promise<void> {
+    await this.pool.query(`
+      UPDATE research_sessions SET
+        pending_items = (SELECT COUNT(*) FROM research_staging WHERE session_id = $1 AND status = 'pending'),
+        approved_items = (SELECT COUNT(*) FROM research_staging WHERE session_id = $1 AND status = 'approved'),
+        rejected_items = (SELECT COUNT(*) FROM research_staging WHERE session_id = $1 AND status = 'rejected')
+      WHERE id = $1
+    `, [sessionId]);
+    
+    // Check if fully reviewed
+    const session = await this.getSession(sessionId);
+    if (session && session.pendingItems === 0) {
+      await this.pool.query(`
+        UPDATE research_sessions SET status = 'reviewed', reviewed_at = CURRENT_TIMESTAMP WHERE id = $1
+      `, [sessionId]);
+    }
+  }
+
+  private mapSession(row: any): ResearchSession {
+    return {
+      id: row.id,
+      category: row.category,
+      researchType: row.research_type,
+      sourceModes: row.source_modes,
+      totalItems: row.total_items,
+      pendingItems: row.pending_items,
+      approvedItems: row.approved_items,
+      rejectedItems: row.rejected_items,
+      status: row.status,
+      startedAt: row.started_at
+    };
+  }
+
+  private mapStagedItem(row: any): StagedItem {
+    return {
+      id: row.id,
+      sessionId: row.session_id,
+      itemType: row.item_type,
+      name: row.name,
+      description: row.description,
+      rawData: row.raw_data,
+      confidenceScore: row.confidence_score,
+      source: row.source,
+      trendEvidence: row.trend_evidence,
+      status: row.status,
+      reviewedBy: row.reviewed_by,
+      reviewedAt: row.reviewed_at,
+      reviewNotes: row.review_notes,
+      createdAt: row.created_at
+    };
+  }
+}
+```
+
+### 5.5 Updated LiveTrendAdapter with Staging
+
+**Modified `findProducts()` to stage results instead of returning directly:**
+
+```typescript
+import { ResearchStagingService } from '../../core/services/ResearchStagingService.js';
+
+export class LiveTrendAdapter implements TrendAnalysisPort {
+  private stagingService: ResearchStagingService;
+  private stagingEnabled: boolean;
+
+  constructor(pool: Pool, stagingEnabled = true) {
+    this.stagingService = new ResearchStagingService(pool);
+    this.stagingEnabled = stagingEnabled;
+  }
+
+  async findProducts(category: string): Promise<any[]> {
+    // 1. Gather trend data
+    const { rising } = await this.getRelatedQueries(category);
+    const dailyTrends = await this.getDailyTrends();
+    
+    // 2. AI synthesizes products
+    const products = await this.synthesizeProductsWithAI(category, rising, dailyTrends);
+    
+    // 3. If staging enabled, put in staging area
+    if (this.stagingEnabled) {
+      const sessionId = await this.stagingService.createSession(
+        category, 
+        'product_discovery',
+        { trends: 'live', research: 'live' }
+      );
+      
+      for (const product of products) {
+        await this.stagingService.stageItem(sessionId, {
+          itemType: 'product',
+          name: product.name,
+          description: product.description,
+          rawData: product,
+          confidenceScore: product.confidence * 10, // Convert 1-10 to 0-100
+          source: 'google_trends',
+          trendEvidence: product.trendEvidence || 'AI-synthesized from trend data'
+        });
+      }
+      
+      await this.stagingService.completeSession(sessionId);
+      
+      // Return indication that items are staged
+      return [{
+        staged: true,
+        sessionId,
+        itemCount: products.length,
+        message: `${products.length} products staged for review. Session: ${sessionId}`
+      }];
+    }
+    
+    // 4. If staging disabled, return directly (legacy behavior)
+    return products;
+  }
+
+  // Method to get only approved products
+  async getApprovedProducts(sessionId?: string): Promise<any[]> {
+    return this.stagingService.getApprovedProducts(sessionId);
+  }
+}
+```
+
+### 5.6 API Endpoints for Staging
+
+**File:** `src/api/staging-routes.ts`
+
+```typescript
+import { Router } from 'express';
+import { ResearchStagingService } from '../core/services/ResearchStagingService.js';
+
+export function createStagingRoutes(pool: Pool): Router {
+  const router = Router();
+  const stagingService = new ResearchStagingService(pool);
+
+  // === Sessions ===
+
+  // GET /api/staging/sessions - List all research sessions
+  router.get('/sessions', async (req, res) => {
+    try {
+      const status = req.query.status as string | undefined;
+      const sessions = await stagingService.getAllSessions(status);
+      res.json({ sessions });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get sessions' });
+    }
+  });
+
+  // GET /api/staging/sessions/:id - Get session details
+  router.get('/sessions/:id', async (req, res) => {
+    try {
+      const session = await stagingService.getSession(req.params.id);
+      if (!session) {
+        return res.status(404).json({ error: 'Session not found' });
+      }
+      const items = await stagingService.getStagedItems(req.params.id);
+      res.json({ session, items });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get session' });
+    }
+  });
+
+  // === Items ===
+
+  // GET /api/staging/items - Get all staged items
+  router.get('/items', async (req, res) => {
+    try {
+      const { sessionId, status } = req.query;
+      const items = await stagingService.getStagedItems(
+        sessionId as string | undefined,
+        status as string | undefined
+      );
+      res.json({ items, count: items.length });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get items' });
+    }
+  });
+
+  // GET /api/staging/pending - Get pending count
+  router.get('/pending', async (req, res) => {
+    try {
+      const count = await stagingService.getPendingCount();
+      res.json({ pendingCount: count });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get pending count' });
+    }
+  });
+
+  // === Review Actions ===
+
+  // POST /api/staging/items/:id/approve
+  router.post('/items/:id/approve', async (req, res) => {
+    try {
+      const { reviewedBy = 'admin', notes } = req.body;
+      await stagingService.approveItem(parseInt(req.params.id), reviewedBy, notes);
+      res.json({ success: true, message: 'Item approved' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to approve item' });
+    }
+  });
+
+  // POST /api/staging/items/:id/reject
+  router.post('/items/:id/reject', async (req, res) => {
+    try {
+      const { reviewedBy = 'admin', notes } = req.body;
+      await stagingService.rejectItem(parseInt(req.params.id), reviewedBy, notes);
+      res.json({ success: true, message: 'Item rejected' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to reject item' });
+    }
+  });
+
+  // POST /api/staging/items/:id/need-info
+  router.post('/items/:id/need-info', async (req, res) => {
+    try {
+      const { reviewedBy = 'admin', notes } = req.body;
+      await stagingService.requestMoreInfo(parseInt(req.params.id), reviewedBy, notes);
+      res.json({ success: true, message: 'Marked as needs info' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update item' });
+    }
+  });
+
+  // === Bulk Actions ===
+
+  // POST /api/staging/bulk/approve
+  router.post('/bulk/approve', async (req, res) => {
+    try {
+      const { itemIds, reviewedBy = 'admin' } = req.body;
+      await stagingService.bulkApprove(itemIds, reviewedBy);
+      res.json({ success: true, message: `${itemIds.length} items approved` });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to bulk approve' });
+    }
+  });
+
+  // POST /api/staging/bulk/reject
+  router.post('/bulk/reject', async (req, res) => {
+    try {
+      const { itemIds, reviewedBy = 'admin' } = req.body;
+      await stagingService.bulkReject(itemIds, reviewedBy);
+      res.json({ success: true, message: `${itemIds.length} items rejected` });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to bulk reject' });
+    }
+  });
+
+  // POST /api/staging/sessions/:id/auto-approve
+  router.post('/sessions/:id/auto-approve', async (req, res) => {
+    try {
+      const { threshold = 70, reviewedBy = 'admin' } = req.body;
+      const count = await stagingService.approveHighScore(req.params.id, threshold, reviewedBy);
+      res.json({ success: true, message: `${count} items auto-approved (score >= ${threshold})` });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to auto-approve' });
+    }
+  });
+
+  // POST /api/staging/sessions/:id/auto-reject
+  router.post('/sessions/:id/auto-reject', async (req, res) => {
+    try {
+      const { threshold = 40, reviewedBy = 'admin' } = req.body;
+      const count = await stagingService.rejectLowScore(req.params.id, threshold, reviewedBy);
+      res.json({ success: true, message: `${count} items auto-rejected (score < ${threshold})` });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to auto-reject' });
+    }
+  });
+
+  // === Approved Items (for downstream use) ===
+
+  // GET /api/staging/approved/products
+  router.get('/approved/products', async (req, res) => {
+    try {
+      const { sessionId } = req.query;
+      const products = await stagingService.getApprovedProducts(sessionId as string | undefined);
+      res.json({ products, count: products.length });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to get approved products' });
+    }
+  });
+
+  return router;
+}
+```
+
+### 5.7 Staging Review UI
+
+**File:** `public/staging.html`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 - Research Staging</title>
+    <link rel="stylesheet" href="/admin.css">
+    <style>
+        .staging-container { padding: 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .session-card {
+            background: #1c2128;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .session-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .stat-pending { background: #f0ad4e; color: #000; }
+        .stat-approved { background: #28a745; color: #fff; }
+        .stat-rejected { background: #dc3545; color: #fff; }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .items-table th, .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .items-table th {
+            background: #161b22;
+            color: #8b949e;
+            font-weight: 600;
+        }
+        
+        .confidence-bar {
+            width: 100px;
+            height: 8px;
+            background: #30363d;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .confidence-high { background: #28a745; }
+        .confidence-medium { background: #f0ad4e; }
+        .confidence-low { background: #dc3545; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-approve { background: #28a745; }
+        .btn-approve:hover { background: #218838; }
+        .btn-reject { background: #dc3545; }
+        .btn-reject:hover { background: #c82333; }
+        .btn-info { background: #17a2b8; }
+        .btn-info:hover { background: #138496; }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .source-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #30363d;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #161b22;
+            border-radius: 8px;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #8b949e;
+        }
+        
+        .trend-evidence {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+        
+        .pending-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #f0ad4e;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="/" class="nav-brand">DS1</a>
+        <a href="/admin.html">Dashboard</a>
+        <a href="/infra.html">Infrastructure</a>
+        <a href="/analytics.html">Analytics</a>
+        <a href="/staging.html" class="active">📋 Staging</a>
+    </nav>
+
+    <div class="pending-badge" id="pendingBadge" style="display: none;">
+        📋 <span id="pendingCount">0</span> Pending Review
+    </div>
+
+    <div class="staging-container">
+        <h1>🔬 Research Staging Area</h1>
+        <p class="subtitle">Review and approve research results before they enter the product pipeline</p>
+
+        <div class="filter-bar">
+            <select id="sessionFilter" onchange="loadItems()">
+                <option value="">All Sessions</option>
+            </select>
+            <select id="statusFilter" onchange="loadItems()">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="needs_info">Needs Info</option>
+            </select>
+            <button class="btn" onclick="refresh()">🔄 Refresh</button>
+        </div>
+
+        <div class="bulk-actions" id="bulkActions" style="display: none;">
+            <span>Selected: <strong id="selectedCount">0</strong></span>
+            <button class="btn btn-approve btn-sm" onclick="bulkApprove()">✓ Approve Selected</button>
+            <button class="btn btn-reject btn-sm" onclick="bulkReject()">✗ Reject Selected</button>
+            <button class="btn btn-sm" onclick="clearSelection()">Clear Selection</button>
+        </div>
+
+        <div id="sessionsContainer"></div>
+    </div>
+
+    <script>
+        let sessions = [];
+        let items = [];
+        let selectedItems = new Set();
+
+        async function loadSessions() {
+            const res = await fetch('/api/staging/sessions');
+            const data = await res.json();
+            sessions = data.sessions;
+            
+            // Populate session filter
+            const filter = document.getElementById('sessionFilter');
+            filter.innerHTML = '<option value="">All Sessions</option>' + 
+                sessions.map(s => `<option value="${s.id}">${s.category} (${s.id})</option>`).join('');
+            
+            renderSessions();
+        }
+
+        async function loadItems() {
+            const sessionId = document.getElementById('sessionFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            
+            let url = '/api/staging/items?';
+            if (sessionId) url += `sessionId=${sessionId}&`;
+            if (status) url += `status=${status}`;
+            
+            const res = await fetch(url);
+            const data = await res.json();
+            items = data.items;
+            
+            renderItems();
+            updatePendingBadge();
+        }
+
+        async function updatePendingBadge() {
+            const res = await fetch('/api/staging/pending');
+            const data = await res.json();
+            
+            const badge = document.getElementById('pendingBadge');
+            const count = document.getElementById('pendingCount');
+            
+            if (data.pendingCount > 0) {
+                badge.style.display = 'block';
+                count.textContent = data.pendingCount;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderSessions() {
+            const container = document.getElementById('sessionsContainer');
+            
+            if (sessions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No research sessions yet</h3>
+                        <p>Run a product discovery to see results here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show items table
+            renderItems();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('sessionsContainer');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No items match your filters</h3>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" onchange="toggleAll(this)" /></th>
+                            <th>Product</th>
+                            <th>Confidence</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map(item => renderItemRow(item)).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderItemRow(item) {
+            const confidenceClass = item.confidenceScore >= 70 ? 'high' : 
+                                   item.confidenceScore >= 40 ? 'medium' : 'low';
+            
+            return `
+                <tr data-id="${item.id}">
+                    <td>
+                        <input type="checkbox" 
+                               ${item.status === 'pending' ? '' : 'disabled'} 
+                               onchange="toggleItem(${item.id})" 
+                               ${selectedItems.has(item.id) ? 'checked' : ''} />
+                    </td>
+                    <td>
+                        <strong>${item.name}</strong>
+                        <div class="trend-evidence">${item.trendEvidence || ''}</div>
+                    </td>
+                    <td>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill confidence-${confidenceClass}" 
+                                 style="width: ${item.confidenceScore}%"></div>
+                        </div>
+                        <span>${item.confidenceScore}%</span>
+                    </td>
+                    <td><span class="source-badge">${item.source}</span></td>
+                    <td><span class="stat-badge stat-${item.status}">${item.status}</span></td>
+                    <td class="action-buttons">
+                        ${item.status === 'pending' ? `
+                            <button class="btn-sm btn-approve" onclick="approve(${item.id})">✓</button>
+                            <button class="btn-sm btn-reject" onclick="reject(${item.id})">✗</button>
+                            <button class="btn-sm btn-info" onclick="needInfo(${item.id})">?</button>
+                        ` : `
+                            <span style="color: #8b949e; font-size: 12px;">
+                                ${item.reviewedBy ? `by ${item.reviewedBy}` : ''}
+                            </span>
+                        `}
+                    </td>
+                </tr>
+            `;
+        }
+
+        function toggleItem(id) {
+            if (selectedItems.has(id)) {
+                selectedItems.delete(id);
+            } else {
+                selectedItems.add(id);
+            }
+            updateBulkActions();
+        }
+
+        function toggleAll(checkbox) {
+            if (checkbox.checked) {
+                items.filter(i => i.status === 'pending').forEach(i => selectedItems.add(i.id));
+            } else {
+                selectedItems.clear();
+            }
+            renderItems();
+            updateBulkActions();
+        }
+
+        function clearSelection() {
+            selectedItems.clear();
+            renderItems();
+            updateBulkActions();
+        }
+
+        function updateBulkActions() {
+            const bulkDiv = document.getElementById('bulkActions');
+            const countSpan = document.getElementById('selectedCount');
+            
+            if (selectedItems.size > 0) {
+                bulkDiv.style.display = 'flex';
+                countSpan.textContent = selectedItems.size;
+            } else {
+                bulkDiv.style.display = 'none';
+            }
+        }
+
+        async function approve(id) {
+            await fetch(`/api/staging/items/${id}/approve`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reviewedBy: 'admin' })
+            });
+            loadItems();
+        }
+
+        async function reject(id) {
+            const notes = prompt('Rejection reason (optional):');
+            await fetch(`/api/staging/items/${id}/reject`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reviewedBy: 'admin', notes })
+            });
+            loadItems();
+        }
+
+        async function needInfo(id) {
+            const notes = prompt('What additional info is needed?');
+            if (!notes) return;
+            await fetch(`/api/staging/items/${id}/need-info`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reviewedBy: 'admin', notes })
+            });
+            loadItems();
+        }
+
+        async function bulkApprove() {
+            await fetch('/api/staging/bulk/approve', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ itemIds: Array.from(selectedItems), reviewedBy: 'admin' })
+            });
+            selectedItems.clear();
+            loadItems();
+        }
+
+        async function bulkReject() {
+            await fetch('/api/staging/bulk/reject', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ itemIds: Array.from(selectedItems), reviewedBy: 'admin' })
+            });
+            selectedItems.clear();
+            loadItems();
+        }
+
+        function refresh() {
+            loadSessions();
+            loadItems();
+        }
+
+        // Initial load
+        loadSessions();
+        loadItems();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(updatePendingBadge, 30000);
+    </script>
+</body>
+</html>
+```
+
+### 5.8 Configuration Options
+
+Add to `AppConfig`:
+
+```typescript
+interface AppConfig {
+  // ... existing ...
+  
+  // Staging options
+  stagingEnabled: boolean;           // Enable/disable staging workflow
+  stagingAutoApproveThreshold: number;  // Auto-approve items above this score (0-100, 0=disabled)
+  stagingAutoRejectThreshold: number;   // Auto-reject items below this score (0-100, 0=disabled)
+  stagingExpiryDays: number;         // Days before staged items expire
+}
+```
+
+**Default values:**
+```json
+{
+  "stagingEnabled": true,
+  "stagingAutoApproveThreshold": 0,
+  "stagingAutoRejectThreshold": 0,
+  "stagingExpiryDays": 7
+}
+```
+
+### 5.9 Integration with Existing Workflow
+
+**Updated ProductResearchAgent to use staged/approved products:**
+
+```typescript
+class ProductResearchAgent {
+  private stagingService: ResearchStagingService;
+  
+  async findWinningProducts(params: { category: string }): Promise<any> {
+    const config = await this.configService.getConfig();
+    
+    if (config.trendsMode === 'live' && config.stagingEnabled) {
+      // Live mode with staging - products go to staging area
+      const stagingResult = await this.trendAdapter.findProducts(params.category);
+      
+      return {
+        status: 'staged_for_review',
+        sessionId: stagingResult[0]?.sessionId,
+        itemCount: stagingResult[0]?.itemCount,
+        message: 'Products have been staged for your review. Visit /staging.html to approve.',
+        nextStep: 'Review and approve products in the staging area'
+      };
+    }
+    
+    if (config.trendsMode === 'live' && !config.stagingEnabled) {
+      // Live mode without staging - direct return (legacy)
+      return this.trendAdapter.findProducts(params.category);
+    }
+    
+    // Mock mode
+    return this.trendAdapter.findProducts(params.category);
+  }
+  
+  // Get only approved products for downstream use
+  async getApprovedProducts(sessionId?: string): Promise<any[]> {
+    return this.stagingService.getApprovedProducts(sessionId);
+  }
+}
+```
+
+### 5.10 Timeline Updates
+
+Add to Phase 1 timeline:
+
+| Day | Task | Owner | Status |
+|-----|------|-------|--------|
+| 4-5 | Create staging database schema | Dev | ⬜ |
+| 6 | Implement ResearchStagingService | Dev | ⬜ |
+| 7 | Create staging API endpoints | Dev | ⬜ |
+| 8 | Build staging review UI | Dev | ⬜ |
+| 9 | Integrate staging with LiveTrendAdapter | Dev | ⬜ |
+| 10 | Test end-to-end staging workflow | Dev | ⬜ |
+
+---
+
+## 6. Phase 2: Meta Ad Library Integration
+
+### 6.1 Overview
 
 **Goal:** Find proven winning products by analyzing competitor ads
 
 **API:** Meta Ad Library API (free, requires developer account)
 
-### 5.2 Setup Requirements
+### 6.2 Setup Requirements
 
 1. **Meta for Developers Account**
    - Go to: https://developers.facebook.com/
@@ -434,7 +1575,7 @@ private async fallbackToAIOnly(category: string): Promise<any[]> {
    - Base URL: `https://graph.facebook.com/v18.0/ads_archive`
    - Documentation: https://www.facebook.com/ads/library/api/
 
-### 5.3 API Capabilities
+### 6.3 API Capabilities
 
 | Parameter | Description | Use Case |
 |-----------|-------------|----------|
@@ -445,9 +1586,9 @@ private async fallbackToAIOnly(category: string): Promise<any[]> {
 | `publisher_platforms` | FB, IG, Messenger, AN | Filter by platform |
 | `media_type` | Image, video, meme | Filter by creative type |
 
-### 5.4 Implementation Plan
+### 6.4 Implementation Plan
 
-#### 5.4.1 Update LiveCompetitorAdapter
+#### 6.4.1 Update LiveCompetitorAdapter
 
 **File:** `src/infra/research/LiveCompetitorAdapter.ts`
 
@@ -668,7 +1809,7 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
 }
 ```
 
-### 5.5 Environment Variables
+### 6.5 Environment Variables
 
 Add to `.env`:
 ```bash
@@ -676,7 +1817,7 @@ META_ACCESS_TOKEN=your_long_lived_access_token
 META_AD_ACCOUNT_ID=act_123456789  # Optional, for your own ads
 ```
 
-### 5.6 Limitations
+### 6.6 Limitations
 
 | Limitation | Impact | Mitigation |
 |------------|--------|------------|
@@ -687,9 +1828,9 @@ META_AD_ACCOUNT_ID=act_123456789  # Optional, for your own ads
 
 ---
 
-## 6. Phase 3: TikTok Creative Center
+## 7. Phase 3: TikTok Creative Center
 
-### 6.1 Overview
+### 7.1 Overview
 
 **Goal:** Identify products going viral on TikTok before they saturate
 
@@ -700,7 +1841,7 @@ META_AD_ACCOUNT_ID=act_123456789  # Optional, for your own ads
 3. **Third-party scrapers** - Use services like Apify or build custom scraper
 4. **Social listening tools** - Brand24, Mention (paid)
 
-### 6.2 Recommended Approach: Manual + AI
+### 7.2 Recommended Approach: Manual + AI
 
 For MVP, implement a hybrid approach:
 
@@ -734,7 +1875,7 @@ class TikTokTrendService {
 }
 ```
 
-### 6.3 Future: Apify Scraper
+### 7.3 Future: Apify Scraper
 
 If budget allows, use Apify's TikTok scrapers:
 - **Cost:** ~$5/1000 results
@@ -743,9 +1884,9 @@ If budget allows, use Apify's TikTok scrapers:
 
 ---
 
-## 7. Phase 4: Premium Data Sources
+## 8. Phase 4: Premium Data Sources
 
-### 7.1 AdSpy Integration
+### 8.1 AdSpy Integration
 
 **Cost:** $149/month
 **Value:** Comprehensive ad database with filters
@@ -768,7 +1909,7 @@ class AdSpyAdapter {
 }
 ```
 
-### 7.2 Exploding Topics Integration
+### 8.2 Exploding Topics Integration
 
 **Cost:** $97/month
 **Value:** Curated database of rising trends with growth projections
@@ -785,7 +1926,7 @@ class ExplodingTopicsAdapter {
 }
 ```
 
-### 7.3 Decision Matrix
+### 8.3 Decision Matrix
 
 | Use Case | Free Option | Paid Option |
 |----------|-------------|-------------|
@@ -796,9 +1937,9 @@ class ExplodingTopicsAdapter {
 
 ---
 
-## 8. Configuration & Environment Variables
+## 9. Configuration & Environment Variables
 
-### 8.1 New Environment Variables
+### 9.1 New Environment Variables
 
 Add to `.env.example`:
 ```bash
@@ -814,7 +1955,7 @@ RESEARCH_CACHE_TTL_HOURS=1       # How long to cache trend data
 RESEARCH_FALLBACK_TO_AI=true    # Fall back to AI if APIs fail
 ```
 
-### 8.2 Config Service Updates
+### 9.2 Config Service Updates
 
 Add to `AppConfig` interface:
 ```typescript
@@ -829,7 +1970,7 @@ interface AppConfig {
 }
 ```
 
-### 8.3 Config UI Updates
+### 9.3 Config UI Updates
 
 Add to Infrastructure page (`public/infra.html`):
 ```html
@@ -858,9 +1999,9 @@ Add to Infrastructure page (`public/infra.html`):
 
 ---
 
-## 9. Error Handling & Fallbacks
+## 10. Error Handling & Fallbacks
 
-### 9.1 Fallback Chain
+### 10.1 Fallback Chain
 
 ```
 Primary Source → Secondary Source → AI Fallback → Mock Data
@@ -870,7 +2011,7 @@ Google Trends    (if rate limited)   OpenAI     Hardcoded
 Meta Ad Library   retry after 1hr    Generate   Static JSON
 ```
 
-### 9.2 Implementation
+### 10.2 Implementation
 
 ```typescript
 class ResilientResearchService {
@@ -901,7 +2042,7 @@ class ResilientResearchService {
 }
 ```
 
-### 9.3 Circuit Breaker
+### 10.3 Circuit Breaker
 
 Apply existing `LiveAiAdapter` circuit breaker pattern:
 ```typescript
@@ -941,9 +2082,9 @@ class ResearchCircuitBreaker {
 
 ---
 
-## 10. Testing Strategy
+## 11. Testing Strategy
 
-### 10.1 Unit Tests
+### 11.1 Unit Tests
 
 **File:** `src/infra/trends/__tests__/LiveTrendAdapter.test.ts`
 
@@ -973,7 +2114,7 @@ describe('LiveTrendAdapter', () => {
 });
 ```
 
-### 10.2 Integration Tests
+### 11.2 Integration Tests
 
 ```typescript
 describe('Research Integration', () => {
@@ -990,7 +2131,7 @@ describe('Research Integration', () => {
 });
 ```
 
-### 10.3 Manual Testing Checklist
+### 11.3 Manual Testing Checklist
 
 - [ ] Google Trends returns real data
 - [ ] AI synthesizes products from trend data
@@ -1003,9 +2144,9 @@ describe('Research Integration', () => {
 
 ---
 
-## 11. Cost Analysis
+## 12. Cost Analysis
 
-### 11.1 Free Tier (Phase 1-2)
+### 12.1 Free Tier (Phase 1-2)
 
 | Service | Cost | Limitations |
 |---------|------|-------------|
@@ -1015,7 +2156,7 @@ describe('Research Integration', () => {
 
 **Total:** $0 additional cost
 
-### 11.2 Premium Tier (Phase 3-4)
+### 12.2 Premium Tier (Phase 3-4)
 
 | Service | Monthly Cost | Value |
 |---------|--------------|-------|
@@ -1024,7 +2165,7 @@ describe('Research Integration', () => {
 | Apify (TikTok) | ~$20 | 4000 results/mo |
 | **Total** | **$266/mo** | Full competitive intelligence |
 
-### 11.3 ROI Calculation
+### 12.3 ROI Calculation
 
 Assuming 1 winning product found per month:
 - Average profit per winner: $500-5000/mo
@@ -1033,7 +2174,7 @@ Assuming 1 winning product found per month:
 
 ---
 
-## 12. Timeline & Milestones
+## 13. Timeline & Milestones
 
 ### Phase 1: Google Trends (Week 1-2)
 
@@ -1080,9 +2221,9 @@ Assuming 1 winning product found per month:
 
 ---
 
-## 13. Risk Assessment
+## 14. Risk Assessment
 
-### 13.1 Technical Risks
+### 14.1 Technical Risks
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
@@ -1091,7 +2232,7 @@ Assuming 1 winning product found per month:
 | AI hallucinations | Medium | Medium | Validate with real data |
 | API keys leaked | Low | High | Use env vars, never commit |
 
-### 13.2 Business Risks
+### 14.2 Business Risks
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
@@ -1099,7 +2240,7 @@ Assuming 1 winning product found per month:
 | Competitors using same tools | High | Low | Execution matters more than data |
 | Premium tools not worth cost | Medium | Medium | Start with free, upgrade if needed |
 
-### 13.3 Mitigation Matrix
+### 14.3 Mitigation Matrix
 
 ```
 High Impact ─────────────────────────────────────┐
@@ -1119,9 +2260,9 @@ Low  │                      API Changes          │
 
 ---
 
-## 14. Success Metrics
+## 15. Success Metrics
 
-### 14.1 Technical Metrics
+### 15.1 Technical Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -1130,7 +2271,7 @@ Low  │                      API Changes          │
 | Cache hit rate | >70% | Track cache hits/misses |
 | Fallback rate | <10% | Track fallback invocations |
 
-### 14.2 Business Metrics
+### 15.2 Business Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -1139,7 +2280,7 @@ Low  │                      API Changes          │
 | Competitor insights used | 100% | Track CEO decisions |
 | Research cost per winner | <$50 | Total API cost / winners found |
 
-### 14.3 Dashboard Updates
+### 15.3 Dashboard Updates
 
 Add to Analytics page:
 - Research source breakdown (mock vs live vs premium)
@@ -1153,14 +2294,24 @@ Add to Analytics page:
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/infra/trends/LiveTrendAdapter.ts` | Modify | Add Google Trends integration |
+| `src/infra/trends/LiveTrendAdapter.ts` | Modify | Add Google Trends integration + staging |
 | `src/infra/research/LiveCompetitorAdapter.ts` | Modify | Add Meta Ad Library integration |
-| `src/infra/config/ConfigService.ts` | Modify | Add new config options |
+| `src/core/services/ResearchStagingService.ts` | **Create** | Staging area service for review workflow |
+| `src/api/staging-routes.ts` | **Create** | API endpoints for staging management |
+| `public/staging.html` | **Create** | Staging review dashboard UI |
+| `src/infra/config/ConfigService.ts` | Modify | Add staging config options |
 | `public/infra.html` | Modify | Add research mode toggles |
 | `.env.example` | Modify | Add new environment variables |
-| `package.json` | Modify | Add `google-trends-api` dependency |
+| `package.json` | Modify | Add `google-trends-api` + `uuid` dependencies |
 | `src/infra/trends/TikTokTrendService.ts` | Create | New TikTok integration (Phase 3) |
 | `src/infra/research/AdSpyAdapter.ts` | Create | New AdSpy integration (Phase 4) |
+
+### Database Migrations
+
+| Migration | Description |
+|-----------|-------------|
+| `create_research_staging.sql` | Creates `research_staging` table for pending items |
+| `create_research_sessions.sql` | Creates `research_sessions` table for grouping |
 
 ---
 
@@ -1178,15 +2329,39 @@ META_ACCESS_TOKEN=your_token_here
 ADSPY_API_KEY=
 EXPLODING_TOPICS_API_KEY=
 APIFY_API_TOKEN=
+
+# Staging Configuration
+STAGING_ENABLED=true
+STAGING_AUTO_APPROVE_THRESHOLD=0    # 0 = disabled, 70+ = auto-approve high confidence
+STAGING_AUTO_REJECT_THRESHOLD=0     # 0 = disabled, <40 = auto-reject low confidence
+STAGING_EXPIRY_DAYS=7
 ```
 
 ### Config Modes
 ```json
 {
   "trendsMode": "mock | live",
-  "researchMode": "mock | live | premium"
+  "researchMode": "mock | live | premium",
+  "stagingEnabled": true,
+  "stagingAutoApproveThreshold": 0,
+  "stagingAutoRejectThreshold": 0,
+  "stagingExpiryDays": 7
 }
 ```
+
+### Staging API Endpoints
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/staging/sessions` | GET | List all research sessions |
+| `/api/staging/sessions/:id` | GET | Get session with items |
+| `/api/staging/items` | GET | Get all staged items (filter by session/status) |
+| `/api/staging/pending` | GET | Get pending item count |
+| `/api/staging/items/:id/approve` | POST | Approve an item |
+| `/api/staging/items/:id/reject` | POST | Reject an item |
+| `/api/staging/bulk/approve` | POST | Bulk approve items |
+| `/api/staging/bulk/reject` | POST | Bulk reject items |
+| `/api/staging/sessions/:id/auto-approve` | POST | Auto-approve high-score items |
+| `/api/staging/approved/products` | GET | Get approved products for use |
 
 ### API Endpoints Used
 - Google Trends: `google-trends-api` npm package (unofficial)
@@ -1196,7 +2371,7 @@ APIFY_API_TOKEN=
 
 ---
 
-*Document Version: 1.0*
+*Document Version: 1.1*
 *Created: December 2024*
 *Last Updated: December 2024*
 *Author: DS1 Development Team*
