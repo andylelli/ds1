@@ -41,7 +41,7 @@ export class StoreBuildAgent extends BaseAgent {
          // If we are in simulation mode, we might want to ensure we are using the mock adapter.
          // But let's assume the wiring does that.
          // Just in case, I'll log.
-         this.log('info', '[MOCK] Using injected Shop Adapter (should be mock).');
+         this.log('info', 'Using injected Shop Adapter.');
     }
 
     try {

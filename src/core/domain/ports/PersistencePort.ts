@@ -13,6 +13,10 @@ export interface PersistencePort {
   saveLog(agent: string, message: string, level: string, data?: any): Promise<void>;
   getRecentLogs(limit: number): Promise<any[]>;
 
+  // Clear simulation data
+  clearSimulationData(): Promise<void>;
+  clearLogs(source?: string): Promise<void>;
+
   // Generic Event Sourcing / Inspection
   saveEvent(topic: string, type: string, payload: any): Promise<void>;
   getEvents(topic?: string, source?: string): Promise<any[]>;

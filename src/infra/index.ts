@@ -2,7 +2,6 @@ export * from './config/ConfigService.js';
 
 // Database
 export * from './db/PostgresAdapter.js';
-export * from './db/MockAdapter.js';
 
 // AI
 export * from './ai/OpenAIService.js';

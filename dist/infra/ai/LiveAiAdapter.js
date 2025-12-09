@@ -19,6 +19,7 @@ export class LiveAiAdapter {
             try {
                 if (_SHOW_DEBUG_ENV) {
                     console.log('[LiveAiAdapter] process.env.AZURE_OPENAI_ENDPOINT (at chat call)=', process.env.AZURE_OPENAI_ENDPOINT);
+                    console.log('[LiveAiAdapter] openAIService deployment=', openAIService.deploymentName);
                 }
                 const client = openAIService.getClient();
                 const messages = [

@@ -303,12 +303,26 @@ tr:last-child td { border-bottom: none; }
     height: 300px; background: #111827; border-radius: 0.5rem;
     padding: 1rem; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 0.85rem;
 }
+#logViewer {
+    background: #0d1117; border-radius: 0.5rem; color: #c9d1d9;
+    padding: 1rem; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.8rem;
+    line-height: 1.4;
+}
+#logViewer .log-entry { border-bottom: 1px solid #21262d; padding: 0.35rem 0; }
+#logViewer .log-time { color: #7ee787; margin-right: 0.5rem; font-size: 0.75rem; }
+#logViewer .log-agent { color: #ffa657; margin-right: 0.5rem; font-weight: 600; }
+#logViewer .log-level-info { color: #58a6ff; }
+#logViewer .log-level-error { color: #f85149; }
+#logViewer .log-level-warn { color: #d29922; }
+#logViewer .log-level-debug { color: #e6edf3; }
+#logViewer .log-msg { color: #e6edf3; }
 .log-entry { border-bottom: 1px solid #374151; padding: 0.25rem 0; }
-.log-time { color: #60a5fa; margin-right: 0.5rem; }
-.log-level-info { color: #34d399; }
-.log-level-error { color: #f87171; }
-.log-level-warn { color: #fbbf24; }
-.log-msg { color: #d1d5db; }
+.log-time { color: #1e40af; margin-right: 0.5rem; }
+.log-agent { color: #facc15; margin-right: 0.5rem; font-weight: 600; }
+.log-level-info { color: #059669; }
+.log-level-error { color: #dc2626; }
+.log-level-warn { color: #d97706; }
+.log-msg { color: #e5e7eb; }
 @media (max-width: 1024px) {
     .master-detail { grid-template-columns: 1fr; height: auto; }
     .agent-list { max-height: 300px; margin-bottom: 1.5rem; }
@@ -326,7 +340,7 @@ tr:last-child td { border-bottom: none; }
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 200px);
+    height: 100%;
     background: #fff;
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;

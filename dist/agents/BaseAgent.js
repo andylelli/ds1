@@ -7,11 +7,24 @@ export class BaseAgent extends MCPServer {
     name;
     capabilities;
     db;
+    mode = 'live'; // Default to live mode
     constructor(name, db) {
         super();
         this.name = name;
         this.capabilities = new Set();
         this.db = db;
+    }
+    /**
+     * Set the agent's operating mode (simulation or live)
+     */
+    setMode(mode) {
+        this.mode = mode;
+    }
+    /**
+     * Get the database source based on current mode
+     */
+    getSource() {
+        return this.mode === 'simulation' ? 'sim' : 'live';
     }
     async log(type, data) {
         const currentLevel = configService.get('logLevel') || 'info';

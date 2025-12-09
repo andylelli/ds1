@@ -123,4 +123,17 @@ export class MockAdapter implements PersistencePort {
     const topics = new Set(events.map(e => e.topic));
     return Array.from(topics);
   }
+
+  async clearSimulationData(): Promise<void> {
+    console.log('[MockAdapter.clearSimulationData] Clearing simulation data...');
+    // In mock adapter, just clear the in-memory collections
+    // This won't actually do anything since mock adapter doesn't persist, but we provide the interface
+    console.log('[MockAdapter.clearSimulationData] Simulation data cleared (no-op in mock)');
+  }
+
+  async clearLogs(source?: string): Promise<void> {
+    console.log('[MockAdapter.clearLogs] Clearing logs...');
+    // No-op in mock adapter
+    console.log('[MockAdapter.clearLogs] Logs cleared (no-op in mock)');
+  }
 }

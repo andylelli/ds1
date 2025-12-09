@@ -1,3 +1,4 @@
+import util from 'util';
 const _SHOW_DEBUG_ENV = process.env.DEBUG_ENV === 'true';
 function _mask(v?: string) {
   if (!v) return '<unset>';
@@ -5,8 +6,9 @@ function _mask(v?: string) {
   return `${v.slice(0, 4)}...${v.slice(-4)}`;
 }
 if (_SHOW_DEBUG_ENV) {
-  console.log('OpenAIService ENV:', process.env.AZURE_OPENAI_ENDPOINT);
-  console.log('[OpenAIService] Module loaded');
+  // Only print endpoint (safe) and a simple module-loaded marker. Never print the client
+  console.log('OpenAIService ENV (endpoint):', process.env.AZURE_OPENAI_ENDPOINT);
+  console.log('[OpenAIService] Module loaded (masked output)');
 }
 import { AzureOpenAI } from "openai";
 import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
@@ -91,3 +93,20 @@ export class OpenAIService {
 }
 
 export const openAIService = new OpenAIService();
+
+// Protect against accidental inspection/logging of the internal client which may contain secrets.
+// Node's util.inspect uses the special Symbol, so provide a safe override.
+(openAIService as any)[util.inspect.custom] = function(depth: any, opts: any) {
+  try {
+    const c = (this as any).client;
+    const baseURL = c && c._options && c._options.baseURL ? c._options.baseURL : '<unset>';
+    return `<OpenAIService deployment=${this.deploymentName} baseURL=${baseURL}>`;
+  } catch (e) {
+    return `<OpenAIService deployment=${this.deploymentName}>`;
+  }
+};
+
+// Ensure JSON serialization doesn't leak client internals
+(openAIService as any).toJSON = function() {
+  return { deploymentName: this.deploymentName };
+};

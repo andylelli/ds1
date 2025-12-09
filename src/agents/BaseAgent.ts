@@ -10,12 +10,27 @@ export abstract class BaseAgent extends MCPServer {
   protected name: string;
   protected capabilities: Set<string>;
   protected db: PersistencePort;
+  protected mode: 'simulation' | 'live' = 'live'; // Default to live mode
 
   constructor(name: string, db: PersistencePort) {
     super();
     this.name = name;
     this.capabilities = new Set();
     this.db = db;
+  }
+
+  /**
+   * Set the agent's operating mode (simulation or live)
+   */
+  setMode(mode: 'simulation' | 'live') {
+    this.mode = mode;
+  }
+
+  /**
+   * Get the database source based on current mode
+   */
+  protected getSource(): string {
+    return this.mode === 'simulation' ? 'sim' : 'live';
   }
 
   async log(type: string, data: any) {
