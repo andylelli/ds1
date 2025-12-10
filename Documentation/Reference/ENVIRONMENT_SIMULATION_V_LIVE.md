@@ -92,13 +92,17 @@ flowchart TD
     DB[(Postgres: dropship_sim)]:::db
   end
 
-  %% Wiring
+  %% Wiring: Inputs -> Bus
   SimService & Clock --> Bus
+
+  %% Wiring: Bus -> Everyone (Hub & Spoke)
   Bus ==> CEO
-  
-  %% CEO Fan Out
-  CEO --> Analytics & Researcher & Builder & Marketer
-  CEO --> Ops & CS & Retention & Compliance
+  Bus ==> Analytics & Researcher & Builder & Marketer
+  Bus ==> Ops & CS & Retention & Compliance
+
+  %% Visual Hierarchy (No Data Flow)
+  CEO ~~~ Row1
+  Row1 ~~~ Row2
 
   %% Tool Connections
   Researcher --> TrendsTool
@@ -200,16 +204,20 @@ flowchart TD
     DB[(Postgres: dropship)]:::db
   end
 
-  %% Wiring
+  %% Wiring: Inputs -> Bus
   User & ShopHook & StripeHook --> Express
   Express --> Bus
-  Bus ==> CEO
-  
-  %% CEO Fan Out
-  CEO --> Analytics & Researcher & Builder & Marketer
-  CEO --> Ops & CS & Retention & Compliance
 
-  %% Tool Connections
+  %% Wiring: Bus -> Everyone (Hub & Spoke)
+  Bus ==> CEO
+  Bus ==> Analytics & Researcher & Builder & Marketer
+  Bus ==> Ops & CS & Retention & Compliance
+
+  %% Visual Hierarchy (No Data Flow)
+  CEO ~~~ Row1
+  Row1 ~~~ Row2
+
+  %% Agent -> Tool Connections
   Researcher --> TrendsTool
   Builder --> ShopTool
   Marketer --> AdsTool
