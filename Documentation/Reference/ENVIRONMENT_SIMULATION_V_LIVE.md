@@ -108,7 +108,8 @@ In this mode, the system waits for the real world. It reacts to Webhooks (Shopif
 flowchart TD
   %% Styles
   classDef trigger fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
-  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+  classDef hub fill:#ffecb3,stroke:#ff6f00,stroke-width:3px,color:#e65100;
+  classDef agent fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
   classDef mcp fill:#fff8e1,stroke:#fbc02d,stroke-width:2px,color:#f57f17;
   classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#b71c1c;
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
@@ -123,23 +124,23 @@ flowchart TD
     Express[Express Server]:::trigger
   end
 
-  subgraph Core ["3. The Swarm"]
-    Bus[Postgres Event Bus]:::core
-    
-    subgraph Agents
-      CEO[CEO Agent]:::core
-      Analytics[Analytics Agent]:::core
-      Researcher[Product Researcher]:::core
-      Builder[Store Builder]:::core
-      Marketer[Marketing Agent]:::core
-      Ops[Operations Agent]:::core
-      CS[Customer Service]:::core
-      Retention[Retention Agent]:::core
-      Compliance[Compliance Officer]:::core
-    end
+  subgraph Central ["3. The Central Nervous System"]
+    Bus{{Postgres Event Bus}}:::hub
   end
 
-  subgraph MCP ["4. Tool Interface (MCP)"]
+  subgraph Swarm ["4. The Agent Swarm"]
+    CEO[CEO Agent]:::agent
+    Analytics[Analytics Agent]:::agent
+    Researcher[Product Researcher]:::agent
+    Builder[Store Builder]:::agent
+    Marketer[Marketing Agent]:::agent
+    Ops[Operations Agent]:::agent
+    CS[Customer Service]:::agent
+    Retention[Retention Agent]:::agent
+    Compliance[Compliance Officer]:::agent
+  end
+
+  subgraph MCP ["5. Tool Interface (MCP)"]
     TrendsTool[Trends Tool]:::mcp
     ShopTool[Shopify Tool]:::mcp
     AdsTool[Ads Tool]:::mcp
@@ -148,7 +149,7 @@ flowchart TD
     LedgerTool[Ledger Tool]:::mcp
   end
 
-  subgraph External ["5. External APIs"]
+  subgraph External ["6. External APIs"]
     Google[Google Trends]:::external
     Shopify[Shopify API]:::external
     Meta[Meta Ads API]:::external
@@ -156,7 +157,7 @@ flowchart TD
     SendGrid[SendGrid API]:::external
   end
 
-  subgraph Data ["6. Persistence"]
+  subgraph Data ["7. Persistence"]
     DB[(Postgres: dropship)]:::db
   end
 
@@ -165,7 +166,7 @@ flowchart TD
   ShopHook -->|Event| Express
   StripeHook -->|Event| Express
   Express -->|Publish| Bus
-  Bus -->|Notify| Agents
+  Bus ==>|Broadcast Events| Swarm
 
   %% Agent -> Tool Connections
   Researcher -->|Call| TrendsTool
@@ -185,7 +186,7 @@ flowchart TD
   EmailTool --> SendGrid
   
   %% Data
-  Agents -->|Read/Write| DB
+  Swarm -->|Read/Write| DB
   LedgerTool -->|SQL| DB
 ```
 
