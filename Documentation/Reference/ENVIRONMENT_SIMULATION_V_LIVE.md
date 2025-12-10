@@ -29,17 +29,17 @@ flowchart LR
 ```mermaid
 flowchart LR
   YAML[Bootstrap + agent YAMLs] --> Router{Environment: live}
-  Router --> AgentsCluster["Agents (scaled replicas)"]
-  AgentsCluster --> RedisBus["Redis/Managed pub-sub"]
-  RedisBus --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
+  Router --> Agents["Agents (single container)"]
+  Agents --> EventBus["In-process EventEmitter"]
+  EventBus --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
   LiveAdapters --> ExternalSystems["External systems (commerce, ads, email, data stores)"]
   subgraph Ingress
     Webhooks["Webhooks/HTTP ingress"]
     MCP[MCP providers]
   end
-  Webhooks --> RedisBus
+  Webhooks --> EventBus
   MCP --> LiveAdapters
-  AgentsCluster --> Observability[Tracing/metrics/logging]
+  Agents --> Observability[Tracing/metrics/logging]
 ```
 
 ## Configuration Sources
