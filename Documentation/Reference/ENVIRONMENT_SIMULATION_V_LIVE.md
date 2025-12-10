@@ -32,31 +32,33 @@ flowchart TD
   classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
-  %% --- TOP SECTION: CENTRAL CONTROL ---
-  subgraph Head [" "]
-    direction TB
-    
-    subgraph Triggers ["1. Inputs"]
-      SimService[Simulation Service]:::trigger
-      Clock[Virtual Clock]:::trigger
-    end
-
-    subgraph Central ["2. The Central Nervous System"]
-      Bus{{Postgres Event Bus}}:::hub
-    end
+  %% --- 1. INPUTS ---
+  subgraph Triggers ["1. Inputs"]
+    direction LR
+    SimService[Simulation Service]:::trigger
+    Clock[Virtual Clock]:::trigger
   end
 
-  %% --- MIDDLE SECTION: THE WORKFORCE ---
+  %% --- 2. BUS ---
+  subgraph Central ["2. The Central Nervous System"]
+    Bus{{Postgres Event Bus}}:::hub
+  end
+
+  %% --- 3. SWARM ---
   subgraph Swarm ["3. The Agent Swarm"]
     direction TB
     CEO[CEO Agent]:::agent
     
-    subgraph Team ["Direct Reports"]
+    subgraph Row1 ["Growth Team"]
       direction LR
       Analytics[Analytics]:::agent
       Researcher[Researcher]:::agent
       Builder[Builder]:::agent
       Marketer[Marketer]:::agent
+    end
+    
+    subgraph Row2 ["Ops Team"]
+      direction LR
       Ops[Operations]:::agent
       CS[Support]:::agent
       Retention[Retention]:::agent
@@ -64,7 +66,7 @@ flowchart TD
     end
   end
 
-  %% --- BOTTOM SECTION: TOOLS & DATA ---
+  %% --- 4. TOOLS ---
   subgraph MCP ["4. Tool Interface (MCP)"]
     direction LR
     TrendsTool[Trends]:::mcp
@@ -75,6 +77,7 @@ flowchart TD
     LedgerTool[Ledger]:::mcp
   end
 
+  %% --- 5. MOCKS ---
   subgraph Mocks ["5. The Matrix (Simulation)"]
     direction LR
     MockTrends[Mock Trends]:::mock
@@ -84,30 +87,29 @@ flowchart TD
     MockEmail[Console Email]:::mock
   end
 
+  %% --- 6. DATA ---
   subgraph Data ["6. Persistence"]
     DB[(Postgres: dropship_sim)]:::db
   end
 
   %% Wiring
-  SimService -->|Inject| Bus
-  Clock -->|Tick| Bus
-  Bus ==>|Broadcast| CEO
-  Bus ==>|Broadcast| Team
+  SimService & Clock --> Bus
+  Bus ==> CEO
+  
+  %% CEO Fan Out
+  CEO --> Analytics & Researcher & Builder & Marketer
+  CEO --> Ops & CS & Retention & Compliance
 
-  %% Org Chart Visuals
-  CEO ~~~ Team
-
-  %% Agent -> Tool Connections
+  %% Tool Connections
   Researcher --> TrendsTool
   Builder --> ShopTool
   Marketer --> AdsTool
   Ops --> FulfillTool
-  CS --> EmailTool
-  Retention --> EmailTool
+  CS & Retention --> EmailTool
   Analytics --> LedgerTool
   Compliance --> AdsTool
 
-  %% Tool -> Mock Connections
+  %% Mock Connections
   TrendsTool --> MockTrends
   ShopTool --> MockShop
   AdsTool --> MockAds
@@ -132,36 +134,39 @@ flowchart TD
   classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#b71c1c;
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
-  %% --- TOP SECTION: CENTRAL CONTROL ---
-  subgraph Head [" "]
-    direction TB
-    
-    subgraph Triggers ["1. The Real World"]
-      User[User Dashboard]:::trigger
-      ShopHook[Shopify Webhook]:::trigger
-      StripeHook[Stripe Webhook]:::trigger
-    end
-
-    subgraph Ingress ["2. API Layer"]
-      Express[Express Server]:::trigger
-    end
-
-    subgraph Central ["3. The Central Nervous System"]
-      Bus{{Postgres Event Bus}}:::hub
-    end
+  %% --- 1. INPUTS ---
+  subgraph Triggers ["1. The Real World"]
+    direction LR
+    User[User Dashboard]:::trigger
+    ShopHook[Shopify Webhook]:::trigger
+    StripeHook[Stripe Webhook]:::trigger
   end
 
-  %% --- MIDDLE SECTION: THE WORKFORCE ---
+  %% --- 2. API ---
+  subgraph Ingress ["2. API Layer"]
+    Express[Express Server]:::trigger
+  end
+
+  %% --- 3. BUS ---
+  subgraph Central ["3. The Central Nervous System"]
+    Bus{{Postgres Event Bus}}:::hub
+  end
+
+  %% --- 4. SWARM ---
   subgraph Swarm ["4. The Agent Swarm"]
     direction TB
     CEO[CEO Agent]:::agent
     
-    subgraph Team ["Direct Reports"]
+    subgraph Row1 ["Growth Team"]
       direction LR
       Analytics[Analytics]:::agent
       Researcher[Researcher]:::agent
       Builder[Builder]:::agent
       Marketer[Marketer]:::agent
+    end
+    
+    subgraph Row2 ["Ops Team"]
+      direction LR
       Ops[Operations]:::agent
       CS[Support]:::agent
       Retention[Retention]:::agent
@@ -169,7 +174,7 @@ flowchart TD
     end
   end
 
-  %% --- BOTTOM SECTION: TOOLS & DATA ---
+  %% --- 5. TOOLS ---
   subgraph MCP ["5. Tool Interface (MCP)"]
     direction LR
     TrendsTool[Trends]:::mcp
@@ -180,6 +185,7 @@ flowchart TD
     LedgerTool[Ledger]:::mcp
   end
 
+  %% --- 6. EXTERNAL ---
   subgraph External ["6. External APIs"]
     direction LR
     Google[Google Trends]:::external
@@ -189,32 +195,30 @@ flowchart TD
     SendGrid[SendGrid API]:::external
   end
 
+  %% --- 7. DATA ---
   subgraph Data ["7. Persistence"]
     DB[(Postgres: dropship)]:::db
   end
 
   %% Wiring
-  User -->|Command| Express
-  ShopHook -->|Event| Express
-  StripeHook -->|Event| Express
-  Express -->|Publish| Bus
-  Bus ==>|Broadcast| CEO
-  Bus ==>|Broadcast| Team
+  User & ShopHook & StripeHook --> Express
+  Express --> Bus
+  Bus ==> CEO
+  
+  %% CEO Fan Out
+  CEO --> Analytics & Researcher & Builder & Marketer
+  CEO --> Ops & CS & Retention & Compliance
 
-  %% Org Chart Visuals
-  CEO ~~~ Team
-
-  %% Agent -> Tool Connections
+  %% Tool Connections
   Researcher --> TrendsTool
   Builder --> ShopTool
   Marketer --> AdsTool
   Ops --> FulfillTool
-  CS --> EmailTool
-  Retention --> EmailTool
+  CS & Retention --> EmailTool
   Analytics --> LedgerTool
   Compliance --> AdsTool
 
-  %% Tool -> External Connections
+  %% External Connections
   TrendsTool --> Google
   ShopTool --> Shopify
   AdsTool --> Meta
