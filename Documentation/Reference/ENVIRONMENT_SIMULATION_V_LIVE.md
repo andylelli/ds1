@@ -142,7 +142,7 @@ flowchart TD
   User --> API
   Webhooks --> API
   API --> Bus
-  Bus --> CEO & Research & Supplier & Store & Marketing & Support & Ops & Analytics
+  Bus <--> CEO & Research & Supplier & Store & Marketing & Support & Ops & Analytics
 
   %% Agent to Adapter (MCP Protocol)
   CEO & Research & Store & Marketing & Support -->|MCP Tool Call| AI_Adapter
