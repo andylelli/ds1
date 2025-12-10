@@ -1,48 +1,59 @@
-# 🤖 Agent Documentation Update Plan
+# 🗺️ Agent Roadmap & Status
 
 ## 🎯 Objective
-To create comprehensive, standardized documentation for all 8 agents in the DropShip AI swarm. This ensures that the "Brain" of the system is as well-documented as the "Body" (Workflows).
+This document tracks the lifecycle of the DropShip AI agents, from **Documentation** (defining the role) to **Implementation** (coding the logic) and **Integration** (connecting real APIs).
 
-## 📋 The Standard Template
-Each agent document will follow this structure:
+## 📊 Status Overview
 
-1.  **Executive Summary**: One-line description of the agent's role (e.g., "The Hunter", "The Steward").
-2.  **Core Responsibilities**: Bullet points of what it actually does.
-3.  **Event Interface**:
-    *   **Subscribes To**: Which events trigger this agent?
-    *   **Publishes**: Which events does this agent emit?
-4.  **Toolbox (MCP)**: List of tools registered and used (e.g., `trend_tool`, `shopify_tool`).
-5.  **Key Logic**: Brief explanation of decision-making processes (e.g., "If ROAS < 1.5, kill campaign").
-6.  **Current Status**: Implementation level (Mock vs. Real).
+| Agent | Documentation | Core Logic | Real APIs |
+| :--- | :---: | :---: | :---: |
+| **01. CEO** | ✅ | ✅ | 🚧 (Needs OpenAI) |
+| **02. Analytics** | ✅ | ✅ | 🚧 (Needs Real DB) |
+| **03. Research** | ✅ | ✅ | ❌ (Mock Only) |
+| **04. Supplier** | ✅ | ✅ | ❌ (Mock Only) |
+| **05. Store Build** | ✅ | ✅ | 🚧 (Partial Shopify) |
+| **06. Marketing** | ✅ | ✅ | ❌ (Mock Only) |
+| **07. Operations** | ✅ | ✅ | 🚧 (Stubbed) |
+| **08. Customer Svc** | ✅ | ✅ | 🚧 (Stubbed) |
 
-## 📅 The Rollout Plan
+---
 
-### Phase 1: The Executive Team (Strategy)
-*   [ ] **`01_CEO_AGENT.md`** (Update existing `CEO_AGENT_DEEP_DIVE.md`)
-    *   *Focus:* Orchestration, Approval Gates, and User Interface.
-*   [ ] **`02_ANALYTICS_AGENT.md`**
-    *   *Focus:* Data aggregation, Reporting, and Forecasting logic.
+## 📅 Phase 1: Documentation (Completed)
+*   [x] **Standardize all Agent Docs** (01-08 created).
+*   [x] **Define Event Interfaces** for all workflows.
 
-### Phase 2: The Growth Team (Offense)
-*   [ ] **`03_PRODUCT_RESEARCH_AGENT.md`**
-    *   *Focus:* Trend analysis, Competitor scraping, and Niche selection.
-*   [ ] **`04_SUPPLIER_AGENT.md`**
-    *   *Focus:* Sourcing, Margin calculation, and Supplier vetting.
-*   [ ] **`05_STORE_BUILD_AGENT.md`**
-    *   *Focus:* Shopify integration, Product page generation, and Pricing.
-*   [ ] **`06_MARKETING_AGENT.md`**
-    *   *Focus:* Ad creation, Campaign management, and Budget allocation.
+---
 
-### Phase 3: The Operations Team (Defense)
-*   [x] **`07_OPERATIONS_AGENT.md`**
-    *   *Focus:* Order fulfillment, Inventory management, and Logistics.
-*   [x] **`08_CUSTOMER_SERVICE_AGENT.md`**
-    *   *Focus:* Ticket handling, Sentiment analysis, and Email communication.
+## 📅 Phase 2: Implementation (The "Real World" Upgrade)
+
+### 🧠 Strategy Team
+*   [ ] **CEO Agent**: Connect `OpenAiAdapter` to replace `MockAiAdapter`. Enable real decision-making.
+*   [ ] **Analytics Agent**: Replace random number generation with real SQL queries to the `orders` and `events` tables.
+
+### 🚀 Growth Team
+*   [ ] **Product Research Agent**: Integrate **RapidAPI (Amazon/AliExpress)** to fetch real product data instead of returning hardcoded "Heated Jackets".
+*   [ ] **Supplier Agent**: Integrate **AliExpress/CJ API** to find real suppliers and get actual shipping times.
+*   [ ] **Store Build Agent**: Verify **Shopify API** connection. Ensure `create_product` pushes live to your store.
+*   [ ] **Marketing Agent**: Integrate **Meta Marketing API**. Allow the agent to actually create a Draft Campaign in Facebook Ads Manager.
+
+### 🛡️ Operations Team
+*   [ ] **Operations Agent**: Implement **Real Fulfillment**. When `fulfill_order` is called, it should trigger a purchase on the supplier's end (or at least send an email to them).
+*   [ ] **Customer Service Agent**: Connect **SMTP/Gmail**. Enable the agent to actually send emails to `customerEmail` addresses.
+
+---
+
+## 📅 Phase 3: Future Expansion (Planned Agents)
+*   [ ] **`09_RETENTION_AGENT.md`**
+    *   *Focus:* Email/SMS marketing (Klaviyo) to increase LTV.
+*   [ ] **`10_CONTENT_CREATOR_AGENT.md`**
+    *   *Focus:* Organic social content generation (TikTok/Reels).
+*   [ ] **`11_COMPLIANCE_OFFICER.md`**
+    *   *Focus:* Trademark checks and ad policy compliance.
+*   [ ] **`12_CRO_SPECIALIST.md`**
+    *   *Focus:* Landing page optimization and A/B testing.
 
 ## 🛠️ Action Items
-1.  **Rename** `CEO_AGENT_DEEP_DIVE.md` to `01_CEO_AGENT.md` and refactor content to match the template. (Done)
-2.  **Archive** `CEO_AGENT_IMPLEMENTATION_PLAN.md` (or merge relevant parts into the new doc). (Done)
-3.  **Create** the remaining 7 documents based on the source code in `src/agents/`. (Done)
+1.  **Select an Agent** from Phase 2 to upgrade first (Recommended: **Product Research** or **CEO**).
+2.  **Obtain API Keys** for the selected service (e.g., OpenAI, RapidAPI).
+3.  **Update the Adapter** in `src/infra/` to use the real API.
 
-## ✅ Status
-**All Agent Documentation is Complete.** The `Documentation/Agents` folder now accurately reflects the codebase.

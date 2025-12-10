@@ -81,10 +81,11 @@ This document tracks the development status of the system, organized by function
 | **Express Server** | ✅ | - | Serves frontend and REST APIs. Added `Cache-Control` headers. |
 | **CLI Runner** | ✅ | - | Run simulation from terminal (`node src/run_simulation_cli.js`). |
 | **Persistence Layer** | ✅ | - | `PersistencePort` implemented with `PostgresAdapter` & `MockAdapter`. |
+| **Event Bus** | ✅ | - | **Critical**: `PostgresEventStore` implemented for async agent communication. |
+| **Dual Mode Config** | ✅ | - | `start_simulation.bat` vs `start_live.bat` fully wired. |
 | **Dockerization** | ❌ | 🤖 Agent | Containerizing the app for easy deployment. |
 | **Persistent DB** | 🚧 | 🤝 Both | Postgres connection logic ready. Needs migration/schema management. |
 | **CI/CD Pipeline** | ❌ | 🤝 Both | **New**: Automated testing and deployment (GitHub Actions). |
-| **Event Bus / Message Queue** | ❌ | 🤖 Agent | **Critical**: Decouples agents for real-time async handling (Webhooks). |
 | **Task Queue (Redis)** | ❌ | 🤖 Agent | **New**: For handling background jobs (emails, scraping) without blocking. |
 | **Error Monitoring** | ❌ | 🤝 Both | **New**: Integration with Sentry to catch crashes in production. |
 | **Security Hardening** | ❌ | 🤖 Agent | **New**: Rate limiting, Helmet.js, and input validation. |
