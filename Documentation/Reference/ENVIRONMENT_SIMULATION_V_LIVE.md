@@ -32,37 +32,51 @@ flowchart TD
   classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
-  subgraph Triggers ["1. Inputs"]
-    SimService[Simulation Service]:::trigger
-    Clock[Virtual Clock]:::trigger
+  %% --- TOP SECTION: CENTRAL CONTROL ---
+  subgraph Head [" "]
+    direction TB
+    
+    subgraph Triggers ["1. Inputs"]
+      SimService[Simulation Service]:::trigger
+      Clock[Virtual Clock]:::trigger
+    end
+
+    subgraph Central ["2. The Central Nervous System"]
+      Bus{{Postgres Event Bus}}:::hub
+    end
   end
 
-  subgraph Central ["2. The Central Nervous System"]
-    Bus{{Postgres Event Bus}}:::hub
-  end
-
+  %% --- MIDDLE SECTION: THE WORKFORCE ---
   subgraph Swarm ["3. The Agent Swarm"]
+    direction TB
     CEO[CEO Agent]:::agent
-    Analytics[Analytics Agent]:::agent
-    Researcher[Product Researcher]:::agent
-    Builder[Store Builder]:::agent
-    Marketer[Marketing Agent]:::agent
-    Ops[Operations Agent]:::agent
-    CS[Customer Service]:::agent
-    Retention[Retention Agent]:::agent
-    Compliance[Compliance Officer]:::agent
+    
+    subgraph Team ["Direct Reports"]
+      direction LR
+      Analytics[Analytics]:::agent
+      Researcher[Researcher]:::agent
+      Builder[Builder]:::agent
+      Marketer[Marketer]:::agent
+      Ops[Operations]:::agent
+      CS[Support]:::agent
+      Retention[Retention]:::agent
+      Compliance[Compliance]:::agent
+    end
   end
 
+  %% --- BOTTOM SECTION: TOOLS & DATA ---
   subgraph MCP ["4. Tool Interface (MCP)"]
-    TrendsTool[Trends Tool]:::mcp
-    ShopTool[Shopify Tool]:::mcp
-    AdsTool[Ads Tool]:::mcp
-    FulfillTool[Fulfillment Tool]:::mcp
-    EmailTool[Email Tool]:::mcp
-    LedgerTool[Ledger Tool]:::mcp
+    direction LR
+    TrendsTool[Trends]:::mcp
+    ShopTool[Shopify]:::mcp
+    AdsTool[Ads]:::mcp
+    FulfillTool[Fulfillment]:::mcp
+    EmailTool[Email]:::mcp
+    LedgerTool[Ledger]:::mcp
   end
 
   subgraph Mocks ["5. The Matrix (Simulation)"]
+    direction LR
     MockTrends[Mock Trends]:::mock
     MockShop[Mock Shopify]:::mock
     MockAds[Mock Ads]:::mock
@@ -75,19 +89,23 @@ flowchart TD
   end
 
   %% Wiring
-  SimService -->|Inject Events| Bus
+  SimService -->|Inject| Bus
   Clock -->|Tick| Bus
-  Bus ==>|Broadcast Events| Swarm
+  Bus ==>|Broadcast| CEO
+  Bus ==>|Broadcast| Team
+
+  %% Org Chart Visuals
+  CEO ~~~ Team
 
   %% Agent -> Tool Connections
-  Researcher -->|Call| TrendsTool
-  Builder -->|Call| ShopTool
-  Marketer -->|Call| AdsTool
-  Ops -->|Call| FulfillTool
-  CS -->|Call| EmailTool
-  Retention -->|Call| EmailTool
-  Analytics -->|Call| LedgerTool
-  Compliance -->|Check| AdsTool
+  Researcher --> TrendsTool
+  Builder --> ShopTool
+  Marketer --> AdsTool
+  Ops --> FulfillTool
+  CS --> EmailTool
+  Retention --> EmailTool
+  Analytics --> LedgerTool
+  Compliance --> AdsTool
 
   %% Tool -> Mock Connections
   TrendsTool --> MockTrends
@@ -97,7 +115,7 @@ flowchart TD
   EmailTool --> MockEmail
   
   %% Data
-  Swarm -->|Read/Write| DB
+  CEO ~~~ DB
   LedgerTool -->|SQL| DB
 ```
 
