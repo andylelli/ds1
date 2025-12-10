@@ -23,25 +23,83 @@ We do not write "Simulation Code" and "Live Code". We write **One System** that 
 In this mode, the system runs in a closed loop. The `SimulationService` acts as the "Game Master," injecting events (like "Customer Placed Order") to test how Agents react.
 
 ```mermaid
-flowchart LR
-  Sim[Simulation Service] -->|Injects Event| Bus[Postgres Event Bus]
-  Bus -->|Notifies| Agents[Agent Swarm]
-  Agents -->|Read/Write| DB[(Postgres: dropship_sim)]
-  Agents -->|Call| Mocks[Mock Adapters]
-  Mocks -.->|Fake Response| Agents
+flowchart TD
+  %% Styles
+  classDef trigger fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+  classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+  classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+
+  subgraph Triggers ["1. The Driver"]
+    SimService[Simulation Service]:::trigger
+    Clock[Virtual Clock]:::trigger
+  end
+
+  subgraph Core ["2. The Nervous System"]
+    Bus[Postgres Event Bus]:::core
+    Agents[Agent Swarm]:::core
+  end
+
+  subgraph Data ["3. Persistence"]
+    DB[(Postgres: dropship_sim)]:::data
+  end
+
+  subgraph Mocks ["4. The Matrix (Simulation)"]
+    MockShop[Mock Shopify]:::mock
+    MockAds[Mock Ads Platform]:::mock
+    MockTrends[Mock Trends]:::mock
+  end
+
+  SimService -->|Injects Events| Bus
+  Clock -->|Ticks| Bus
+  Bus -->|Notifies| Agents
+  Agents -->|Read/Write| DB
+  Agents -->|Call| Mocks
+  Mocks -.->|Fake Data| Agents
 ```
 
 ### 2.2 Live Mode (The "Business")
 In this mode, the system waits for the real world. It reacts to Webhooks (Shopify, Stripe) or User Commands (Dashboard).
 
 ```mermaid
-flowchart LR
-  World[Shopify/Stripe Webhooks] -->|POST /webhook| API[Express Server]
-  API -->|Publishes Event| Bus[Postgres Event Bus]
-  Bus -->|Notifies| Agents[Agent Swarm]
-  Agents -->|Read/Write| DB[(Postgres: dropship)]
-  Agents -->|Call| Real[Live Adapters]
-  Real -->|HTTP Request| External[External APIs]
+flowchart TD
+  %% Styles
+  classDef trigger fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+  classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+  classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px;
+
+  subgraph Triggers ["1. The Real World"]
+    User[User Dashboard]:::trigger
+    Webhooks[Shopify/Stripe Webhooks]:::trigger
+  end
+
+  subgraph Ingress ["2. API Layer"]
+    API[Express Server]:::trigger
+  end
+
+  subgraph Core ["3. The Nervous System"]
+    Bus[Postgres Event Bus]:::core
+    Agents[Agent Swarm]:::core
+  end
+
+  subgraph Data ["4. Persistence"]
+    DB[(Postgres: dropship)]:::data
+  end
+
+  subgraph External ["5. External APIs"]
+    Shopify[Shopify API]:::external
+    Meta[Meta Ads API]:::external
+    OpenAI[OpenAI API]:::external
+  end
+
+  User -->|Commands| API
+  Webhooks -->|Events| API
+  API -->|Publishes| Bus
+  Bus -->|Notifies| Agents
+  Agents -->|Read/Write| DB
+  Agents -->|Call| External
+  External -.->|Real Data| Agents
 ```
 
 ## 3. Configuration Differences
