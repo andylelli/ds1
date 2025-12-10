@@ -9,38 +9,31 @@ This guide summarizes how DS1 behaves in **simulation** (mock, single-container)
 
 ### Architecture diagrams
 
-**Simulation (single-container, mock adapters)**
+**Simulation (Script-Driven)**
+
+In simulation, the `SimulationService` acts as the "Game Engine," driving the agents through a predefined script.
 
 ```mermaid
 flowchart LR
-  YAML[Bootstrap + agent YAMLs] --> Router{Environment: simulation}
-  Router --> Agents["Agents (single container)"]
-  Agents --> EventBus["In-process EventEmitter"]
-  Agents --> MockAdapters["Mock adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
-  Agents --> DB["Postgres (dropship_sim)"]
-  subgraph External
-    Cron[Cron/Timers]
-  end
-  Cron --> EventBus
+  User[User/Test Script] -->|Calls| SimService[SimulationService]
+  SimService -->|Orchestrates| Agents[Agents (CEO, Research, etc.)]
+  Agents -->|Read/Write| DB[(Postgres: dropship_sim)]
+  Agents -->|Use| MockAdapters[Mock Adapters]
+  MockAdapters -.->|Simulate| External[External Systems (Stubbed)]
 ```
 
-**Live (scalable, real integrations)**
+**Live (Event/User-Driven)**
+
+In live mode, the system is reactive. Agents respond to User Chat commands or External Webhooks (e.g., Shopify Orders).
 
 ```mermaid
 flowchart LR
-  YAML[Bootstrap + agent YAMLs] --> Router{Environment: live}
-  Router --> Agents["Agents (single container)"]
-  Agents --> EventBus["In-process EventEmitter"]
-  Agents --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
-  Agents --> DB["Postgres (dropship)"]
-  LiveAdapters --> ExternalSystems["External systems (commerce, ads, email)"]
-  subgraph Ingress
-    Webhooks["Webhooks/HTTP ingress"]
-    MCP[MCP providers]
-  end
-  Webhooks --> EventBus
-  MCP --> LiveAdapters
-  Agents --> Observability[Tracing/metrics/logging]
+  User[User Dashboard] -->|Chat/API| Express[Express Server]
+  Webhook[External Webhooks] -->|POST| Express
+  Express -->|Invokes| Agents[Agents (CEO, Research, etc.)]
+  Agents -->|Read/Write| DB[(Postgres: dropship)]
+  Agents -->|Use| LiveAdapters[Live Adapters]
+  LiveAdapters -->|HTTP API| External[External Systems (Shopify, Meta, OpenAI)]
 ```
 
 ## Configuration Sources
@@ -67,7 +60,7 @@ flowchart LR
 
 - **Ports/endpoints:**
   - Simulation: mock adapters emulate shop/ads/trends/competitor/fulfilment/email ports; endpoints are stubbed or disabled.
-  - Live: actual HTTP/IMAP/webhook endpoints are bound; MCP providers enforce schemas and authentication.
+  - Live: actual HTTP/IMAP/webhook endpoints are bound.
 - **Event contracts:** Same event names, but live enforces payload validation, signature checks, and PII redaction at ingress.
 
 ## Deployment & Operations
