@@ -47,8 +47,8 @@ flowchart LR
 | Area | Simulation | Live |
 | --- | --- | --- |
 | Adapter selection | `mode: mock` for shop, ads, trends, competitor, fulfilment, email, AI | `mode: live` with real credentials and API rate policies |
-| Data stores | Local JSON (`sandbox_db.json`) and in-memory caches | Managed DBs/queues (e.g., Redis, hosted DB) with backups |
-| Event bus transport | In-process Node `EventEmitter` (per `event_bus.yaml`) | External pub/sub (e.g., Redis Streams) with DLQs and retries |
+| Data stores | Local JSON (`sandbox_db.json`) and in-memory caches | Managed DBs (e.g., Postgres) with backups |
+| Event bus transport | In-process Node `EventEmitter` (per `event_bus.yaml`) | In-process Node `EventEmitter` (same as simulation for now) |
 | Secrets | Inline defaults or `.env.example` placeholders | Vaulted secrets, rotated keys, webhook signatures enforced |
 | Observability | Console logs, lightweight metrics | Structured logs, tracing, alerting SLOs |
 | Feature flags | Simulation defaults in bootstrap overlays | Environment overrides for risky features |
