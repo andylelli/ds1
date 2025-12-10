@@ -16,8 +16,8 @@ flowchart LR
   YAML[Bootstrap + agent YAMLs] --> Router{Environment: simulation}
   Router --> Agents["Agents (single container)"]
   Agents --> EventBus["In-process EventEmitter"]
-  EventBus --> MockAdapters["Mock adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
-  MockAdapters --> SandboxData["Sandbox data (sandbox_db.json, fixtures)"]
+  Agents --> MockAdapters["Mock adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
+  Agents --> DB["Postgres (dropship_sim)"]
   subgraph External
     Cron[Cron/Timers]
   end
@@ -31,8 +31,9 @@ flowchart LR
   YAML[Bootstrap + agent YAMLs] --> Router{Environment: live}
   Router --> Agents["Agents (single container)"]
   Agents --> EventBus["In-process EventEmitter"]
-  EventBus --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
-  LiveAdapters --> ExternalSystems["External systems (commerce, ads, email, data stores)"]
+  Agents --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
+  Agents --> DB["Postgres (dropship)"]
+  LiveAdapters --> ExternalSystems["External systems (commerce, ads, email)"]
   subgraph Ingress
     Webhooks["Webhooks/HTTP ingress"]
     MCP[MCP providers]
@@ -47,7 +48,7 @@ flowchart LR
 | Area | Simulation | Live |
 | --- | --- | --- |
 | Adapter selection | `mode: mock` for shop, ads, trends, competitor, fulfilment, email, AI | `mode: live` with real credentials and API rate policies |
-| Data stores | Local JSON (`sandbox_db.json`) and in-memory caches | Managed DBs (e.g., Postgres) with backups |
+| Data stores | Postgres (`dropship_sim`) | Postgres (`dropship`) with backups |
 | Event bus transport | In-process Node `EventEmitter` (per `event_bus.yaml`) | In-process Node `EventEmitter` (same as simulation for now) |
 | Secrets | Inline defaults or `.env.example` placeholders | Vaulted secrets, rotated keys, webhook signatures enforced |
 | Observability | Console logs, lightweight metrics | Structured logs, tracing, alerting SLOs |
