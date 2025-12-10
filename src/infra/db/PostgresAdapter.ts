@@ -14,6 +14,16 @@ export class PostgresAdapter implements PersistencePort {
     this.initPools();
   }
 
+  // Expose pool for services that need direct database access
+  getPool(): pg.Pool {
+    const mode = configService.get('dbMode');
+    const pool = (mode === 'test') ? this.simPool : this.pgPool;
+    if (!pool) {
+      throw new Error('Database pool not initialized');
+    }
+    return pool;
+  }
+
   private initPools() {
     const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
     const simDbUrl = configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
@@ -29,8 +39,6 @@ export class PostgresAdapter implements PersistencePort {
   async saveProduct(product: Product): Promise<void> {
     const mode = configService.get('dbMode');
     const pool = (mode === 'test') ? this.simPool : this.pgPool;
-    const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-    console.log(`[PostgresAdapter.saveProduct] mode=${mode}, using ${poolName}`);
 
     if (pool) {
       try {
@@ -86,8 +94,6 @@ export class PostgresAdapter implements PersistencePort {
   async saveOrder(order: Order): Promise<void> {
     const mode = configService.get('dbMode');
     const pool = (mode === 'test') ? this.simPool : this.pgPool;
-    const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-    console.log(`[PostgresAdapter.saveOrder] mode=${mode}, using ${poolName}`);
 
     if (pool) {
       try {
@@ -136,8 +142,6 @@ export class PostgresAdapter implements PersistencePort {
   async saveCampaign(campaign: Campaign): Promise<void> {
     const mode = configService.get('dbMode');
     const pool = mode === 'test' ? this.simPool : this.pgPool;
-    const poolName = (mode === 'test') ? 'simPool' : 'pgPool';
-    console.log(`[PostgresAdapter.saveCampaign] mode=${mode}, using ${poolName}`);
 
     if (pool) {
       try {
@@ -187,8 +191,6 @@ export class PostgresAdapter implements PersistencePort {
     const mode = configService.get('dbMode');
     const pool = mode === 'test' ? this.simPool : this.pgPool;
 
-    console.log(`[PG-Log] ${agent}: ${message}`, data);
-
     if (!pool) return;
 
     try {
@@ -205,10 +207,7 @@ export class PostgresAdapter implements PersistencePort {
     const mode = configService.get('dbMode');
     const pool = mode === 'test' ? this.simPool : this.pgPool;
 
-    console.log(`[PostgresAdapter.getRecentLogs] mode=${mode}, pool=${pool ? 'exists' : 'null'}`);
-
     if (!pool) {
-      console.log('[PostgresAdapter.getRecentLogs] Pool is null, returning empty array');
       return [];
     }
 
@@ -220,8 +219,6 @@ export class PostgresAdapter implements PersistencePort {
          LIMIT $1`,
         [limit]
       );
-      
-      console.log(`[PostgresAdapter.getRecentLogs] Found ${result.rows.length} logs in database (mode: ${mode})`);
       
       return result.rows.map(row => ({
         agent: row.topic,

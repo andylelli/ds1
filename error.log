@@ -276,4 +276,27 @@ Error: Cannot find module 'C:\DropShip\DS1\src\index.js'
 }
 
 Node.js v20.9.0
-^C^C^C^C^C^C^C^C^C^C
+^C^C^C^C^C^C^C^C^C^C[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get pending count error: relation "research_staging" does not exist
+[Staging API] Get pending count error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[LiveTrend] Google Trends + AI failed: Unexpected token '<', "<!doctype "... is not valid JSON
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist
+[LiveTrend] Google Trends + AI failed: Unexpected token '<', "<!doctype "... is not valid JSON
+[Staging API] Get sessions error: relation "research_sessions" does not exist
+[Staging API] Get items error: relation "research_staging" does not exist

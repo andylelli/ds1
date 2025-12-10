@@ -14,7 +14,11 @@ const defaults = {
     logLevel: 'info',
     useSimulatedEndpoints: true,
     openaiEnabled: true,
-    trafficScale: 1.0
+    trafficScale: 1.0,
+    stagingEnabled: true,
+    stagingAutoApproveThreshold: 0,
+    stagingAutoRejectThreshold: 0,
+    stagingExpiryDays: 7
 };
 export class ConfigService {
     config;

@@ -98,8 +98,6 @@ export class CEOAgent extends BaseAgent {
   }
 
   async chat(userMessage: string, mode?: string) {
-    console.log('[CEOAgent.chat] called with:', userMessage, 'mode:', mode);
-      console.log('[CEOAgent] Using AI adapter:', this.ai);
     await this.log('chat_request', { message: userMessage, mode });
 
     try {
@@ -175,8 +173,15 @@ export class CEOAgent extends BaseAgent {
               }
               if (tool.name === 'startProductResearch') {
                   if (!this.team) return "I cannot start research because my team is not assembled.";
-                  // Run in background to avoid timeout
-                  this.team.research.findWinningProducts({ category: tool.arguments.category }).catch((err: any) => console.error(err));
+                  // Run in background but log results
+                  console.log(`[CEO] Delegating product research to Research team for category: ${tool.arguments.category}`);
+                  this.team.research.findWinningProducts({ category: tool.arguments.category })
+                    .then((result: any) => {
+                      console.log(`[CEO] Research completed. Found ${result?.products?.length || 0} products`);
+                    })
+                    .catch((err: any) => {
+                      console.error('[CEO] Research failed:', err);
+                    });
                   return `I have instructed the Research team to look for products in the ${tool.arguments.category} category. Check back in a moment for results.`;
               }
               if (tool.name === 'sourceProduct') {
@@ -223,30 +228,21 @@ export class CEOAgent extends BaseAgent {
   // --- Tool Implementations ---
   private async approveProduct(productId: string) {
       await this.log('action', { action: 'approve_product', productId });
-      // TODO: Update product status in DB
-      // TODO: Emit event to EventBus
-      console.log(`[CEO] APPROVED PRODUCT ${productId}`);
   }
 
   private async rejectProduct(productId: string, reason: string) {
       await this.log('action', { action: 'reject_product', productId, reason });
-      // TODO: Update product status in DB
-      console.log(`[CEO] REJECTED PRODUCT ${productId}`);
   }
 
   async evaluateProduct(product: any): Promise<{ approved: boolean; reason: string }> {
-    console.log('[CEO.evaluateProduct] Product data:', JSON.stringify(product, null, 2));
-    
     // In simulation mode, auto-approve for faster progression
     if (this.mode === 'simulation') {
-      console.log('[CEO.evaluateProduct] Simulation mode - auto-approving');
       await this.approveProduct(product.id);
       return { approved: true, reason: "Auto-approved in simulation mode" };
     }
     
     const systemPrompt = "You are a strict CEO. Evaluate the product proposal.";
     const userMessage = `Product: ${product.name}. Description: ${product.description}. Price: ${product.price}. Should we sell this?`;
-    console.log('[CEO.evaluateProduct] User message:', userMessage);
     
     try {
       // Add 30 second timeout to prevent hanging

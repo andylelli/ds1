@@ -55,6 +55,9 @@ import { configService } from './infra/config/ConfigService.js';
 import { LiveAiAdapter } from './infra/ai/LiveAiAdapter.js';
 import { MockAiAdapter } from './infra/ai/MockAiAdapter.js';
 import { SimulationService } from './core/services/SimulationService.js';
+import { createStagingRoutes } from './api/staging-routes.js';
+import { ActivityLogService } from './core/services/ActivityLogService.js';
+import { createActivityRoutes } from './api/activity-routes.js';
 // Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,7 +85,7 @@ app.get('/', (req, res) => {
     res.redirect('/admin.html');
 });
 // Initialize Adapters
-let db;
+let db; // Changed from PersistencePort to PostgresAdapter to access getPool()
 const dbMode = String(configService.get('dbMode') || 'test');
 // dbMode mapping:
 // - 'live'  => use production Postgres
@@ -125,9 +128,10 @@ else {
 }
 let trendAdapter;
 const trendsMode = configService.get('trendsMode');
+const stagingEnabled = configService.get('stagingEnabled') !== false; // Default to true
 if (trendsMode === 'live') {
-    console.log("Using Live Trend Adapter");
-    trendAdapter = new LiveTrendAdapter();
+    console.log(`Using Live Trend Adapter (staging ${stagingEnabled ? 'enabled' : 'disabled'})`);
+    trendAdapter = new LiveTrendAdapter(db.getPool(), stagingEnabled);
 }
 else {
     console.log("Using Mock Trend Adapter");
@@ -187,7 +191,8 @@ const agents = {
 // Inject team into CEO
 agents.ceo.setTeam(agents);
 // Initialize Services
-const simulationService = new SimulationService(db, agents);
+const activityLog = new ActivityLogService(db.getPool());
+const simulationService = new SimulationService(db, agents, activityLog);
 // --- Configuration API ---
 app.get('/api/config', (req, res) => {
     res.json(configService.getAll());
@@ -291,9 +296,7 @@ app.get('/api/agents', (req, res) => {
 });
 app.get('/api/logs', async (req, res) => {
     try {
-        console.log('[API] Fetching logs...');
         const logs = await db.getRecentLogs(50);
-        console.log(`[API] Returning ${logs.length} logs`);
         res.json(logs);
     }
     catch (error) {
@@ -399,6 +402,10 @@ app.get('/api/db/table/:table', async (req, res) => {
         res.status(500).json({ error: `Failed to fetch ${table}` });
     }
 });
+// --- Staging API Routes ---
+app.use('/api/staging', createStagingRoutes(db.getPool()));
+// --- Activity Log API Routes ---
+app.use('/api/activity', createActivityRoutes(activityLog));
 // --- Docker Control API ---
 app.get('/api/docker/status', async (req, res) => {
     const { exec } = await import('child_process');
