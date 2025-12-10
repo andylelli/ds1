@@ -18,6 +18,7 @@ flowchart LR
   User["User/Test Script"] -->|Calls| SimService[SimulationService]
   SimService -->|Orchestrates| Agents["Agents (MCP Servers)"]
   Agents -->|Emit Events| EventBus["Event Bus"]
+  EventBus -->|Notify| Agents
   Agents -->|Read/Write| DB[("Postgres: dropship_sim")]
   Agents -->|Use| MockAdapters["Mock Adapters"]
   MockAdapters -.->|Simulate| External["External Systems (Stubbed)"]
@@ -33,6 +34,7 @@ flowchart LR
   Webhook["External Webhooks"] -->|POST| Express
   Express -->|Invokes| Agents["Agents (MCP Servers)"]
   Agents -->|Emit Events| EventBus["Event Bus"]
+  EventBus -->|Notify| Agents
   Agents -->|Read/Write| DB[("Postgres: dropship")]
   Agents -->|Use| LiveAdapters["Live Adapters"]
   LiveAdapters -->|HTTP API| External["External Systems (Shopify, Meta, OpenAI)"]
