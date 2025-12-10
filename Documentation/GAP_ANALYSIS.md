@@ -118,22 +118,54 @@ ews every class.
 
 ---
 
-## 3. Implementation Roadmap
+## 3. Detailed Implementation Roadmap
 
-1.  **Phase 1: The Skeleton**
-    *   Create the 5 YAML files (empty/skeleton).
-    *   Build YamlLoader and ServiceFactory.
-    *   Refactor index.ts to load ootstrap.yaml.
+This roadmap breaks down the refactor into small, verifiable chunks.
 
-2.  **Phase 2: The Nervous System**
-    *   Implement PostgresEventBus.
-    *   Wire up infrastructure.yaml to load it.
+### Phase 0: Foundation & Documentation
+*Goal: Establish the "Living Spec" to avoid constant code diving.*
+*   [ ] **Task 0.1**: Create Documentation/ARCHITECTURE_REFERENCE.md. This file will map every YAML config option to the TypeScript class it instantiates.
+*   [ ] **Task 0.2**: Create the directory structure for the new core (src/core/bootstrap, src/core/bus, src/core/mcp).
 
-3.  **Phase 3: The Body (MCP Integration)**
-    *   Implement McpClient.
-    *   Refactor ShopifyAdapter (Real) and create MockShopifyAdapter (Generative).
-    *   Update mcp.yaml to swap them based on environment.
+### Phase 1: The Skeleton (Configuration Engine)
+*Goal: The app can boot up and read its own configuration.*
+*   [ ] **Task 1.1**: Create the 5 YAML files with "Skeleton" content in config/.
+*   [ ] **Task 1.2**: Implement YamlLoader to read and merge these files.
+*   [ ] **Task 1.3**: Implement ServiceFactory (simple registry of class names to constructors).
+*   [ ] **Task 1.4**: Implement Container (Dependency Injection).
+*   [ ] **Task 1.5**: Create Bootstrapper class.
+*   **Verification**: Create a script scripts/test-boot.ts that loads the config and prints the resolved configuration object.
+*   **Alignment Check**: Verify ootstrap.yaml structure matches the Target Architecture diagram's "Config Layer".
 
-4.  **Phase 4: The Brain**
-    *   Implement workflows.yaml parsing.
-    *   Replace direct method calls in Agents with Event Bus usage.
+### Phase 2: The Nervous System (Event Bus)
+*Goal: We can publish and subscribe to events using the new infrastructure.*
+*   [ ] **Task 2.1**: Define IEventBus interface.
+*   [ ] **Task 2.2**: Implement PostgresEventBus (using pg or prisma).
+*   [ ] **Task 2.3**: Update ServiceFactory to instantiate the bus defined in infrastructure.yaml.
+*   **Verification**: Create scripts/test-bus.ts. Publish an event "TEST_EVENT" and ensure a subscriber receives it.
+*   **Alignment Check**: Ensure the Bus implementation supports the "Event Bus" component in the diagram.
+
+### Phase 3: The Body (MCP & Tools)
+*Goal: Agents can call tools via a generic interface, swapping Real for Mock.*
+*   [ ] **Task 3.1**: Implement McpClient (wrapper for both Internal classes and Stdio).
+*   [ ] **Task 3.2**: Refactor ShopifyAdapter to implement IMcpTool.
+*   [ ] **Task 3.3**: Create MockShopifyAdapter (Generative Mock).
+*   [ ] **Task 3.4**: Update mcp.yaml to define both.
+*   **Verification**: Create scripts/test-tool.ts. Load mcp.yaml, instantiate the tool, and call it. Verify Mock returns generated data.
+*   **Alignment Check**: Verify mcp.yaml correctly maps to the "MCP Host" layer in the diagram.
+
+### Phase 4: The Brain (Agents & Workflows)
+*Goal: Agents are config-driven and react to events.*
+*   [ ] **Task 4.1**: Refactor BaseAgent to accept 	ools and us in constructor.
+*   [ ] **Task 4.2**: Implement WorkflowManager to read workflows.yaml and register subscriptions.
+*   [ ] **Task 4.3**: Refactor CEOAgent to emit RESEARCH_REQUESTED instead of calling methods.
+*   **Verification**: Run a "Dry Run" where CEOAgent emits an event, and we see it in the Postgres logs.
+*   **Alignment Check**: Verify gents.yaml and workflows.yaml match the "Agent Layer" in the diagram.
+
+### Phase 5: The Drivers (Sim & Live)
+*Goal: The system runs autonomously.*
+*   [ ] **Task 5.1**: Implement WebhookIngress (Express routes -> Event Bus).
+*   [ ] **Task 5.2**: Implement SimulationOrchestrator (Scenario -> Event Bus).
+*   [ ] **Task 5.3**: Update index.ts to use the Bootstrapper.
+*   **Verification**: Run the full simulation.
+*   **Alignment Check**: Compare the running system logs against the "Target Architecture" flow.
