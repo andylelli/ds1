@@ -20,15 +20,15 @@ This document tracks the development status of the system, organized by function
 | **Base Agent Class** | ✅ | - | Core architecture with logging, tools, and memory. |
 | **CEO Agent** | ✅ | - | Orchestrator that manages the simulation lifecycle. |
 | **Analytics Agent** | ✅ | - | Generates financial reports and profit/loss analysis. |
-| **CustomerServiceAgent** | ⚠️ | 🤖 Agent | **Upgrade**: Moving to Context-Aware Ticketing (History/DB). |
+| **CustomerServiceAgent** | ⚠️ | 🤖 Agent | **Designed**: Blueprint 05 complete. Needs Implementation. |
 | **Operations Agent** | ✅ | - | Manages fulfillment. **Stubbed** for Real API switch. |
 | **Product Researcher** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
 | **Supplier Manager** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
 | **Store Builder** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
 | **Marketer (Paid Ads)** | 🚧 | 🤝 Both | **Stubbed**: Mock/Real switch ready. Needs keys & API logic. |
-| **Retention Agent** | ❌ | 🤝 Both | **New**: Email/SMS marketing (Klaviyo) to increase LTV. |
+| **Retention Agent** | ❌ | 🤖 Agent | **Designed**: Blueprint 06 complete. Needs Implementation. |
 | **Content Creator** | ❌ | 🤖 Agent | **New**: Generates organic social content (not paid ads). |
-| **Compliance Officer** | ❌ | 🤖 Agent | **New**: Checks for trademark/copyright issues to prevent bans. |
+| **Compliance Officer** | ❌ | 🤖 Agent | **Designed**: Blueprint 07 complete. Needs Implementation. |
 | **CRO Specialist** | ❌ | 🤖 Agent | **New**: Optimizes landing pages based on analytics data. |
 | **Self-Correction Logic** | ❌ | 🤖 Agent | Logic to detect failure and adjust strategy automatically. |
 
@@ -37,7 +37,7 @@ This document tracks the development status of the system, organized by function
 | :--- | :---: | :---: | :--- |
 | **Lifecycle Loop** | ✅ | - | End-to-end business process simulation (`src/simulation.js`). |
 | **Mock Database** | ✅ | - | JSON-based persistence (`sandbox_db.json`) for Products, Orders, Ads. |
-| **Multi-Product Support** | ❌ | 🤖 Agent | Scaling simulation to handle catalogs of 10+ products simultaneously. |
+| **Multi-Product Support** | ❌ | 🤖 Agent | **Designed**: Blueprint 02 complete. Needs Implementation. |
 | **Real-Time Clock** | ❌ | 🤖 Agent | Moving from "Step-based" simulation to a continuous real-time loop. |
 | **Traffic Source Simulator** | ✅ | - | **New**: Simulates distinct channels (Social, Search, Direct) with different conversion rates. |
 | **Customer Persona Engine** | ❌ | 🤖 Agent | **New**: Generates diverse user behaviors (bounce, cart abandonment, purchase) to test UI. |

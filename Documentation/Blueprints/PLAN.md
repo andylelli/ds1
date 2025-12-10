@@ -9,30 +9,47 @@ This folder contains the "Deep Think" architectural documents that guide the evo
 *   [x] **`01_EVENT_BUS.md`** (Updated)
     *   *Topic:* The asynchronous nervous system (`PostgresEventStore`).
     *   *Status:* **Implemented**. The system now uses a Postgres-backed event bus for reliable communication.
-*   [ ] **`02_MULTI_PRODUCT.md`**
+*   [x] **`02_MULTI_PRODUCT.md`** (Updated)
     *   *Topic:* Scaling from 1 product to a full catalog.
-    *   *Status:* **Draft**. Needs implementation in `PersistencePort`.
+    *   *Status:* **Designed**. Schema and Lifecycle defined.
 
 ### 🧠 Intelligence Systems (The Brains)
-*   [ ] **`03_ANALYTICS_PIPELINE.md`**
+*   [x] **`03_ANALYTICS_PIPELINE.md`** (Updated)
     *   *Topic:* The `FinancialLedger` and "Source of Truth" for profit.
-    *   *Status:* **Draft**. `AnalyticsAgent` is currently mock.
-*   [ ] **`04_STRATEGY_ENGINE.md`**
+    *   *Status:* **Designed**. Ledger schema defined.
+*   [x] **`04_STRATEGY_ENGINE.md`** (Updated)
     *   *Topic:* The CEO's OODA loop (Observe, Orient, Decide, Act).
-    *   *Status:* **Draft**. CEO has basic logic but needs this engine for autonomy.
-*   [ ] **`05_CS_CONTEXT.md`**
+    *   *Status:* **Designed**. Strategy modes defined.
+*   [x] **`05_CS_CONTEXT.md`** (Updated)
     *   *Topic:* Context-aware customer support (Ticket History).
-    *   *Status:* **Draft**. `CustomerServiceAgent` is stateless.
+    *   *Status:* **Designed**. Ticket schema and Context Window logic defined.
 
 ### 🚀 Expansion Modules (New Capabilities)
-*   [ ] **`06_RETENTION_SYSTEM.md`**
+*   [x] **`06_RETENTION_SYSTEM.md`** (Updated)
     *   *Topic:* Email/SMS marketing flows (LTV maximization).
-    *   *Status:* **Planned**.
-*   [ ] **`07_COMPLIANCE_SYSTEM.md`**
+    *   *Status:* **Designed**. Customer State Machine defined.
+*   [x] **`07_COMPLIANCE_SYSTEM.md`** (Updated)
     *   *Topic:* Risk management and policy checking.
-    *   *Status:* **Planned**.
+    *   *Status:* **Designed**. Middleware architecture defined.
 
-## 🛠️ Action Items
-1.  **Update `01_EVENT_BUS.md`** to reflect the actual `PostgresEventStore` implementation (replacing the old "Redis vs Local" debate).
-2.  **Rename** existing files to match the numbered structure.
-3.  **Implement** `02_MULTI_PRODUCT.md` as the next major architectural upgrade.
+## 📅 Phased Update Plan
+
+### Phase 1: Core Architecture (The Foundation)
+*   [x] **`01_EVENT_BUS.md`**
+    *   *Action:* Updated to reflect `PostgresEventStore`.
+*   [x] **`02_MULTI_PRODUCT.md`**
+    *   *Action:* Redesigned for Postgres Schema (`products` table) and Product Lifecycle State Machine.
+
+### Phase 2: Intelligence Layer (The Brain)
+*   [x] **`03_ANALYTICS_PIPELINE.md`**
+    *   *Action:* Designed the `ledger` table and CFO role for `AnalyticsAgent`.
+*   [x] **`04_STRATEGY_ENGINE.md`**
+    *   *Action:* Defined the CEO's OODA Loop and Strategic Modes (Discovery, Scaling, Defense).
+
+### Phase 3: Advanced Capabilities (The Expansion)
+*   [x] **`05_CS_CONTEXT.md`**
+    *   *Action:* Defined `tickets` schema and Context Window logic for `CustomerServiceAgent`.
+*   [x] **`06_RETENTION_SYSTEM.md`**
+    *   *Action:* Defined Customer Lifecycle State Machine and `RetentionAgent` logic.
+*   [x] **`07_COMPLIANCE_SYSTEM.md`**
+    *   *Action:* Defined Compliance Middleware and `audit_log` schema.

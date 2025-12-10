@@ -1,79 +1,84 @@
-# 🧠 Deep Think: Compliance & Risk Management
+# 🧠 07. Compliance & Risk Management System
 
 **Status:** Draft
 **Date:** December 2025
-**Objective:** Prevent the agents from engaging in illegal, unethical, or platform-banning behaviors.
+**Objective:** Automated risk mitigation to prevent platform bans (Stripe, Meta, TikTok) and legal liability.
 
 ## 1. The Problem
-AI Agents are naive. Without guardrails, they might:
-*   Sell counterfeit goods (e.g., "Nike" shoes from AliExpress).
-*   Use copyrighted music in TikTok ads.
-*   Make false health claims (e.g., "Cures Cancer").
-*   Violate GDPR/CCPA by mishandling customer data.
+Autonomous agents can inadvertently violate platform policies or laws.
+*   **Risk 1:** Trademark Infringement (listing "Nike" knockoffs).
+*   **Risk 2:** Ad Policy Violations (False health claims, "Before/After" images).
+*   **Risk 3:** Brand Reputation (AI hallucinating offensive replies).
 
-**Consequence:** Stripe Ban, Facebook Ad Account Ban, or Lawsuits.
+## 2. The Solution: Middleware Interceptors
 
-## 2. The Solution: The Compliance Officer Agent
+Instead of asking every agent to "be careful", we wrap their outputs in a **Compliance Middleware**. Nothing goes public without passing through this layer.
 
-We introduce a specialized agent (or a middleware layer) that acts as the **Internal Auditor**.
+### 2.1 Architecture: The Gatekeeper Pattern
 
-### 2.1 The "Pre-Flight" Check
-
-Before *any* public action (publishing an ad, listing a product, sending an email), the content must pass a **Compliance Check**.
-
-#### Check A: Trademark Scanning (Product Research)
-*   **Trigger:** `ProductResearcher` finds a new product.
-*   **Action:** Check Product Name & Description against a "Blacklist" and USPTO API.
-*   **Rules:**
-    *   No big brand names (Nike, Apple, Disney).
-    *   No "Lookalikes" (e.g., "Pikachu-style plush").
-
-#### Check B: Ad Policy Scanning (Marketing)
-*   **Trigger:** `MarketingAgent` generates ad copy/image.
-*   **Action:** Analyze text for prohibited keywords.
-*   **Rules:**
-    *   No "Before/After" weight loss claims (Meta Policy).
-    *   No profanity or adult content.
-    *   No false urgency ("Going out of business" when not true).
-
-#### Check C: Data Privacy (Operations)
-*   **Trigger:** `RetentionAgent` exports a list.
-*   **Action:** Ensure PII (Personally Identifiable Information) is handled correctly.
-*   **Rules:**
-    *   Honor "Unsubscribe" requests immediately.
-
-### 2.2 Implementation: The `ComplianceGuard` Class
-
-We don't necessarily need a full "Agent" for this. A library of validators is faster.
-
-```javascript
-class ComplianceGuard {
-  static async validateProduct(product) {
-    const riskScore = await checkTrademarks(product.name);
-    if (riskScore > 0.8) throw new Error("Trademark Violation Detected");
-    return true;
-  }
-
-  static async validateAdCopy(text) {
-    const policyViolations = await checkMetaPolicy(text);
-    if (policyViolations.length > 0) throw new Error("Ad Policy Violation");
-    return true;
-  }
-}
+```mermaid
+graph LR
+    A[Marketing Agent] -->|Draft Ad| B(Compliance Middleware)
+    B -->|Approved| C[Facebook API]
+    B -->|Rejected| D[Correction Loop]
+    D --> A
 ```
 
-## 3. Implementation Plan
+### 2.2 Database Schema
 
-### Phase 1: Keyword Blacklists
-Create `src/config/compliance_blacklist.json`.
-*   Brands: `["nike", "adidas", "lego", ...]`
-*   Banned Words: `["cure", "guaranteed weight loss", "free money", ...]`
+#### `compliance_rules` Table
+```sql
+CREATE TABLE compliance_rules (
+  id SERIAL PRIMARY KEY,
+  category VARCHAR(50),      -- 'TRADEMARK', 'AD_POLICY', 'PROFANITY'
+  pattern TEXT NOT NULL,     -- Regex or Keyword
+  severity VARCHAR(20),      -- 'BLOCK', 'WARNING'
+  platform VARCHAR(50)       -- 'ALL', 'META', 'TIKTOK'
+);
+```
+*Example Data:*
+*   `TRADEMARK`, `Nike|Adidas|Disney`, `BLOCK`, `ALL`
+*   `AD_POLICY`, `Cures Cancer|Lose 10lbs fast`, `BLOCK`, `META`
 
-### Phase 2: The Middleware
-Wrap the `MarketingAgent.createAd()` tool with a decorator that runs `ComplianceGuard.validateAdCopy()`.
+#### `audit_log` Table
+```sql
+CREATE TABLE audit_log (
+  id SERIAL PRIMARY KEY,
+  agent_name VARCHAR(50),
+  action_type VARCHAR(50),   -- 'PUBLISH_AD', 'SEND_EMAIL'
+  content_hash VARCHAR(64),
+  status VARCHAR(20),        -- 'APPROVED', 'BLOCKED'
+  violation_reason TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
 
-### Phase 3: Visual Inspection (Future)
-Use OpenAI Vision API to check generated images for:
-*   Nudity/Violence.
-*   Text overlay issues (Meta's 20% text rule).
-*   Copyrighted logos.
+## 3. The Compliance Logic
+
+The `ComplianceService` exposes a `validate(content, context)` method.
+
+### 3.1 Text Analysis (Regex + LLM)
+1.  **Fast Check:** Run content against `compliance_rules` (Regex).
+2.  **Deep Check:** If context is sensitive (e.g., Health niche), ask LLM:
+    *   *Prompt:* "Does this text violate Meta's Advertising Standards regarding Personal Health? Answer YES/NO."
+
+### 3.2 Image Analysis (Future)
+*   Use Vision API to detect:
+    *   Nudity/Violence (Safety).
+    *   Logos (Trademark).
+    *   Text-in-image violations.
+
+## 4. Implementation Plan
+
+### Phase 1: The Filter
+1.  Create `compliance_rules` table and seed with common banned words.
+2.  Implement `ComplianceService.validateText(text)`.
+
+### Phase 2: Integration
+1.  **Marketing:** Wrap `AdGenerator.publish()` with `validateText`.
+2.  **Product:** Wrap `ProductImporter.import()` to check titles against Trademark list.
+
+### Phase 3: The Feedback Loop
+1.  If an action is blocked, return the `violation_reason` to the Agent.
+2.  Agent uses this feedback to regenerate compliant content.
+    *   *Agent:* "Oops, I can't say 'Cure'. I will rewrite it as 'Support wellness'."

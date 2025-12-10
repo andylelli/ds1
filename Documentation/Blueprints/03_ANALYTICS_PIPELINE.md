@@ -1,73 +1,74 @@
-# 🧠 Deep Think: Analytics & Reporting Pipeline
+# 🧠 03. Analytics Pipeline (The CFO)
 
 **Status:** Draft
 **Date:** December 2025
-**Objective:** Aggregate fragmented data from all agents into a single "Source of Truth" for P&L (Profit & Loss) analysis.
+**Objective:** Aggregate fragmented financial data into a single "Source of Truth" (`ledger` table) to enable real-time P&L analysis.
 
 ## 1. The Problem
-Data is scattered:
-*   **Ad Spend:** Inside `MarketingAgent` logs (or Meta API).
-*   **COGS (Cost of Goods):** Inside `SupplierAgent` logs (or AliExpress).
-*   **Revenue:** Inside `OperationsAgent` (or Shopify).
-*   **Fees:** Stripe/PayPal fees are often ignored in simulation.
+Data is scattered across different agents and external APIs:
+*   **Ad Spend:** Hidden in Meta/TikTok APIs or `MarketingAgent` logs.
+*   **COGS:** Known only to `SupplierAgent`.
+*   **Revenue:** Lives in Shopify or `OperationsAgent`.
+*   **Result:** We cannot calculate *True Profit* per product in real-time.
 
-**Result:** We don't know our *True Profit*. We might be scaling a product that is actually losing money after fees.
+## 2. The Solution: The Financial Ledger
 
-## 2. The Solution: The Data Warehouse (Lite)
+We introduce a double-entry style bookkeeping system in Postgres. Every financial event is recorded as a transaction.
 
-We need a centralized `FinancialLedger` where every transaction is recorded.
+### 2.1 Database Schema
 
-### 2.1 The Ledger Schema
+```sql
+CREATE TABLE ledger (
+  id SERIAL PRIMARY KEY,
+  transaction_date TIMESTAMP DEFAULT NOW(),
+  type VARCHAR(50) NOT NULL,        -- INCOME, EXPENSE
+  category VARCHAR(50) NOT NULL,    -- SALE, AD_SPEND, COGS, SHIPPING, FEE
+  amount DECIMAL(10, 2) NOT NULL,
+  currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Context
+  product_id INT REFERENCES products(id),
+  order_id VARCHAR(255),            -- For Sales/COGS
+  campaign_id VARCHAR(255),         -- For Ad Spend
+  source VARCHAR(100)               -- e.g., 'ShopifyWebhook', 'MetaAdsAPI'
+);
 
-We move from "Daily Summaries" to "Transaction-Level" recording.
-
-```json
-{
-  "id": "txn_999",
-  "timestamp": "2025-12-04T14:00:00Z",
-  "type": "EXPENSE", // or INCOME
-  "category": "AD_SPEND", // COGS, SHIPPING, MERCHANT_FEE, SALE_REVENUE
-  "amount": 15.50,
-  "currency": "USD",
-  "relatedEntityId": "prod_001", // Which product caused this?
-  "source": "Meta Ads Manager"
-}
+CREATE INDEX idx_ledger_product ON ledger(product_id);
+CREATE INDEX idx_ledger_date ON ledger(transaction_date);
 ```
 
-### 2.2 The Analytics Agent's New Role
+### 2.2 The Analytics Agent's Role
 
-The `AnalyticsAgent` stops being a "Reporter" and starts being a "Controller".
+The `AnalyticsAgent` acts as the **CFO (Chief Financial Officer)**. It does not just "report"; it actively *reconciles* data.
 
-**Tasks:**
-1.  **Reconciliation:** Every hour, fetch spend from Meta/TikTok and revenue from Shopify.
-2.  **Attribution:** Match Ad Spend to specific Orders (using UTM parameters) to calculate *Product-Level ROAS*.
-3.  **Forecasting:** Predict cash flow issues. "At this burn rate, we run out of cash in 4 days."
+#### Workflow:
+1.  **Real-time:** Listens for `ORDER_PAID` events.
+    *   Action: Insert `INCOME` (Sale Amount).
+    *   Action: Insert `EXPENSE` (Stripe Fee).
+2.  **Real-time:** Listens for `ORDER_SHIPPED` events.
+    *   Action: Insert `EXPENSE` (COGS + Shipping).
+3.  **Hourly:** Polls Meta/TikTok Ads API.
+    *   Action: Insert `EXPENSE` (Ad Spend) linked to `product_id`.
 
-### 2.3 The Dashboard (Frontend)
+## 3. Key Metrics & Formulas
 
-The `admin.html` needs a "Finance Tab" powered by this Ledger.
+The Dashboard will query the `ledger` table to calculate:
 
-*   **Real-Time P&L:** Revenue - (COGS + Ad Spend + Shipping + Fees) = Net Profit.
-*   **Unit Economics:**
-    *   Selling Price: $50
-    *   COGS: -$10
-    *   Shipping: -$5
-    *   CPA (Ad Cost): -$20
-    *   Fees: -$1.50
-    *   **Net:** $13.50 (27% Margin)
+*   **Gross Profit:** $\sum \text{Income (Sale)} - \sum \text{Expense (COGS)}$
+*   **Net Profit:** $\text{Gross Profit} - (\sum \text{Ad Spend} + \sum \text{Fees})$
+*   **ROAS (Return on Ad Spend):** $\frac{\text{Total Revenue}}{\text{Total Ad Spend}}$
+*   **POAS (Profit on Ad Spend):** $\frac{\text{Gross Profit}}{\text{Total Ad Spend}}$
 
-## 3. Implementation Plan
+## 4. Implementation Plan
 
-### Phase 1: The `Ledger` Class
-Create `src/lib/ledger.js`.
-*   `recordTransaction(type, amount, category, meta)`
-*   `getDailyPnl(date)`
+### Phase 1: Schema Setup
+1.  Create `ledger` table in Postgres.
+2.  Update `PersistencePort` with `recordTransaction(tx)`.
 
-### Phase 2: Agent Integration
-*   `MarketingAgent` calls `Ledger.record('EXPENSE', cost, 'AD_SPEND')` every time it spends budget.
-*   `OperationsAgent` calls `Ledger.record('INCOME', price, 'SALE')` every time an order is paid.
-*   `OperationsAgent` calls `Ledger.record('EXPENSE', cost, 'COGS')` every time it fulfills an order.
+### Phase 2: Event Listeners
+1.  Update `AnalyticsAgent` to subscribe to `ORDER_PAID` and `ORDER_SHIPPED`.
+2.  Implement the logic to extract financial values from these payloads.
 
-### Phase 3: Visualization
-Update `src/index.js` (API) to serve `/api/financials`.
-Update `admin.html` to chart this data using Chart.js.
+### Phase 3: Ad Spend Poller
+1.  Create a Cron Job (or `setInterval`) in `AnalyticsAgent`.
+2.  Every hour, fetch spend from `AdsPlatformPort` and record it in the ledger.
