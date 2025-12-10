@@ -91,36 +91,75 @@ This diagram represents the **ideal state** where the Event Bus is fully decoupl
 
 ```mermaid
 flowchart TD
-  subgraph Ingress
-    User["User Dashboard"] -->|API| API[API Gateway]
-    Webhook["Shopify/Meta Webhooks"] -->|POST| API
+  %% Styles
+  classDef agent fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+  classDef external fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+
+  subgraph "1. Triggers"
+    User["User Dashboard"]
+    Webhooks["External Webhooks"]
   end
 
-  API -->|Publish| Bus{Event Bus}
-  
-  subgraph "Agent Swarm (MCP Servers)"
-    CEO[CEO Agent]
-    Research[Research Agent]
-    Marketing[Marketing Agent]
-    Store[Store Agent]
+  subgraph "2. Communication"
+    API[API Gateway]
+    Bus{Event Bus}
   end
-  
-  Bus -->|Event: ORDER_PAID| CEO
-  Bus -->|Event: TREND_FOUND| Marketing
-  Bus -->|Event: PRODUCT_APPROVED| Store
-  
-  CEO -->|Emit: STRATEGY_UPDATED| Bus
-  Research -->|Emit: TREND_FOUND| Bus
-  
-  subgraph Data
-    CEO & Research & Marketing -->|Read/Write| DB[("Postgres (Live)")]
+
+  subgraph "3. The Swarm (Agents)"
+    CEO[CEO Agent]:::agent
+    Research[Research Agent]:::agent
+    Supplier[Supplier Agent]:::agent
+    Store[Store Agent]:::agent
+    Marketing[Marketing Agent]:::agent
+    Support[Support Agent]:::agent
+    Ops[Operations Agent]:::agent
+    Analytics[Analytics Agent]:::agent
   end
-  
-  subgraph Integration
-    Research -->|MCP Tool Call| TrendAdapter[Trend Adapter]
-    Marketing -->|MCP Tool Call| AdsAdapter[Ads Adapter]
-    
-    TrendAdapter -->|HTTP| GoogleTrends[Google Trends]
-    AdsAdapter -->|HTTP| MetaAds[Meta Ads]
+
+  subgraph "4. Integration Layer"
+    AI_Adapter[AI Adapter]
+    TrendAdapter[Trend Adapter]
+    CompAdapter[Competitor Adapter]
+    SupplyAdapter[Supplier Adapter]
+    ShopAdapter[Shop Adapter]
+    AdsAdapter[Ads Adapter]
+    EmailAdapter[Email Adapter]
+    ShipAdapter[Shipping Adapter]
   end
+
+  subgraph "5. External World"
+    LLM[1. LLM Provider]:::external
+    TrendData[2. Trend Data Provider]:::external
+    CompIntel[3. Competitor Intel]:::external
+    Suppliers[4. Supplier Network]:::external
+    ShopPlatform[5. E-Commerce Platform]:::external
+    AdNetworks[6. Ad Networks]:::external
+    Helpdesk[7. Email/Helpdesk]:::external
+    Logistics[8. Logistics Provider]:::external
+  end
+
+  %% Connections
+  User --> API
+  Webhooks --> API
+  API --> Bus
+  Bus --> CEO & Research & Supplier & Store & Marketing & Support & Ops & Analytics
+
+  %% Agent to Adapter
+  CEO & Research & Store & Marketing & Support --> AI_Adapter
+  Research --> TrendAdapter & CompAdapter
+  Supplier --> SupplyAdapter
+  Store --> ShopAdapter
+  Marketing --> AdsAdapter
+  Support --> EmailAdapter
+  Ops --> ShipAdapter
+
+  %% Adapter to External
+  AI_Adapter --> LLM
+  TrendAdapter --> TrendData
+  CompAdapter --> CompIntel
+  SupplyAdapter --> Suppliers
+  ShopAdapter --> ShopPlatform
+  AdsAdapter --> AdNetworks
+  EmailAdapter --> Helpdesk
+  ShipAdapter --> Logistics
 ```
