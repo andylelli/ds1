@@ -17,8 +17,7 @@ In simulation, the `SimulationService` acts as the "Game Engine," driving the ag
 flowchart LR
   User["User/Test Script"] -->|Calls| SimService[SimulationService]
   SimService -->|Orchestrates| Agents["Agents (MCP Servers)"]
-  Agents -->|Emit Events| EventBus["Event Bus"]
-  EventBus -->|Notify| Agents
+  Agents -->|Direct Call| Agents
   Agents -->|Read/Write| DB[("Postgres: dropship_sim")]
   Agents -->|Use| MockAdapters["Mock Adapters"]
   MockAdapters -.->|Simulate| External["External Systems (Stubbed)"]
@@ -32,11 +31,10 @@ In live mode, the system is reactive. Agents respond to User Chat commands or Ex
 flowchart LR
   User["User Dashboard"] -->|Chat/API| Express[Express Server]
   Webhook["External Webhooks"] -->|POST| Express
-  Express -->|Invokes| Agents["Agents (MCP Servers)"]
-  Agents -->|Emit Events| EventBus["Event Bus"]
-  EventBus -->|Notify| Agents
-  Agents -->|Read/Write| DB[("Postgres: dropship")]
-  Agents -->|Use| LiveAdapters["Live Adapters"]
+  Express -->|Invokes| CEO["CEO Agent"]
+  CEO -->|Delegates| Team["Team Agents (Research, Store, etc.)"]
+  CEO & Team -->|Read/Write| DB[("Postgres: dropship")]
+  CEO & Team -->|Use| LiveAdapters["Live Adapters"]
   LiveAdapters -->|HTTP API| External["External Systems (Shopify, Meta, OpenAI)"]
 ```
 
