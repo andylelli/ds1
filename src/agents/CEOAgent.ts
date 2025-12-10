@@ -173,8 +173,15 @@ export class CEOAgent extends BaseAgent {
               }
               if (tool.name === 'startProductResearch') {
                   if (!this.team) return "I cannot start research because my team is not assembled.";
-                  // Run in background to avoid timeout
-                  this.team.research.findWinningProducts({ category: tool.arguments.category }).catch((err: any) => console.error(err));
+                  // Run in background but log results
+                  console.log(`[CEO] Delegating product research to Research team for category: ${tool.arguments.category}`);
+                  this.team.research.findWinningProducts({ category: tool.arguments.category })
+                    .then((result: any) => {
+                      console.log(`[CEO] Research completed. Found ${result?.products?.length || 0} products`);
+                    })
+                    .catch((err: any) => {
+                      console.error('[CEO] Research failed:', err);
+                    });
                   return `I have instructed the Research team to look for products in the ${tool.arguments.category} category. Check back in a moment for results.`;
               }
               if (tool.name === 'sourceProduct') {

@@ -8,6 +8,9 @@ const sidebarHTML = `
         <a href="/admin.html#simulation" class="nav-item" data-tab="simulation">
             <span>▶️</span> <span>Run Simulation</span>
         </a>
+        <a href="/staging.html" class="nav-item" data-page="staging.html">
+            <span>🔍</span> <span>Staging Review</span>
+        </a>
         <a href="/admin.html#products" class="nav-item" data-tab="products">
             <span>📦</span> <span>Products</span>
         </a>
@@ -34,6 +37,9 @@ const sidebarHTML = `
 
     <div class="nav-section">
         <div class="nav-label">System</div>
+        <a href="/activity.html" class="nav-item" data-page="activity.html">
+            <span>📊</span> <span>Activity Log</span>
+        </a>
         <a href="/infra.html" class="nav-item" data-page="infra.html">
             <span>🏗️</span> <span>Infra Manager</span>
         </a>

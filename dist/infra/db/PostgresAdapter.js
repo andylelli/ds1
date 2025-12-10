@@ -7,6 +7,15 @@ export class PostgresAdapter {
     constructor() {
         this.initPools();
     }
+    // Expose pool for services that need direct database access
+    getPool() {
+        const mode = configService.get('dbMode');
+        const pool = (mode === 'test') ? this.simPool : this.pgPool;
+        if (!pool) {
+            throw new Error('Database pool not initialized');
+        }
+        return pool;
+    }
     initPools() {
         const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
         const simDbUrl = configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";

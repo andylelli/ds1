@@ -2,7 +2,7 @@
   "dbMode": "test",
   "adsMode": "mock",
   "shopMode": "mock",
-  "trendsMode": "mock",
+  "trendsMode": "live",
   "researchMode": "mock",
   "fulfilmentMode": "mock",
   "emailMode": "mock",
@@ -13,5 +13,9 @@
   "openaiEnabled": true,
   "trafficScale": 0.1,
   "databaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship",
-  "simulatorDatabaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship_sim"
+  "simulatorDatabaseUrl": "postgresql://postgres:postgres@localhost:5432/dropship_sim",
+  "stagingEnabled": true,
+  "stagingAutoApproveThreshold": 0,
+  "stagingAutoRejectThreshold": 0,
+  "stagingExpiryDays": 7
 }

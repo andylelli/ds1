@@ -13,7 +13,9 @@ export class ProductResearchAgent extends BaseAgent {
     async findWinningProducts(args) {
         const { category, criteria } = args;
         this.log('info', `Searching for winning products in category: ${category}`);
+        console.log(`[ProductResearchAgent] Starting product search for category: ${category}`);
         const products = await this.trendAnalyzer.findProducts(category);
+        console.log(`[ProductResearchAgent] Found ${products?.length || 0} products`);
         return { products };
     }
     async analyzeNiche(args) {

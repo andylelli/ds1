@@ -17,6 +17,11 @@ export interface AppConfig {
   databaseUrl?: string;
   simulatorDatabaseUrl?: string;
   trafficScale?: number;
+  // Staging options
+  stagingEnabled?: boolean;
+  stagingAutoApproveThreshold?: number;
+  stagingAutoRejectThreshold?: number;
+  stagingExpiryDays?: number;
 }
 
 const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
@@ -34,7 +39,11 @@ const defaults: AppConfig = {
   logLevel: 'info',
   useSimulatedEndpoints: true,
   openaiEnabled: true,
-  trafficScale: 1.0
+  trafficScale: 1.0,
+  stagingEnabled: true,
+  stagingAutoApproveThreshold: 0,
+  stagingAutoRejectThreshold: 0,
+  stagingExpiryDays: 7
 };
 
 export class ConfigService {

@@ -14,6 +14,16 @@ export class PostgresAdapter implements PersistencePort {
     this.initPools();
   }
 
+  // Expose pool for services that need direct database access
+  getPool(): pg.Pool {
+    const mode = configService.get('dbMode');
+    const pool = (mode === 'test') ? this.simPool : this.pgPool;
+    if (!pool) {
+      throw new Error('Database pool not initialized');
+    }
+    return pool;
+  }
+
   private initPools() {
     const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
     const simDbUrl = configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";

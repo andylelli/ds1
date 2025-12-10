@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 - Activity Log</title>
+    <link rel="stylesheet" href="/admin.css">
+    <style>
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-bar {
+            background: #1c2128;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .filter-bar button {
+            padding: 8px 16px;
+            background: #238636;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filter-bar button:hover {
+            background: #2ea043;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #1c2128;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .activity-log {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .log-entry {
+            border-bottom: 1px solid #21262d;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 140px 100px 120px 1fr 100px;
+            gap: 16px;
+            align-items: start;
+            transition: background 0.2s;
+        }
+
+        .log-entry:hover {
+            background: #161b22;
+        }
+
+        .log-timestamp {
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .log-agent {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .log-category {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .category-research { background: #1f6feb; color: #fff; }
+        .category-sourcing { background: #f0ad4e; color: #000; }
+        .category-store { background: #28a745; color: #fff; }
+        .category-marketing { background: #e91e63; color: #fff; }
+        .category-operations { background: #9c27b0; color: #fff; }
+        .category-ceo { background: #ff4444; color: #fff; }
+        .category-system { background: #6c757d; color: #fff; }
+
+        .log-message {
+            font-size: 14px;
+            color: #c9d1d9;
+            line-height: 1.5;
+        }
+
+        .log-action {
+            font-size: 12px;
+            color: #8b949e;
+            margin-bottom: 4px;
+        }
+
+        .log-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-completed { background: #238636; color: #fff; }
+        .status-started { background: #1f6feb; color: #fff; }
+        .status-failed { background: #da3633; color: #fff; }
+        .status-warning { background: #d29922; color: #000; }
+
+        .log-details {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 8px;
+            padding: 8px;
+            background: #0d1117;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .auto-refresh input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="activity-header">
+            <div>
+                <h1 class="page-title">📊 Activity Log</h1>
+                <p class="subtitle">Real-time visibility into all agent activities and system events</p>
+            </div>
+            <div class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" checked>
+                <label for="autoRefresh">Auto-refresh (5s)</label>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-label">Total Activities (24h)</div>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Research</div>
+                <div class="stat-value" id="statResearch">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Marketing</div>
+                <div class="stat-value" id="statMarketing">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Operations</div>
+                <div class="stat-value" id="statOperations">0</div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <select id="filterAgent">
+                <option value="">All Agents</option>
+                <option value="CEO">CEO</option>
+                <option value="Research">Research</option>
+                <option value="Supplier">Supplier</option>
+                <option value="Store">Store</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Support">Support</option>
+                <option value="Operations">Operations</option>
+                <option value="Analytics">Analytics</option>
+            </select>
+
+            <select id="filterCategory">
+                <option value="">All Categories</option>
+                <option value="research">Research</option>
+                <option value="sourcing">Sourcing</option>
+                <option value="store">Store</option>
+                <option value="marketing">Marketing</option>
+                <option value="operations">Operations</option>
+                <option value="ceo">CEO</option>
+                <option value="system">System</option>
+            </select>
+
+            <select id="filterStatus">
+                <option value="">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="started">Started</option>
+                <option value="failed">Failed</option>
+                <option value="warning">Warning</option>
+            </select>
+
+            <input type="number" id="filterLimit" placeholder="Limit" value="50" min="10" max="500" step="10" style="width: 100px;">
+
+            <button onclick="loadActivities()">🔍 Apply Filters</button>
+            <button onclick="clearFilters()" style="background: #6c757d;">Clear</button>
+        </div>
+
+        <div class="activity-log" id="activityLog">
+            <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <div>Loading activity log...</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/sidebar.js"></script>
+    <script>
+        // Initialize sidebar
+        document.addEventListener('DOMContentLoaded', () => {
+            initSidebar();
+        });
+    </script>
+    <script src="/activity.js"></script>
+</body>
+</html>
