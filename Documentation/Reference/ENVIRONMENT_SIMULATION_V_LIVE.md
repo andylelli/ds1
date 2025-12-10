@@ -60,8 +60,8 @@ flowchart TD
   Clock -->|Inject: TIME_TICK| Bus
   Bus -->|Event: ORDER_PAID| Agents
   
-  Agents -->|Call: get_product(id)| ShopTool
-  Agents -->|Call: create_campaign()| AdsTool
+  Agents -->|Call: get_product id| ShopTool
+  Agents -->|Call: create_campaign| AdsTool
   
   ShopTool -->|Internal Call| MockShop
   AdsTool -->|Internal Call| MockAds
@@ -119,8 +119,8 @@ flowchart TD
   Express -->|Publish: ORDER_PAID| Bus
   Bus -->|Event: ORDER_PAID| Agents
   
-  Agents -->|Call: get_product(id)| ShopTool
-  Agents -->|Call: create_campaign()| AdsTool
+  Agents -->|Call: get_product id| ShopTool
+  Agents -->|Call: create_campaign| AdsTool
   
   ShopTool -->|HTTPS: admin.shopify.com| RealShop
   AdsTool -->|HTTPS: graph.facebook.com| RealMeta
