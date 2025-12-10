@@ -12,8 +12,8 @@ We propose a **5-File Configuration Structure** to separate concerns:
 | :--- | :--- | :--- |
 | **1. ootstrap.yaml** | **Entry Point** | Environment mode (Live/Sim), Log levels, paths to other config files. |
 | **2. infrastructure.yaml** | **Plumbing** | **Event Bus provider** (Redis/Postgres/Memory), Database connections, Server ports. |
-| **3. dapters.yaml** | **Tools/IO** | External service connections (Shopify, OpenAI, SendGrid). Defines *capabilities*. |
-| **4. gents.yaml** | **Workers** | Which Agents to spawn, their System Prompts, Model settings, and assigned Tools (Adapters). |
+| **3. mcp.yaml** | **Tools/IO** | **MCP Servers** (Stdio/SSE) and **Internal Adapters**. Defines *capabilities*. |
+| **4. gents.yaml** | **Workers** | Which Agents to spawn, their System Prompts, Model settings, and assigned Tools (MCP Servers). |
 | **5. workflows.yaml** | **Wiring** | Event Subscriptions. Who listens to what? (e.g., OrderPaid -> FulfillmentAgent). |
 
 ---
@@ -61,32 +61,35 @@ ews every class.
 2.  **Implementations**: Ensure PostgresEventBus, RedisEventBus, and MemoryEventBus all implement IEventBus.
 3.  **Factory Logic**: The Bootstrapper reads 	ype: "postgres" and instantiates PostgresEventBus.
 
-### C. Dynamic Agents & Adapters
+### C. MCP & Tools (YAML-Driven)
 
 **Current State:**
-*   CEOAgent is hardcoded to use ResearchAgent.
+*   Adapters are injected directly into Agents.
+*   Tool usage is informal.
 
 **Target State:**
-*   Agents are generic workers configured by **gents.yaml**:
+*   **mcp.yaml** defines all available tools (both internal classes and external MCP servers):
+    `yaml
+    mcp_servers:
+      - id: "shopify_tool"
+        type: "internal"
+        class: "ShopifyAdapter"
+        config: { shop_url: "" }
+      - id: "filesystem_tool"
+        type: "stdio"
+        command: "npx"
+        args: ["-y", "@modelcontextprotocol/server-filesystem", "./data"]
+    `
+*   **gents.yaml** assigns these tools to agents:
     `yaml
     agents:
       - id: "ceo_agent"
-        class: "CEOAgent"
-        model: "gpt-4"
-        tools: ["shopify_adapter", "crm_adapter"] # References IDs from adapters.yaml
-    `
-*   Adapters are configured in **dapters.yaml**:
-    `yaml
-    adapters:
-      - id: "shopify_adapter"
-        class: "ShopifyAdapter"
-        config:
-          shop_url: ""
+        tools: ["shopify_tool", "filesystem_tool"]
     `
 
 **Required Changes:**
-1.  **Generic Agent Constructor**: Update BaseAgent to accept a configuration object and a list of Tools (Adapters).
-2.  **Tool Injection**: The Bootstrapper resolves the strings "shopify_adapter" to the actual instance and passes it to the Agent.
+1.  **MCP Client Integration**: The Bootstrapper must be able to start stdio processes for external MCP servers.
+2.  **Internal Adapter Wrapper**: Wrap internal classes (like ShopifyAdapter) so they look like MCP servers to the Agents.
 
 ### D. Workflow Wiring (The Nervous System)
 
@@ -135,9 +138,10 @@ ews every class.
     *   Implement MemoryEventBus (for dev) and PostgresEventBus.
     *   Wire up infrastructure.yaml to load the correct bus.
 
-3.  **Phase 3: The Body**
-    *   Refactor ShopifyAdapter and ResearchAgent to be instantiable via the Factory.
-    *   Move their config to dapters.yaml and gents.yaml.
+3.  **Phase 3: The Body (MCP Integration)**
+    *   Implement McpClient to handle both "internal" and "stdio" servers.
+    *   Refactor ShopifyAdapter to be an internal MCP tool.
+    *   Update gents.yaml to assign tools.
 
 4.  **Phase 4: The Brain**
     *   Implement workflows.yaml parsing.
