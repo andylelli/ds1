@@ -49,20 +49,16 @@ flowchart TD
     direction TB
     CEO[CEO Agent]:::agent
     
-    subgraph Row1 ["Growth Team"]
+    subgraph Team ["The Team"]
       direction LR
-      Analytics[Analytics]:::agent
       Researcher[Researcher]:::agent
       Builder[Builder]:::agent
       Marketer[Marketer]:::agent
-    end
-    
-    subgraph Row2 ["Ops Team"]
-      direction LR
+      Compliance[Compliance]:::agent
       Ops[Operations]:::agent
       CS[Support]:::agent
       Retention[Retention]:::agent
-      Compliance[Compliance]:::agent
+      Analytics[Analytics]:::agent
     end
   end
 
@@ -95,23 +91,23 @@ flowchart TD
   %% Wiring: Inputs -> Bus
   SimService & Clock --> Bus
 
-  %% Wiring: Bus -> Everyone (Hub & Spoke)
+  %% Wiring: Bus -> Everyone
   Bus ==> CEO
-  Bus ==> Analytics & Researcher & Builder & Marketer
-  Bus ==> Ops & CS & Retention & Compliance
+  Bus ==> Team
 
-  %% Visual Hierarchy (No Data Flow)
-  CEO ~~~ Row1
-  Row1 ~~~ Row2
+  %% Visual Hierarchy: Center CEO above Team
+  CEO ~~~ Compliance
+  CEO ~~~ Ops
 
-  %% Tool Connections
+  %% Agent -> Tool Connections (Optimized for no crossing)
   Researcher --> TrendsTool
   Builder --> ShopTool
   Marketer --> AdsTool
-  Ops --> FulfillTool
-  CS & Retention --> EmailTool
-  Analytics --> LedgerTool
   Compliance --> AdsTool
+  Ops --> FulfillTool
+  CS --> EmailTool
+  Retention --> EmailTool
+  Analytics --> LedgerTool
 
   %% Mock Connections
   TrendsTool --> MockTrends
@@ -161,20 +157,16 @@ flowchart TD
     direction TB
     CEO[CEO Agent]:::agent
     
-    subgraph Row1 ["Growth Team"]
+    subgraph Team ["The Team"]
       direction LR
-      Analytics[Analytics]:::agent
       Researcher[Researcher]:::agent
       Builder[Builder]:::agent
       Marketer[Marketer]:::agent
-    end
-    
-    subgraph Row2 ["Ops Team"]
-      direction LR
+      Compliance[Compliance]:::agent
       Ops[Operations]:::agent
       CS[Support]:::agent
       Retention[Retention]:::agent
-      Compliance[Compliance]:::agent
+      Analytics[Analytics]:::agent
     end
   end
 
@@ -208,23 +200,23 @@ flowchart TD
   User & ShopHook & StripeHook --> Express
   Express --> Bus
 
-  %% Wiring: Bus -> Everyone (Hub & Spoke)
+  %% Wiring: Bus -> Everyone
   Bus ==> CEO
-  Bus ==> Analytics & Researcher & Builder & Marketer
-  Bus ==> Ops & CS & Retention & Compliance
+  Bus ==> Team
 
-  %% Visual Hierarchy (No Data Flow)
-  CEO ~~~ Row1
-  Row1 ~~~ Row2
+  %% Visual Hierarchy: Center CEO above Team
+  CEO ~~~ Compliance
+  CEO ~~~ Ops
 
-  %% Agent -> Tool Connections
+  %% Agent -> Tool Connections (Optimized for no crossing)
   Researcher --> TrendsTool
   Builder --> ShopTool
   Marketer --> AdsTool
-  Ops --> FulfillTool
-  CS & Retention --> EmailTool
-  Analytics --> LedgerTool
   Compliance --> AdsTool
+  Ops --> FulfillTool
+  CS --> EmailTool
+  Retention --> EmailTool
+  Analytics --> LedgerTool
 
   %% External Connections
   TrendsTool --> Google
