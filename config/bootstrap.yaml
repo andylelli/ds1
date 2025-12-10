@@ -1,0 +1,10 @@
+system:
+  mode: "simulation"
+  persistence: "postgres"
+  event_bus: "postgres"
+
+paths:
+  infrastructure: "config/infrastructure.yaml"
+  mcp: "config/mcp.yaml"
+  agents: "config/agents.yaml"
+  workflows: "config/workflows.yaml"

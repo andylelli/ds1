@@ -1,0 +1,42 @@
+subscriptions:
+  # Research Phase
+  - event: RESEARCH_REQUESTED
+    subscriber: product_research_agent
+    action: find_products
+
+  - event: PRODUCT_FOUND
+    subscriber: ceo_agent
+    action: review_product
+
+  # Sourcing Phase
+  - event: PRODUCT_APPROVED
+    subscriber: supplier_agent
+    action: find_suppliers
+
+  - event: SUPPLIER_FOUND
+    subscriber: ceo_agent
+    action: review_supplier
+
+  # Store Build Phase
+  - event: SUPPLIER_APPROVED
+    subscriber: store_build_agent
+    action: create_product_page
+
+  # Marketing Phase
+  - event: PRODUCT_PAGE_CREATED
+    subscriber: marketing_agent
+    action: create_ad_campaign
+
+  # Operations Phase
+  - event: ORDER_RECEIVED
+    subscriber: operations_agent
+    action: process_order
+
+  - event: ORDER_SHIPPED
+    subscriber: customer_service_agent
+    action: notify_customer
+
+  # Analytics
+  - event: DAILY_REPORT_REQUESTED
+    subscriber: analytics_agent
+    action: generate_report

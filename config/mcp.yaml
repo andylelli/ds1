@@ -1,0 +1,43 @@
+mcp_servers:
+  # Internal Adapters (exposed as Tools)
+  - id: shopify_tool
+    type: internal
+    class: ShopifyAdapter
+    config:
+      shop_url: "${SHOPIFY_URL}"
+
+  - id: ads_tool
+    type: internal
+    class: AdsAdapter
+    config: {}
+
+  - id: trend_tool
+    type: internal
+    class: TrendAdapter
+    config: {}
+
+  - id: competitor_tool
+    type: internal
+    class: CompetitorAdapter
+    config: {}
+
+  - id: fulfilment_tool
+    type: internal
+    class: FulfilmentAdapter
+    config: {}
+
+  - id: email_tool
+    type: internal
+    class: EmailAdapter
+    config: {}
+
+  - id: ai_tool
+    type: internal
+    class: AiAdapter
+    config: {}
+
+  # External MCP Servers
+  - id: filesystem_tool
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "./data"]

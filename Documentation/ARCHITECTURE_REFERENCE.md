@@ -43,15 +43,17 @@ These tools are available to Agents. In Simulation, "Mock" versions are used.
 | :--- | :--- | :--- | :--- |
 | **Live** | `WebhookIngress` | `src/drivers/WebhookIngress.ts` | Receives HTTP webhooks (Shopify, Meta) and emits events. |
 | **Sim** | `SimulationOrchestrator` | `src/drivers/SimulationOrchestrator.ts` | Injects synthetic events based on `scenario.yaml`. |
+| **MCP** | `McpServer` | `src/mcp-server.ts` | Exposes internal adapters as MCP tools over stdio. |
 
 ## 5. Core Components
 
 | Component | Path | Purpose |
 | :--- | :--- | :--- |
-| **Bootstrapper** | `src/core/bootstrap/Bootstrapper.ts` | Entry point. Loads YAML and boots the container. |
+| **Container** | `src/core/bootstrap/Container.ts` | Main entry point. Loads config and wires dependencies. |
+| **ServiceFactory** | `src/core/bootstrap/ServiceFactory.ts` | Instantiates Adapters and Agents based on config. |
 | **YamlLoader** | `src/core/bootstrap/YamlLoader.ts` | Parses and merges configuration files. |
-| **Container** | `src/core/bootstrap/Container.ts` | Dependency Injection container. |
 | **WorkflowManager** | `src/core/workflow/WorkflowManager.ts` | Reads `workflows.yaml` and registers event subscriptions. |
+| **McpToolProvider** | `src/core/mcp/McpToolProvider.ts` | Interface for adapters to expose MCP tools. |
 
 ## 6. Configuration Interfaces
 

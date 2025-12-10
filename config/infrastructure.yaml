@@ -1,0 +1,5 @@
+event_bus:
+  type: postgres
+  connection_string: "${DATABASE_URL}"
+server:
+  port: 3000

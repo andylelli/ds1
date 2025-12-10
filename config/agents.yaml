@@ -1,0 +1,48 @@
+agents:
+  - id: ceo_agent
+    class: CEOAgent
+    model: gpt-4
+    system_prompt: "You are the CEO of the dropshipping business. You coordinate the team and make high-level decisions."
+    tools: []
+
+  - id: product_research_agent
+    class: ProductResearchAgent
+    model: gpt-4
+    system_prompt: "You are the Product Research Agent. Your goal is to identify winning products based on trends and competitor analysis."
+    tools: ["trend_tool", "competitor_tool"]
+
+  - id: supplier_agent
+    class: SupplierAgent
+    model: gpt-4
+    system_prompt: "You are the Supplier Agent. You find reliable suppliers and negotiate prices."
+    tools: ["fulfilment_tool"]
+
+  - id: store_build_agent
+    class: StoreBuildAgent
+    model: gpt-4
+    system_prompt: "You are the Store Build Agent. You manage the Shopify store, create product pages, and optimize SEO."
+    tools: ["shopify_tool"]
+
+  - id: marketing_agent
+    class: MarketingAgent
+    model: gpt-4
+    system_prompt: "You are the Marketing Agent. You create and manage ad campaigns."
+    tools: ["ads_tool"]
+
+  - id: customer_service_agent
+    class: CustomerServiceAgent
+    model: gpt-4
+    system_prompt: "You are the Customer Service Agent. You handle customer inquiries and emails."
+    tools: ["email_tool"]
+
+  - id: operations_agent
+    class: OperationsAgent
+    model: gpt-4
+    system_prompt: "You are the Operations Agent. You oversee daily operations and ensure smooth order processing."
+    tools: []
+
+  - id: analytics_agent
+    class: AnalyticsAgent
+    model: gpt-4
+    system_prompt: "You are the Analytics Agent. You analyze business performance and provide insights."
+    tools: []

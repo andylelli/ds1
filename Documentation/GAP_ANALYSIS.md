@@ -25,51 +25,54 @@ We propose a **5-File Configuration Structure**:
 
 ## 2. Detailed Gap Analysis
 
-### A. Modular Bootstrapping (The Core Engine)
+### A. Modular Bootstrapping (The Core Engine) - **STATUS: COMPLETED**
 
 **Current State:**
-*   src/index.ts manually imports and 
-ews every class.
-*   Switching modes requires code changes.
+*   `src/core/bootstrap/Container.ts` is the main entry point.
+*   `src/core/bootstrap/ServiceFactory.ts` handles object creation.
+*   `src/core/bootstrap/YamlLoader.ts` loads configuration.
 
 **Target State:**
 *   src/index.ts is minimal and mode-agnostic:
-    `	ypescript
+    ```typescript
     const config = YamlLoader.load('bootstrap.yaml');
     const container = new Container(config);
     container.boot();
-    `
+    ```
 *   The **Container** instantiates the exact same core classes for both Sim and Live.
 
 **Required Changes:**
-1.  **YamlLoader**: A utility to read and merge the 5 YAML files.
-2.  **ServiceFactory**: A class that takes a string name and returns an instance.
-3.  **DependencyContainer**: Holds the singletons (Bus, Adapters) and injects them into Agents.
+1.  **YamlLoader**: A utility to read and merge the 5 YAML files. (Done)
+2.  **ServiceFactory**: A class that takes a string name and returns an instance. (Done)
+3.  **DependencyContainer**: Holds the singletons (Bus, Adapters) and injects them into Agents. (Done)
 
-### B. Infrastructure & Event Bus (Postgres-Backed)
+### B. Infrastructure & Event Bus (Postgres-Backed) - **STATUS: COMPLETED**
 
 **Current State:**
-*   Event Bus is either missing or hardcoded.
+*   `PostgresAdapter` and `PostgresEventStore` are implemented.
+*   `PersistencePort` and `EventBusPort` interfaces are defined.
 
 **Target State:**
 *   **PostgresEventBus** is the single source of truth for both Live and Simulation.
 *   **infrastructure.yaml** example:
-    `yaml
+    ```yaml
     event_bus:
       type: "postgres"
       connection: ""
       table_name: "events"
-    `
+    ```
 
 **Required Changes:**
-1.  **Interface IEventBus**: Standardize publish() and subscribe().
-2.  **Implementation**: Ensure PostgresEventBus is robust and can handle the load.
-3.  **Factory Logic**: The Bootstrapper initializes the bus before any agents.
+1.  **Interface IEventBus**: Standardize publish() and subscribe(). (Done)
+2.  **Implementation**: Ensure PostgresEventBus is robust and can handle the load. (Done)
+3.  **Factory Logic**: The Bootstrapper initializes the bus before any agents. (Done)
 
-### C. MCP & Tools (Generative Mocks)
+### C. MCP & Tools (Generative Mocks) - **STATUS: IN PROGRESS**
 
 **Current State:**
-*   Adapters are injected directly into Agents.
+*   `McpToolProvider` interface created.
+*   `ShopifyMcpWrapper` implemented to expose Shopify adapter as MCP tools.
+*   `mcp-server.ts` entry point created.
 
 **Target State:**
 *   **Live Mode**: Adapters wrap real API calls (Shopify, Meta).
@@ -79,10 +82,11 @@ ews every class.
     *   They maintain internal state (e.g., MockShopify keeps a list of "created" products in memory).
 
 **Required Changes:**
-1.  **Smart Mocks**: Implement MockShopifyAdapter, MockResearchAdapter that behave like the real systems.
-2.  **Stateful Simulation**: Mocks should share state where necessary (e.g., Inventory).
+1.  **Smart Mocks**: Implement MockShopifyAdapter, MockResearchAdapter that behave like the real systems. (Pending)
+2.  **Stateful Simulation**: Mocks should share state where necessary (e.g., Inventory). (Pending)
+3.  **MCP Wrappers**: Wrap all adapters with `McpToolProvider` implementations. (Started with Shopify)
 
-### D. Workflow Wiring (The Nervous System)
+### D. Workflow Wiring (The Nervous System) - **STATUS: PENDING**
 
 **Current State:**
 *   Logic flow is hardcoded.
@@ -158,3 +162,13 @@ ews every class.
 - [ ] **Task 5.2**: Implement SimulationOrchestrator.
 - [ ] **Task 5.3**: Update index.ts to use the Bootstrapper.
 - [ ] **Verification**: Run the full simulation.
+
+**Phase 6: Legacy Audit & Cleanup**
+*Goal: Ensure no file is left behind.*
+- [ ] **Task 6.1**: Audit src/wiring/ - This folder should be deleted as Container replaces it.
+- [ ] **Task 6.2**: Audit src/types/ - Update interfaces to match new architecture.
+- [ ] **Task 6.3**: Audit src/api/ - Ensure old routes are removed or migrated to WebhookIngress.
+- [ ] **Task 6.4**: Audit Root Files - Check simulation.js, 
+un_simulation_cli.js for removal.
+- [ ] **Task 6.5**: Final Codebase Scan - Search for any direct instantiation (
+ew ClassName) outside of the Factory.
