@@ -14,10 +14,10 @@ This guide summarizes how DS1 behaves in **simulation** (mock, single-container)
 ```mermaid
 flowchart LR
   YAML[Bootstrap + agent YAMLs] --> Router{Environment: simulation}
-  Router --> Agents[Agents (single container)]
-  Agents --> EventBus[In-process EventEmitter]
-  EventBus --> MockAdapters[Mock adapters (shop/ads/trends/competitor/fulfilment/email/AI)]
-  MockAdapters --> SandboxData[Sandbox data (sandbox_db.json, fixtures)]
+  Router --> Agents["Agents (single container)"]
+  Agents --> EventBus["In-process EventEmitter"]
+  EventBus --> MockAdapters["Mock adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
+  MockAdapters --> SandboxData["Sandbox data (sandbox_db.json, fixtures)"]
   subgraph External
     Cron[Cron/Timers]
   end
@@ -29,12 +29,12 @@ flowchart LR
 ```mermaid
 flowchart LR
   YAML[Bootstrap + agent YAMLs] --> Router{Environment: live}
-  Router --> AgentsCluster[Agents (scaled replicas)]
-  AgentsCluster --> RedisBus[Redis/Managed pub-sub]
-  RedisBus --> LiveAdapters[Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)]
-  LiveAdapters --> ExternalSystems[External systems (commerce, ads, email, data stores)]
+  Router --> AgentsCluster["Agents (scaled replicas)"]
+  AgentsCluster --> RedisBus["Redis/Managed pub-sub"]
+  RedisBus --> LiveAdapters["Live adapters (shop/ads/trends/competitor/fulfilment/email/AI)"]
+  LiveAdapters --> ExternalSystems["External systems (commerce, ads, email, data stores)"]
   subgraph Ingress
-    Webhooks[Webhooks/HTTP ingress]
+    Webhooks["Webhooks/HTTP ingress"]
     MCP[MCP providers]
   end
   Webhooks --> RedisBus
