@@ -84,3 +84,43 @@ flowchart LR
 - Enable appropriate observability, DLQ, and retry settings for live.
 - Confirm MCP providers are bound to the right ports/endpoints.
 - Run smoke tests in simulation before promoting manifests to live.
+
+## Target Architecture (Future Vision)
+
+This diagram represents the **ideal state** where the Event Bus is fully decoupled, Webhooks drive the system, and Agents communicate asynchronously.
+
+```mermaid
+flowchart TD
+  subgraph Ingress
+    User["User Dashboard"] -->|API| API[API Gateway]
+    Webhook["Shopify/Meta Webhooks"] -->|POST| API
+  end
+
+  API -->|Publish| Bus{Event Bus}
+  
+  subgraph "Agent Swarm (MCP Servers)"
+    CEO[CEO Agent]
+    Research[Research Agent]
+    Marketing[Marketing Agent]
+    Store[Store Agent]
+  end
+  
+  Bus -->|Event: ORDER_PAID| CEO
+  Bus -->|Event: TREND_FOUND| Marketing
+  Bus -->|Event: PRODUCT_APPROVED| Store
+  
+  CEO -->|Emit: STRATEGY_UPDATED| Bus
+  Research -->|Emit: TREND_FOUND| Bus
+  
+  subgraph Data
+    CEO & Research & Marketing -->|Read/Write| DB[("Postgres (Live)")]
+  end
+  
+  subgraph Integration
+    Research -->|MCP Tool Call| TrendAdapter[Trend Adapter]
+    Marketing -->|MCP Tool Call| AdsAdapter[Ads Adapter]
+    
+    TrendAdapter -->|HTTP| GoogleTrends[Google Trends]
+    AdsAdapter -->|HTTP| MetaAds[Meta Ads]
+  end
+```
