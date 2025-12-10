@@ -25,12 +25,13 @@ In this mode, the system runs in a closed loop. The `SimulationService` acts as 
 ```mermaid
 flowchart TD
   %% Styles
-  classDef trigger fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-  classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-  classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+  classDef trigger fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
+  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+  classDef mcp fill:#fff8e1,stroke:#fbc02d,stroke-width:2px,color:#f57f17;
+  classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
+  classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
-  subgraph Triggers ["1. The Driver"]
+  subgraph Triggers ["1. The Driver (Scripted)"]
     SimService[Simulation Service]:::trigger
     Clock[Virtual Clock]:::trigger
   end
@@ -40,22 +41,35 @@ flowchart TD
     Agents[Agent Swarm]:::core
   end
 
-  subgraph Data ["3. Persistence"]
-    DB[(Postgres: dropship_sim)]:::data
+  subgraph MCP ["3. Tool Interface (MCP)"]
+    ShopTool[Shopify Tool]:::mcp
+    AdsTool[Ads Tool]:::mcp
   end
 
   subgraph Mocks ["4. The Matrix (Simulation)"]
-    MockShop[Mock Shopify]:::mock
-    MockAds[Mock Ads Platform]:::mock
-    MockTrends[Mock Trends]:::mock
+    MockShop[Mock Shopify Adapter]:::mock
+    MockAds[Mock Ads Adapter]:::mock
   end
 
-  SimService -->|Injects Events| Bus
-  Clock -->|Ticks| Bus
-  Bus -->|Notifies| Agents
-  Agents -->|Read/Write| DB
-  Agents -->|Call| Mocks
-  Mocks -.->|Fake Data| Agents
+  subgraph Data ["5. Persistence"]
+    DB[(Postgres: dropship_sim)]:::db
+  end
+
+  %% Flows
+  SimService -->|Inject: ORDER_PAID| Bus
+  Clock -->|Inject: TIME_TICK| Bus
+  Bus -->|Event: ORDER_PAID| Agents
+  
+  Agents -->|Call: get_product(id)| ShopTool
+  Agents -->|Call: create_campaign()| AdsTool
+  
+  ShopTool -->|Internal Call| MockShop
+  AdsTool -->|Internal Call| MockAds
+  
+  MockShop -.->|Return: {id: 1, price: 20}| ShopTool
+  MockAds -.->|Return: {cpc: 1.50}| AdsTool
+  
+  Agents -->|SQL: INSERT INTO ledger| DB
 ```
 
 ### 2.2 Live Mode (The "Business")
@@ -64,18 +78,19 @@ In this mode, the system waits for the real world. It reacts to Webhooks (Shopif
 ```mermaid
 flowchart TD
   %% Styles
-  classDef trigger fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-  classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-  classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px;
+  classDef trigger fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
+  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+  classDef mcp fill:#fff8e1,stroke:#fbc02d,stroke-width:2px,color:#f57f17;
+  classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#b71c1c;
+  classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
   subgraph Triggers ["1. The Real World"]
-    User[User Dashboard]:::trigger
-    Webhooks[Shopify/Stripe Webhooks]:::trigger
+    ShopifyHook[Shopify Webhook]:::trigger
+    StripeHook[Stripe Webhook]:::trigger
   end
 
   subgraph Ingress ["2. API Layer"]
-    API[Express Server]:::trigger
+    Express[Express Server]:::trigger
   end
 
   subgraph Core ["3. The Nervous System"]
@@ -83,23 +98,37 @@ flowchart TD
     Agents[Agent Swarm]:::core
   end
 
-  subgraph Data ["4. Persistence"]
-    DB[(Postgres: dropship)]:::data
+  subgraph MCP ["4. Tool Interface (MCP)"]
+    ShopTool[Shopify Tool]:::mcp
+    AdsTool[Ads Tool]:::mcp
   end
 
   subgraph External ["5. External APIs"]
-    Shopify[Shopify API]:::external
-    Meta[Meta Ads API]:::external
-    OpenAI[OpenAI API]:::external
+    RealShop[Shopify API]:::external
+    RealMeta[Meta Ads API]:::external
   end
 
-  User -->|Commands| API
-  Webhooks -->|Events| API
-  API -->|Publishes| Bus
-  Bus -->|Notifies| Agents
-  Agents -->|Read/Write| DB
-  Agents -->|Call| External
-  External -.->|Real Data| Agents
+  subgraph Data ["6. Persistence"]
+    DB[(Postgres: dropship)]:::db
+  end
+
+  %% Flows
+  ShopifyHook -->|POST /webhooks/orders/create| Express
+  StripeHook -->|POST /v1/events| Express
+  
+  Express -->|Publish: ORDER_PAID| Bus
+  Bus -->|Event: ORDER_PAID| Agents
+  
+  Agents -->|Call: get_product(id)| ShopTool
+  Agents -->|Call: create_campaign()| AdsTool
+  
+  ShopTool -->|HTTPS: admin.shopify.com| RealShop
+  AdsTool -->|HTTPS: graph.facebook.com| RealMeta
+  
+  RealShop -.->|JSON Response| ShopTool
+  RealMeta -.->|JSON Response| AdsTool
+  
+  Agents -->|SQL: INSERT INTO ledger| DB
 ```
 
 ## 3. Configuration Differences
