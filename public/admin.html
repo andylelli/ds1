@@ -14,13 +14,13 @@
     <!-- Main Content -->
     <main class="main">
         <!-- SIMULATION -->
-        <div id="simulation" class="tab-content">
+        <div id="simulation" class="tab-content hidden">
             <div class="page-header">
                 <h1 class="page-title">Simulation Control</h1>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 400px; gap: 1rem;">
-                <!-- Left: Simulation Control & Logs -->
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <!-- Simulation Control & Logs -->
                 <div style="display: flex; flex-direction: column; gap: 1rem; min-width: 0;">
                     <div class="card">
                         <h2>Run Simulation</h2>
@@ -36,26 +36,6 @@
                     <div class="card" style="display: flex; flex-direction: column; min-width: 0;">
                         <h2 style="margin-bottom: 0.5rem; border: none;">Simulation Logs</h2>
                         <div id="logViewer" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; min-width: 0;">Waiting for logs...</div>
-                    </div>
-                </div>
-                
-                <!-- Right: CEO Chat -->
-                <div class="card" style="display: flex; flex-direction: column; height: 600px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h2 style="margin: 0; border: none;">CEO Chat</h2>
-                        <span id="simCeoMode" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #e5e7eb; color: #6b7280;">Loading...</span>
-                    </div>
-                    <div class="chat-container" style="flex: 1; min-height: 0;">
-                        <div id="simChatHistory" class="chat-history">
-                            <div class="chat-message ceo">
-                                <div class="sender-name">CEO Agent</div>
-                                Ready to discuss simulation strategy and approve decisions.
-                            </div>
-                        </div>
-                        <div class="chat-input-area">
-                            <input type="text" id="simChatInput" placeholder="Ask the CEO about the simulation..." onkeypress="if(event.key==='Enter') sendSimChatMessage()">
-                            <button onclick="sendSimChatMessage()">Send</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -209,9 +189,12 @@
 
     </main>
 
+    <div id="statusMessage" class="status-msg" style="display: none;"></div>
+
     <script>
         let logInterval = null;
         let logStartTime = 0;
+        let currentMode = 'simulation'; // Default
 
         // --- Navigation ---
         function switchTab(tabId) {
@@ -243,12 +226,7 @@
 
         // Handle initial hash
         window.addEventListener('load', () => {
-            const hash = window.location.hash.substring(1);
-            if (hash && document.getElementById(hash)) {
-                switchTab(hash);
-            } else {
-                switchTab('simulation');
-            }
+            // loadConfig will handle the initial tab switch based on mode
         });
 
         // --- Simulation & Logs ---
@@ -500,84 +478,33 @@
             return div.id;
         }
 
-        // --- Simulation CEO Chat ---
-        async function sendSimChatMessage() {
-            const input = document.getElementById('simChatInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            // 1. Add User Message
-            appendSimMessage('user', message);
-            input.value = '';
-
-            // 2. Call API
-            const thinkingId = appendSimMessage('ceo', 'Thinking...', true);
-            
-            try {
-                const res = await fetch('/api/ceo/chat', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message }) 
-                });
-                
-                const data = await res.json();
-                
-                // Remove thinking bubble
-                document.getElementById(thinkingId).remove();
-
-                if (res.ok) {
-                    appendSimMessage('ceo', data.response);
-                } else {
-                    appendSimMessage('ceo', "Error: " + (data.error || "Unknown error"));
-                }
-
-            } catch (e) {
-                document.getElementById(thinkingId).remove();
-                appendSimMessage('ceo', "Error: Unable to reach the CEO Agent.");
-            }
-        }
-
-        function appendSimMessage(sender, text, isTemp = false) {
-            const history = document.getElementById('simChatHistory');
-            const div = document.createElement('div');
-            div.className = `chat-message ${sender}`;
-            if (isTemp) div.id = 'sim-msg-' + Date.now();
-            
-            const name = sender === 'user' ? 'You' : 'CEO Agent';
-            div.innerHTML = `<div class="sender-name">${name}</div>${text}`;
-            
-            history.appendChild(div);
-            history.scrollTop = history.scrollHeight;
-            return div.id;
-        }
-
         // --- Config ---
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
                 const config = await res.json();
+                currentMode = config.mode || 'simulation';
+                
                 document.getElementById('dbMode').value = config.dbMode || 'test';
                 document.getElementById('logLevel').value = config.logLevel;
                 
-                // Update CEO mode badge
-                updateCeoModeBadge(config.ceoMode);
-            } catch (e) { showStatus('Failed to load configuration.', 'status-error'); }
-        }
-
-        function updateCeoModeBadge(mode) {
-            const badge = document.getElementById('simCeoMode');
-            
-            if (badge) {
-                if (mode === 'live') {
-                    badge.textContent = 'CEO: Live (Azure OpenAI)';
-                    badge.style.background = '#10b981';
-                    badge.style.color = '#fff';
+                // Handle Initial Tab
+                const hash = window.location.hash.substring(1);
+                if (hash && document.getElementById(hash)) {
+                    switchTab(hash);
                 } else {
-                    badge.textContent = 'CEO: Mock (Simulated)';
-                    badge.style.background = '#f59e0b';
-                    badge.style.color = '#fff';
+                    // Default tab based on mode
+                    if (currentMode === 'simulation') {
+                        switchTab('simulation');
+                    } else {
+                        switchTab('products');
+                    }
                 }
-            }
+
+                // Initialize Sidebar (it will fetch config again but that's fine)
+                if (window.initSidebar) window.initSidebar();
+
+            } catch (e) { showStatus('Failed to load configuration.', 'status-error'); }
         }
 
         async function saveConfig() {

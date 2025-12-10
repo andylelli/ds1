@@ -113,7 +113,10 @@ const container = new Container(configPath);
 
     // --- Configuration API ---
     app.get('/api/config', (req, res) => {
-      res.json(container.getConfig());
+      res.json({
+        mode: mode,
+        ...container.getConfig()
+      });
     });
 
     app.post('/api/config', (req, res) => {

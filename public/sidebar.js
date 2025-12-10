@@ -1,8 +1,21 @@
-const sidebarHTML = `
+
+async function initSidebar() {
+    const container = document.getElementById('sidebar-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch('/api/config');
+        const config = await res.json();
+        const isSim = config.mode === 'simulation';
+
+        let html = `
     <div class="sidebar-header">
         <span>🎛️ DS1 Control</span>
-    </div>
+        <span style="font-size: 0.7em; opacity: 0.7; display: block; margin-top: 4px;">${isSim ? 'SIMULATION' : 'LIVE'} MODE</span>
+    </div>`;
 
+        if (isSim) {
+            html += `
     <div class="nav-section">
         <div class="nav-label">Simulation</div>
         <a href="/admin.html#simulation" class="nav-item" data-tab="simulation">
@@ -11,6 +24,12 @@ const sidebarHTML = `
         <a href="/staging.html" class="nav-item" data-page="staging.html">
             <span>🔍</span> <span>Staging Review</span>
         </a>
+    </div>`;
+        }
+
+        html += `
+    <div class="nav-section">
+        <div class="nav-label">Business</div>
         <a href="/admin.html#products" class="nav-item" data-tab="products">
             <span>📦</span> <span>Products</span>
         </a>
@@ -58,18 +77,17 @@ const sidebarHTML = `
         <div style="font-size: 0.8rem; color: #6b7280;">
             DS1 v1.0
         </div>
-    </div>
-`;
+    </div>`;
 
-function initSidebar() {
-    const container = document.getElementById('sidebar-container');
-    if (container) {
-        container.innerHTML = sidebarHTML;
-        // Ensure the container has the sidebar class if not already
+        container.innerHTML = html;
         if (!container.classList.contains('sidebar')) {
             container.classList.add('sidebar');
         }
         highlightSidebar();
+
+    } catch (e) {
+        console.error("Failed to load sidebar config", e);
+        container.innerHTML = `<div style="padding:1rem; color:red;">Error loading sidebar</div>`;
     }
 }
 
@@ -89,7 +107,10 @@ function highlightSidebar() {
             if (dataTab === hash) {
                 item.classList.add('active');
             } else if (!hash && dataTab === 'simulation') {
-                item.classList.add('active');
+                // Only default to simulation if it exists (it might not in live mode)
+                if (document.querySelector('a[data-tab="simulation"]')) {
+                    item.classList.add('active');
+                }
             }
         } 
         // Logic for Other Pages
@@ -98,6 +119,3 @@ function highlightSidebar() {
         }
     });
 }
-
-document.addEventListener('DOMContentLoaded', initSidebar);
-window.addEventListener('hashchange', highlightSidebar);
