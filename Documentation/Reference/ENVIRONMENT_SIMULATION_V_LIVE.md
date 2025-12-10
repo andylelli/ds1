@@ -15,11 +15,11 @@ In simulation, the `SimulationService` acts as the "Game Engine," driving the ag
 
 ```mermaid
 flowchart LR
-  User[User/Test Script] -->|Calls| SimService[SimulationService]
-  SimService -->|Orchestrates| Agents[Agents (CEO, Research, etc.)]
-  Agents -->|Read/Write| DB[(Postgres: dropship_sim)]
-  Agents -->|Use| MockAdapters[Mock Adapters]
-  MockAdapters -.->|Simulate| External[External Systems (Stubbed)]
+  User["User/Test Script"] -->|Calls| SimService[SimulationService]
+  SimService -->|Orchestrates| Agents["Agents (CEO, Research, etc.)"]
+  Agents -->|Read/Write| DB[("Postgres: dropship_sim")]
+  Agents -->|Use| MockAdapters["Mock Adapters"]
+  MockAdapters -.->|Simulate| External["External Systems (Stubbed)"]
 ```
 
 **Live (Event/User-Driven)**
@@ -28,12 +28,12 @@ In live mode, the system is reactive. Agents respond to User Chat commands or Ex
 
 ```mermaid
 flowchart LR
-  User[User Dashboard] -->|Chat/API| Express[Express Server]
-  Webhook[External Webhooks] -->|POST| Express
-  Express -->|Invokes| Agents[Agents (CEO, Research, etc.)]
-  Agents -->|Read/Write| DB[(Postgres: dropship)]
-  Agents -->|Use| LiveAdapters[Live Adapters]
-  LiveAdapters -->|HTTP API| External[External Systems (Shopify, Meta, OpenAI)]
+  User["User Dashboard"] -->|Chat/API| Express[Express Server]
+  Webhook["External Webhooks"] -->|POST| Express
+  Express -->|Invokes| Agents["Agents (CEO, Research, etc.)"]
+  Agents -->|Read/Write| DB[("Postgres: dropship")]
+  Agents -->|Use| LiveAdapters["Live Adapters"]
+  LiveAdapters -->|HTTP API| External["External Systems (Shopify, Meta, OpenAI)"]
 ```
 
 ## Configuration Sources
