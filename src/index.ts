@@ -69,7 +69,11 @@ app.get('/', (req, res) => {
 });
 
 // --- Initialize Container ---
-const configPath = path.join(process.cwd(), 'config', 'bootstrap.yaml');
+const mode = process.env.DS1_MODE || 'simulation';
+const configFileName = mode === 'live' ? 'bootstrap.live.yaml' : 'bootstrap.sim.yaml';
+console.log(`Initializing Container in ${mode} mode using ${configFileName}`);
+
+const configPath = path.join(process.cwd(), 'config', configFileName);
 const container = new Container(configPath);
 
 // We need to wrap initialization in an async function

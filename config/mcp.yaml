@@ -1,7 +1,7 @@
 mcp_servers:
   # Internal Adapters (exposed as Tools)
   - id: shopify_tool
-    type: internal
+    type: internal # Options: "internal", "stdio", "sse"
     class: ShopifyAdapter
     config:
       shop_url: "${SHOPIFY_URL}"

@@ -34006,6 +34006,1084 @@
         "id": "log_1765303811419_11k0berjq",
         "timestamp": "2025-12-09T18:10:11.427Z",
         "_ts": 1765303811
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Workflow: Finding products for category Tech Gadgets",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178326_pfb8xgq5t",
+        "timestamp": "2025-12-10T19:32:58.339Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Smart Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178348_3p3mj714z",
+        "timestamp": "2025-12-10T19:32:58.356Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Smart Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178365_4v1ei8ucb",
+        "timestamp": "2025-12-10T19:32:58.372Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Smart Tech Gadgets Set: High margin (38%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178381_foruajs6q",
+        "timestamp": "2025-12-10T19:32:58.391Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Smart Tech Gadgets Set (prod_1765395178348_0)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178400_o1531jyep",
+        "timestamp": "2025-12-10T19:32:58.408Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178418_n9wknxu4v",
+        "timestamp": "2025-12-10T19:32:58.425Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Smart Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178434_sdzdtedp5",
+        "timestamp": "2025-12-10T19:32:58.444Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier AliExpress Vendor A.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178451_byoslerb0",
+        "timestamp": "2025-12-10T19:32:58.459Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178468_f3bwzulf5",
+        "timestamp": "2025-12-10T19:32:58.477Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Smart Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178487_m4g5ioqg2",
+        "timestamp": "2025-12-10T19:32:58.500Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier CJ Dropshipping.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178511_xtbascclc",
+        "timestamp": "2025-12-10T19:32:58.518Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Premium Tech Gadgets Tool",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178526_681l54y35",
+        "timestamp": "2025-12-10T19:32:58.533Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Premium Tech Gadgets Tool",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178541_1z0g5y1zy",
+        "timestamp": "2025-12-10T19:32:58.587Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Premium Tech Gadgets Tool: High margin (45%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178622_pudn834n8",
+        "timestamp": "2025-12-10T19:32:58.631Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Premium Tech Gadgets Tool (prod_1765395178348_1)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178649_3gdto57dg",
+        "timestamp": "2025-12-10T19:32:58.656Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178665_w2dy25bus",
+        "timestamp": "2025-12-10T19:32:58.674Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Premium Tech Gadgets Tool",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178682_0kf9uk9e9",
+        "timestamp": "2025-12-10T19:32:58.689Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier AliExpress Vendor A.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178696_vdykqt405",
+        "timestamp": "2025-12-10T19:32:58.705Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178713_jy1yva07g",
+        "timestamp": "2025-12-10T19:32:58.725Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Premium Tech Gadgets Tool",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178732_ck462v6wn",
+        "timestamp": "2025-12-10T19:32:58.740Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier CJ Dropshipping.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178747_yoqwyfs03",
+        "timestamp": "2025-12-10T19:32:58.754Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Durable Tech Gadgets Kit",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178762_o35nya270",
+        "timestamp": "2025-12-10T19:32:58.770Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Durable Tech Gadgets Kit",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178778_8g2cxrbak",
+        "timestamp": "2025-12-10T19:32:58.786Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Durable Tech Gadgets Kit: High margin (69%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178793_n6ny93gch",
+        "timestamp": "2025-12-10T19:32:58.801Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Durable Tech Gadgets Kit (prod_1765395178348_2)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178809_39uz1nyz4",
+        "timestamp": "2025-12-10T19:32:58.819Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178826_8066jcw0g",
+        "timestamp": "2025-12-10T19:32:58.834Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Durable Tech Gadgets Kit",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178841_oyomcskmo",
+        "timestamp": "2025-12-10T19:32:58.850Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier AliExpress Vendor A.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178857_4d4jzrz3i",
+        "timestamp": "2025-12-10T19:32:58.866Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178873_5pagl0jex",
+        "timestamp": "2025-12-10T19:32:58.881Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Durable Tech Gadgets Kit",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395178889_web0dwq7k",
+        "timestamp": "2025-12-10T19:32:58.896Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "CEO",
+        "message": "AI did not make a decision for supplier CJ Dropshipping.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1765395178905_15y49rqam",
+        "timestamp": "2025-12-10T19:32:58.912Z",
+        "_ts": 1765395178
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Workflow: Finding products for category Tech Gadgets",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222560_ap2ghskt3",
+        "timestamp": "2025-12-10T19:33:42.568Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222581_qyttoma4x",
+        "timestamp": "2025-12-10T19:33:42.588Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222597_nkbrcmle2",
+        "timestamp": "2025-12-10T19:33:42.606Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Durable Tech Gadgets Set: High margin (68%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222614_id3u009p8",
+        "timestamp": "2025-12-10T19:33:42.622Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Durable Tech Gadgets Set (prod_1765395222580_0)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222631_459rpey0d",
+        "timestamp": "2025-12-10T19:33:42.640Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222648_6nzdizif4",
+        "timestamp": "2025-12-10T19:33:42.656Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222664_v1tfxkr9l",
+        "timestamp": "2025-12-10T19:33:42.672Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier AliExpress Vendor A: High rating (4.8) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222680_3qtkgcp5w",
+        "timestamp": "2025-12-10T19:33:42.690Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Durable Tech Gadgets Set (Supplier: AliExpress Vendor A)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222698_pju1u7gzw",
+        "timestamp": "2025-12-10T19:33:42.706Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395222714_naz7y",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222715_3b4246too",
+        "timestamp": "2025-12-10T19:33:42.724Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222731_jhv7ds7cg",
+        "timestamp": "2025-12-10T19:33:42.740Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395222746_2o001",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222747_6pftgne0t",
+        "timestamp": "2025-12-10T19:33:42.755Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222763_xtfrbnh4z",
+        "timestamp": "2025-12-10T19:33:42.771Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222779_6tjl3syee",
+        "timestamp": "2025-12-10T19:33:42.787Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier CJ Dropshipping: High rating (4.9) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222794_zq3j6b814",
+        "timestamp": "2025-12-10T19:33:42.801Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Durable Tech Gadgets Set (Supplier: CJ Dropshipping)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222809_dbw1dqdvy",
+        "timestamp": "2025-12-10T19:33:42.817Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395222825_rns7n",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222826_deqv74kvk",
+        "timestamp": "2025-12-10T19:33:42.833Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Durable Tech Gadgets Set",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222841_rfdac1zff",
+        "timestamp": "2025-12-10T19:33:42.849Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395222856_29ho8",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222857_c3y95a1dh",
+        "timestamp": "2025-12-10T19:33:42.865Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222874_if3x1eecl",
+        "timestamp": "2025-12-10T19:33:42.882Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222890_ah1yvil9y",
+        "timestamp": "2025-12-10T19:33:42.898Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Portable Tech Gadgets Device: High margin (66%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222906_isnpu2a2j",
+        "timestamp": "2025-12-10T19:33:42.914Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Portable Tech Gadgets Device (prod_1765395222580_1)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222924_2gvchm660",
+        "timestamp": "2025-12-10T19:33:42.935Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222943_9z6zeprag",
+        "timestamp": "2025-12-10T19:33:42.951Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222959_0kp7q1pga",
+        "timestamp": "2025-12-10T19:33:42.967Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier AliExpress Vendor A: High rating (4.8) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222975_7awz77f15",
+        "timestamp": "2025-12-10T19:33:42.983Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Portable Tech Gadgets Device (Supplier: AliExpress Vendor A)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395222990_ao7hpdi1q",
+        "timestamp": "2025-12-10T19:33:42.997Z",
+        "_ts": 1765395222
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395223004_qxfk0",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223004_sr05xuax5",
+        "timestamp": "2025-12-10T19:33:43.012Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223020_9zm7pb7vd",
+        "timestamp": "2025-12-10T19:33:43.028Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395223034_0esqq",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223035_ubqu5dxno",
+        "timestamp": "2025-12-10T19:33:43.042Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223052_23wl4h8r5",
+        "timestamp": "2025-12-10T19:33:43.060Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223067_dfvflgz0d",
+        "timestamp": "2025-12-10T19:33:43.076Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier CJ Dropshipping: High rating (4.9) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223083_hxgzjhep8",
+        "timestamp": "2025-12-10T19:33:43.090Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Portable Tech Gadgets Device (Supplier: CJ Dropshipping)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223097_1pl8281ov",
+        "timestamp": "2025-12-10T19:33:43.106Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395223113_09x2d",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223114_prs742d02",
+        "timestamp": "2025-12-10T19:33:43.121Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Portable Tech Gadgets Device",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223128_jxjsb46w3",
+        "timestamp": "2025-12-10T19:33:43.136Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395223143_xmf5h",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223143_3gekca6my",
+        "timestamp": "2025-12-10T19:33:43.151Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Smart Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223159_y59ov0yre",
+        "timestamp": "2025-12-10T19:33:43.169Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Smart Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223176_1xg0ovf55",
+        "timestamp": "2025-12-10T19:33:43.184Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "CEO",
+        "message": "Rejected product Smart Tech Gadgets Accessory: Margin (41%) is too low for our strategy.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395223191_4cnecgsit",
+        "timestamp": "2025-12-10T19:33:43.201Z",
+        "_ts": 1765395223
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Workflow: Finding products for category Tech Gadgets",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310162_jcfl3oo7w",
+        "timestamp": "2025-12-10T19:35:10.170Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Eco-Friendly Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310178_dof0zui9j",
+        "timestamp": "2025-12-10T19:35:10.185Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Eco-Friendly Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310192_8v8uji1ww",
+        "timestamp": "2025-12-10T19:35:10.201Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Rejected product Eco-Friendly Tech Gadgets Accessory: Margin (47%) is too low for our strategy.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310210_akmo61i12",
+        "timestamp": "2025-12-10T19:35:10.217Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Compact Tech Gadgets Bundle",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310224_i3pco9tlh",
+        "timestamp": "2025-12-10T19:35:10.232Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Compact Tech Gadgets Bundle",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310240_00jhy861y",
+        "timestamp": "2025-12-10T19:35:10.249Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Rejected product Compact Tech Gadgets Bundle: Margin (49%) is too low for our strategy.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310259_cdxt4i6po",
+        "timestamp": "2025-12-10T19:35:10.268Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310276_e7g47jvfi",
+        "timestamp": "2025-12-10T19:35:10.284Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing product Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310292_ux9uompcm",
+        "timestamp": "2025-12-10T19:35:10.304Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved product Premium Tech Gadgets Accessory: High margin (63%) and good potential.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310314_yov3s3nrt",
+        "timestamp": "2025-12-10T19:35:10.322Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Workflow: Finding suppliers for approved product Premium Tech Gadgets Accessory (prod_1765395310178_2)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310333_2qsmy60v1",
+        "timestamp": "2025-12-10T19:35:10.342Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310351_s0e6fa535",
+        "timestamp": "2025-12-10T19:35:10.359Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier AliExpress Vendor A for Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310368_amhx8d6pk",
+        "timestamp": "2025-12-10T19:35:10.377Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier AliExpress Vendor A: High rating (4.8) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310385_pj0cdxmtv",
+        "timestamp": "2025-12-10T19:35:10.392Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Premium Tech Gadgets Accessory (Supplier: AliExpress Vendor A)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310401_4stekzuv8",
+        "timestamp": "2025-12-10T19:35:10.409Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395310418_kcpd7",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310418_jjq23j5pv",
+        "timestamp": "2025-12-10T19:35:10.426Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310435_phr01d6sc",
+        "timestamp": "2025-12-10T19:35:10.442Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395310449_wdfqx",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310450_lji7c4dj2",
+        "timestamp": "2025-12-10T19:35:10.458Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310467_yg30z467d",
+        "timestamp": "2025-12-10T19:35:10.476Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Workflow: Reviewing supplier CJ Dropshipping for Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310483_6yx3ujlvf",
+        "timestamp": "2025-12-10T19:35:10.491Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "CEO",
+        "message": "Approved supplier CJ Dropshipping: High rating (4.9) and reliable.",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310498_zk43f94x3",
+        "timestamp": "2025-12-10T19:35:10.506Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Premium Tech Gadgets Accessory (Supplier: CJ Dropshipping)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310515_u7f2by6su",
+        "timestamp": "2025-12-10T19:35:10.523Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1765395310531_mtuom",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310532_2al372zqx",
+        "timestamp": "2025-12-10T19:35:10.540Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Premium Tech Gadgets Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310547_y32lanz2q",
+        "timestamp": "2025-12-10T19:35:10.554Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1765395310562_fcglu",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765395310563_xx60i13qo",
+        "timestamp": "2025-12-10T19:35:10.571Z",
+        "_ts": 1765395310
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Workflow: Finding products for category Tech Gadgets",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765396807494_w7kvmk7le",
+        "timestamp": "2025-12-10T20:00:07.505Z",
+        "_ts": 1765396807
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Found product: Portable Tech Gadgets Tool",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1765396807514_xmwuop504",
+        "timestamp": "2025-12-10T20:00:07.522Z",
+        "_ts": 1765396807
       }
     ],
     "Products": [

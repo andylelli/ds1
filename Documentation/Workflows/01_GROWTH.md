@@ -11,32 +11,26 @@
 ```mermaid
 graph TD
     User[User Command: 'Find Pet Product'] -->|Trigger| CEO[CEO Agent]
-    CEO -->|Event: WORKFLOW_STARTED - Pet| Research[Phase 1: Research Agent]
+    CEO -->|Event: RESEARCH_REQUESTED| Research[Phase 1: Research Agent]
     
     subgraph "Phase 1: Opportunity"
-        Research -->|Tools: Google Trends, Amazon Scraper| Trends[Analyze Trends]
-        Trends -->|Tools: Ad Library| Competitor[Check Competitors]
-        Competitor -->|Event: RESEARCH_COMPLETED| Sourcing[Phase 2: Supplier Agent]
+        Research -->|Tools: TrendAdapter| Trends[Analyze Trends]
+        Trends -->|Tools: CompetitorAdapter| Competitor[Check Competitors]
+        Competitor -->|Event: PRODUCT_FOUND| CEO_Review[CEO Review]
     end
 
     subgraph "Phase 2: Feasibility"
-        Sourcing -->|Tools: AliExpress Search| FindSup[Find Suppliers]
-        FindSup -->|Tools: Cost Calculator| Calc[Calculate Margin]
-        Calc -->|Event: SOURCING_COMPLETED| Gate{Phase 3: Approval Gate}
+        CEO_Review -->|Event: PRODUCT_APPROVED| Sourcing[Phase 2: Supplier Agent]
+        Sourcing -->|Tools: FulfilmentAdapter| FindSup[Find Suppliers]
+        FindSup -->|Event: SUPPLIER_FOUND| CEO_Sup_Review[CEO Supplier Review]
+        CEO_Sup_Review -->|Event: SUPPLIER_APPROVED| Builder[Phase 3: Store Build Agent]
     end
 
-    subgraph "Phase 3: Decision"
-        Gate -- "Margin < 30%" --> Reject[Event: PRODUCT_REJECTED]
-        Gate -- "Margin > 30%" --> Notify[Notify User]
-        Notify -->|User Input: 'YES'| Approve[Event: PRODUCT_APPROVED]
-    end
-
-    subgraph "Phase 4: Execution"
-        Approve -->|Event: PRODUCT_APPROVED| Builder[Phase 4: Store Build Agent]
-        Builder -->|Tools: Shopify API, TinyPNG| Store[Create Product Page]
-        Store -->|Event: PRODUCT_PUBLISHED| Marketer[Phase 5: Marketing Agent]
-        Marketer -->|Tools: Meta Ads API| Ads[Create Campaign]
-        Ads -->|Event: CAMPAIGN_LAUNCHED| Monitor[End: Monitoring Mode]
+    subgraph "Phase 3: Execution"
+        Builder -->|Tools: ShopifyAdapter| Store[Create Product Page]
+        Store -->|Event: PRODUCT_PAGE_CREATED| Marketer[Phase 4: Marketing Agent]
+        Marketer -->|Tools: AdsAdapter| Ads[Create Campaign]
+        Ads -->|Event: CAMPAIGN_STARTED| Monitor[End: Monitoring Mode]
     end
 ```
 
@@ -46,8 +40,43 @@ graph TD
 
 ### Phase 1: Opportunity Detection
 *   **Actor:** `ProductResearchAgent`
-*   **Trigger Event:** `WORKFLOW_STARTED`
+*   **Trigger Event:** `RESEARCH_REQUESTED`
 *   **MCP Tools / Actions:**
+    *   `trend_tool` (TrendAdapter): Fetches trending keywords and products.
+    *   `competitor_tool` (CompetitorAdapter): Analyzes market saturation.
+*   **Output Event:** `PRODUCT_FOUND` (Payload: Product Candidate Data)
+
+### Phase 2: Executive Review (Product)
+*   **Actor:** `CEOAgent`
+*   **Trigger Event:** `PRODUCT_FOUND`
+*   **MCP Tools / Actions:**
+    *   `ai_tool` (AiAdapter): Evaluates product viability (margin, demand).
+*   **Output Event:** `PRODUCT_APPROVED` or `PRODUCT_REJECTED`
+
+### Phase 3: Sourcing & Supplier Review
+*   **Actor:** `SupplierAgent` & `CEOAgent`
+*   **Trigger Event:** `PRODUCT_APPROVED`
+*   **MCP Tools / Actions:**
+    *   `fulfilment_tool` (FulfilmentAdapter): Searches for suppliers (AliExpress/CJ).
+    *   `ai_tool` (AiAdapter): CEO reviews supplier ratings and reliability.
+*   **Output Event:** `SUPPLIER_APPROVED`
+
+### Phase 4: Store Build
+*   **Actor:** `StoreBuildAgent`
+*   **Trigger Event:** `SUPPLIER_APPROVED`
+*   **MCP Tools / Actions:**
+    *   `shopify_tool` (ShopifyAdapter): Creates product pages, uploads images, sets prices.
+*   **Output Event:** `PRODUCT_PAGE_CREATED` (Payload: Page URL)
+
+### Phase 5: Marketing Launch
+*   **Actor:** `MarketingAgent`
+*   **Trigger Event:** `PRODUCT_PAGE_CREATED`
+*   **MCP Tools / Actions:**
+    *   `ads_tool` (AdsAdapter): Creates and launches ad campaigns (Facebook/TikTok).
+*   **Output Event:** `CAMPAIGN_STARTED`
+
+---
+**Next Step:** Once customers start buying, the system transitions to [**Workflow 2: Operations**](./02_OPERATIONS.md).
     *   `google_trends.interest_over_time(keyword)`: Check search volume trajectory.
     *   `brave_search.search(query)`: Find competitor stores and pricing.
     *   `amazon_scraper.get_best_sellers(category)`: Validate demand on marketplaces.

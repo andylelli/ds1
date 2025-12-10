@@ -2,7 +2,7 @@ subscriptions:
   # Research Phase
   - event: RESEARCH_REQUESTED
     subscriber: product_research_agent
-    action: find_products
+    action: find_products # Options: Method name on the agent class
 
   - event: PRODUCT_FOUND
     subscriber: ceo_agent

@@ -12,6 +12,12 @@ The project documentation is organized into **PMO** (Project Management Office),
 *   [**RAID Log**](Documentation/PMO/RAID_LOG.md) - Risks, Assumptions, Issues, and Dependencies.
 *   [**Technical Debt**](Documentation/PMO/TECHNICAL_DEBT.md) - Architectural shortcuts and refactoring plans.
 
+### 🔄 Workflow Documentation (The Core Logic)
+*   [**00. System Overview**](Documentation/Workflows/00_OVERVIEW.md) - How the three engines connect.
+*   [**01. Growth Engine**](Documentation/Workflows/01_GROWTH.md) - Product Research, Sourcing, & Marketing.
+*   [**02. Operations Engine**](Documentation/Workflows/02_OPERATIONS.md) - Fulfillment, Shipping, & Customer Service.
+*   [**03. Optimization Engine**](Documentation/Workflows/03_OPTIMIZATION.md) - Analytics, Reporting, & Strategy.
+
 ### 📘 Reference Documents (Guides & Context)
 *   [**Dummies Guide**](Documentation/Reference/DUMMIES_GUIDE.md) - Simple explanation of the project.
 *   [**Deployment Guide**](Documentation/Reference/DEPLOYMENT_GUIDE.md) - How to deploy to production.

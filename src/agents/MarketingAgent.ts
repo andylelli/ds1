@@ -1,5 +1,6 @@
 import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { AdsPlatformPort } from '../core/domain/ports/AdsPlatformPort.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { Campaign } from '../core/domain/types/Campaign.js';
@@ -7,24 +8,39 @@ import { Campaign } from '../core/domain/types/Campaign.js';
 export class MarketingAgent extends BaseAgent {
   private ads: AdsPlatformPort;
 
-  constructor(db: PersistencePort, ads: AdsPlatformPort) {
-    super('Marketer', db);
+  constructor(db: PersistencePort, eventBus: EventBusPort, ads: AdsPlatformPort) {
+    super('Marketer', db, eventBus);
     this.ads = ads;
     this.registerTool('create_ad_campaign', this.createAdCampaign.bind(this));
     this.registerTool('write_copy', this.writeCopy.bind(this));
   }
 
+  async create_ad_campaign(payload: any) {
+      // Handle both direct tool calls (args) and event payloads
+      const product = payload.product || payload; 
+      const productName = product.name || "Unknown Product";
+      
+      this.log('info', `Workflow: Creating ad campaign for ${productName}`);
+
+      try {
+          const campaign = await this.ads.createCampaign({
+              product: productName,
+              platform: 'facebook', // Default for now
+              budget: 500, // Default budget
+              status: 'active'
+          });
+
+          this.log('info', `Campaign started: ${campaign.id}`);
+          await this.eventBus.publish('CAMPAIGN_STARTED', 'CAMPAIGN_STARTED', { campaign, product });
+      } catch (error: any) {
+          this.log('error', `Failed to create campaign: ${error.message}`);
+      }
+  }
+
   async createAdCampaign(args: { platform: string, budget: number, product: string }) {
     const { platform, budget, product } = args;
     
-    if (configService.get('useSimulatedEndpoints')) {
-      return this._createAdCampaignMock(platform, budget, product);
-    } else {
-      return this._createAdCampaignReal(platform, budget, product);
-    }
-  }
-
-  async _createAdCampaignMock(platform: string, budget: number, product: string) {
+    // Use the injected adapter directly
     this.log('info', `Creating ${platform} campaign for ${product} with budget $${budget}`);
     
     const campaign: Omit<Campaign, 'id'> = {
@@ -41,14 +57,6 @@ export class MarketingAgent extends BaseAgent {
       status: created.status,
       estimated_reach: 50000
     };
-  }
-
-  async _createAdCampaignReal(platform: string, budget: number, product: string) {
-    this.log('info', `[REAL] Creating ${platform} campaign via API`);
-    
-    // In a real scenario, we would use a RealAdsAdapter here
-    // For now, we throw as per original logic
-    throw new Error(`Real Marketing API for ${platform} not implemented yet. Switch to mock mode.`);
   }
 
   async writeCopy(args: { type: string, topic: string }) {

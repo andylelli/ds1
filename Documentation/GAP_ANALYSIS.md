@@ -86,22 +86,32 @@ We propose a **5-File Configuration Structure**:
 2.  **Stateful Simulation**: Mocks should share state where necessary (e.g., Inventory). (Pending - Next Phase)
 3.  **MCP Wrappers**: Wrap all adapters with `McpToolProvider` implementations. (Done)
 
-### D. Workflow Wiring (The Nervous System) - **STATUS: PENDING**
+### D. Workflow Wiring (The Nervous System) - **STATUS: COMPLETED**
 
 **Current State:**
-*   Logic flow is hardcoded.
+*   `WorkflowManager` implemented.
+*   `workflows.yaml` is read at startup.
+*   Agents are automatically subscribed to events based on configuration.
+*   `BaseAgent` has a fallback `handleEvent` method.
 
 **Target State:**
 *   Logic flow is defined in **workflows.yaml**.
-    `yaml
+    ```yaml
     subscriptions:
       - event: "RESEARCH_REQUESTED"
         subscriber: "research_agent"
         action: "find_products"
-    `
+    ```
 
 **Required Changes:**
-1.  **Subscription Manager**: Registers subscriptions on the Event Bus at boot time.
+1.  **Subscription Manager**: Registers subscriptions on the Event Bus at boot time. (Done)
+2.  **Agent Handlers**: Agents need to implement the specific action methods (e.g., `find_products`). (In Progress - `ProductResearchAgent` and `CEOAgent` implemented)
+
+## 3. Next Steps
+
+1.  **Smart Mocks**: Implement the generative logic for the mock adapters. (Started - `MockTrendAdapter` and `MockAiAdapter` are now smart)
+2.  **Agent Implementation**: Continue implementing methods for other agents (`SupplierAgent`, `StoreBuildAgent`, etc.).
+3.  **Simulation Driver**: Ensure `SimulationOrchestrator` can trigger the initial events to start the flow. (Verified with `test-workflow.ts`)
 2.  **Standardized Event Handlers**: Agents implement a common interface to receive events.
 
 ### E. Simulation vs. Live Mode (Orchestration)

@@ -1,8 +1,8 @@
 import { BaseAgent } from './BaseAgent.js';
 export class SupplierAgent extends BaseAgent {
     fulfilment;
-    constructor(db, fulfilment) {
-        super('SupplierManager', db);
+    constructor(db, eventBus, fulfilment) {
+        super('SupplierManager', db, eventBus);
         this.fulfilment = fulfilment;
         this.registerTool('find_suppliers', this.findSuppliers.bind(this));
         this.registerTool('negotiate_price', this.negotiatePrice.bind(this));

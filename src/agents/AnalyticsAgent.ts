@@ -1,11 +1,25 @@
 import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 
 export class AnalyticsAgent extends BaseAgent {
-  constructor(db: PersistencePort) {
-    super('Analytics', db);
+  constructor(db: PersistencePort, eventBus: EventBusPort) {
+    super('Analytics', db, eventBus);
     this.registerTool('generate_report', this.generateReport.bind(this));
     this.registerTool('predict_sales', this.predictSales.bind(this));
+  }
+
+  async generate_report(payload: any) {
+      const period = payload.period || 'daily';
+      this.log('info', `Workflow: Generating ${period} report`);
+      
+      try {
+          const report = await this.generateReport({ period });
+          this.log('info', `Report generated: Revenue $${report.revenue}`);
+          // Could publish REPORT_GENERATED if needed
+      } catch (error: any) {
+          this.log('error', `Failed to generate report: ${error.message}`);
+      }
   }
 
   async generateReport(args: { period: string }) {

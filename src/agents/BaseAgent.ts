@@ -1,6 +1,7 @@
 import { MCPServer } from '../core/mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../core/mcp/protocol.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { logger } from '../infra/logging/LoggerService.js';
 
@@ -10,13 +11,15 @@ export abstract class BaseAgent extends MCPServer {
   protected name: string;
   protected capabilities: Set<string>;
   protected db: PersistencePort;
+  protected eventBus: EventBusPort;
   protected mode: 'simulation' | 'live' = 'live'; // Default to live mode
 
-  constructor(name: string, db: PersistencePort) {
+  constructor(name: string, db: PersistencePort, eventBus: EventBusPort) {
     super();
     this.name = name;
     this.capabilities = new Set();
     this.db = db;
+    this.eventBus = eventBus;
   }
 
   /**
@@ -92,5 +95,13 @@ export abstract class BaseAgent extends MCPServer {
 
   async handleCritiqueRequest(message: any) {
     this.sendError(message.id, -32601, `Agent ${this.name} does not support critiquing`);
+  }
+
+  /**
+   * Generic event handler for workflow actions.
+   * Override this in specific agents to handle dynamic actions.
+   */
+  async handleEvent(event: string, action: string, payload: any): Promise<void> {
+      await this.log('warn', `Agent ${this.name} received event '${event}' with action '${action}' but has no specific handler.`);
   }
 }

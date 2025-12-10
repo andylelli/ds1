@@ -7,12 +7,14 @@ export class BaseAgent extends MCPServer {
     name;
     capabilities;
     db;
+    eventBus;
     mode = 'live'; // Default to live mode
-    constructor(name, db) {
+    constructor(name, db, eventBus) {
         super();
         this.name = name;
         this.capabilities = new Set();
         this.db = db;
+        this.eventBus = eventBus;
     }
     /**
      * Set the agent's operating mode (simulation or live)
@@ -83,5 +85,12 @@ export class BaseAgent extends MCPServer {
     }
     async handleCritiqueRequest(message) {
         this.sendError(message.id, -32601, `Agent ${this.name} does not support critiquing`);
+    }
+    /**
+     * Generic event handler for workflow actions.
+     * Override this in specific agents to handle dynamic actions.
+     */
+    async handleEvent(event, action, payload) {
+        await this.log('warn', `Agent ${this.name} received event '${event}' with action '${action}' but has no specific handler.`);
     }
 }

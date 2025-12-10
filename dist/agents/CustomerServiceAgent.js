@@ -1,8 +1,8 @@
 import { BaseAgent } from './BaseAgent.js';
 export class CustomerServiceAgent extends BaseAgent {
     email;
-    constructor(db, email) {
-        super('CustomerService', db);
+    constructor(db, eventBus, email) {
+        super('CustomerService', db, eventBus);
         this.email = email;
         this.registerTool('handle_ticket', this.handleTicket.bind(this));
         this.registerTool('generate_faq', this.generateFAQ.bind(this));

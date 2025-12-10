@@ -5,6 +5,7 @@ import { PersistencePort } from '../../core/domain/ports/PersistencePort.js';
 import { EventBusPort } from '../../core/domain/ports/EventBusPort.js';
 import { logger } from '../../infra/logging/LoggerService.js';
 import { MCPServer } from '../mcp/server.js';
+import { WorkflowManager } from '../workflow/WorkflowManager.js';
 
 export class Container {
   private config: AppConfig;
@@ -77,6 +78,21 @@ export class Container {
              }
         }
     }
+
+    // 4. Initialize Workflow Manager
+    if (this.config.workflows) {
+        try {
+            const workflowManager = new WorkflowManager(
+                this.eventBus, 
+                this.config.workflows,
+                (id: string) => this.agents.get(id)
+            );
+            workflowManager.registerSubscriptions();
+            logger.info('Workflow Manager initialized and subscriptions registered.');
+        } catch (e: any) {
+            logger.error(`Failed to initialize Workflow Manager: ${e.message}`);
+        }
+    }
     
     logger.info('Container initialized.');
   }
@@ -108,5 +124,9 @@ export class Container {
 
   public getMcpServer() {
       return this.mcpServer;
+  }
+
+  public getEventBus() {
+      return this.eventBus;
   }
 }

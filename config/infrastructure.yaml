@@ -1,5 +1,10 @@
 event_bus:
-  type: postgres
+  type: postgres # Options: "postgres", "memory"
   connection_string: "${DATABASE_URL}"
+
+database:
+  live_url: "${DATABASE_URL}"
+  simulation_url: "${SIMULATOR_DATABASE_URL}"
+
 server:
   port: 3000

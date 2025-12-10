@@ -1,0 +1,20 @@
+system:
+  mode: "live" # Options: "simulation", "live"
+  persistence: "postgres" # Options: "postgres"
+  event_bus: "postgres" # Options: "postgres"
+
+services:
+  # Options for all services: "mock", "live"
+  shop: "live"
+  ads: "live"
+  trends: "live"
+  competitor: "live"
+  fulfilment: "live"
+  email: "live"
+  ai: "live"
+
+paths:
+  infrastructure: "config/infrastructure.yaml"
+  mcp: "config/mcp.yaml"
+  agents: "config/agents.yaml"
+  workflows: "config/workflows.yaml"

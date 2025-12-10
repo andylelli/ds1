@@ -5,8 +5,17 @@ import { configService } from '../config/ConfigService.js';
 export class PostgresEventStore implements EventBusPort {
   private pool: pg.Pool;
 
-  constructor() {
-    const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
+  constructor(liveUrl?: string, simUrl?: string) {
+    // Determine which DB to use based on config mode
+    const mode = configService.get('dbMode');
+    let dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
+    
+    if (mode === 'test') {
+        dbUrl = simUrl || configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
+    } else {
+        dbUrl = liveUrl || dbUrl;
+    }
+
     this.pool = new pg.Pool({ connectionString: dbUrl });
     this.initSchema();
   }

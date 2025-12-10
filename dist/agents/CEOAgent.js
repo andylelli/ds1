@@ -72,8 +72,8 @@ export class CEOAgent extends BaseAgent {
             }
         }
     ];
-    constructor(db, ai) {
-        super('CEO', db);
+    constructor(db, eventBus, ai) {
+        super('CEO', db, eventBus);
         this.ai = ai;
     }
     setTeam(team) {

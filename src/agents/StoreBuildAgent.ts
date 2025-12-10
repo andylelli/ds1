@@ -1,5 +1,6 @@
 import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { ShopPlatformPort } from '../core/domain/ports/ShopPlatformPort.js';
 import { openAIService } from '../infra/ai/OpenAIService.js';
 import { configService } from '../infra/config/ConfigService.js';
@@ -8,11 +9,41 @@ import { Product } from '../core/domain/types/Product.js';
 export class StoreBuildAgent extends BaseAgent {
   private shop: ShopPlatformPort;
 
-  constructor(db: PersistencePort, shop: ShopPlatformPort) {
-    super('StoreBuilder', db);
+  constructor(db: PersistencePort, eventBus: EventBusPort, shop: ShopPlatformPort) {
+    super('StoreBuilder', db, eventBus);
     this.shop = shop;
     this.registerTool('create_product_page', this.createProductPage.bind(this));
     this.registerTool('optimize_seo', this.optimizeSEO.bind(this));
+  }
+
+  /**
+   * Workflow Action: create_product_page
+   * Triggered by: SUPPLIER_APPROVED
+   */
+  async create_product_page(payload: any) {
+      const { product, supplier } = payload;
+      this.log('info', `Workflow: Creating product page for ${product.name} (Supplier: ${supplier.name})`);
+
+      // Enhance description if needed (mock logic for now)
+      const enhancedDescription = product.description + `\n\nSourced from premium supplier: ${supplier.name}.`;
+
+      try {
+          const newProduct = await this.shop.createProduct({
+              name: product.name,
+              description: enhancedDescription,
+              price: product.price * 1.5, // Markup
+              category: 'Fitness', // Should come from product data
+              images: product.images || [],
+              status: 'active',
+              inventory: 100
+          });
+
+          this.log('info', `Product page created: ${newProduct.id}`);
+          const pageUrl = `https://myshop.com/products/${newProduct.id}`;
+          await this.eventBus.publish('PRODUCT_PAGE_CREATED', 'PRODUCT_PAGE_CREATED', { product: newProduct, pageUrl });
+      } catch (error: any) {
+          this.log('error', `Failed to create product page: ${error.message}`);
+      }
   }
 
   async createProductPage(args: { product_data: any }) {

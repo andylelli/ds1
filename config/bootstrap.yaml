@@ -1,7 +1,7 @@
 system:
   mode: "simulation"
   persistence: "postgres"
-  event_bus: "postgres"
+  event_bus: "memory"
 
 paths:
   infrastructure: "config/infrastructure.yaml"

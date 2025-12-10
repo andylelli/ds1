@@ -11,39 +11,29 @@
 ```mermaid
 graph TD
     subgraph "Trigger: New Order"
-        Webhook[Shopify Webhook] -->|Event: ORDER_PAID| Ops[Phase 1: Operations Agent]
+        Webhook[Shopify Webhook] -->|Event: ORDER_RECEIVED| Ops[Phase 1: Operations Agent]
     end
 
     subgraph "Phase 1: Fulfillment"
-        Ops -->|Tools: Supplier API| Purchase[Place Order @ AliExpress]
-        Purchase -->|Tools: DB Ledger| Log[Log COGS Expense]
-        Log -->|Event: SUPPLIER_ORDER_PLACED| Wait[Wait for Shipping]
+        Ops -->|Tools: fulfill_order| Purchase[Place Order @ Supplier]
+        Purchase -->|Tools: check_inventory| Check[Check Stock]
+        Check -->|Event: ORDER_SHIPPED| Notify[Phase 2: CS Agent]
     end
 
-    subgraph "Phase 2: Tracking"
-        Wait -->|Event: SUPPLIER_SHIPPED| Sync[Sync Tracking to Shopify]
-        Sync -->|Tools: Email API| Notify[Email Customer]
-        Notify -->|Event: ORDER_FULFILLED| Done1[End: Order Complete]
+    subgraph "Phase 2: Notification"
+        Notify -->|Tools: email_tool| Email[Send Tracking Email]
+        Email -->|Event: ORDER_COMPLETED| Done1[End: Order Complete]
     end
 
     subgraph "Trigger: Customer Support"
-        Email[Incoming Email] -->|Event: TICKET_CREATED| CS[Phase 3: CS Agent]
+        Incoming[Incoming Email] -->|Event: TICKET_CREATED| CS[Phase 3: CS Agent]
     end
 
-    subgraph "Phase 3: Triage"
-        CS -->|Tools: DB History| Context[Build Context]
-        Context -->|Tools: Sentiment Analysis| Intent[Detect Intent & Mood]
-        Intent -->|Event: TICKET_TRIAGED| Gate{Phase 4: Resolution Gate}
-    end
-
-    subgraph "Phase 4: Resolution"
-        Gate -- "Standard Query" --> Reply[Phase 5: Auto-Reply]
-        Reply -->|Tools: LLM + SMTP| Send[Send Response]
-        Send -->|Event: TICKET_SOLVED| Done2[End: Ticket Closed]
-
-        Gate -- "Critical/Angry" --> Escalate[Phase 6: Escalation]
-        Escalate -->|Tools: Slack/SMS| Alert[Alert Human CEO]
-        Alert -->|Action: Pause Ads| Safety[Event: CAMPAIGN_PAUSED]
+    subgraph "Phase 3: Resolution"
+        CS -->|Tools: handle_ticket| Analyze[Analyze Sentiment]
+        Analyze -- "Negative" --> Escalate[Escalate to Human]
+        Analyze -- "Neutral" --> Reply[Auto-Reply]
+        Reply -->|Event: TICKET_RESOLVED| Done2[End: Ticket Closed]
     end
 ```
 
@@ -51,13 +41,31 @@ graph TD
 
 ## 📝 Detailed Steps & Technical Actions
 
-### Phase 1: Order Fulfillment (Instant)
+### Phase 1: Order Fulfillment
 *   **Actor:** `OperationsAgent`
-*   **Trigger Event:** `ORDER_PAID` (from Shopify Webhook)
+*   **Trigger Event:** `ORDER_RECEIVED`
 *   **MCP Tools / Actions:**
-    *   `shopify.get_order(order_id)`: Fetch shipping address and line items.
-    *   `supplier_api.place_order(details)`: Purchase item from AliExpress/CJ.
-    *   `db.log_transaction(type="COGS", amount)`: Record the cost in the ledger.
+    *   `fulfill_order`: Places order with supplier (Mock or Real).
+    *   `check_inventory`: Verifies stock levels.
+*   **Output Event:** `ORDER_SHIPPED` (Payload: Tracking Number)
+
+### Phase 2: Customer Notification
+*   **Actor:** `CustomerServiceAgent`
+*   **Trigger Event:** `ORDER_SHIPPED`
+*   **MCP Tools / Actions:**
+    *   `email_tool`: Sends shipping confirmation with tracking link.
+*   **Output Event:** `ORDER_COMPLETED`
+
+### Phase 3: Support Ticket Handling
+*   **Actor:** `CustomerServiceAgent`
+*   **Trigger Event:** `TICKET_CREATED`
+*   **MCP Tools / Actions:**
+    *   `handle_ticket`: Analyzes sentiment and generates response.
+    *   `check_emails`: Polls for new messages.
+*   **Output Event:** `TICKET_RESOLVED`
+
+---
+**Next Step:** Transaction data is analyzed in [**Workflow 3: Optimization**](./03_OPTIMIZATION.md).
 *   **Logic:**
     1.  **Validation:** Check if address is valid and stock exists.
     2.  **Purchase:** Automatically buy the item from the supplier using the customer's address.

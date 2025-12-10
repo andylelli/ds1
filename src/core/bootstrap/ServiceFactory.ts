@@ -63,12 +63,14 @@ export class ServiceFactory {
 
   public createPersistence(): PersistencePort {
     // Currently only Postgres is supported/requested
-    return new PostgresAdapter();
+    const dbConfig = this.config.infrastructure?.database;
+    return new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
   }
 
   public createEventBus(): EventBusPort {
-    // Currently only Postgres is supported/requested
-    return new PostgresEventStore();
+    // Always use PostgresEventStore
+    const dbConfig = this.config.infrastructure?.database;
+    return new PostgresEventStore(dbConfig?.live_url, dbConfig?.simulation_url);
   }
 
   /**
@@ -76,18 +78,25 @@ export class ServiceFactory {
    * and the current system mode (live/simulation).
    */
   public createAdapter(className: string, deps?: any): any {
-    const mode = this.config.bootstrap.system.mode;
-    const isLive = mode === 'live';
+    const systemMode = this.config.bootstrap.system.mode;
+    const services = this.config.bootstrap.services || {};
+
+    // Helper to determine if a specific service should be live
+    const isServiceLive = (serviceKey: keyof typeof services) => {
+        const serviceMode = services[serviceKey];
+        if (serviceMode) return serviceMode === 'live';
+        return systemMode === 'live';
+    };
 
     switch (className) {
       case 'ShopifyAdapter':
-        return isLive ? new LiveShopAdapter() : new MockShopAdapter();
+        return isServiceLive('shop') ? new LiveShopAdapter() : new MockShopAdapter();
       
       case 'AdsAdapter':
-        return isLive ? new LiveAdsAdapter() : new MockAdsAdapter();
+        return isServiceLive('ads') ? new LiveAdsAdapter() : new MockAdsAdapter();
       
       case 'TrendAdapter':
-        if (isLive) {
+        if (isServiceLive('trends')) {
             if (!deps || !deps.db) {
                 throw new Error("LiveTrendAdapter requires a database connection (deps.db).");
             }
@@ -97,16 +106,16 @@ export class ServiceFactory {
         return new MockTrendAdapter();
       
       case 'CompetitorAdapter':
-        return isLive ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
+        return isServiceLive('competitor') ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
       
       case 'FulfilmentAdapter':
-        return isLive ? new LiveFulfilmentAdapter() : new MockFulfilmentAdapter();
+        return isServiceLive('fulfilment') ? new LiveFulfilmentAdapter() : new MockFulfilmentAdapter();
       
       case 'EmailAdapter':
-        return isLive ? new LiveEmailAdapter() : new MockEmailAdapter();
+        return isServiceLive('email') ? new LiveEmailAdapter() : new MockEmailAdapter();
         
       case 'AiAdapter':
-        return isLive ? new LiveAiAdapter() : new MockAiAdapter();
+        return isServiceLive('ai') ? new LiveAiAdapter() : new MockAiAdapter();
 
       default:
         throw new Error(`Unknown adapter class: ${className}`);
@@ -143,21 +152,21 @@ export class ServiceFactory {
   public createAgent(className: string, deps: any): any {
     switch (className) {
       case 'CEOAgent':
-        return new CEOAgent(deps.db, deps.ai);
+        return new CEOAgent(deps.db, deps.eventBus, deps.ai);
       case 'ProductResearchAgent':
-        return new ProductResearchAgent(deps.db, deps.trend, deps.competitor);
+        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
       case 'SupplierAgent':
-        return new SupplierAgent(deps.db, deps.fulfilment);
+        return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
       case 'StoreBuildAgent':
-        return new StoreBuildAgent(deps.db, deps.shop);
+        return new StoreBuildAgent(deps.db, deps.eventBus, deps.shop);
       case 'MarketingAgent':
-        return new MarketingAgent(deps.db, deps.ads);
+        return new MarketingAgent(deps.db, deps.eventBus, deps.ads);
       case 'CustomerServiceAgent':
-        return new CustomerServiceAgent(deps.db, deps.email);
+        return new CustomerServiceAgent(deps.db, deps.eventBus, deps.email);
       case 'OperationsAgent':
-        return new OperationsAgent(deps.db);
+        return new OperationsAgent(deps.db, deps.eventBus);
       case 'AnalyticsAgent':
-        return new AnalyticsAgent(deps.db);
+        return new AnalyticsAgent(deps.db, deps.eventBus);
       default:
         throw new Error(`Unknown agent class: ${className}`);
     }

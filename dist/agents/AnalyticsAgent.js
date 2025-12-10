@@ -1,7 +1,7 @@
 import { BaseAgent } from './BaseAgent.js';
 export class AnalyticsAgent extends BaseAgent {
-    constructor(db) {
-        super('Analytics', db);
+    constructor(db, eventBus) {
+        super('Analytics', db, eventBus);
         this.registerTool('generate_report', this.generateReport.bind(this));
         this.registerTool('predict_sales', this.predictSales.bind(this));
     }

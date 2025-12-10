@@ -9,8 +9,12 @@ import { configService } from '../config/ConfigService.js';
 export class PostgresAdapter implements PersistencePort {
   private pgPool: pg.Pool | null = null;
   private simPool: pg.Pool | null = null;
+  private liveUrl?: string;
+  private simUrl?: string;
 
-  constructor() {
+  constructor(liveUrl?: string, simUrl?: string) {
+    this.liveUrl = liveUrl;
+    this.simUrl = simUrl;
     this.initPools();
   }
 
@@ -25,8 +29,8 @@ export class PostgresAdapter implements PersistencePort {
   }
 
   private initPools() {
-    const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
-    const simDbUrl = configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
+    const dbUrl = this.liveUrl || configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
+    const simDbUrl = this.simUrl || configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
 
     try {
       this.pgPool = new Pool({ connectionString: dbUrl });

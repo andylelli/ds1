@@ -1,13 +1,27 @@
 import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { configService } from '../infra/config/ConfigService.js';
 
 export class OperationsAgent extends BaseAgent {
-  constructor(db: PersistencePort) {
-    super('Operations', db);
+  constructor(db: PersistencePort, eventBus: EventBusPort) {
+    super('Operations', db, eventBus);
     this.registerTool('fulfill_order', this.fulfillOrder.bind(this));
     this.registerTool('check_inventory', this.checkInventory.bind(this));
     this.registerTool('handle_shipping_issue', this.handleShippingIssue.bind(this));
+  }
+
+  async process_order(payload: any) {
+      const order = payload.order || payload;
+      this.log('info', `Workflow: Processing order ${order.id}`);
+      
+      try {
+          const result = await this.fulfillOrder({ order_id: order.id });
+          this.log('info', `Order fulfilled: ${result.tracking_number}`);
+          await this.eventBus.publish('ORDER_SHIPPED', 'ORDER_SHIPPED', { order, tracking: result.tracking_number });
+      } catch (error: any) {
+          this.log('error', `Failed to process order: ${error.message}`);
+      }
   }
 
   async handleShippingIssue(args: { order_id: string, issue_type: string }) {

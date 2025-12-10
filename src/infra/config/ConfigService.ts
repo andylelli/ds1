@@ -27,17 +27,17 @@ export interface AppConfig {
 const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
 
 const defaults: AppConfig = {
-  dbMode: 'test',
-  adsMode: 'mock',
-  shopMode: 'mock',
-  trendsMode: 'mock',
-  researchMode: 'mock',
-  fulfilmentMode: 'mock',
-  emailMode: 'mock',
-  ceoMode: 'live',
+  dbMode: process.env.DS1_MODE === 'live' ? 'live' : 'test',
+  adsMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  shopMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  trendsMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  researchMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  fulfilmentMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  emailMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
+  ceoMode: process.env.DS1_MODE === 'live' ? 'live' : 'mock',
   loggingMode: 'console',
   logLevel: 'info',
-  useSimulatedEndpoints: true,
+  useSimulatedEndpoints: process.env.DS1_MODE !== 'live',
   openaiEnabled: true,
   trafficScale: 1.0,
   stagingEnabled: true,
@@ -77,6 +77,9 @@ export class ConfigService {
     
     if (process.env.DATABASE_URL) {
         this.config.databaseUrl = process.env.DATABASE_URL;
+    }
+    if (process.env.SIMULATOR_DATABASE_URL) {
+        this.config.simulatorDatabaseUrl = process.env.SIMULATOR_DATABASE_URL;
     }
   }
 

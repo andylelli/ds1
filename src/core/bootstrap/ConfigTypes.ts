@@ -4,6 +4,15 @@ export interface BootstrapConfig {
     persistence: string;
     event_bus: string;
   };
+  services?: {
+    shop?: 'live' | 'mock';
+    ads?: 'live' | 'mock';
+    trends?: 'live' | 'mock';
+    competitor?: 'live' | 'mock';
+    fulfilment?: 'live' | 'mock';
+    email?: 'live' | 'mock';
+    ai?: 'live' | 'mock';
+  };
   paths: {
     infrastructure: string;
     mcp: string;
@@ -16,6 +25,10 @@ export interface InfrastructureConfig {
   event_bus: {
     type: 'postgres';
     connection_string?: string;
+  };
+  database?: {
+    live_url?: string;
+    simulation_url?: string;
   };
   server: {
     port: number;

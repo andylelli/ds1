@@ -2,8 +2,8 @@ import { BaseAgent } from './BaseAgent.js';
 import { configService } from '../infra/config/ConfigService.js';
 export class MarketingAgent extends BaseAgent {
     ads;
-    constructor(db, ads) {
-        super('Marketer', db);
+    constructor(db, eventBus, ads) {
+        super('Marketer', db, eventBus);
         this.ads = ads;
         this.registerTool('create_ad_campaign', this.createAdCampaign.bind(this));
         this.registerTool('write_copy', this.writeCopy.bind(this));

@@ -2,6 +2,7 @@ import { YamlLoader } from './YamlLoader.js';
 import { ServiceFactory } from './ServiceFactory.js';
 import { logger } from '../../infra/logging/LoggerService.js';
 import { MCPServer } from '../mcp/server.js';
+import { WorkflowManager } from '../workflow/WorkflowManager.js';
 export class Container {
     config;
     factory;
@@ -64,6 +65,17 @@ export class Container {
                 catch (e) {
                     logger.error(`Failed to register agent ${agentConfig.id}: ${e.message}`);
                 }
+            }
+        }
+        // 4. Initialize Workflow Manager
+        if (this.config.workflows) {
+            try {
+                const workflowManager = new WorkflowManager(this.eventBus, this.config.workflows, (id) => this.agents.get(id));
+                workflowManager.registerSubscriptions();
+                logger.info('Workflow Manager initialized and subscriptions registered.');
+            }
+            catch (e) {
+                logger.error(`Failed to initialize Workflow Manager: ${e.message}`);
             }
         }
         logger.info('Container initialized.');

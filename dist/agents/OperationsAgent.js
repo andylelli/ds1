@@ -1,8 +1,8 @@
 import { BaseAgent } from './BaseAgent.js';
 import { configService } from '../infra/config/ConfigService.js';
 export class OperationsAgent extends BaseAgent {
-    constructor(db) {
-        super('Operations', db);
+    constructor(db, eventBus) {
+        super('Operations', db, eventBus);
         this.registerTool('fulfill_order', this.fulfillOrder.bind(this));
         this.registerTool('check_inventory', this.checkInventory.bind(this));
         this.registerTool('handle_shipping_issue', this.handleShippingIssue.bind(this));

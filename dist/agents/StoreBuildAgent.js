@@ -3,8 +3,8 @@ import { openAIService } from '../infra/ai/OpenAIService.js';
 import { configService } from '../infra/config/ConfigService.js';
 export class StoreBuildAgent extends BaseAgent {
     shop;
-    constructor(db, shop) {
-        super('StoreBuilder', db);
+    constructor(db, eventBus, shop) {
+        super('StoreBuilder', db, eventBus);
         this.shop = shop;
         this.registerTool('create_product_page', this.createProductPage.bind(this));
         this.registerTool('optimize_seo', this.optimizeSEO.bind(this));

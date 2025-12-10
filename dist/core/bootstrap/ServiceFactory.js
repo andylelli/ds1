@@ -112,21 +112,21 @@ export class ServiceFactory {
     createAgent(className, deps) {
         switch (className) {
             case 'CEOAgent':
-                return new CEOAgent(deps.db, deps.ai);
+                return new CEOAgent(deps.db, deps.eventBus, deps.ai);
             case 'ProductResearchAgent':
-                return new ProductResearchAgent(deps.db, deps.trend, deps.competitor);
+                return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
             case 'SupplierAgent':
-                return new SupplierAgent(deps.db, deps.fulfilment);
+                return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
             case 'StoreBuildAgent':
-                return new StoreBuildAgent(deps.db, deps.shop);
+                return new StoreBuildAgent(deps.db, deps.eventBus, deps.shop);
             case 'MarketingAgent':
-                return new MarketingAgent(deps.db, deps.ads);
+                return new MarketingAgent(deps.db, deps.eventBus, deps.ads);
             case 'CustomerServiceAgent':
-                return new CustomerServiceAgent(deps.db, deps.email);
+                return new CustomerServiceAgent(deps.db, deps.eventBus, deps.email);
             case 'OperationsAgent':
-                return new OperationsAgent(deps.db);
+                return new OperationsAgent(deps.db, deps.eventBus);
             case 'AnalyticsAgent':
-                return new AnalyticsAgent(deps.db);
+                return new AnalyticsAgent(deps.db, deps.eventBus);
             default:
                 throw new Error(`Unknown agent class: ${className}`);
         }

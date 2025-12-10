@@ -11,43 +11,30 @@
 ```mermaid
 graph TD
     subgraph "Trigger: Schedule"
-        Cron[Cron Job / Timer] -->|Event: OPTIMIZATION_TICK| Analyst[Phase 1: Analytics Agent]
+        Cron[Cron Job / Timer] -->|Event: DAILY_REPORT_REQUESTED| Analyst[Phase 1: Analytics Agent]
     end
 
-    subgraph "Phase 1: Data Aggregation"
-        Analyst -->|Tools: Meta Ads API| Ads[Fetch Spend & Clicks]
-        Analyst -->|Tools: Shopify API| Sales[Fetch Revenue & Orders]
-        Ads & Sales -->|Tools: Calculator| ROAS[Compute ROAS & Net Profit]
-        ROAS -->|Event: DATA_READY| Decision{Phase 2: Decision Logic}
-    end
-
-    subgraph "Phase 2: The Rules"
-        Decision -- "Spend > $50 & 0 Orders" --> Kill[Kill Candidate]
-        Decision -- "ROAS < 1.5 (Loss)" --> Kill
-        Decision -- "ROAS > 3.0 (Winner)" --> Scale[Scale Candidate]
-        Decision -- "ROAS 1.5-3.0 (Mid)" --> Hold[Hold Candidate]
-    end
-
-    subgraph "Phase 3: Execution"
-        Kill -->|Tools: Meta Ads API| Pause[Action: Pause Ad Set]
-        Pause -->|Event: AD_PAUSED| Report
-        
-        Scale -->|Tools: Meta Ads API| Boost[Action: Increase Budget 20%]
-        Boost -->|Event: BUDGET_INCREASED| Report
-
-        Hold -->|Tools: GenAI Image| Creative[Action: Generate New Creative]
-        Creative -->|Event: CREATIVE_REQUESTED| Report
-    end
-
-    subgraph "Phase 4: Strategic Review"
-        Report[Log Decision] -->|Tools: DB Ledger| DB[Save Snapshot]
-        DB -->|Event: OPTIMIZATION_COMPLETE| Done[End: Cycle Complete]
+    subgraph "Phase 1: Analysis"
+        Analyst -->|Tools: generate_report| Report[Generate Daily Stats]
+        Report -->|Tools: predict_sales| Forecast[Forecast Next Month]
+        Forecast -->|Event: REPORT_GENERATED| Done[End: Cycle Complete]
     end
 ```
 
 ---
 
 ## 📝 Detailed Steps & Technical Actions
+
+### Phase 1: Reporting & Forecasting
+*   **Actor:** `AnalyticsAgent`
+*   **Trigger Event:** `DAILY_REPORT_REQUESTED`
+*   **MCP Tools / Actions:**
+    *   `generate_report`: Aggregates revenue, costs, and profit (Mock or Real).
+    *   `predict_sales`: Forecasts future performance based on current trends.
+*   **Output Event:** `REPORT_GENERATED` (Log Output)
+
+---
+**Next Step:** Insights from reports drive new product searches in [**Workflow 1: Growth**](./01_GROWTH.md).
 
 ### Phase 1: Data Aggregation (The Truth)
 *   **Actor:** `AnalyticsAgent`
