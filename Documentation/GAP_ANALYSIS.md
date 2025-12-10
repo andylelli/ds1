@@ -1,58 +1,89 @@
 # Gap Analysis: Current vs. Target Architecture
 
-This document outlines the specific code changes required to move from the current "Monolithic/RPC" architecture to the "Event-Driven/MCP" target state.
+This document outlines the specific code changes required to move from the current "Monolithic/RPC" architecture to the "YAML-Driven, Event-Based" target state.
 
-## 1. Event Bus Integration (Critical Gap)
+## 1. Modular Bootstrapping (The "YAML Loader")
 
 **Current State:**
-*   `PostgresEventStore` exists in `src/infra/eventbus/` but is **dead code**.
-*   `src/index.ts` does not instantiate an Event Bus.
-*   Agents communicate via direct method calls (e.g., `this.team.research.findWinningProducts()`).
+*   src/index.ts hardcodes the instantiation of every Adapter and Agent.
+*   Configuration is scattered between .env, ConfigService, and hardcoded logic.
+*   Switching between "Simulation" and "Live" requires code changes or complex if/else blocks in index.ts.
+
+**Target State:**
+*   A **Bootstrapper** reads gent_config.yaml and ootstrap.yaml.
+*   It dynamically instantiates Adapters and Agents based on the configuration.
+*   index.ts becomes a thin entry point that simply calls Bootstrapper.boot().
 
 **Required Changes:**
-1.  **Instantiate Event Bus:** In `src/index.ts`, create an instance of `PostgresEventStore` (or a Redis-based one for live).
-2.  **Inject into Agents:** Update `BaseAgent` constructor to accept `EventBusPort`.
+1.  **Create src/core/bootstrap/YamlLoader.ts:** Logic to parse the YAML files.
+2.  **Create src/core/bootstrap/Container.ts:** A Dependency Injection container (or simple registry) to hold the instantiated Agents and Adapters.
+3.  **Refactor index.ts:** Replace manual instantiation with the Bootstrapper.
+
+## 2. Event Bus Integration
+
+**Current State:**
+*   PostgresEventStore exists but is unused.
+*   Agents communicate via direct method calls (RPC).
+
+**Target State:**
+*   The Event Bus is the central nervous system.
+*   event_bus.yaml defines the topics and subscriptions.
+
+**Required Changes:**
+1.  **Instantiate Event Bus:** The Bootstrapper should initialize PostgresEventStore (or Redis for live).
+2.  **Inject into Agents:** Update BaseAgent to accept EventBusPort.
 3.  **Refactor Communication:**
-    *   **CEO Agent:** Instead of calling `this.team.research.findWinningProducts()`, emit `RESEARCH_REQUESTED` event.
-    *   **Research Agent:** Subscribe to `RESEARCH_REQUESTED`. When finished, emit `RESEARCH_COMPLETED`.
-    *   **CEO Agent:** Subscribe to `RESEARCH_COMPLETED` to proceed to the next step.
+    *   **CEO Agent:** Emit RESEARCH_REQUESTED instead of calling esearch.findWinningProducts().
+    *   **Research Agent:** Subscribe to RESEARCH_REQUESTED (defined in YAML).
+    *   **CEO Agent:** Subscribe to RESEARCH_COMPLETED.
 
-## 2. Webhook Ingress
-
-**Current State:**
-*   No webhook routes defined in `src/index.ts`.
-*   System is driven solely by `SimulationService` (script) or `POST /api/ceo/chat` (user).
-
-**Required Changes:**
-1.  **Create Webhook Routes:** Add `src/api/webhook-routes.ts`.
-2.  **Implement Handlers:**
-    *   `POST /webhooks/shopify/orders/create` -> Emits `ORDER_CREATED` event.
-    *   `POST /webhooks/meta/ads/lead` -> Emits `LEAD_GENERATED` event.
-3.  **Verify Signatures:** Implement middleware to verify HMAC signatures from Shopify/Meta.
-
-## 3. MCP Tool Protocol
+## 3. Webhook Ingress (Live Mode Driver)
 
 **Current State:**
-*   Agents extend `MCPServer`, but `handleToolCall` is mostly an internal wrapper.
-*   Adapters are injected directly into Agents (e.g., `new ProductResearchAgent(db, trendAdapter)`).
+*   System is driven solely by SimulationService or manual API calls.
+
+**Target State:**
+*   Live mode is "Reactive". External events (Webhooks) trigger internal workflows.
 
 **Required Changes:**
-1.  **Formalize Tool Definitions:** Ensure every Adapter method (e.g., `trendAdapter.analyze()`) is exposed as a formal MCP Tool (JSON Schema).
-2.  **Standardize Execution:** Agents should execute tools via `this.callTool('analyze_trends', args)` rather than `this.trendAdapter.analyze(args)`. This allows for easier interception, logging, and potential remote execution later.
+1.  **Create src/api/webhook-routes.ts:** Endpoints for Shopify, Meta, etc.
+2.  **Event Emission:** Webhook handlers simply validate the payload and emit an event (e.g., ORDER_PAID) to the Event Bus.
+3.  **Agent Reaction:** Agents subscribe to these events to perform their tasks.
 
-## 4. Simulation Service Refactoring
+## 4. Simulation Service (Simulation Mode Driver)
 
 **Current State:**
-*   `SimulationService.ts` is a procedural script that manually steps through the workflow.
+*   SimulationService is a procedural script that manually steps through the workflow.
+
+**Target State:**
+*   SimulationService is just **one of many possible drivers**.
+*   It is used **only** for Simulation mode.
+*   It functions as a "Scenario Injector" that emits a sequence of events to test how Agents react.
 
 **Required Changes:**
-*   **Event-Driven Simulation:** The `SimulationService` should become a "Chaos Monkey" or "Scenario Injector" that simply emits initial events (e.g., `MARKET_TREND_DETECTED`) and lets the agents react naturally, rather than micromanaging the flow.
+*   **Decouple from Agents:** SimulationService should not hold references to specific Agent instances. It should emit events to the Bus.
+*   **Scenario Config:** Allow loading different simulation scenarios (e.g., "High Traffic", "Supply Chain Failure") via YAML.
+
+## 5. MCP Tool Protocol
+
+**Current State:**
+*   Adapters are injected directly into Agents.
+*   Tool usage is informal.
+
+**Target State:**
+*   Agents interact with the outside world via **MCP Tool Calls**.
+*   gent_config.yaml defines which Tools are available to which Agent.
+
+**Required Changes:**
+1.  **Formalize Tool Definitions:** Ensure Adapters expose formal MCP Tool definitions.
+2.  **Standardize Execution:** Agents use 	his.callTool() to invoke Adapters.
 
 ## Summary of Work
 
 | Area | Task | Complexity |
 | :--- | :--- | :--- |
-| **Event Bus** | Wire up `PostgresEventStore` in `index.ts` | Low |
-| **Agents** | Refactor `CEOAgent` to use Events instead of `this.team` | High |
-| **Webhooks** | Create `webhook-routes.ts` | Medium |
-| **MCP** | Wrap Adapter calls in `callTool` pattern | Medium |
+| **Bootstrap** | Create YAML Loader & DI Container | High |
+| **Event Bus** | Wire up Event Bus & Refactor Agents to use Events | High |
+| **Webhooks** | Create Webhook Ingress routes | Medium |
+| **MCP** | Standardize Adapter calls to MCP Tool pattern | Medium |
+| **Simulation** | Refactor SimulationService to be event-driven | Medium |
