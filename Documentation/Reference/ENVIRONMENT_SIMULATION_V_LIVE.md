@@ -26,50 +26,79 @@ In this mode, the system runs in a closed loop. The `SimulationService` acts as 
 flowchart TD
   %% Styles
   classDef trigger fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
-  classDef core fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+  classDef hub fill:#ffecb3,stroke:#ff6f00,stroke-width:3px,color:#e65100;
+  classDef agent fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
   classDef mcp fill:#fff8e1,stroke:#fbc02d,stroke-width:2px,color:#f57f17;
   classDef mock fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
-  subgraph Triggers ["1. The Driver (Scripted)"]
+  subgraph Triggers ["1. Inputs"]
     SimService[Simulation Service]:::trigger
     Clock[Virtual Clock]:::trigger
   end
 
-  subgraph Core ["2. The Nervous System"]
-    Bus[Postgres Event Bus]:::core
-    Agents[Agent Swarm]:::core
+  subgraph Central ["2. The Central Nervous System"]
+    Bus{{Postgres Event Bus}}:::hub
   end
 
-  subgraph MCP ["3. Tool Interface (MCP)"]
+  subgraph Swarm ["3. The Agent Swarm"]
+    CEO[CEO Agent]:::agent
+    Analytics[Analytics Agent]:::agent
+    Researcher[Product Researcher]:::agent
+    Builder[Store Builder]:::agent
+    Marketer[Marketing Agent]:::agent
+    Ops[Operations Agent]:::agent
+    CS[Customer Service]:::agent
+    Retention[Retention Agent]:::agent
+    Compliance[Compliance Officer]:::agent
+  end
+
+  subgraph MCP ["4. Tool Interface (MCP)"]
+    TrendsTool[Trends Tool]:::mcp
     ShopTool[Shopify Tool]:::mcp
     AdsTool[Ads Tool]:::mcp
+    FulfillTool[Fulfillment Tool]:::mcp
+    EmailTool[Email Tool]:::mcp
+    LedgerTool[Ledger Tool]:::mcp
   end
 
-  subgraph Mocks ["4. The Matrix (Simulation)"]
-    MockShop[Mock Shopify Adapter]:::mock
-    MockAds[Mock Ads Adapter]:::mock
+  subgraph Mocks ["5. The Matrix (Simulation)"]
+    MockTrends[Mock Trends]:::mock
+    MockShop[Mock Shopify]:::mock
+    MockAds[Mock Ads]:::mock
+    MockSupplier[Mock Supplier]:::mock
+    MockEmail[Console Email]:::mock
   end
 
-  subgraph Data ["5. Persistence"]
+  subgraph Data ["6. Persistence"]
     DB[(Postgres: dropship_sim)]:::db
   end
 
-  %% Flows
-  SimService -->|Inject: ORDER_PAID| Bus
-  Clock -->|Inject: TIME_TICK| Bus
-  Bus -->|Event: ORDER_PAID| Agents
+  %% Wiring
+  SimService -->|Inject Events| Bus
+  Clock -->|Tick| Bus
+  Bus ==>|Broadcast Events| Swarm
+
+  %% Agent -> Tool Connections
+  Researcher -->|Call| TrendsTool
+  Builder -->|Call| ShopTool
+  Marketer -->|Call| AdsTool
+  Ops -->|Call| FulfillTool
+  CS -->|Call| EmailTool
+  Retention -->|Call| EmailTool
+  Analytics -->|Call| LedgerTool
+  Compliance -->|Check| AdsTool
+
+  %% Tool -> Mock Connections
+  TrendsTool --> MockTrends
+  ShopTool --> MockShop
+  AdsTool --> MockAds
+  FulfillTool --> MockSupplier
+  EmailTool --> MockEmail
   
-  Agents -->|Call: get_product id| ShopTool
-  Agents -->|Call: create_campaign| AdsTool
-  
-  ShopTool -->|Internal Call| MockShop
-  AdsTool -->|Internal Call| MockAds
-  
-  MockShop -.->|Return: {id: 1, price: 20}| ShopTool
-  MockAds -.->|Return: {cpc: 1.50}| AdsTool
-  
-  Agents -->|SQL: INSERT INTO ledger| DB
+  %% Data
+  Swarm -->|Read/Write| DB
+  LedgerTool -->|SQL| DB
 ```
 
 ### 2.2 Live Mode (The "Business")
@@ -85,7 +114,8 @@ flowchart TD
   classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238;
 
   subgraph Triggers ["1. The Real World"]
-    ShopifyHook[Shopify Webhook]:::trigger
+    User[User Dashboard]:::trigger
+    ShopHook[Shopify Webhook]:::trigger
     StripeHook[Stripe Webhook]:::trigger
   end
 
@@ -93,42 +123,70 @@ flowchart TD
     Express[Express Server]:::trigger
   end
 
-  subgraph Core ["3. The Nervous System"]
+  subgraph Core ["3. The Swarm"]
     Bus[Postgres Event Bus]:::core
-    Agents[Agent Swarm]:::core
+    
+    subgraph Agents
+      CEO[CEO Agent]:::core
+      Analytics[Analytics Agent]:::core
+      Researcher[Product Researcher]:::core
+      Builder[Store Builder]:::core
+      Marketer[Marketing Agent]:::core
+      Ops[Operations Agent]:::core
+      CS[Customer Service]:::core
+      Retention[Retention Agent]:::core
+      Compliance[Compliance Officer]:::core
+    end
   end
 
   subgraph MCP ["4. Tool Interface (MCP)"]
+    TrendsTool[Trends Tool]:::mcp
     ShopTool[Shopify Tool]:::mcp
     AdsTool[Ads Tool]:::mcp
+    FulfillTool[Fulfillment Tool]:::mcp
+    EmailTool[Email Tool]:::mcp
+    LedgerTool[Ledger Tool]:::mcp
   end
 
   subgraph External ["5. External APIs"]
-    RealShop[Shopify API]:::external
-    RealMeta[Meta Ads API]:::external
+    Google[Google Trends]:::external
+    Shopify[Shopify API]:::external
+    Meta[Meta Ads API]:::external
+    AliExpress[AliExpress API]:::external
+    SendGrid[SendGrid API]:::external
   end
 
   subgraph Data ["6. Persistence"]
     DB[(Postgres: dropship)]:::db
   end
 
-  %% Flows
-  ShopifyHook -->|POST /webhooks/orders/create| Express
-  StripeHook -->|POST /v1/events| Express
+  %% Wiring
+  User -->|Command| Express
+  ShopHook -->|Event| Express
+  StripeHook -->|Event| Express
+  Express -->|Publish| Bus
+  Bus -->|Notify| Agents
+
+  %% Agent -> Tool Connections
+  Researcher -->|Call| TrendsTool
+  Builder -->|Call| ShopTool
+  Marketer -->|Call| AdsTool
+  Ops -->|Call| FulfillTool
+  CS -->|Call| EmailTool
+  Retention -->|Call| EmailTool
+  Analytics -->|Call| LedgerTool
+  Compliance -->|Check| AdsTool
+
+  %% Tool -> External Connections
+  TrendsTool --> Google
+  ShopTool --> Shopify
+  AdsTool --> Meta
+  FulfillTool --> AliExpress
+  EmailTool --> SendGrid
   
-  Express -->|Publish: ORDER_PAID| Bus
-  Bus -->|Event: ORDER_PAID| Agents
-  
-  Agents -->|Call: get_product id| ShopTool
-  Agents -->|Call: create_campaign| AdsTool
-  
-  ShopTool -->|HTTPS: admin.shopify.com| RealShop
-  AdsTool -->|HTTPS: graph.facebook.com| RealMeta
-  
-  RealShop -.->|JSON Response| ShopTool
-  RealMeta -.->|JSON Response| AdsTool
-  
-  Agents -->|SQL: INSERT INTO ledger| DB
+  %% Data
+  Agents -->|Read/Write| DB
+  LedgerTool -->|SQL| DB
 ```
 
 ## 3. Configuration Differences
