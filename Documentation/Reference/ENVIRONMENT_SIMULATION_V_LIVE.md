@@ -116,7 +116,7 @@ flowchart TD
     Analytics[Analytics Agent]:::agent
   end
 
-  subgraph "4. Integration Layer"
+  subgraph "4. Integration Layer (MCP Tools)"
     AI_Adapter[AI Adapter]
     TrendAdapter[Trend Adapter]
     CompAdapter[Competitor Adapter]
@@ -144,14 +144,14 @@ flowchart TD
   API --> Bus
   Bus --> CEO & Research & Supplier & Store & Marketing & Support & Ops & Analytics
 
-  %% Agent to Adapter
-  CEO & Research & Store & Marketing & Support --> AI_Adapter
-  Research --> TrendAdapter & CompAdapter
-  Supplier --> SupplyAdapter
-  Store --> ShopAdapter
-  Marketing --> AdsAdapter
-  Support --> EmailAdapter
-  Ops --> ShipAdapter
+  %% Agent to Adapter (MCP Protocol)
+  CEO & Research & Store & Marketing & Support -->|MCP Tool Call| AI_Adapter
+  Research -->|MCP Tool Call| TrendAdapter & CompAdapter
+  Supplier -->|MCP Tool Call| SupplyAdapter
+  Store -->|MCP Tool Call| ShopAdapter
+  Marketing -->|MCP Tool Call| AdsAdapter
+  Support -->|MCP Tool Call| EmailAdapter
+  Ops -->|MCP Tool Call| ShipAdapter
 
   %% Adapter to External
   AI_Adapter --> LLM
