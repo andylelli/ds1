@@ -1,0 +1,233 @@
+version: 1.0
+system:
+  name: ds1-agent-suite
+  deployment: single-container
+  description: Raw agentic enterprise app wired entirely from YAML configuration.
+  owners:
+    - role: enterprise_architect
+    - role: technical_director
+  config_layers:
+    - file: Documentation/Blueprints/agent_config.yaml
+      purpose: authoritative manifest for agents/adapters
+    - file: Documentation/Blueprints/event_bus.yaml
+      purpose: event contracts and transport
+    - file: config.json
+      purpose: legacy runtime overrides until YAML loader is adopted
+
+globals:
+  defaults:
+    adapter_modes:
+      db: mock
+      shop: mock
+      ads: mock
+      trends: mock
+      research: mock
+      fulfilment: mock
+      email: mock
+      ai: live
+    logging:
+      destination: console
+      level: info
+    traffic_scale: 1.0
+  policies:
+    pii_handling: redact
+    tool_safety: disallow-imports
+    retry_budget:
+      attempts: 3
+      backoff: exponential
+
+adapters:
+  persistence:
+    port: PersistencePort
+    modes:
+      mock:
+        implementation: MockAdapter
+        storage: sandbox_db.json
+      live:
+        implementation: PostgresAdapter
+        env: DATABASE_URL
+  shop_platform:
+    port: ShopPlatformPort
+    modes:
+      mock: { implementation: MockShopAdapter }
+      test: { implementation: TestShopAdapter }
+      live: { implementation: LiveShopAdapter }
+  ads_platform:
+    port: AdsPlatformPort
+    modes:
+      mock: { implementation: MockAdsAdapter }
+      test: { implementation: TestAdsAdapter }
+      live: { implementation: LiveAdsAdapter }
+  trend_analysis:
+    port: TrendAnalysisPort
+    modes:
+      mock: { implementation: MockTrendAdapter }
+      live: { implementation: LiveTrendAdapter }
+  competitor_analysis:
+    port: CompetitorAnalysisPort
+    modes:
+      mock: { implementation: MockCompetitorAdapter }
+      live: { implementation: LiveCompetitorAdapter }
+  fulfilment:
+    port: FulfilmentPort
+    modes:
+      mock: { implementation: MockFulfilmentAdapter }
+      live: { implementation: LiveFulfilmentAdapter }
+  email:
+    port: EmailPort
+    modes:
+      mock: { implementation: MockEmailAdapter }
+      live: { implementation: LiveEmailAdapter }
+  ai:
+    port: AiPort
+    modes:
+      mock:
+        implementation: MockAiAdapter
+        model: mock-llm
+      live:
+        implementation: LiveAiAdapter
+        model: gpt-4.1
+        env: OPENAI_API_KEY
+
+# Agent registry drives bootstrap without hardcoding in index.ts.
+agents:
+  - id: ceo
+    class: CEOAgent
+    entrypoint: src/agents/CEOAgent.ts
+    role: Strategy & oversight
+    adapters:
+      persistence: persistence
+      ai: ai
+    peers: [research, supplier, store, marketing, support, ops, analytics]
+    subscriptions:
+      events: [DAILY_TICK, MARKET_CRASH, ORDER_PAID]
+      inboxes: [admin.console]
+    prompts:
+      system: |
+        You are the CEO of a dropshipping company. Use context from the database to
+        answer concisely and direct the team. Prefer tool calls when an action is needed.
+    tools:
+      - approveProduct
+      - rejectProduct
+      - startProductResearch
+      - sourceProduct
+      - buildStorePage
+      - launchMarketingCampaign
+    memory:
+      recent_logs: { source: db.getRecentLogs, limit: 50 }
+      products: { source: db.getProducts }
+      orders: { source: db.getOrders }
+      campaigns: { source: db.getCampaigns }
+    outputs:
+      publishes: [STRATEGY_UPDATED]
+      side_effects: [team_instructions]
+
+  - id: research
+    class: ProductResearchAgent
+    entrypoint: src/agents/ProductResearchAgent.ts
+    role: Find winning products
+    adapters:
+      persistence: persistence
+      trends: trend_analysis
+      competitors: competitor_analysis
+    subscriptions:
+      events: [DAILY_TICK, STRATEGY_UPDATED]
+    tools: [summarizeTrends, benchmarkCompetitors]
+    memory:
+      research_cache: { source: db.getResearchFindings, limit: 25 }
+    outputs:
+      publishes: [PRODUCT_IDEAS]
+
+  - id: supplier
+    class: SupplierAgent
+    entrypoint: src/agents/SupplierAgent.ts
+    role: Source suppliers and costs
+    adapters:
+      persistence: persistence
+      fulfilment: fulfilment
+    subscriptions:
+      events: [PRODUCT_IDEAS, INVENTORY_LOW]
+    tools: [createPurchaseOrder, trackShipment]
+    outputs:
+      publishes: [SUPPLIER_ORDER_PLACED, SUPPLIER_SHIPPED]
+
+  - id: store
+    class: StoreBuildAgent
+    entrypoint: src/agents/StoreBuildAgent.ts
+    role: Build and publish product pages
+    adapters:
+      persistence: persistence
+      shop: shop_platform
+    subscriptions:
+      events: [PRODUCT_IDEAS, SUPPLIER_ORDER_PLACED]
+    tools: [createProductPage, updateProductStatus]
+    outputs:
+      publishes: [PAGE_PUBLISHED]
+
+  - id: marketing
+    class: MarketingAgent
+    entrypoint: src/agents/MarketingAgent.ts
+    role: Launch and optimize campaigns
+    adapters:
+      persistence: persistence
+      ads: ads_platform
+    subscriptions:
+      events: [PAGE_PUBLISHED, CHECKOUT_STARTED, DAILY_TICK, OPTIMIZATION_TICK]
+    tools: [createCampaign, adjustBudget]
+    outputs:
+      publishes: [CAMPAIGN_CREATED, CAMPAIGN_OPTIMIZED]
+
+  - id: support
+    class: CustomerServiceAgent
+    entrypoint: src/agents/CustomerServiceAgent.ts
+    role: Respond to tickets
+    adapters:
+      persistence: persistence
+      email: email
+    subscriptions:
+      events: [TICKET_CREATED]
+      inboxes: [support.email]
+    tools: [generateReply, escalateTicket]
+    outputs:
+      publishes: [TICKET_RESOLUTION]
+
+  - id: ops
+    class: OperationsAgent
+    entrypoint: src/agents/OperationsAgent.ts
+    role: Fulfil and monitor orders
+    adapters:
+      persistence: persistence
+    subscriptions:
+      events: [ORDER_PAID]
+    tools: [fulfillOrder, reconcileInventory]
+    outputs:
+      publishes: [INVENTORY_LOW]
+
+  - id: analytics
+    class: AnalyticsAgent
+    entrypoint: src/agents/AnalyticsAgent.ts
+    role: Business metrics and reporting
+    adapters:
+      persistence: persistence
+    subscriptions:
+      events: [ORDER_PAID, SUPPLIER_ORDER_PLACED]
+    tools: [aggregateRevenue, computeCogs]
+    outputs:
+      publishes: [BUSINESS_REPORT]
+
+runtime:
+  boot_sequence:
+    - load: adapters
+    - load: agents
+    - link: peer_relationships
+    - start_services: [SimulationService]
+  http_endpoints:
+    - path: /api/config
+      handler: configService
+      reads: globals.defaults
+    - path: /api/agents
+      handler: agentMetadata
+      derives_from: agents
+  feature_flags:
+    useSimulatedEndpoints: true
+    openaiEnabled: true
