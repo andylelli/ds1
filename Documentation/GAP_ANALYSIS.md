@@ -67,12 +67,12 @@ We propose a **5-File Configuration Structure**:
 2.  **Implementation**: Ensure PostgresEventBus is robust and can handle the load. (Done)
 3.  **Factory Logic**: The Bootstrapper initializes the bus before any agents. (Done)
 
-### C. MCP & Tools (Generative Mocks) - **STATUS: IN PROGRESS**
+### C. MCP & Tools (Generative Mocks) - **STATUS: COMPLETED**
 
 **Current State:**
 *   `McpToolProvider` interface created.
-*   `ShopifyMcpWrapper` implemented to expose Shopify adapter as MCP tools.
-*   `mcp-server.ts` entry point created.
+*   All internal adapters (`Shopify`, `Ads`, `Trend`, `Competitor`, `Fulfilment`, `Email`, `Ai`) are wrapped with `McpToolProvider` implementations.
+*   `mcp-server.ts` entry point created and functional.
 
 **Target State:**
 *   **Live Mode**: Adapters wrap real API calls (Shopify, Meta).
@@ -82,9 +82,9 @@ We propose a **5-File Configuration Structure**:
     *   They maintain internal state (e.g., MockShopify keeps a list of "created" products in memory).
 
 **Required Changes:**
-1.  **Smart Mocks**: Implement MockShopifyAdapter, MockResearchAdapter that behave like the real systems. (Pending)
-2.  **Stateful Simulation**: Mocks should share state where necessary (e.g., Inventory). (Pending)
-3.  **MCP Wrappers**: Wrap all adapters with `McpToolProvider` implementations. (Started with Shopify)
+1.  **Smart Mocks**: Implement MockShopifyAdapter, MockResearchAdapter that behave like the real systems. (Pending - Next Phase)
+2.  **Stateful Simulation**: Mocks should share state where necessary (e.g., Inventory). (Pending - Next Phase)
+3.  **MCP Wrappers**: Wrap all adapters with `McpToolProvider` implementations. (Done)
 
 ### D. Workflow Wiring (The Nervous System) - **STATUS: PENDING**
 

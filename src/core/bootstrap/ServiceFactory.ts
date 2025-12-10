@@ -7,6 +7,12 @@ import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
 import { MockShopAdapter } from '../../infra/shop/MockShopAdapter.js';
 import { TestShopAdapter } from '../../infra/shop/TestShopAdapter.js';
 import { ShopifyMcpWrapper } from '../../infra/mcp/wrappers/ShopifyMcpWrapper.js';
+import { AdsMcpWrapper } from '../../infra/mcp/wrappers/AdsMcpWrapper.js';
+import { TrendMcpWrapper } from '../../infra/mcp/wrappers/TrendMcpWrapper.js';
+import { CompetitorMcpWrapper } from '../../infra/mcp/wrappers/CompetitorMcpWrapper.js';
+import { FulfilmentMcpWrapper } from '../../infra/mcp/wrappers/FulfilmentMcpWrapper.js';
+import { EmailMcpWrapper } from '../../infra/mcp/wrappers/EmailMcpWrapper.js';
+import { AiMcpWrapper } from '../../infra/mcp/wrappers/AiMcpWrapper.js';
 
 // Ads
 import { LiveAdsAdapter } from '../../infra/ads/LiveAdsAdapter.js';
@@ -114,7 +120,18 @@ export class ServiceFactory {
       switch(className) {
           case 'ShopifyAdapter':
               return new ShopifyMcpWrapper(adapterInstance);
-          // TODO: Implement wrappers for other adapters
+          case 'AdsAdapter':
+              return new AdsMcpWrapper(adapterInstance);
+          case 'TrendAdapter':
+              return new TrendMcpWrapper(adapterInstance);
+          case 'CompetitorAdapter':
+              return new CompetitorMcpWrapper(adapterInstance);
+          case 'FulfilmentAdapter':
+              return new FulfilmentMcpWrapper(adapterInstance);
+          case 'EmailAdapter':
+              return new EmailMcpWrapper(adapterInstance);
+          case 'AiAdapter':
+              return new AiMcpWrapper(adapterInstance);
           default:
               return null;
       }
