@@ -7,11 +7,11 @@ services:
   # Options for all services: "mock", "live"
   shop: "mock"
   ads: "mock"
-  trends: "mock"
+  trends: "live"
   competitor: "mock"
   fulfilment: "mock"
   email: "mock"
-  ai: "mock"
+  ai: "live"
 
 paths:
   infrastructure: "config/infrastructure.yaml"

@@ -30,56 +30,63 @@
                 <div class="column is-full">
                     <div class="card mb-5">
                         <div class="card-content">
-                            <h2 class="title is-5">Run Simulation</h2>
-                            <p class="subtitle is-6 has-text-grey">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
-                            <div class="buttons">
-                                <button class="button is-primary" onclick="startSimulation()">
-                                    <span class="icon"><i class="fas fa-play"></i></span>
-                                    <span>Start New Simulation</span>
-                                </button>
-                                <button class="button" onclick="clearSimulationDb()">
-                                    <span class="icon"><i class="fas fa-trash"></i></span>
-                                    <span>Clear Sim DB</span>
-                                </button>
-                                <button class="button" onclick="clearLogDisplay()">
-                                    <span class="icon"><i class="fas fa-broom"></i></span>
-                                    <span>Clear Logs</span>
-                                </button>
-                                <button class="button" onclick="showAllLogs()">
-                                    <span class="icon"><i class="fas fa-scroll"></i></span>
-                                    <span>Show History</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card mb-5">
-                        <div class="card-content">
                             <div class="level">
                                 <div class="level-left">
                                     <div>
-                                        <h2 class="title is-5">Continuous Loop</h2>
-                                        <p class="subtitle is-6 has-text-grey">Run the simulation clock to generate traffic and events over time.</p>
+                                        <h2 class="title is-5">Run Simulation</h2>
+                                        <p class="subtitle is-6 has-text-grey">Trigger a full end-to-end product lifecycle simulation.</p>
                                     </div>
                                 </div>
                                 <div class="level-right">
-                                    <div class="box has-background-black has-text-green" style="border: 2px solid #00d1b2; min-width: 200px;">
+                                    <div class="tags has-addons mr-4">
+                                        <span class="tag is-dark">STATUS</span>
+                                        <span id="simStatus" class="tag is-light">STOPPED</span>
+                                    </div>
+                                    <div class="box has-background-black has-text-green p-2" style="border: 1px solid #00d1b2; min-width: 150px;">
                                         <div class="has-text-centered">
-                                            <div class="is-size-7 has-text-grey-light">SIMULATION TIME</div>
-                                            <div id="simClock" class="is-size-4 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">00:00</div>
-                                            <div id="simDay" class="is-size-6 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">Day 1</div>
+                                            <div id="simClock" class="is-size-5 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">08:00</div>
+                                            <div id="simDay" class="is-size-7 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">Day 1</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div class="field has-addons mb-4">
+                                <div class="control is-expanded">
+                                    <input class="input" type="text" id="simProductInput" placeholder="Ask CEO to find a product (e.g., 'Eco-friendly dog toys', 'Smart home gadgets')...">
+                                </div>
+                                <div class="control">
+                                    <button id="btnStart" class="button is-primary" onclick="startSimulation()">
+                                        <span class="icon"><i class="fas fa-play"></i></span>
+                                        <span>Start</span>
+                                    </button>
+                                    <button id="btnPause" class="button is-warning is-hidden" onclick="pauseSimulation()">
+                                        <span class="icon"><i class="fas fa-pause"></i></span>
+                                        <span>Pause</span>
+                                    </button>
+                                    <button id="btnResume" class="button is-success is-hidden" onclick="resumeSimulation()">
+                                        <span class="icon"><i class="fas fa-play"></i></span>
+                                        <span>Resume</span>
+                                    </button>
+                                    <button id="btnStop" class="button is-danger is-hidden" onclick="stopSimulation()">
+                                        <span class="icon"><i class="fas fa-stop"></i></span>
+                                        <span>Stop</span>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div class="buttons">
-                                <button class="button is-success" onclick="startLoop()">
-                                    <span class="icon"><i class="fas fa-clock"></i></span>
-                                    <span>Start Loop</span>
+                                <button class="button is-small" onclick="clearSimulationDb()">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Clear Sim DB</span>
                                 </button>
-                                <button class="button is-danger" onclick="stopLoop()">
-                                    <span class="icon"><i class="fas fa-stop"></i></span>
-                                    <span>Stop Loop</span>
+                                <button class="button is-small" onclick="clearLogDisplay()">
+                                    <span class="icon"><i class="fas fa-broom"></i></span>
+                                    <span>Clear Logs</span>
+                                </button>
+                                <button class="button is-small" onclick="showAllLogs()">
+                                    <span class="icon"><i class="fas fa-scroll"></i></span>
+                                    <span>Show History</span>
                                 </button>
                             </div>
                         </div>
@@ -442,16 +449,106 @@
             showStatus('Showing full history.', 'success');
         }
 
+        function updateSimControls(state) {
+            const btnStart = document.getElementById('btnStart');
+            const btnPause = document.getElementById('btnPause');
+            const btnResume = document.getElementById('btnResume');
+            const btnStop = document.getElementById('btnStop');
+            const status = document.getElementById('simStatus');
+            const input = document.getElementById('simProductInput');
+
+            // Reset all
+            btnStart.classList.add('is-hidden');
+            btnPause.classList.add('is-hidden');
+            btnResume.classList.add('is-hidden');
+            btnStop.classList.add('is-hidden');
+            input.disabled = false;
+
+            if (state === 'running') {
+                btnPause.classList.remove('is-hidden');
+                btnStop.classList.remove('is-hidden');
+                status.textContent = 'RUNNING';
+                status.className = 'tag is-success';
+                input.disabled = true;
+            } else if (state === 'paused') {
+                btnResume.classList.remove('is-hidden');
+                btnStop.classList.remove('is-hidden');
+                status.textContent = 'PAUSED';
+                status.className = 'tag is-warning';
+                input.disabled = true;
+            } else { // stopped
+                btnStart.classList.remove('is-hidden');
+                status.textContent = 'STOPPED';
+                status.className = 'tag is-light';
+                input.disabled = false;
+            }
+        }
+
         async function startSimulation() {
+            const query = document.getElementById('simProductInput').value.trim();
+            if (!query) {
+                showStatus('Please enter a product idea or category.', 'warning');
+                document.getElementById('simProductInput').focus();
+                return;
+            }
+
             try {
                 logStartTime = Date.now() - 2000;
-                const res = await fetch('/api/simulation/start', { method: 'POST' });
-                const data = await res.json();
-                showStatus(data.message, 'success');
-                fetchLogs();
+                
+                // 1. Start Research Phase
+                const res1 = await fetch('/api/simulation/start', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ category: query })
+                });
+                
+                // 2. Start Loop Automatically
+                const res2 = await fetch('/api/simulation/loop/start', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ interval: 5000 }) // 5s default
+                });
+
+                if (res1.ok && res2.ok) {
+                    showStatus('Simulation started successfully.', 'success');
+                    updateSimControls('running');
+                    fetchLogs();
+                } else {
+                    showStatus('Failed to start simulation fully.', 'error');
+                }
             } catch (e) {
                 showStatus('Failed to start simulation.', 'error');
+                console.error(e);
             }
+        }
+
+        async function pauseSimulation() {
+            try {
+                await fetch('/api/simulation/loop/stop', { method: 'POST' });
+                updateSimControls('paused');
+                showStatus('Simulation paused.', 'warning');
+            } catch (e) { showStatus('Failed to pause.', 'error'); }
+        }
+
+        async function resumeSimulation() {
+            try {
+                await fetch('/api/simulation/loop/start', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ interval: 5000 })
+                });
+                updateSimControls('running');
+                showStatus('Simulation resumed.', 'success');
+            } catch (e) { showStatus('Failed to resume.', 'error'); }
+        }
+
+        async function stopSimulation() {
+            if (!confirm('Stop simulation? This will halt the clock.')) return;
+            try {
+                await fetch('/api/simulation/loop/stop', { method: 'POST' });
+                updateSimControls('stopped');
+                showStatus('Simulation stopped.', 'info');
+            } catch (e) { showStatus('Failed to stop.', 'error'); }
         }
         
         async function updateClock() {
@@ -481,35 +578,19 @@
             }
         }
 
-        async function startLoop() {
-            try {
-                const res = await fetch('/api/simulation/loop/start', { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ interval: 5000 }) // 5 seconds per tick
-                });
-                const data = await res.json();
-                showStatus(data.message, 'success');
-            } catch (e) {
-                showStatus('Failed to start loop.', 'error');
-            }
-        }
-
-        async function stopLoop() {
-            try {
-                const res = await fetch('/api/simulation/loop/stop', { method: 'POST' });
-                const data = await res.json();
-                showStatus(data.message, 'success');
-            } catch (e) {
-                showStatus('Failed to stop loop.', 'error');
-            }
-        }
+        // Legacy loop functions removed/merged into main controls
+        // async function startLoop() { ... }
+        // async function stopLoop() { ... }
 
         async function clearSimulationDb() {
             if (!confirm('Are you sure you want to clear all simulation database data (products, orders, campaigns, logs)?')) {
                 return;
             }
             try {
+                // Stop loop first if running
+                await fetch('/api/simulation/loop/stop', { method: 'POST' });
+                updateSimControls('stopped');
+
                 const res = await fetch('/api/simulation/clear', { method: 'POST' });
                 const data = await res.json();
                 showStatus(data.message, 'success');

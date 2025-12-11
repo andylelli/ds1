@@ -573,7 +573,6 @@ export class SimulationService {
   }
 
   getTickCount() {
-      console.log(`[SimulationService] getTickCount called. Returning: ${this.tickCount}`);
       return this.tickCount;
   }
 }

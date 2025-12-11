@@ -306,12 +306,15 @@ const container = new Container(configPath);
         res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
         return;
       }
-      console.log("Starting simulation flow (Research Phase)...");
+      const { category } = req.body;
+      const topic = category || 'Fitness'; // Default if missing
+      
+      console.log(`Starting simulation flow (Research Phase) for topic: ${topic}...`);
       
       // Async background task
-      simulationService.runResearchPhase().catch(console.error);
+      simulationService.runResearchPhase(topic).catch(console.error);
 
-      res.json({ status: 'started', message: 'Simulation research phase running in background.' });
+      res.json({ status: 'started', message: `Simulation research phase started for: ${topic}` });
     });
 
     app.post('/api/simulation/approve', async (req, res) => {
