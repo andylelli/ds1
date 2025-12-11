@@ -207,6 +207,41 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
+  async getErrorLogs(limit: number, source?: string): Promise<any[]> {
+    const mode = configService.get('dbMode');
+    
+    const useSimPool = source === 'sim' || (!source && mode === 'test');
+    const pool = useSimPool ? this.simPool : this.pgPool;
+
+    if (!pool) {
+      return [];
+    }
+
+    try {
+      const result = await pool.query(
+        `SELECT agent, action, category, status, message, details, timestamp as created_at 
+         FROM activity_log 
+         WHERE status IN ('failed', 'warning')
+         ORDER BY timestamp DESC 
+         LIMIT $1`,
+        [limit]
+      );
+      
+      return result.rows.map(row => ({
+        agent: row.agent,
+        action: row.action,
+        category: row.category,
+        status: row.status,
+        message: row.message,
+        details: typeof row.details === 'string' ? JSON.parse(row.details) : row.details,
+        timestamp: row.created_at
+      }));
+    } catch (e: any) {
+      console.error(`Failed to fetch error logs from PG:`, e.message);
+      return [];
+    }
+  }
+
   async getRecentLogs(limit: number, source?: string): Promise<any[]> {
     const mode = configService.get('dbMode');
     
@@ -223,7 +258,7 @@ export class PostgresAdapter implements PersistencePort {
            SELECT topic as agent, type as message, payload as data, created_at 
            FROM events 
            UNION ALL
-           SELECT agent, message, details as data, created_at 
+           SELECT agent, message, details as data, timestamp as created_at 
            FROM activity_log
          ) as combined_logs
          ORDER BY created_at DESC 

@@ -185,6 +185,34 @@ export class PostgresAdapter {
             console.error(`Failed to save log to PG (${mode}):`, e.message);
         }
     }
+    async getErrorLogs(limit, source) {
+        const mode = configService.get('dbMode');
+        const useSimPool = source === 'sim' || (!source && mode === 'test');
+        const pool = useSimPool ? this.simPool : this.pgPool;
+        if (!pool) {
+            return [];
+        }
+        try {
+            const result = await pool.query(`SELECT agent, action, category, status, message, details, timestamp as created_at 
+         FROM activity_log 
+         WHERE status IN ('failed', 'warning')
+         ORDER BY timestamp DESC 
+         LIMIT $1`, [limit]);
+            return result.rows.map(row => ({
+                agent: row.agent,
+                action: row.action,
+                category: row.category,
+                status: row.status,
+                message: row.message,
+                details: typeof row.details === 'string' ? JSON.parse(row.details) : row.details,
+                timestamp: row.created_at
+            }));
+        }
+        catch (e) {
+            console.error(`Failed to fetch error logs from PG:`, e.message);
+            return [];
+        }
+    }
     async getRecentLogs(limit, source) {
         const mode = configService.get('dbMode');
         const useSimPool = source === 'sim' || (!source && mode === 'test');
@@ -197,7 +225,7 @@ export class PostgresAdapter {
            SELECT topic as agent, type as message, payload as data, created_at 
            FROM events 
            UNION ALL
-           SELECT agent, message, details as data, created_at 
+           SELECT agent, message, details as data, timestamp as created_at 
            FROM activity_log
          ) as combined_logs
          ORDER BY created_at DESC 

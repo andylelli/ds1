@@ -130,6 +130,7 @@ const container = new Container(configPath);
                     name: a.class, // simplified for now
                     role: 'Agent',
                     mode: mode,
+                    status: 'active', // Default to active since they are initialized
                     subscriptions: [],
                     capabilities: [],
                     externalEndpoints: []
@@ -145,6 +146,16 @@ const container = new Container(configPath);
             catch (error) {
                 console.error("Error fetching logs:", error);
                 res.status(500).json({ error: "Failed to fetch logs", details: error.message });
+            }
+        });
+        app.get('/api/logs/errors', async (req, res) => {
+            try {
+                const logs = await db.getErrorLogs(50);
+                res.json(logs);
+            }
+            catch (error) {
+                console.error("Error fetching error logs:", error);
+                res.status(500).json({ error: "Failed to fetch error logs", details: error.message });
             }
         });
         app.get('/api/products', async (req, res) => {

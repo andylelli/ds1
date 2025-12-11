@@ -49,6 +49,7 @@ async function initSidebar() {
         <p class="menu-label">System</p>
         <ul class="menu-list">
             <li><a href="/activity.html" class="nav-item" data-page="activity.html"><span class="icon"><i class="fas fa-chart-line"></i></span> Activity Log</a></li>
+            <li><a href="/errors.html" class="nav-item" data-page="errors.html"><span class="icon has-text-danger"><i class="fas fa-exclamation-triangle"></i></span> Error Log</a></li>
             <li><a href="/infra.html" class="nav-item" data-page="infra.html"><span class="icon"><i class="fas fa-server"></i></span> Infra Manager</a></li>
             <li><a href="/agents.html" class="nav-item" data-page="agents.html"><span class="icon"><i class="fas fa-robot"></i></span> Agent Monitor</a></li>
             <li><a href="/admin.html#settings" class="nav-item" data-tab="settings"><span class="icon"><i class="fas fa-gear"></i></span> Settings</a></li>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS1 Error Log</title>
+    <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar-container"></nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="level mb-5">
+            <div class="level-left">
+                <div class="level-item">
+                    <div>
+                        <h1 class="title is-3 has-text-danger">System Error Log</h1>
+                        <p class="subtitle is-6 has-text-grey">Monitoring system failures and warnings</p>
+                    </div>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <button class="button is-small is-light" onclick="fetchLogs()">
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <div id="errorLogContainer">
+                    <div class="has-text-centered py-5">
+                        <span class="icon is-large"><i class="fas fa-spinner fa-pulse fa-2x"></i></span>
+                        <p class="mt-2">Loading error logs...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="sidebar.js"></script>
+    <script>
+        async function fetchLogs() {
+            try {
+                const res = await fetch('/api/logs/errors?t=' + Date.now());
+                const logs = await res.json();
+                renderLogs(logs);
+            } catch (e) {
+                console.error("Failed to fetch error logs", e);
+                document.getElementById('errorLogContainer').innerHTML = `
+                    <div class="notification is-danger">
+                        Failed to load error logs. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        function renderLogs(logs) {
+            const container = document.getElementById('errorLogContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="notification is-success is-light">
+                        <span class="icon"><i class="fas fa-check-circle"></i></span>
+                        No errors or warnings found in the recent logs. System is healthy!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Level</th>
+                                <th>Agent</th>
+                                <th>Action</th>
+                                <th>Message</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${logs.map(log => `
+                                <tr>
+                                    <td class="is-size-7" style="white-space: nowrap;">
+                                        ${new Date(log.timestamp).toLocaleString()}
+                                    </td>
+                                    <td>
+                                        <span class="tag ${log.status === 'failed' ? 'is-danger' : 'is-warning'}">
+                                            ${log.status.toUpperCase()}
+                                        </span>
+                                    </td>
+                                    <td><strong>${log.agent}</strong></td>
+                                    <td>${log.action}</td>
+                                    <td>${log.message}</td>
+                                    <td>
+                                        ${log.details ? `
+                                            <div class="dropdown is-hoverable is-right">
+                                                <div class="dropdown-trigger">
+                                                    <button class="button is-small is-ghost" aria-haspopup="true" aria-controls="dropdown-menu-${new Date(log.timestamp).getTime()}">
+                                                        <span>View JSON</span>
+                                                        <span class="icon is-small">
+                                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-menu" id="dropdown-menu-${new Date(log.timestamp).getTime()}" role="menu">
+                                                    <div class="dropdown-content">
+                                                        <div class="dropdown-item">
+                                                            <pre class="is-size-7" style="max-height: 300px; overflow: auto; max-width: 400px;">${JSON.stringify(log.details, null, 2)}</pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ` : '-'}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Initial Load
+        fetchLogs();
+        // Poll every 10 seconds
+        setInterval(fetchLogs, 10000);
+
+        // Initialize Sidebar
+        if (window.initSidebar) window.initSidebar();
+    </script>
+</body>
+</html>

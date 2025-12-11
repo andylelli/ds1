@@ -195,7 +195,17 @@ export class LiveTrendAdapter {
                 throw error;
             // Check if it's a rate limit (HTML response)
             if (error.message && error.message.includes('Response starts with: <')) {
-                console.warn(`[LiveTrend] Google Trends returned HTML (likely Rate Limit). Retrying in ${delay * 2}ms...`);
+                const msg = `[LiveTrend] Google Trends returned HTML (likely Rate Limit). Retrying in ${delay * 2}ms...`;
+                console.warn(msg);
+                // Log to DB so it appears in Error Log
+                await this.activityLog.log({
+                    agent: 'ProductResearcher',
+                    action: 'google_trends_retry',
+                    category: 'system',
+                    status: 'warning',
+                    message: 'Google Trends Rate Limit detected (HTML response)',
+                    details: { error: error.message, retryDelay: delay * 2, retriesLeft: retries - 1 }
+                });
                 // Increase delay significantly for rate limits
                 await new Promise(resolve => setTimeout(resolve, delay * 2));
                 return this.retry(fn, retries - 1, delay * 4);
