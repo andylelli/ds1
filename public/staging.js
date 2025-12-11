@@ -1,278 +1,154 @@
-// Staging Review UI Script
-let sessions = [];
-let items = [];
-let selectedItems = new Set();
+async function refreshStaging() {
+    const container = document.getElementById('staging-container');
+    const btn = document.querySelector('button[onclick="refreshStaging()"]');
+    if(btn) btn.classList.add('is-loading');
 
-async function loadSessions() {
     try {
+        // Fetch Sessions
         const res = await fetch('/api/staging/sessions');
         const data = await res.json();
-        sessions = data.sessions;
-        
-        // Populate session filter
-        const filter = document.getElementById('sessionFilter');
-        filter.innerHTML = '<option value="">All Sessions</option>' + 
-            sessions.map(s => `<option value="${s.id}">${s.category} (${s.id})</option>`).join('');
-        
-        renderSessions();
-    } catch (error) {
-        console.error('Load sessions error:', error);
-    }
-}
+        const sessions = data.sessions || [];
 
-async function loadItems() {
-    try {
-        const sessionId = document.getElementById('sessionFilter').value;
-        const status = document.getElementById('statusFilter').value;
-        
-        let url = '/api/staging/items?';
-        if (sessionId) url += `sessionId=${sessionId}&`;
-        if (status) url += `status=${status}`;
-        
-        const res = await fetch(url);
-        const data = await res.json();
-        items = data.items;
-        
-        renderItems();
-        updatePendingBadge();
-    } catch (error) {
-        console.error('Load items error:', error);
-    }
-}
-
-async function updatePendingBadge() {
-    try {
-        const res = await fetch('/api/staging/pending');
-        const data = await res.json();
-        
-        const badge = document.getElementById('pendingBadge');
-        const count = document.getElementById('pendingCount');
-        
-        if (data.pendingCount > 0) {
-            badge.style.display = 'block';
-            count.textContent = data.pendingCount;
-        } else {
-            badge.style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Update pending badge error:', error);
-    }
-}
-
-function renderSessions() {
-    if (sessions.length === 0) {
-        const container = document.getElementById('sessionsContainer');
-        container.innerHTML = `
-            <div class="empty-state">
-                <h3>No research sessions yet</h3>
-                <p>Run a product discovery to see results here</p>
-            </div>
-        `;
-        return;
-    }
-    
-    // Show items table
-    renderItems();
-}
-
-function renderItems() {
-    const container = document.getElementById('sessionsContainer');
-    
-    if (items.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <h3>No items match your filters</h3>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = `
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" onchange="toggleAll(this)" /></th>
-                    <th>Product</th>
-                    <th>Confidence</th>
-                    <th>Source</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${items.map(item => renderItemRow(item)).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
-function renderItemRow(item) {
-    const confidenceClass = item.confidenceScore >= 70 ? 'high' : 
-                           item.confidenceScore >= 40 ? 'medium' : 'low';
-    
-    return `
-        <tr data-id="${item.id}">
-            <td>
-                <input type="checkbox" 
-                       ${item.status === 'pending' ? '' : 'disabled'} 
-                       onchange="toggleItem(${item.id})" 
-                       ${selectedItems.has(item.id) ? 'checked' : ''} />
-            </td>
-            <td>
-                <strong>${escapeHtml(item.name)}</strong>
-                <div class="trend-evidence">${escapeHtml(item.trendEvidence || '')}</div>
-            </td>
-            <td>
-                <div class="confidence-bar">
-                    <div class="confidence-fill confidence-${confidenceClass}" 
-                         style="width: ${item.confidenceScore}%"></div>
+        if (sessions.length === 0) {
+            container.innerHTML = `
+                <div class="box has-text-centered py-6">
+                    <p class="title is-4 has-text-grey">No research sessions found.</p>
+                    <p class="subtitle is-6 has-text-grey-light">Run a product research simulation to generate candidates.</p>
                 </div>
-                <span>${item.confidenceScore}%</span>
-            </td>
-            <td><span class="source-badge">${escapeHtml(item.source)}</span></td>
-            <td><span class="stat-badge stat-${item.status}">${item.status}</span></td>
-            <td class="action-buttons">
-                ${item.status === 'pending' ? `
-                    <button class="btn-sm btn-approve" onclick="approve(${item.id})">✓</button>
-                    <button class="btn-sm btn-reject" onclick="reject(${item.id})">✗</button>
-                    <button class="btn-sm btn-info" onclick="needInfo(${item.id})">?</button>
-                ` : `
-                    <span style="color: #8b949e; font-size: 12px;">
-                        ${item.reviewedBy ? `by ${escapeHtml(item.reviewedBy)}` : ''}
-                    </span>
-                `}
-            </td>
-        </tr>
+            `;
+            return;
+        }
+
+        // Fetch Items for all sessions (or we could do it per session)
+        // For simplicity, let's fetch all items and group them by session client-side
+        const itemsRes = await fetch('/api/staging/items');
+        const itemsData = await itemsRes.json();
+        const allItems = itemsData.items || [];
+
+        container.innerHTML = sessions.map(session => {
+            const sessionItems = allItems.filter(i => i.sessionId === session.id);
+            const pendingCount = sessionItems.filter(i => i.status === 'pending').length;
+            const approvedCount = sessionItems.filter(i => i.status === 'approved').length;
+            const rejectedCount = sessionItems.filter(i => i.status === 'rejected').length;
+
+            return `
+                <div class="card mb-5">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Session: ${session.id} (${session.category})
+                        </p>
+                        <div class="card-header-icon">
+                            <div class="tags has-addons">
+                                <span class="tag is-warning">${pendingCount} Pending</span>
+                                <span class="tag is-success">${approvedCount} Approved</span>
+                                <span class="tag is-danger">${rejectedCount} Rejected</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            ${renderItemsTable(sessionItems)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (e) {
+        console.error("Error loading staging data", e);
+        container.innerHTML = `<div class="notification is-danger">Error loading data: ${e.message}</div>`;
+    } finally {
+        if(btn) btn.classList.remove('is-loading');
+    }
+}
+
+function renderItemsTable(items) {
+    if (items.length === 0) return '<p class="has-text-grey has-text-centered">No items in this session.</p>';
+
+    return `
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Confidence</th>
+                        <th>Source</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map(item => {
+                        let statusClass = 'is-light';
+                        if (item.status === 'approved') statusClass = 'is-success';
+                        if (item.status === 'rejected') statusClass = 'is-danger';
+                        if (item.status === 'pending') statusClass = 'is-warning';
+
+                        let confidenceClass = 'is-success';
+                        if (item.confidence < 0.7) confidenceClass = 'is-warning';
+                        if (item.confidence < 0.4) confidenceClass = 'is-danger';
+
+                        return `
+                            <tr>
+                                <td>
+                                    <strong>${item.name}</strong>
+                                    <p class="is-size-7 has-text-grey">${item.description ? item.description.substring(0, 50) + '...' : ''}</p>
+                                </td>
+                                <td style="width: 150px;">
+                                    <progress class="progress ${confidenceClass} is-small mb-1" value="${item.confidence * 100}" max="100">${item.confidence * 100}%</progress>
+                                    <span class="is-size-7">${Math.round(item.confidence * 100)}%</span>
+                                </td>
+                                <td><span class="tag is-light is-small">${item.source}</span></td>
+                                <td><span class="tag ${statusClass}">${item.status}</span></td>
+                                <td>
+                                    <div class="buttons are-small">
+                                        ${item.status === 'pending' ? `
+                                            <button class="button is-success is-light" onclick="updateStatus('${item.id}', 'approved')">
+                                                <span class="icon"><i class="fas fa-check"></i></span>
+                                            </button>
+                                            <button class="button is-danger is-light" onclick="updateStatus('${item.id}', 'rejected')">
+                                                <span class="icon"><i class="fas fa-times"></i></span>
+                                            </button>
+                                        ` : ''}
+                                        <button class="button is-info is-light" onclick="showDetails('${item.id}')">
+                                            <span class="icon"><i class="fas fa-info"></i></span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
     `;
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function toggleItem(id) {
-    if (selectedItems.has(id)) {
-        selectedItems.delete(id);
-    } else {
-        selectedItems.add(id);
-    }
-    updateBulkActions();
-}
-
-function toggleAll(checkbox) {
-    if (checkbox.checked) {
-        items.filter(i => i.status === 'pending').forEach(i => selectedItems.add(i.id));
-    } else {
-        selectedItems.clear();
-    }
-    renderItems();
-    updateBulkActions();
-}
-
-function clearSelection() {
-    selectedItems.clear();
-    renderItems();
-    updateBulkActions();
-}
-
-function updateBulkActions() {
-    const bulkDiv = document.getElementById('bulkActions');
-    const countSpan = document.getElementById('selectedCount');
-    
-    if (selectedItems.size > 0) {
-        bulkDiv.style.display = 'flex';
-        countSpan.textContent = selectedItems.size;
-    } else {
-        bulkDiv.style.display = 'none';
-    }
-}
-
-async function approve(id) {
+async function updateStatus(itemId, status) {
     try {
-        await fetch(`/api/staging/items/${id}/approve`, { 
-            method: 'POST',
+        const res = await fetch(`/api/staging/items/${itemId}/status`, {
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reviewedBy: 'admin' })
+            body: JSON.stringify({ status })
         });
-        await loadItems();
-    } catch (error) {
-        console.error('Approve error:', error);
-        alert('Failed to approve item');
+        
+        if (res.ok) {
+            refreshStaging();
+        } else {
+            alert('Failed to update status');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error updating status');
     }
 }
 
-async function reject(id) {
-    const notes = prompt('Rejection reason (optional):');
-    try {
-        await fetch(`/api/staging/items/${id}/reject`, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reviewedBy: 'admin', notes })
-        });
-        await loadItems();
-    } catch (error) {
-        console.error('Reject error:', error);
-        alert('Failed to reject item');
-    }
+function showDetails(itemId) {
+    // Placeholder for details modal
+    alert('Details view coming soon for item: ' + itemId);
 }
 
-async function needInfo(id) {
-    const notes = prompt('What additional info is needed?');
-    if (!notes) return;
-    try {
-        await fetch(`/api/staging/items/${id}/need-info`, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reviewedBy: 'admin', notes })
-        });
-        await loadItems();
-    } catch (error) {
-        console.error('Need info error:', error);
-        alert('Failed to update item');
-    }
-}
-
-async function bulkApprove() {
-    try {
-        await fetch('/api/staging/bulk/approve', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemIds: Array.from(selectedItems), reviewedBy: 'admin' })
-        });
-        selectedItems.clear();
-        await loadItems();
-    } catch (error) {
-        console.error('Bulk approve error:', error);
-        alert('Failed to bulk approve');
-    }
-}
-
-async function bulkReject() {
-    try {
-        await fetch('/api/staging/bulk/reject', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ itemIds: Array.from(selectedItems), reviewedBy: 'admin' })
-        });
-        selectedItems.clear();
-        await loadItems();
-    } catch (error) {
-        console.error('Bulk reject error:', error);
-        alert('Failed to bulk reject');
-    }
-}
-
-function refresh() {
-    loadSessions();
-    loadItems();
-}
-
-// Initial load
-loadSessions();
-loadItems();
-
-// Auto-refresh every 30 seconds
-setInterval(updatePendingBadge, 30000);
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+    refreshStaging();
+});

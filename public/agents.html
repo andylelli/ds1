@@ -4,34 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Agent Monitor</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Sidebar -->
     <nav id="sidebar-container"></nav>
 
     <!-- Main Content -->
-    <div class="main">
-        <div class="page-header">
-            <h1 class="page-title">Agent Network Status</h1>
-            <div class="badge badge-green">Live Monitoring</div>
-        </div>
-
-        <div class="master-detail">
-            <!-- Agent List -->
-            <div class="agent-list" id="agentList">
-                <div style="padding:1rem; text-align:center; color: #6b7280;">Loading agents...</div>
+    <main class="main-content">
+        <div class="level mb-5">
+            <div class="level-left">
+                <div class="level-item">
+                    <div>
+                        <h1 class="title is-3">Agent Network Status</h1>
+                        <p class="subtitle is-6 has-text-grey">Real-time monitoring of autonomous agents</p>
+                    </div>
+                </div>
             </div>
-
-            <!-- Agent Details -->
-            <div class="agent-details" id="agentDetails">
-                <div class="card" style="text-align: center; padding: 3rem;">
-                    <p style="color: #6b7280;">Select an agent to view details</p>
+            <div class="level-right">
+                <div class="level-item">
+                    <span class="tag is-success is-medium">Live Monitoring</span>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div class="columns">
+            <!-- Agent List (Sidebar) -->
+            <div class="column is-one-third">
+                <nav class="panel is-info">
+                    <p class="panel-heading">
+                        Agents
+                    </p>
+                    <div id="agentList">
+                        <div class="panel-block has-text-grey-light is-italic">
+                            Loading agents...
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Agent Details -->
+            <div class="column">
+                <div id="agentDetails">
+                    <div class="card">
+                        <div class="card-content has-text-centered">
+                            <p class="has-text-grey is-size-5">Select an agent to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="sidebar.js"></script>
     <script>
         let agents = [];
         let logs = [];
@@ -61,10 +88,17 @@
         function renderSidebar() {
             const list = document.getElementById('agentList');
             list.innerHTML = agents.map(agent => `
-                <div class="agent-item ${selectedAgentId === agent.id ? 'active' : ''}" onclick="selectAgent('${agent.id}')">
-                    <span class="agent-name">${agent.name}</span>
-                    <span class="agent-role">${agent.role}</span>
-                </div>
+                <a class="panel-block ${selectedAgentId === agent.id ? 'is-active has-background-white-ter has-text-weight-bold' : ''}" onclick="selectAgent('${agent.id}')">
+                    <span class="panel-icon">
+                        <i class="fas fa-robot" aria-hidden="true"></i>
+                    </span>
+                    <div style="width: 100%;">
+                        <div class="is-flex is-justify-content-space-between">
+                            <span>${agent.name}</span>
+                            <span class="tag is-light is-small">${agent.role}</span>
+                        </div>
+                    </div>
+                </a>
             `).join('');
         }
 
@@ -94,48 +128,56 @@
             );
 
             container.innerHTML = `
-                <div class="card">
-                    <h2>${agent.name}</h2>
-                    <p style="color: #4b5563;"><strong>Role:</strong> ${agent.role}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div class="card">
-                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">📡 Inputs (Topics)</h3>
-                        <div class="tag-container">
-                            ${agent.subscriptions.map(sub => `<span class="tag tag-sub">${sub}</span>`).join('')}
+                <div class="card mb-5">
+                    <header class="card-header">
+                        <p class="card-header-title is-size-4">
+                            ${agent.name}
+                        </p>
+                        <div class="card-header-icon">
+                            <span class="tag is-info is-light is-medium">${agent.role}</span>
                         </div>
-                        <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Events this agent listens for.</div>
-                    </div>
-                    
-                    <div class="card">
-                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">⚡ Outputs (Capabilities)</h3>
-                        <div class="tag-container">
-                            ${agent.capabilities.map(cap => `<span class="tag tag-cap">${cap}</span>`).join('')}
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            <p><strong>Status:</strong> <span class="has-text-success">Active</span></p>
+                            <p><strong>Last Active:</strong> ${new Date().toLocaleTimeString()}</p>
                         </div>
-                        <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Actions this agent can perform.</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">🌐 External Endpoints</h3>
-                    <div class="tag-container">
-                        ${(agent.externalEndpoints || []).map(ext => `<span class="tag tag-ext">${ext}</span>`).join('')}
-                    </div>
-                    <div style="margin-top:0.5rem; font-size:0.8rem; color:#6b7280;">Third-party APIs and services this agent interacts with.</div>
-                </div>
-
-                <div class="card" style="flex:1; display:flex; flex-direction:column;">
-                    <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">📜 Activity Log</h3>
-                    <div id="agentLogs">
-                        ${agentLogs.length > 0 ? agentLogs.map(log => `
-                            <div class="log-entry">
-                                <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
-                                <span class="log-level-${log.level || 'info'}">[${(log.level || 'INFO').toUpperCase()}]</span>
-                                <span class="log-msg">${log.message || log.type}</span>
-                                ${log.data ? `<pre style="font-size:0.8em; color:#9ca3af; margin-top:0.25rem;">${JSON.stringify(log.data).substring(0, 100)}...</pre>` : ''}
-                            </div>
-                        `).join('') : '<div style="padding:1rem; color:#6b7280;">No recent activity found.</div>'}
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Recent Activity Log
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="content">
+                            ${agentLogs.length > 0 ? `
+                                <div class="table-container">
+                                    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Message</th>
+                                                <th>Data</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${agentLogs.reverse().slice(0, 50).map(log => `
+                                                <tr>
+                                                    <td class="is-size-7" style="white-space: nowrap;">${new Date(log.timestamp).toLocaleTimeString()}</td>
+                                                    <td>${log.message}</td>
+                                                    <td>
+                                                        ${log.data ? `<pre class="is-size-7 p-1" style="max-height: 60px; overflow: auto;">${JSON.stringify(log.data)}</pre>` : '-'}
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ` : '<p class="has-text-grey has-text-centered py-4">No recent logs found for this agent.</p>'}
+                        </div>
                     </div>
                 </div>
             `;
@@ -143,10 +185,11 @@
 
         // Initial Load
         fetchData();
-        // Poll for updates
-        setInterval(fetchData, 5000);
+        // Poll every 3 seconds
+        setInterval(fetchData, 3000);
 
+        // Initialize Sidebar
+        if (window.initSidebar) window.initSidebar();
     </script>
-    <script src="sidebar.js"></script>
 </body>
 </html>

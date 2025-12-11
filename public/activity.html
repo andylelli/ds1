@@ -4,184 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 - Activity Log</title>
-    <link rel="stylesheet" href="/admin.css">
+    <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .activity-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .filter-bar {
-            background: #1c2128;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-bar select,
-        .filter-bar input {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .filter-bar button {
-            padding: 8px 16px;
-            background: #238636;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .filter-bar button:hover {
-            background: #2ea043;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: #1c2128;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #8b949e;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 600;
-            color: #58a6ff;
-        }
-
-        .activity-log {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .log-entry {
-            border-bottom: 1px solid #21262d;
-            padding: 16px;
-            display: grid;
-            grid-template-columns: 140px 100px 120px 1fr 100px;
-            gap: 16px;
-            align-items: start;
-            transition: background 0.2s;
-        }
-
-        .log-entry:hover {
-            background: #161b22;
-        }
-
-        .log-timestamp {
-            font-size: 12px;
-            color: #8b949e;
-        }
-
-        .log-agent {
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .log-category {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .category-research { background: #1f6feb; color: #fff; }
-        .category-sourcing { background: #f0ad4e; color: #000; }
-        .category-store { background: #28a745; color: #fff; }
-        .category-marketing { background: #e91e63; color: #fff; }
-        .category-operations { background: #9c27b0; color: #fff; }
-        .category-ceo { background: #ff4444; color: #fff; }
-        .category-system { background: #6c757d; color: #fff; }
-
-        .log-message {
-            font-size: 14px;
-            color: #c9d1d9;
-            line-height: 1.5;
-        }
-
-        .log-action {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 4px;
-        }
-
-        .log-status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .status-completed { background: #238636; color: #fff; }
-        .status-started { background: #1f6feb; color: #fff; }
-        .status-failed { background: #da3633; color: #fff; }
-        .status-warning { background: #d29922; color: #000; }
-
-        .log-details {
-            font-size: 12px;
-            color: #8b949e;
-            margin-top: 8px;
-            padding: 8px;
-            background: #0d1117;
+        .log-details pre {
+            background-color: #f5f5f5;
+            padding: 0.5rem;
             border-radius: 4px;
-            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
             max-height: 150px;
             overflow-y: auto;
-        }
-
-        .auto-refresh {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .auto-refresh input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8b949e;
-        }
-
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
         }
     </style>
 </head>
@@ -190,90 +23,139 @@
     <nav id="sidebar-container"></nav>
 
     <!-- Main Content -->
-    <main class="main">
-        <div class="activity-header">
-            <div>
-                <h1 class="page-title">📊 Activity Log</h1>
-                <p class="subtitle">Real-time visibility into all agent activities and system events</p>
+    <main class="main-content">
+        <div class="level mb-5">
+            <div class="level-left">
+                <div class="level-item">
+                    <div>
+                        <h1 class="title is-3">System Activity</h1>
+                        <p class="subtitle is-6 has-text-grey">Comprehensive log of all system events</p>
+                    </div>
+                </div>
             </div>
-            <div class="auto-refresh">
-                <input type="checkbox" id="autoRefresh" checked>
-                <label for="autoRefresh">Auto-refresh (5s)</label>
-            </div>
-        </div>
-
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="stat-label">Total Activities (24h)</div>
-                <div class="stat-value" id="statTotal">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Research</div>
-                <div class="stat-value" id="statResearch">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Marketing</div>
-                <div class="stat-value" id="statMarketing">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Operations</div>
-                <div class="stat-value" id="statOperations">0</div>
+            <div class="level-right">
+                <div class="level-item">
+                    <button class="button is-primary" onclick="refreshLogs()">
+                        <span class="icon"><i class="fas fa-sync"></i></span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="filter-bar">
-            <select id="filterAgent">
-                <option value="">All Agents</option>
-                <option value="CEO">CEO</option>
-                <option value="Research">Research</option>
-                <option value="Supplier">Supplier</option>
-                <option value="Store">Store</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Support">Support</option>
-                <option value="Operations">Operations</option>
-                <option value="Analytics">Analytics</option>
-            </select>
-
-            <select id="filterCategory">
-                <option value="">All Categories</option>
-                <option value="research">Research</option>
-                <option value="sourcing">Sourcing</option>
-                <option value="store">Store</option>
-                <option value="marketing">Marketing</option>
-                <option value="operations">Operations</option>
-                <option value="ceo">CEO</option>
-                <option value="system">System</option>
-            </select>
-
-            <select id="filterStatus">
-                <option value="">All Statuses</option>
-                <option value="completed">Completed</option>
-                <option value="started">Started</option>
-                <option value="failed">Failed</option>
-                <option value="warning">Warning</option>
-            </select>
-
-            <input type="number" id="filterLimit" placeholder="Limit" value="50" min="10" max="500" step="10" style="width: 100px;">
-
-            <button onclick="loadActivities()">🔍 Apply Filters</button>
-            <button onclick="clearFilters()" style="background: #6c757d;">Clear</button>
+        <!-- Stats -->
+        <div class="columns mb-5">
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="heading">Total Events</p>
+                    <p class="title" id="stat-total">0</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="heading">Errors</p>
+                    <p class="title has-text-danger" id="stat-errors">0</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="heading">Active Agents</p>
+                    <p class="title has-text-info" id="stat-agents">0</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box has-text-centered">
+                    <p class="heading">Last 24h</p>
+                    <p class="title has-text-success" id="stat-recent">0</p>
+                </div>
+            </div>
         </div>
 
-        <div class="activity-log" id="activityLog">
-            <div class="empty-state">
-                <div class="empty-state-icon">⏳</div>
-                <div>Loading activity log...</div>
+        <!-- Filters -->
+        <div class="box mb-5">
+            <div class="columns is-multiline">
+                <div class="column is-one-quarter">
+                    <div class="field">
+                        <label class="label">Agent</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="filter-agent">
+                                    <option value="">All Agents</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-one-quarter">
+                    <div class="field">
+                        <label class="label">Level</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select id="filter-level">
+                                    <option value="">All Levels</option>
+                                    <option value="info">Info</option>
+                                    <option value="warn">Warning</option>
+                                    <option value="error">Error</option>
+                                    <option value="debug">Debug</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-one-quarter">
+                    <div class="field">
+                        <label class="label">Search</label>
+                        <div class="control">
+                            <input class="input" type="text" id="filter-search" placeholder="Search messages...">
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-one-quarter">
+                    <div class="field">
+                        <label class="label">&nbsp;</label>
+                        <div class="control">
+                            <button class="button is-info is-fullwidth" onclick="applyFilters()">Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Table -->
+        <div class="card">
+            <div class="card-content">
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Level</th>
+                                <th>Agent</th>
+                                <th>Message</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log-container">
+                            <tr><td colspan="5" class="has-text-centered">Loading logs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous" onclick="prevPage()">Previous</a>
+                    <a class="pagination-next" onclick="nextPage()">Next</a>
+                    <ul class="pagination-list">
+                        <li><span class="pagination-link is-current" id="page-indicator">1</span></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </main>
 
-    <script src="/sidebar.js"></script>
+    <script src="activity.js"></script>
+    <script src="sidebar.js"></script>
     <script>
-        // Initialize sidebar
-        document.addEventListener('DOMContentLoaded', () => {
-            initSidebar();
-        });
+        // Initialize sidebar if available
+        if (window.initSidebar) window.initSidebar();
     </script>
-    <script src="/activity.js"></script>
 </body>
 </html>

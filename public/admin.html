@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Control Panel</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -12,188 +14,335 @@
     <nav id="sidebar-container"></nav>
 
     <!-- Main Content -->
-    <main class="main">
+    <main class="main-content">
         <!-- SIMULATION -->
-        <div id="simulation" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">Simulation Control</h1>
+        <div id="simulation" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">Simulation Control</h1>
+                    </div>
+                </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+            <div class="columns">
                 <!-- Simulation Control & Logs -->
-                <div style="display: flex; flex-direction: column; gap: 1rem; min-width: 0;">
-                    <div class="card">
-                        <h2>Run Simulation</h2>
-                        <p style="margin-bottom: 1.5rem; color: #6b7280;">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button onclick="startSimulation()">▶ Start New Simulation</button>
-                            <button class="secondary" onclick="clearSimulationDb()">🗑️ Clear Sim DB</button>
-                            <button class="secondary" onclick="clearLogDisplay()">🧹 Clear Logs</button>
-                            <button class="secondary" onclick="showAllLogs()">📜 Show History</button>
+                <div class="column is-full">
+                    <div class="card mb-5">
+                        <div class="card-content">
+                            <h2 class="title is-5">Run Simulation</h2>
+                            <p class="subtitle is-6 has-text-grey">Trigger a full end-to-end product lifecycle simulation: Research -> Sourcing -> Store -> Ads -> Sales.</p>
+                            <div class="buttons">
+                                <button class="button is-primary" onclick="startSimulation()">
+                                    <span class="icon"><i class="fas fa-play"></i></span>
+                                    <span>Start New Simulation</span>
+                                </button>
+                                <button class="button" onclick="clearSimulationDb()">
+                                    <span class="icon"><i class="fas fa-trash"></i></span>
+                                    <span>Clear Sim DB</span>
+                                </button>
+                                <button class="button" onclick="clearLogDisplay()">
+                                    <span class="icon"><i class="fas fa-broom"></i></span>
+                                    <span>Clear Logs</span>
+                                </button>
+                                <button class="button" onclick="showAllLogs()">
+                                    <span class="icon"><i class="fas fa-scroll"></i></span>
+                                    <span>Show History</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="card" style="display: flex; flex-direction: column; min-width: 0;">
-                        <h2 style="margin-bottom: 0.5rem; border: none;">Simulation Logs</h2>
-                        <div id="logViewer" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; min-width: 0;">Waiting for logs...</div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="title is-5">Simulation Logs</h2>
+                            <div id="logViewer" class="box has-background-dark has-text-light" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; font-family: monospace;">Waiting for logs...</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- CEO CHAT -->
-        <div id="ceo-chat" class="tab-content hidden">
-            <div class="page-header">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <h1 class="page-title">Chat with CEO</h1>
-                    <span id="ceoModeBadge" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #e5e7eb; color: #6b7280;">Loading...</span>
-                </div>
-                <span style="color: #6b7280; font-size: 0.9rem;">Direct line to the Chief Executive Agent</span>
-            </div>
-            <div class="chat-container">
-                <div id="chatHistory" class="chat-history">
-                    <div class="chat-message ceo">
-                        <div class="sender-name">CEO Agent</div>
-                        Hello. I am ready to discuss business strategy, approve products, or review performance metrics. How can I assist you today?
+        <div id="ceo-chat" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div>
+                            <h1 class="title is-3 mb-2">Chat with CEO</h1>
+                            <p class="subtitle is-6 has-text-grey">Direct line to the Chief Executive Agent</p>
+                        </div>
+                    </div>
+                    <div class="level-item">
+                        <span id="ceoModeBadge" class="tag is-light">Loading...</span>
                     </div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="ceoChatInput" placeholder="Type your message here..." onkeypress="handleChatKey(event)">
-                    <button onclick="sendCeoMessage()">Send</button>
+            </div>
+
+            <div class="card">
+                <div class="card-content">
+                    <div id="chatHistory" class="box" style="height: 500px; overflow-y: auto; background-color: #f5f7fa;">
+                        <div class="chat-message ceo">
+                            <div class="has-text-weight-bold mb-1">CEO Agent</div>
+                            Hello. I am ready to discuss business strategy, approve products, or review performance metrics. How can I assist you today?
+                        </div>
+                    </div>
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" id="ceoChatInput" placeholder="Type your message here..." onkeypress="handleChatKey(event)">
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary" onclick="sendCeoMessage()">Send</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- PRODUCTS -->
-        <div id="products" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">Winning Products</h1>
-                <button onclick="fetchProducts()">🔄 Refresh</button>
+        <div id="products" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">Winning Products</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="button" onclick="fetchProducts()">
+                            <span class="icon"><i class="fas fa-sync"></i></span>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card">
-                <div id="productsList" class="table-container">Loading...</div>
+                <div class="card-content">
+                    <div id="productsList" class="table-container">Loading...</div>
+                </div>
             </div>
         </div>
 
         <!-- ORDERS -->
-        <div id="orders" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">Order History</h1>
-                <button onclick="fetchOrders()">🔄 Refresh</button>
+        <div id="orders" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">Order History</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="button" onclick="fetchOrders()">
+                            <span class="icon"><i class="fas fa-sync"></i></span>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card">
-                <div id="ordersList" class="table-container">Loading...</div>
+                <div class="card-content">
+                    <div id="ordersList" class="table-container">Loading...</div>
+                </div>
             </div>
         </div>
 
         <!-- ADS -->
-        <div id="ads" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">Ad Campaigns</h1>
-                <button onclick="fetchAds()">🔄 Refresh</button>
+        <div id="ads" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">Ad Campaigns</h1>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="button" onclick="fetchAds()">
+                            <span class="icon"><i class="fas fa-sync"></i></span>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card">
-                <div id="adsList" class="table-container">
-                    <p style="color: #6b7280; text-align: center; padding: 2rem;">No active ad campaigns found.</p>
+                <div class="card-content">
+                    <div id="adsList" class="table-container">
+                        <p class="has-text-centered has-text-grey p-6">No active ad campaigns found.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- SETTINGS -->
-        <div id="settings" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">System Settings</h1>
+        <div id="settings" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">System Settings</h1>
+                    </div>
+                </div>
             </div>
-            <div class="card" style="max-width: 600px;">
-                <h2>Environment Configuration</h2>
-                
-                <label for="dbMode">Database Mode</label>
-                <select id="dbMode">
-                    <option value="test">Test (PostgreSQL Simulator Database)</option>
-                    <option value="live">Live (PostgreSQL Production Database)</option>
-                </select>
-                <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
-                    Select which database the system should use for operations.
-                </p>
-                
-                <label for="logLevel" style="margin-top: 1.5rem;">Log Level</label>
-                <select id="logLevel">
-                    <option value="debug">Debug (Verbose)</option>
-                    <option value="info">Info (Standard)</option>
-                    <option value="warn">Warning</option>
-                    <option value="error">Error Only</option>
-                </select>
+            <div class="columns">
+                <div class="column is-half">
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="title is-5">Environment Configuration</h2>
+                            
+                            <div class="field">
+                                <label class="label" for="dbMode">Database Mode</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="dbMode">
+                                            <option value="test">Test (PostgreSQL Simulator Database)</option>
+                                            <option value="live">Live (PostgreSQL Production Database)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p class="help">Select which database the system should use for operations.</p>
+                            </div>
+                            
+                            <div class="field mt-4">
+                                <label class="label" for="logLevel">Log Level</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="logLevel">
+                                            <option value="debug">Debug (Verbose)</option>
+                                            <option value="info">Info (Standard)</option>
+                                            <option value="warn">Warning</option>
+                                            <option value="error">Error Only</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div style="margin-top: 2rem;">
-                    <button onclick="saveConfig()">💾 Save & Apply Changes</button>
+                            <div class="field mt-5">
+                                <div class="control">
+                                    <button class="button is-primary" onclick="saveConfig()">
+                                        <span class="icon"><i class="fas fa-save"></i></span>
+                                        <span>Save & Apply Changes</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- DATABASE -->
-        <div id="database" class="tab-content hidden">
-            <div class="page-header">
-                <h1 class="page-title">Database Inspector</h1>
+        <div id="database" class="tab-content is-hidden">
+            <div class="level mb-5">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h1 class="title is-3">Database Inspector</h1>
+                    </div>
+                </div>
             </div>
             
             <!-- Docker Status Card -->
-            <div class="card" style="margin-bottom: 1rem;">
-                <h2 style="margin-bottom: 1.5rem;">PostgreSQL Database Container</h2>
-                
-                <div style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
-                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <div id="dbStatusIndicator" style="width: 12px; height: 12px; border-radius: 50%; background: #9ca3af;"></div>
-                            <span id="dbStatusText" style="font-weight: 600; color: #6b7280;">Checking...</span>
+            <div class="card mb-5">
+                <div class="card-content">
+                    <h2 class="title is-5">PostgreSQL Database Container</h2>
+                    
+                    <div class="box has-background-white-ter">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <span id="dbStatusIndicator" class="tag is-light mr-2"></span>
+                                    <span id="dbStatusText" class="has-text-weight-bold has-text-grey">Checking...</span>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <div class="buttons">
+                                        <button class="button is-small" onclick="startDocker()">
+                                            <span class="icon is-small"><i class="fas fa-play"></i></span>
+                                            <span>Start</span>
+                                        </button>
+                                        <button class="button is-small" onclick="stopDocker()">
+                                            <span class="icon is-small"><i class="fas fa-stop"></i></span>
+                                            <span>Stop</span>
+                                        </button>
+                                        <button class="button is-small" onclick="checkDockerStatus()">
+                                            <span class="icon is-small"><i class="fas fa-sync"></i></span>
+                                            <span>Refresh</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button onclick="startDocker()" style="padding: 8px 16px; font-size: 0.875rem;">▶ Start</button>
-                            <button onclick="stopDocker()" class="secondary" style="padding: 8px 16px; font-size: 0.875rem;">⏹ Stop</button>
-                            <button onclick="checkDockerStatus()" class="secondary" style="padding: 8px 16px; font-size: 0.875rem;">🔄 Refresh</button>
+                        <div class="is-size-7 has-text-grey pt-2" style="border-top: 1px solid #dbdbdb;">
+                            <strong>Databases:</strong> dropship (Live), dropship_sim (Simulator)
                         </div>
-                    </div>
-                    <div style="font-size: 0.875rem; color: #6b7280; padding-top: 0.5rem; border-top: 1px solid #e5e7eb;">
-                        <strong>Databases:</strong> dropship (Live), dropship_sim (Simulator)
                     </div>
                 </div>
             </div>
             
             <div class="card">
-                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <label>Source</label>
-                        <select id="dbSelector" onchange="fetchDbTopics(); fetchDbData()" style="margin-bottom: 0;">
-                            <option value="live">Live Database</option>
-                            <option value="sim">Simulator Database</option>
-                        </select>
+                <div class="card-content">
+                    <div class="columns is-multiline mb-4">
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">Source</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="dbSelector" onchange="fetchDbTopics(); fetchDbData()">
+                                            <option value="live">Live Database</option>
+                                            <option value="sim">Simulator Database</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">Table</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="dbTableSelector" onchange="handleTableChange()">
+                                            <option value="events">Events</option>
+                                            <option value="products">Products</option>
+                                            <option value="orders">Orders</option>
+                                            <option value="ads">Ads</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">Topic Filter</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="dbTopicFilter" onchange="fetchDbData()">
+                                            <option value="">All Topics</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-one-quarter">
+                            <div class="field">
+                                <label class="label">&nbsp;</label>
+                                <div class="control">
+                                    <button class="button is-fullwidth" onclick="fetchDbData()">
+                                        <span class="icon"><i class="fas fa-sync"></i></span>
+                                        <span>Refresh Data</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <label>Table</label>
-                        <select id="dbTableSelector" onchange="handleTableChange()" style="margin-bottom: 0;">
-                            <option value="events">Events</option>
-                            <option value="products">Products</option>
-                            <option value="orders">Orders</option>
-                            <option value="ads">Ads</option>
-                        </select>
-                    </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <label>Topic Filter</label>
-                        <select id="dbTopicFilter" onchange="fetchDbData()" style="margin-bottom: 0;">
-                            <option value="">All Topics</option>
-                        </select>
-                    </div>
-                    <div style="display: flex; align-items: flex-end;">
-                        <button onclick="fetchDbData()" style="height: 42px;">🔄 Refresh Data</button>
-                    </div>
+                    <div id="dbEventsList" class="table-container">Loading...</div>
                 </div>
-                <div id="dbEventsList" class="table-container">Loading...</div>
             </div>
         </div>
 
     </main>
 
-    <div id="statusMessage" class="status-msg" style="display: none;"></div>
+    <div id="statusMessage" class="notification is-hidden" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
 
+    <script src="sidebar.js"></script>
     <script>
         let logInterval = null;
         let logStartTime = 0;
@@ -209,10 +358,10 @@
             }
 
             // Update Content
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('is-hidden'));
             const tab = document.getElementById(tabId);
             if (tab) {
-                tab.classList.remove('hidden');
+                tab.classList.remove('is-hidden');
             }
 
             // Handle Simulation Logs
@@ -288,7 +437,7 @@
                 const viewer = document.getElementById('logViewer');
                 
                 if (filteredLogs.length === 0) {
-                    viewer.innerHTML = `<div style="padding:1rem; color: #e6edf3;">No new logs...</div>`;
+                    viewer.innerHTML = `<div class="p-4 has-text-grey">No new logs...</div>`;
                     return;
                 }
 
@@ -296,11 +445,11 @@
                 const wasAtTop = viewer.scrollTop < 50;
                 
                 viewer.innerHTML = filteredLogs.reverse().map(log => `
-                    <div class="log-entry">
-                        <span class="log-time">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
-                        <span class="log-agent">${log.agent}</span>
-                        <span class="log-msg">${log.message}</span>
-                        ${log.data ? `<pre style="font-size:0.75em; color:#e6edf3; margin-top:0.2rem; margin-bottom:0;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                    <div class="mb-1">
+                        <span class="has-text-grey-light">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
+                        <span class="has-text-info has-text-weight-bold">${log.agent}</span>
+                        <span class="has-text-light">${log.message}</span>
+                        ${log.data ? `<pre class="has-background-black-ter has-text-grey-lighter is-size-7 mt-1 p-2" style="border-radius: 4px;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
                     </div>
                 `).join('');
                 
@@ -317,20 +466,20 @@
             try {
                 const res = await fetch('/api/products');
                 const products = await res.json();
-                if (products.length === 0) { list.innerHTML = '<p style="padding:1rem">No products found.</p>'; return; }
+                if (products.length === 0) { list.innerHTML = '<p class="has-text-centered has-text-grey p-4">No products found.</p>'; return; }
 
-                let html = `<table><thead><tr><th>Name</th><th>Potential</th><th>Margin</th><th>Found At</th></tr></thead><tbody>`;
+                let html = `<table class="table is-fullwidth is-striped is-hoverable"><thead><tr><th>Name</th><th>Potential</th><th>Margin</th><th>Found At</th></tr></thead><tbody>`;
                 products.forEach(p => {
                     html += `<tr>
                         <td><strong>${p.name}</strong></td>
-                        <td><span class="badge badge-green">${p.potential}</span></td>
+                        <td><span class="tag is-success">${p.potential}</span></td>
                         <td>${p.margin}</td>
                         <td>${new Date(p.timestamp).toLocaleString()}</td>
                     </tr>`;
                 });
                 html += '</tbody></table>';
                 list.innerHTML = html;
-            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
+            } catch (e) { list.innerHTML = `<p class="has-text-danger">Error: ${e.message}</p>`; }
         }
 
         async function fetchOrders() {
@@ -338,22 +487,22 @@
             try {
                 const res = await fetch('/api/orders');
                 const orders = await res.json();
-                if (orders.length === 0) { list.innerHTML = '<p style="padding:1rem">No orders found.</p>'; return; }
+                if (orders.length === 0) { list.innerHTML = '<p class="has-text-centered has-text-grey p-4">No orders found.</p>'; return; }
 
-                let html = `<table><thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                let html = `<table class="table is-fullwidth is-striped is-hoverable"><thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
                 orders.forEach(o => {
-                    const badgeClass = o.status === 'shipped' ? 'badge-blue' : 'badge-yellow';
+                    const badgeClass = o.status === 'shipped' ? 'is-info' : 'is-warning';
                     html += `<tr>
                         <td>${o.id}</td>
                         <td>${o.product}</td>
                         <td>$${o.amount}</td>
-                        <td><span class="badge ${badgeClass}">${o.status}</span></td>
+                        <td><span class="tag ${badgeClass}">${o.status}</span></td>
                         <td>${new Date(o.timestamp).toLocaleString()}</td>
                     </tr>`;
                 });
                 html += '</tbody></table>';
                 list.innerHTML = html;
-            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
+            } catch (e) { list.innerHTML = `<p class="has-text-danger">Error: ${e.message}</p>`; }
         }
 
         async function fetchAds() {
@@ -361,22 +510,22 @@
             try {
                 const res = await fetch('/api/ads');
                 const ads = await res.json();
-                if (ads.length === 0) { list.innerHTML = '<p style="padding:1rem">No active ad campaigns found.</p>'; return; }
+                if (ads.length === 0) { list.innerHTML = '<p class="has-text-centered has-text-grey p-4">No active ad campaigns found.</p>'; return; }
 
-                let html = `<table><thead><tr><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                let html = `<table class="table is-fullwidth is-striped is-hoverable"><thead><tr><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
                 ads.forEach(a => {
-                    const badgeClass = a.status === 'active' ? 'badge-green' : 'badge-gray';
+                    const badgeClass = a.status === 'active' ? 'is-success' : 'is-light';
                     html += `<tr>
                         <td>${a.platform}</td>
                         <td>${a.product}</td>
                         <td>$${a.budget}</td>
-                        <td><span class="badge ${badgeClass}">${a.status}</span></td>
+                        <td><span class="tag ${badgeClass}">${a.status}</span></td>
                         <td>${new Date(a.timestamp).toLocaleString()}</td>
                     </tr>`;
                 });
                 html += '</tbody></table>';
                 list.innerHTML = html;
-            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
+            } catch (e) { list.innerHTML = `<p class="has-text-danger">Error: ${e.message}</p>`; }
         }
 
         // --- Database ---
@@ -384,10 +533,10 @@
             const table = document.getElementById('dbTableSelector').value;
             const topicFilter = document.getElementById('dbTopicFilter');
             if (table === 'events') {
-                topicFilter.parentElement.style.display = 'block';
+                topicFilter.parentElement.parentElement.parentElement.style.display = 'block';
                 fetchDbTopics();
             } else {
-                topicFilter.parentElement.style.display = 'none';
+                topicFilter.parentElement.parentElement.parentElement.style.display = 'none';
             }
             fetchDbData();
         }
@@ -417,9 +566,9 @@
                 const res = await fetch(url);
                 const data = await res.json();
                 
-                if (data.length === 0) { list.innerHTML = '<p style="padding:1rem">No records found.</p>'; return; }
+                if (data.length === 0) { list.innerHTML = '<p class="has-text-centered has-text-grey p-4">No records found.</p>'; return; }
 
-                let html = '<table><thead><tr>';
+                let html = '<table class="table is-fullwidth is-striped is-hoverable"><thead><tr>';
                 if (table === 'events') html += '<th>ID</th><th>Topic</th><th>Type</th><th>Payload</th><th>Time</th>';
                 else if (table === 'products') html += '<th>ID</th><th>Name</th><th>Price</th><th>Margin</th><th>Time</th>';
                 else if (table === 'orders') html += '<th>ID</th><th>Product ID</th><th>Amount</th><th>Status</th><th>Time</th>';
@@ -430,13 +579,13 @@
                 data.forEach(row => {
                     html += '<tr>';
                     if (table === 'events') {
-                        html += `<td>${row.id}</td><td><span class="badge badge-blue">${row.topic}</span></td><td>${row.type}</td>
-                            <td><pre style="font-size:0.8em; margin:0; max-height:100px; overflow:auto;">${JSON.stringify(row.payload, null, 2)}</pre></td>
+                        html += `<td>${row.id}</td><td><span class="tag is-info">${row.topic}</span></td><td>${row.type}</td>
+                            <td><pre class="is-size-7" style="max-height:100px; overflow:auto;">${JSON.stringify(row.payload, null, 2)}</pre></td>
                             <td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'products') {
                         html += `<td>${row.id}</td><td><strong>${row.name}</strong></td><td>$${row.price}</td><td>${row.margin}</td><td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'orders') {
-                        html += `<td>${row.id}</td><td>${row.product_id}</td><td>$${row.amount}</td><td><span class="badge badge-yellow">${row.status}</span></td><td>${new Date(row.created_at).toLocaleString()}</td>`;
+                        html += `<td>${row.id}</td><td>${row.product_id}</td><td>$${row.amount}</td><td><span class="tag is-warning">${row.status}</span></td><td>${new Date(row.created_at).toLocaleString()}</td>`;
                     } else if (table === 'ads') {
                         html += `<td>${row.id}</td><td>${row.platform}</td><td>${row.product}</td><td>$${row.budget}</td><td>${row.status}</td>`;
                     } else {
@@ -446,7 +595,7 @@
                 });
                 html += '</tbody></table>';
                 list.innerHTML = html;
-            } catch (e) { list.innerHTML = `<p class="error">Error fetching data: ${e.message}</p>`; }
+            } catch (e) { list.innerHTML = `<p class="has-text-danger">Error fetching data: ${e.message}</p>`; }
         }
 
         // --- CEO Chat ---
@@ -497,7 +646,7 @@
             if (isTemp) div.id = 'msg-' + Date.now();
             
             const name = sender === 'user' ? 'You' : 'CEO Agent';
-            div.innerHTML = `<div class="sender-name">${name}</div>${text}`;
+            div.innerHTML = `<div class="has-text-weight-bold mb-1">${name}</div>${text}`;
             
             history.appendChild(div);
             history.scrollTop = history.scrollHeight;
@@ -523,16 +672,16 @@
                 } else {
                     // Default tab based on mode
                     if (currentMode === 'simulation') {
-                        switchTab('simulation');
+                        window.location.hash = 'simulation';
                     } else {
-                        switchTab('products');
+                        window.location.hash = 'products';
                     }
                 }
 
                 // Initialize Sidebar (it will fetch config again but that's fine)
                 if (window.initSidebar) window.initSidebar();
 
-            } catch (e) { showStatus('Failed to load configuration.', 'status-error'); }
+            } catch (e) { showStatus('Failed to load configuration.', 'is-danger'); }
         }
 
         async function saveConfig() {
@@ -546,9 +695,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(newConfig)
                 });
-                if (res.ok) showStatus('Configuration saved successfully!', 'status-success');
-                else showStatus('Error saving configuration.', 'status-error');
-            } catch (e) { showStatus('Network error.', 'status-error'); }
+                if (res.ok) showStatus('Configuration saved successfully!', 'is-success');
+                else showStatus('Error saving configuration.', 'is-danger');
+            } catch (e) { showStatus('Network error.', 'is-danger'); }
         }
 
         function updateCeoModeBadge(mode) {
@@ -556,12 +705,14 @@
             if (badge) {
                 if (mode === 'live') {
                     badge.textContent = 'CEO: Live (Azure OpenAI)';
-                    badge.style.background = '#10b981';
-                    badge.style.color = '#fff';
+                    badge.className = 'tag is-success';
+                    badge.style.background = ''; // Reset inline styles
+                    badge.style.color = '';
                 } else {
                     badge.textContent = 'CEO: Mock (Simulated)';
-                    badge.style.background = '#f59e0b';
-                    badge.style.color = '#fff';
+                    badge.className = 'tag is-warning';
+                    badge.style.background = '';
+                    badge.style.color = '';
                 }
             }
         }
@@ -569,7 +720,7 @@
         function showStatus(msg, type) {
             const el = document.getElementById('statusMessage');
             el.textContent = msg;
-            el.className = 'status-msg ' + type;
+            el.className = 'notification ' + (type === 'success' ? 'is-success' : 'is-danger');
             el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 3000);
         }
@@ -590,17 +741,17 @@
             const text = document.getElementById('dbStatusText');
             
             if (running === true) {
-                indicator.style.background = '#10b981';
+                indicator.className = 'tag is-success mr-2';
                 text.textContent = 'Running';
-                text.style.color = '#10b981';
+                text.className = 'has-text-success has-text-weight-bold';
             } else if (running === false) {
-                indicator.style.background = '#ef4444';
+                indicator.className = 'tag is-danger mr-2';
                 text.textContent = 'Stopped';
-                text.style.color = '#ef4444';
+                text.className = 'has-text-danger has-text-weight-bold';
             } else {
-                indicator.style.background = '#9ca3af';
+                indicator.className = 'tag is-light mr-2';
                 text.textContent = 'Unknown';
-                text.style.color = '#9ca3af';
+                text.className = 'has-text-grey has-text-weight-bold';
             }
         }
 
@@ -609,9 +760,9 @@
             const text = document.getElementById('dbStatusText');
             
             try {
-                indicator.style.background = '#f59e0b';
+                indicator.className = 'tag is-warning mr-2';
                 text.textContent = 'Starting...';
-                text.style.color = '#f59e0b';
+                text.className = 'has-text-warning has-text-weight-bold';
                 
                 const res = await fetch('/api/docker/start', { method: 'POST' });
                 const data = await res.json();
@@ -631,9 +782,9 @@
             const text = document.getElementById('dbStatusText');
             
             try {
-                indicator.style.background = '#f59e0b';
+                indicator.className = 'tag is-warning mr-2';
                 text.textContent = 'Stopping...';
-                text.style.color = '#f59e0b';
+                text.className = 'has-text-warning has-text-weight-bold';
                 
                 const res = await fetch('/api/docker/stop', { method: 'POST' });
                 const data = await res.json();
@@ -650,14 +801,17 @@
 
         // Init
         loadConfig();
+        // Initialize Sidebar explicitly
+        if (window.initSidebar) window.initSidebar();
+
         // Handle hash changes
         window.addEventListener('hashchange', () => {
             const hash = window.location.hash.substring(1);
             if (hash && document.getElementById(hash)) {
                 switchTab(hash);
+                if (window.highlightSidebar) window.highlightSidebar();
             }
         });
     </script>
-    <script src="sidebar.js"></script>
 </body>
 </html>

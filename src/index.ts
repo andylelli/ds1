@@ -115,6 +115,7 @@ const container = new Container(configPath);
     app.get('/api/config', (req, res) => {
       res.json({
         mode: mode,
+        useSimulatedEndpoints: mode === 'simulation',
         ...container.getConfig()
       });
     });

@@ -4,40 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS1 Social Feed</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/overrides.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Sidebar -->
     <nav id="sidebar-container"></nav>
 
     <!-- Main Content -->
-    <div class="main">
-        <div class="page-header">
-            <h1 class="page-title">Ad Campaign Preview</h1>
-            <div class="badge badge-green">Live Feed</div>
-        </div>
-
-        <div class="phone-wrapper">
-            <div class="phone-container">
-                <div class="phone-notch"></div>
-                <header class="app-header">
-                    <h1>Social Feed</h1>
-                    <div style="font-size: 0.8rem; color: #aaa;">12:45</div>
-                </header>
-
-                <div class="tabs">
-                    <div class="tab active tiktok" onclick="filterFeed('tiktok')">TikTok</div>
-                    <div class="tab facebook" onclick="filterFeed('facebook')">FB</div>
-                    <div class="tab instagram" onclick="filterFeed('instagram')">Insta</div>
+    <main class="main-content">
+        <div class="level mb-5">
+            <div class="level-left">
+                <div class="level-item">
+                    <div>
+                        <h1 class="title is-3">Ad Campaign Preview</h1>
+                        <p class="subtitle is-6 has-text-grey">Live feed of generated social media ads</p>
+                    </div>
                 </div>
-
-                <div id="feed" class="feed">
-                    <div class="empty-state">Loading ads...</div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <span class="tag is-success is-medium">Live Feed</span>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <div class="phone-wrapper">
+                    <div class="phone-container">
+                        <div class="phone-notch"></div>
+                        <header class="app-header">
+                            <h1>Social Feed</h1>
+                            <div style="font-size: 0.8rem; color: #aaa;">12:45</div>
+                        </header>
+
+                        <div class="tabs is-fullwidth is-toggle is-toggle-rounded is-small px-2 mt-2 mb-0" style="background: #000;">
+                            <ul>
+                                <li class="is-active" data-tab="tiktok" onclick="filterFeed('tiktok')">
+                                    <a>
+                                        <span class="icon is-small"><i class="fab fa-tiktok"></i></span>
+                                        <span>TikTok</span>
+                                    </a>
+                                </li>
+                                <li data-tab="facebook" onclick="filterFeed('facebook')">
+                                    <a>
+                                        <span class="icon is-small"><i class="fab fa-facebook"></i></span>
+                                        <span>FB</span>
+                                    </a>
+                                </li>
+                                <li data-tab="instagram" onclick="filterFeed('instagram')">
+                                    <a>
+                                        <span class="icon is-small"><i class="fab fa-instagram"></i></span>
+                                        <span>Insta</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="feed" class="feed">
+                            <div class="has-text-centered has-text-grey p-6">Loading ads...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="sidebar.js"></script>
     <script>
         let allAds = [];
         let currentPlatform = 'tiktok';
@@ -49,14 +84,14 @@
                 allAds = await res.json();
 
                 if (allAds.length === 0) {
-                    feed.innerHTML = '<div class="empty-state">No active campaigns.<br>Run a simulation to launch ads.</div>';
+                    feed.innerHTML = '<div class="has-text-centered has-text-grey p-6">No active campaigns.<br>Run a simulation to launch ads.</div>';
                     return;
                 }
 
                 renderFeed();
 
             } catch (e) {
-                feed.innerHTML = `<div class="empty-state" style="color:red">Error: ${e.message}</div>`;
+                feed.innerHTML = `<div class="has-text-centered has-text-danger p-6">Error: ${e.message}</div>`;
             }
         }
 
@@ -64,9 +99,9 @@
             currentPlatform = platform;
             
             // Update tabs
-            document.querySelectorAll('.tab').forEach(t => {
-                t.classList.remove('active');
-                if (t.classList.contains(platform)) t.classList.add('active');
+            document.querySelectorAll('.tabs li').forEach(t => {
+                t.classList.remove('is-active');
+                if (t.dataset.tab === platform) t.classList.add('is-active');
             });
 
             renderFeed();
@@ -77,7 +112,7 @@
             const filteredAds = allAds.filter(ad => ad.platform.toLowerCase() === currentPlatform);
 
             if (filteredAds.length === 0) {
-                feed.innerHTML = `<div class="empty-state">No ads found for ${currentPlatform}.</div>`;
+                feed.innerHTML = `<div class="has-text-centered has-text-grey p-6">No ads found for ${currentPlatform}.</div>`;
                 return;
             }
 
@@ -101,11 +136,9 @@
                                 <div class="avatar" style="background-image: url('${avatarUrl}')"></div>
                                 <div class="username">${username}</div>
                             </div>
-                            <div class="caption">
-                                ${ad.headline} <br>
-                                <span class="tags">#fyp #viral #tiktok #musthave</span>
-                            </div>
-                            <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now 🛍️</button>
+                            <div class="caption mb-2">${ad.copy}</div>
+                            <div class="tags">#${ad.product.replace(/\s+/g, '')} #fyp #viral</div>
+                            <button class="cta-btn">Shop Now</button>
                         </div>
                     </div>`;
                 } else if (platform === 'facebook') {
@@ -113,43 +146,48 @@
                     <div class="post facebook">
                         <div class="user-info">
                             <div class="avatar" style="background-image: url('${avatarUrl}')"></div>
-                            <div>
-                                <div class="username">${ad.product}</div>
-                                <div style="font-size: 0.75rem; color: #65676b;">Sponsored · 🌍</div>
+                            <div style="flex:1">
+                                <div class="username">${username}</div>
+                                <div class="fb-header">Sponsored · 🌍</div>
                             </div>
-                            <div class="fb-header">...</div>
+                            <div>...</div>
                         </div>
-                        <div class="caption">${ad.headline}</div>
+                        <div class="caption">${ad.copy}</div>
                         <img src="${bgImage}" alt="Ad Image">
-                        <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now</button>
+                        <div style="background:#f0f2f5; padding: 10px; display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-size:0.8rem; color:#65676b">${ad.product}</div>
+                            <button class="cta-btn" style="width:auto; margin:0;">Shop Now</button>
+                        </div>
                     </div>`;
                 } else if (platform === 'instagram') {
                     return `
                     <div class="post instagram">
                         <div class="user-info">
                             <div style="display:flex; align-items:center">
-                                <div class="avatar" style="width:30px; height:30px; background-image: url('${avatarUrl}')"></div>
+                                <div class="avatar" style="background-image: url('${avatarUrl}')"></div>
                                 <div class="username">${username}</div>
                             </div>
                             <div>...</div>
                         </div>
                         <img src="${bgImage}" alt="Ad Image">
                         <div class="actions-bar">
-                            <span>❤️</span> <span>💬</span> <span>🚀</span>
+                            <span>❤️</span><span>💬</span><span>🚀</span>
                         </div>
                         <div class="caption">
-                            <strong>${username}</strong> ${ad.headline} <br>
-                            <span style="color:#0095f6">#ad #sponsored</span>
+                            <strong>${username}</strong> ${ad.copy}
+                            <br><span style="color:#8e8e8e; font-size:0.8rem;">#${ad.product.replace(/\s+/g, '')}</span>
                         </div>
-                        <button class="cta-btn" onclick="window.location.href='shop.html'">Shop Now</button>
+                        <button class="cta-btn">Shop Now</button>
                     </div>`;
                 }
-                return '';
             }).join('');
         }
 
+        // Init
         loadAds();
+        if (window.initSidebar) window.initSidebar();
     </script>
-    <script src="sidebar.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 </html>

@@ -1,140 +1,134 @@
-let autoRefreshInterval = null;
+let currentPage = 1;
+const itemsPerPage = 20;
+let allActivities = [];
 
-async function loadActivities() {
-    console.log('[Activity Log] Loading activities...');
+async function refreshLogs() {
+    const btn = document.querySelector('button[onclick="refreshLogs()"]');
+    if(btn) btn.classList.add('is-loading');
+
     try {
-        const agent = document.getElementById('filterAgent').value;
-        const category = document.getElementById('filterCategory').value;
-        const status = document.getElementById('filterStatus').value;
-        const limit = document.getElementById('filterLimit').value || 50;
-
-        const params = new URLSearchParams();
-        if (agent) params.append('agent', agent);
-        if (category) params.append('category', category);
-        if (status) params.append('status', status);
-        params.append('limit', limit);
-
-        const url = `/api/activity?${params}`;
-        console.log('[Activity Log] Fetching from:', url);
+        // 1. Fetch Stats
+        const statsRes = await fetch('/api/activity/stats?hours=24');
+        const stats = await statsRes.json();
         
-        const response = await fetch(url);
-        console.log('[Activity Log] Response status:', response.status);
-        
-        const data = await response.json();
-        console.log('[Activity Log] Received data:', data);
+        document.getElementById('stat-total').textContent = stats.total || 0;
+        document.getElementById('stat-errors').textContent = stats.byStatus?.error || 0;
+        document.getElementById('stat-agents').textContent = Object.keys(stats.byAgent || {}).length;
+        document.getElementById('stat-recent').textContent = stats.total || 0; // Simplified for now
 
-        renderActivities(data.activities);
-    } catch (error) {
-        console.error('[Activity Log] Failed to load activities:', error);
-        document.getElementById('activityLog').innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">❌</div>
-                <div>Failed to load activities: ${error.message}</div>
-            </div>
-        `;
+        // 2. Fetch Logs
+        const agent = document.getElementById('filter-agent').value;
+        const level = document.getElementById('filter-level').value; // Note: API uses 'status' or 'category', need to map if needed
+        
+        let url = '/api/activity?limit=100';
+        if (agent) url += `&agent=${encodeURIComponent(agent)}`;
+        // if (level) url += `&status=${encodeURIComponent(level)}`; // Assuming level maps to status or category
+
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        allActivities = data.activities || [];
+        
+        // Populate Agent Filter if empty
+        const agentSelect = document.getElementById('filter-agent');
+        if (agentSelect.options.length === 1) {
+            const agents = [...new Set(allActivities.map(a => a.agent))].sort();
+            agents.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a;
+                agentSelect.appendChild(opt);
+            });
+        }
+
+        applyFilters(); // This will trigger render
+
+    } catch (e) {
+        console.error("Error fetching activity logs", e);
+        document.getElementById('log-container').innerHTML = `<tr><td colspan="5" class="has-text-danger has-text-centered">Error loading logs: ${e.message}</td></tr>`;
+    } finally {
+        if(btn) btn.classList.remove('is-loading');
     }
 }
 
-async function loadStats() {
-    console.log('[Activity Log] Loading stats...');
-    try {
-        const response = await fetch('/api/activity/stats?hours=24');
-        const stats = await response.json();
-        console.log('[Activity Log] Stats:', stats);
+function applyFilters() {
+    const search = document.getElementById('filter-search').value.toLowerCase();
+    const level = document.getElementById('filter-level').value.toLowerCase();
+    
+    let filtered = allActivities;
 
-        document.getElementById('statTotal').textContent = stats.total || 0;
-        document.getElementById('statResearch').textContent = stats.byCategory?.research || 0;
-        document.getElementById('statMarketing').textContent = stats.byCategory?.marketing || 0;
-        document.getElementById('statOperations').textContent = stats.byCategory?.operations || 0;
-    } catch (error) {
-        console.error('[Activity Log] Failed to load stats:', error);
+    if (search) {
+        filtered = filtered.filter(a => 
+            (a.message && a.message.toLowerCase().includes(search)) ||
+            (a.agent && a.agent.toLowerCase().includes(search)) ||
+            (a.action && a.action.toLowerCase().includes(search))
+        );
     }
+
+    if (level) {
+        // Mapping 'level' filter to 'status' or 'category' if needed. 
+        // For now, let's assume 'status' holds success/error/info
+        filtered = filtered.filter(a => a.status && a.status.toLowerCase() === level);
+    }
+
+    renderTable(filtered);
 }
 
-function renderActivities(activities) {
-    console.log('[Activity Log] Rendering activities:', activities?.length || 0);
-    const container = document.getElementById('activityLog');
+function renderTable(items) {
+    const tbody = document.getElementById('log-container');
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = items.slice(start, end);
 
-    if (!activities || activities.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <div>No activities found</div>
-                <div style="font-size: 12px; margin-top: 8px;">Try adjusting your filters or run a simulation</div>
-            </div>
-        `;
+    document.getElementById('page-indicator').textContent = currentPage;
+
+    if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="has-text-centered has-text-grey">No logs found.</td></tr>`;
         return;
     }
 
-    const html = activities.map(activity => {
-        const timestamp = new Date(activity.timestamp).toLocaleString();
-        const categoryClass = `category-${activity.category}`;
-        const statusClass = `status-${activity.status}`;
-
-        let detailsHtml = '';
-        if (activity.details && Object.keys(activity.details).length > 0) {
-            detailsHtml = `
-                <div class="log-details">
-                    ${JSON.stringify(activity.details, null, 2)}
-                </div>
-            `;
-        }
+    tbody.innerHTML = pageItems.map(item => {
+        let levelClass = 'is-info';
+        if (item.status === 'error' || item.status === 'failure') levelClass = 'is-danger';
+        else if (item.status === 'warning') levelClass = 'is-warning';
+        else if (item.status === 'success') levelClass = 'is-success';
 
         return `
-            <div class="log-entry">
-                <div class="log-timestamp">${timestamp}</div>
-                <div class="log-agent">${activity.agent}</div>
-                <div class="log-category ${categoryClass}">${activity.category}</div>
-                <div>
-                    <div class="log-action">${activity.action}</div>
-                    <div class="log-message">${activity.message}</div>
-                    ${detailsHtml}
-                </div>
-                <div class="log-status ${statusClass}">${activity.status}</div>
-            </div>
+            <tr>
+                <td class="is-size-7" style="white-space:nowrap;">${new Date(item.timestamp).toLocaleString()}</td>
+                <td><span class="tag ${levelClass} is-light">${item.status || 'info'}</span></td>
+                <td><strong>${item.agent}</strong></td>
+                <td>
+                    <div class="has-text-weight-medium">${item.action}</div>
+                    <div class="is-size-7">${item.message}</div>
+                </td>
+                <td class="log-details">
+                    ${item.details && Object.keys(item.details).length > 0 
+                        ? `<pre>${JSON.stringify(item.details, null, 2)}</pre>` 
+                        : '<span class="has-text-grey-light">-</span>'}
+                </td>
+            </tr>
         `;
     }).join('');
-
-    container.innerHTML = html;
 }
 
-function clearFilters() {
-    document.getElementById('filterAgent').value = '';
-    document.getElementById('filterCategory').value = '';
-    document.getElementById('filterStatus').value = '';
-    document.getElementById('filterLimit').value = '50';
-    loadActivities();
-}
-
-function setupAutoRefresh() {
-    const checkbox = document.getElementById('autoRefresh');
-    
-    checkbox.addEventListener('change', () => {
-        if (checkbox.checked) {
-            autoRefreshInterval = setInterval(() => {
-                loadActivities();
-                loadStats();
-            }, 5000);
-        } else {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
-        }
-    });
-
-    // Start auto-refresh if checked
-    if (checkbox.checked) {
-        autoRefreshInterval = setInterval(() => {
-            loadActivities();
-            loadStats();
-        }, 5000);
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        applyFilters();
     }
 }
 
-// Initialize
+function nextPage() {
+    if ((currentPage * itemsPerPage) < allActivities.length) {
+        currentPage++;
+        applyFilters();
+    }
+}
+
+// Init
 document.addEventListener('DOMContentLoaded', () => {
-    loadActivities();
-    loadStats();
-    setupAutoRefresh();
+    refreshLogs();
+    // Auto refresh every 10s
+    setInterval(refreshLogs, 10000);
 });

@@ -9,85 +9,66 @@ async function initSidebar() {
         const isSim = config.mode === 'simulation';
 
         let html = `
-    <div class="sidebar-header">
-        <span>🎛️ DS1 Control</span>
-        <span style="font-size: 0.7em; opacity: 0.7; display: block; margin-top: 4px;">${isSim ? 'SIMULATION' : 'LIVE'} MODE</span>
-    </div>`;
+    <div class="p-4 mb-2">
+        <h1 class="title is-5 has-text-grey-dark mb-0">
+            <span class="icon-text">
+                <span class="icon"><i class="fas fa-gamepad"></i></span>
+                <span>DS1 Control</span>
+            </span>
+        </h1>
+        <p class="is-size-7 has-text-grey pl-5">${isSim ? 'SIMULATION' : 'LIVE'} MODE</p>
+    </div>
+    <aside class="menu p-4 pt-0">`;
 
         if (isSim) {
             html += `
-    <div class="nav-section">
-        <div class="nav-label">Simulation</div>
-        <a href="/admin.html#simulation" class="nav-item" data-tab="simulation">
-            <span>▶️</span> <span>Run Simulation</span>
-        </a>
-        <a href="/staging.html" class="nav-item" data-page="staging.html">
-            <span>🔍</span> <span>Staging Review</span>
-        </a>
-    </div>`;
+        <p class="menu-label">Simulation</p>
+        <ul class="menu-list">
+            <li><a href="/admin.html#simulation" class="nav-item" data-tab="simulation"><span class="icon"><i class="fas fa-play"></i></span> Run Simulation</a></li>
+            <li><a href="/staging.html" class="nav-item" data-page="staging.html"><span class="icon"><i class="fas fa-magnifying-glass"></i></span> Staging Review</a></li>
+        </ul>`;
         }
 
         html += `
-    <div class="nav-section">
-        <div class="nav-label">Business</div>
-        <a href="/admin.html#products" class="nav-item" data-tab="products">
-            <span>📦</span> <span>Products</span>
-        </a>
-        <a href="/admin.html#orders" class="nav-item" data-tab="orders">
-            <span>🛒</span> <span>Orders</span>
-        </a>
-        <a href="/admin.html#ads" class="nav-item" data-tab="ads">
-            <span>📢</span> <span>Ads Campaigns</span>
-        </a>
-        <a href="/shop.html" class="nav-item" data-page="shop.html">
-            <span>🛍️</span> <span>Shop</span>
-        </a>
-        <a href="/social.html" class="nav-item" data-page="social.html">
-            <span>📱</span> <span>Social Feed</span>
-        </a>
-    </div>
+        <p class="menu-label">Business</p>
+        <ul class="menu-list">
+            <li><a href="/admin.html#products" class="nav-item" data-tab="products"><span class="icon"><i class="fas fa-box"></i></span> Products</a></li>
+            <li><a href="/admin.html#orders" class="nav-item" data-tab="orders"><span class="icon"><i class="fas fa-cart-shopping"></i></span> Orders</a></li>
+            <li><a href="/admin.html#ads" class="nav-item" data-tab="ads"><span class="icon"><i class="fas fa-bullhorn"></i></span> Ads Campaigns</a></li>
+            <li><a href="/shop.html" class="nav-item" data-page="shop.html"><span class="icon"><i class="fas fa-store"></i></span> Shop</a></li>
+            <li><a href="/social.html" class="nav-item" data-page="social.html"><span class="icon"><i class="fas fa-mobile-screen"></i></span> Social Feed</a></li>
+        </ul>
 
-    <div class="nav-section">
-        <div class="nav-label">Executive</div>
-        <a href="/admin.html#ceo-chat" class="nav-item" data-tab="ceo-chat">
-            <span style="color: red;">☎️</span> <span>Chat with CEO</span>
-        </a>
-    </div>
+        <p class="menu-label">Executive</p>
+        <ul class="menu-list">
+            <li><a href="/admin.html#ceo-chat" class="nav-item" data-tab="ceo-chat"><span class="icon has-text-danger"><i class="fas fa-phone"></i></span> Chat with CEO</a></li>
+        </ul>
 
-    <div class="nav-section">
-        <div class="nav-label">System</div>
-        <a href="/activity.html" class="nav-item" data-page="activity.html">
-            <span>📊</span> <span>Activity Log</span>
-        </a>
-        <a href="/infra.html" class="nav-item" data-page="infra.html">
-            <span>🏗️</span> <span>Infra Manager</span>
-        </a>
-        <a href="/agents.html" class="nav-item" data-page="agents.html">
-            <span>🤖</span> <span>Agent Monitor</span>
-        </a>
-        <a href="/admin.html#settings" class="nav-item" data-tab="settings">
-            <span>⚙️</span> <span>Settings</span>
-        </a>
-        <a href="/admin.html#database" class="nav-item" data-tab="database">
-            <span>🗄️</span> <span>Database Inspector</span>
-        </a>
-    </div>
+        <p class="menu-label">System</p>
+        <ul class="menu-list">
+            <li><a href="/activity.html" class="nav-item" data-page="activity.html"><span class="icon"><i class="fas fa-chart-line"></i></span> Activity Log</a></li>
+            <li><a href="/infra.html" class="nav-item" data-page="infra.html"><span class="icon"><i class="fas fa-server"></i></span> Infra Manager</a></li>
+            <li><a href="/agents.html" class="nav-item" data-page="agents.html"><span class="icon"><i class="fas fa-robot"></i></span> Agent Monitor</a></li>
+            <li><a href="/admin.html#settings" class="nav-item" data-tab="settings"><span class="icon"><i class="fas fa-gear"></i></span> Settings</a></li>
+            <li><a href="/admin.html#database" class="nav-item" data-tab="database"><span class="icon"><i class="fas fa-database"></i></span> Database Inspector</a></li>
+        </ul>
+    </aside>
 
-    <div class="sidebar-footer">
-        <div style="font-size: 0.8rem; color: #6b7280;">
+    <div class="p-4 mt-auto">
+        <div class="is-size-7 has-text-grey">
             DS1 v1.0
         </div>
     </div>`;
 
         container.innerHTML = html;
-        if (!container.classList.contains('sidebar')) {
-            container.classList.add('sidebar');
-        }
+        // Remove old class if present
+        container.classList.remove('sidebar');
+        
         highlightSidebar();
 
     } catch (e) {
         console.error("Failed to load sidebar config", e);
-        container.innerHTML = `<div style="padding:1rem; color:red;">Error loading sidebar</div>`;
+        container.innerHTML = `<div class="notification is-danger">Error loading sidebar</div>`;
     }
 }
 
@@ -97,7 +78,7 @@ function highlightSidebar() {
     const page = path.split('/').pop() || 'admin.html';
 
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
+        item.classList.remove('is-active'); // Bulma active class
         
         const dataPage = item.getAttribute('data-page');
         const dataTab = item.getAttribute('data-tab');
@@ -105,17 +86,16 @@ function highlightSidebar() {
         // Logic for Admin Page Tabs
         if ((page === 'admin.html' || page === '') && dataTab) {
             if (dataTab === hash) {
-                item.classList.add('active');
+                item.classList.add('is-active');
             } else if (!hash && dataTab === 'simulation') {
-                // Only default to simulation if it exists (it might not in live mode)
                 if (document.querySelector('a[data-tab="simulation"]')) {
-                    item.classList.add('active');
+                    item.classList.add('is-active');
                 }
             }
         } 
         // Logic for Other Pages
         else if (dataPage === page) {
-            item.classList.add('active');
+            item.classList.add('is-active');
         }
     });
 }

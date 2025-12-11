@@ -52,7 +52,7 @@ This document tracks the development status of the system, organized by function
 | **Mock Shop** | ✅ | - | `shop.html`: Simulates product page and conversion flow. |
 | **Social Feed** | ✅ | - | `social.html`: Simulates TikTok/FB/IG feeds with ads. |
 | **Platform Tabs** | ✅ | - | UI to switch between social platforms in the feed. |
-| **Sidebar Navigation** | ✅ | - | Unified `sidebar.js` and `admin.css` for consistent layout. |
+| **Sidebar Navigation** | ✅ | - | Unified `sidebar.js` and `bulma.css` for consistent layout. |
 | **Analytics Dashboard** | ❌ | 🤖 Agent | **New**: Visual charts for Revenue, Profit, ROAS, and Traffic sources. |
 | **Live Session Viewer** | ❌ | 🤖 Agent | **New**: Real-time view of simulated customers browsing the store. |
 | **Email/SMS Inbox** | ❌ | 🤖 Agent | **New**: UI to view marketing emails and support tickets sent by agents. |

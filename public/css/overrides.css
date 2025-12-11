@@ -1,0 +1,137 @@
+:root {
+    --sidebar-width: 260px;
+    --sidebar-bg: #ffffff;
+}
+
+html, body {
+    height: 100%;
+    background-color: #f5f7fa;
+}
+
+/* Fixed Sidebar */
+#sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Content Wrapper */
+.main-content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* Bulma Menu Overrides (Light Theme) */
+.menu-label {
+    color: #6b7280; /* Gray-500 */
+    padding-left: 0.75em;
+    margin-top: 1em;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.menu-list a {
+    color: #374151; /* Gray-700 (Dark Grey) */
+    border-radius: 4px;
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+}
+
+.menu-list a:hover {
+    background-color: #f3f4f6; /* Gray-100 (Light Grey) */
+    color: #111827; /* Gray-900 (Black) */
+}
+
+.menu-list a.is-active {
+    background-color: #00d1b2; /* Bulma Primary */
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Utility */
+.has-text-gray-light { color: #d1d5db !important; }
+.is-hidden { display: none !important; }
+
+/* Chat Bubble Overrides (Keep existing logic but adapt) */
+.chat-message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    max-width: 80%;
+}
+.chat-message.user {
+    background-color: #eff6ff; /* Blue-50 */
+    margin-left: auto;
+    border: 1px solid #bfdbfe;
+}
+.chat-message.ceo {
+    background-color: white;
+    margin-right: auto;
+    border: 1px solid #e5e7eb;
+}
+
+/* Social Phone Simulator */
+.phone-wrapper { display: flex; justify-content: center; align-items: flex-start; padding: 2rem; min-height: calc(100vh - 4rem); }
+.phone-container { 
+    width: 100%; max-width: 375px; background: #000; height: 812px; 
+    border-radius: 40px; border: 12px solid #1f2937; position: relative; 
+    overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex; flex-direction: column;
+}
+.phone-notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 30px; background: #1f2937;
+    border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 100;
+}
+.app-header { 
+    padding: 3rem 1rem 1rem; background: #121212; display: flex; 
+    justify-content: space-between; align-items: center; z-index: 10; 
+    color: white; border-bottom: 1px solid #333;
+}
+.app-header h1 { font-size: 1.1rem; margin: 0; font-weight: 600; color: white; }
+.feed { flex: 1; overflow-y: auto; background: #000; scrollbar-width: none; }
+.feed::-webkit-scrollbar { display: none; }
+.post { margin-bottom: 1px; position: relative; background: #222; overflow: hidden; }
+.user-info { display: flex; align-items: center; padding: 10px; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: #ddd; margin-right: 10px; background-size: cover; }
+.username { font-weight: 600; font-size: 0.9rem; }
+.cta-btn { border: none; padding: 0.8rem; width: 100%; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s; }
+.cta-btn:hover { opacity: 0.9; }
+
+/* Social - TikTok */
+.post.tiktok { height: 100%; display: flex; flex-direction: column; justify-content: center; position: relative; }
+.post.tiktok .post-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+.post.tiktok .post-content { position: relative; z-index: 2; padding: 1rem; margin-top: auto; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: white; }
+.post.tiktok .tags { color: #fe2c55; font-weight: bold; }
+.post.tiktok .actions { position: absolute; right: 10px; bottom: 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 3; color: white; }
+.post.tiktok .action-btn { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; backdrop-filter: blur(4px); }
+.post.tiktok .cta-btn { background: #fe2c55; color: white; margin-top: 0.5rem; border-radius: 4px; }
+
+/* Social - Facebook */
+.post.facebook { background: #fff; color: #1c1e21; margin-bottom: 8px; }
+.post.facebook .user-info { padding: 12px; }
+.post.facebook .username { color: #050505; }
+.post.facebook .caption { padding: 0 12px 12px; font-size: 0.9rem; line-height: 1.4; }
+.post.facebook img { width: 100%; height: auto; display: block; }
+.post.facebook .cta-btn { background: #e4e6eb; color: #050505; margin: 12px; width: calc(100% - 24px); border-radius: 6px; }
+.post.facebook .fb-header { color: #65676b; font-size: 0.8rem; margin-left: auto; }
+
+/* Social - Instagram */
+.post.instagram { background: #000; color: white; border-bottom: 1px solid #333; }
+.post.instagram .user-info { padding: 10px; justify-content: space-between; }
+.post.instagram img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.post.instagram .actions-bar { padding: 10px; display: flex; gap: 15px; font-size: 1.5rem; }
+.post.instagram .caption { padding: 0 10px 10px; font-size: 0.9rem; }
+.post.instagram .cta-btn { background: #0095f6; color: white; margin: 0 10px 10px; width: calc(100% - 20px); border-radius: 4px; padding: 0.5rem; }
+
