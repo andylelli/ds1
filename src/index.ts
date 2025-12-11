@@ -175,7 +175,6 @@ const container = new Container(configPath);
     });
 
     app.get('/api/ads', async (req, res) => {
-      console.log("GET /api/ads called");
       try {
         const ads = await db.getCampaigns();
         res.json(ads);
@@ -300,6 +299,10 @@ const container = new Container(configPath);
 
     // --- Simulation API ---
     app.post('/api/simulation/start', async (req, res) => {
+      if (mode !== 'simulation') {
+        res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+        return;
+      }
       console.log("Starting simulation flow...");
       
       // Async background task
@@ -309,6 +312,10 @@ const container = new Container(configPath);
     });
 
     app.post('/api/simulation/clear', async (req, res) => {
+      if (mode !== 'simulation') {
+        res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+        return;
+      }
       console.log("Clearing simulation database...");
       try {
         await simulationService.clearSimulationData();

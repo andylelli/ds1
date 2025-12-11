@@ -207,9 +207,11 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
-  async getRecentLogs(limit: number): Promise<any[]> {
+  async getRecentLogs(limit: number, source?: string): Promise<any[]> {
     const mode = configService.get('dbMode');
-    const pool = mode === 'test' ? this.simPool : this.pgPool;
+    
+    const useSimPool = source === 'sim' || (!source && mode === 'test');
+    const pool = useSimPool ? this.simPool : this.pgPool;
 
     if (!pool) {
       return [];
@@ -231,7 +233,7 @@ export class PostgresAdapter implements PersistencePort {
         timestamp: row.created_at
       }));
     } catch (e: any) {
-      console.error(`Failed to fetch logs from PG (${mode}):`, e.message || e);
+      console.error(`Failed to fetch logs from PG (${useSimPool ? 'sim' : 'live'}):`, e.message || e);
       console.error('Full error:', e);
       return [];
     }

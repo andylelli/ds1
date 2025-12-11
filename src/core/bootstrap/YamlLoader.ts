@@ -41,7 +41,13 @@ export class YamlLoader {
       throw new Error(`Configuration file not found at: ${filePath}`);
     }
     try {
-      const fileContents = fs.readFileSync(filePath, 'utf8');
+      let fileContents = fs.readFileSync(filePath, 'utf8');
+      
+      // Simple environment variable substitution
+      fileContents = fileContents.replace(/\$\{([^}]+)\}/g, (_, envVar) => {
+        return process.env[envVar] || '';
+      });
+
       return yaml.load(fileContents) as T;
     } catch (error) {
       throw new Error(`Failed to parse YAML file at ${filePath}: ${(error as Error).message}`);

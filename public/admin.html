@@ -44,7 +44,10 @@
         <!-- CEO CHAT -->
         <div id="ceo-chat" class="tab-content hidden">
             <div class="page-header">
-                <h1 class="page-title">Chat with CEO</h1>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <h1 class="page-title">Chat with CEO</h1>
+                    <span id="ceoModeBadge" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: #e5e7eb; color: #6b7280;">Loading...</span>
+                </div>
                 <span style="color: #6b7280; font-size: 0.9rem;">Direct line to the Chief Executive Agent</span>
             </div>
             <div class="chat-container">
@@ -198,6 +201,13 @@
 
         // --- Navigation ---
         function switchTab(tabId) {
+            // Access Control
+            if (tabId === 'simulation' && currentMode !== 'simulation') {
+                console.warn('Access denied to simulation tab in live mode');
+                switchTab('products');
+                return;
+            }
+
             // Update Content
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             const tab = document.getElementById(tabId);
@@ -347,10 +357,26 @@
         }
 
         async function fetchAds() {
-             // Placeholder for Ads fetching logic
-             const list = document.getElementById('adsList');
-             // For now, just show empty state or mock data if available
-             // list.innerHTML = ...
+            const list = document.getElementById('adsList');
+            try {
+                const res = await fetch('/api/ads');
+                const ads = await res.json();
+                if (ads.length === 0) { list.innerHTML = '<p style="padding:1rem">No active ad campaigns found.</p>'; return; }
+
+                let html = `<table><thead><tr><th>Platform</th><th>Product</th><th>Budget</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                ads.forEach(a => {
+                    const badgeClass = a.status === 'active' ? 'badge-green' : 'badge-gray';
+                    html += `<tr>
+                        <td>${a.platform}</td>
+                        <td>${a.product}</td>
+                        <td>$${a.budget}</td>
+                        <td><span class="badge ${badgeClass}">${a.status}</span></td>
+                        <td>${new Date(a.timestamp).toLocaleString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                list.innerHTML = html;
+            } catch (e) { list.innerHTML = `<p class="error">Error: ${e.message}</p>`; }
         }
 
         // --- Database ---
@@ -444,7 +470,7 @@
                 const res = await fetch('/api/ceo/chat', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message }) 
+                    body: JSON.stringify({ message, mode: currentMode }) 
                 });
                 
                 const data = await res.json();
@@ -488,6 +514,8 @@
                 document.getElementById('dbMode').value = config.dbMode || 'test';
                 document.getElementById('logLevel').value = config.logLevel;
                 
+                updateCeoModeBadge(currentMode);
+
                 // Handle Initial Tab
                 const hash = window.location.hash.substring(1);
                 if (hash && document.getElementById(hash)) {
@@ -521,6 +549,21 @@
                 if (res.ok) showStatus('Configuration saved successfully!', 'status-success');
                 else showStatus('Error saving configuration.', 'status-error');
             } catch (e) { showStatus('Network error.', 'status-error'); }
+        }
+
+        function updateCeoModeBadge(mode) {
+            const badge = document.getElementById('ceoModeBadge');
+            if (badge) {
+                if (mode === 'live') {
+                    badge.textContent = 'CEO: Live (Azure OpenAI)';
+                    badge.style.background = '#10b981';
+                    badge.style.color = '#fff';
+                } else {
+                    badge.textContent = 'CEO: Mock (Simulated)';
+                    badge.style.background = '#f59e0b';
+                    badge.style.color = '#fff';
+                }
+            }
         }
 
         function showStatus(msg, type) {

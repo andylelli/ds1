@@ -217,7 +217,7 @@ export class CEOAgent extends BaseAgent {
       const source = mode === 'simulation' ? 'sim' : 'live';
       
       const [logs, products, orders, campaigns] = await Promise.all([
-        this.db.getRecentLogs(50),
+        this.db.getRecentLogs(50, source),
         this.db.getProducts(source),
         this.db.getOrders(source),
         this.db.getCampaigns(source)

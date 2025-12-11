@@ -11,7 +11,7 @@ export interface PersistencePort {
   getCampaigns(source?: string): Promise<Campaign[]>;
   
   saveLog(agent: string, message: string, level: string, data?: any): Promise<void>;
-  getRecentLogs(limit: number): Promise<any[]>;
+  getRecentLogs(limit: number, source?: string): Promise<any[]>;
 
   // Clear simulation data
   clearSimulationData(): Promise<void>;

@@ -95,7 +95,7 @@ export class MockAdapter implements PersistencePort {
     });
   }
 
-  async getRecentLogs(limit: number): Promise<any[]> {
+  async getRecentLogs(limit: number, source?: string): Promise<any[]> {
     const logs = await this.getItems("AgentMemory");
     return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);
   }
