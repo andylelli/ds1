@@ -93,7 +93,9 @@ export class ServiceFactory {
         return isServiceLive('shop') ? new LiveShopAdapter() : new MockShopAdapter();
       
       case 'AdsAdapter':
-        return isServiceLive('ads') ? new LiveAdsAdapter() : new MockAdsAdapter();
+        const isLive = isServiceLive('ads');
+        console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${isLive}`);
+        return isLive ? new LiveAdsAdapter() : new MockAdsAdapter();
       
       case 'TrendAdapter':
         if (isServiceLive('trends')) {
@@ -160,6 +162,7 @@ export class ServiceFactory {
       case 'StoreBuildAgent':
         return new StoreBuildAgent(deps.db, deps.eventBus, deps.shop);
       case 'MarketingAgent':
+        console.log(`[ServiceFactory] Creating MarketingAgent with ads adapter: ${deps.ads ? deps.ads.constructor.name : 'undefined'}`);
         return new MarketingAgent(deps.db, deps.eventBus, deps.ads);
       case 'CustomerServiceAgent':
         return new CustomerServiceAgent(deps.db, deps.eventBus, deps.email);

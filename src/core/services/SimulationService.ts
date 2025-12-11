@@ -105,55 +105,6 @@ export class SimulationService {
       // Save initial product state to simulation database
       await this.db.saveProduct({ ...productData, price: 29.99, source: 'sim' });
 
-      // 1.5 CEO Approval
-      console.log(`[Simulation] Requesting CEO Approval for: ${productData.name}`);
-      await this.activityLog?.log({
-        agent: 'CEO',
-        action: 'evaluate_product',
-        category: 'ceo',
-        status: 'started',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Evaluating product: ${productData.name}`
-      });
-
-      const approval = await this.agents.ceo.evaluateProduct(productData);
-      console.log(`[Simulation] CEO Approval Response:`, approval);
-      
-      if (!approval || !approval.approved) {
-          console.log(`[Simulation] CEO Rejected Product: ${approval.reason}`);
-          await this.db.saveLog('Simulation', 'Product Rejected by CEO', 'warning', { 
-              product: productData.name,
-              reason: approval.reason 
-          });
-          await this.activityLog?.log({
-            agent: 'CEO',
-            action: 'evaluate_product',
-            category: 'ceo',
-            status: 'completed',
-            entityType: 'product',
-            entityId: productData.id,
-            message: `Rejected product: ${productData.name}`,
-            details: { approved: false, reason: approval.reason }
-          });
-          return;
-      }
-      console.log(`[Simulation] CEO Approved Product: ${approval.reason}`);
-      await this.db.saveLog('Simulation', 'Product Approved by CEO', 'success', { 
-          product: productData.name,
-          reason: approval.reason 
-      });
-      await this.activityLog?.log({
-        agent: 'CEO',
-        action: 'evaluate_product',
-        category: 'ceo',
-        status: 'completed',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Approved product: ${productData.name}`,
-        details: { approved: true, reason: approval.reason }
-      });
-
       // 2. Source - REMOVED for Phase 1 Split
 
 
@@ -341,6 +292,13 @@ export class SimulationService {
     console.log('[SimulationService] Clearing simulation database...');
     await this.db.clearSimulationData();
     
+    // Reset tick count
+    this.tickCount = 0;
+    this.eventDuration = 0;
+    this.currentEvent = null;
+    this.pendingRestocks = [];
+    console.log('[SimulationService] Reset tick count to 0');
+    
     // Clear activity log
     if (this.activityLog) {
       console.log('[SimulationService] Clearing activity log...');
@@ -385,6 +343,9 @@ export class SimulationService {
     // console.log("[Simulation] Tick..."); // Verbose
     
     try {
+        this.tickCount++;
+        // console.log(`[Simulation] Tick incremented to: ${this.tickCount}`);
+
         // 0. Handle Market Events
         if (this.eventDuration > 0) {
             this.eventDuration--;
@@ -441,7 +402,11 @@ export class SimulationService {
         const activeCampaigns = campaigns.filter(c => c.status === 'active');
         
         if (activeCampaigns.length === 0) {
-            // No active campaigns, nothing to simulate
+            // No active campaigns, nothing to simulate traffic for
+            // But we still check for optimization cycle
+            if (this.tickCount % 12 === 0) {
+                await this.runOptimizationCycle();
+            }
             return;
         }
 
@@ -512,8 +477,15 @@ export class SimulationService {
                     await this.db.saveOrder({ ...order, source: 'sim' });
                 }
 
-                // Log if significant
-                if (actualOrders > 0 || missedSales > 0) {
+                // Log if significant (orders, missed sales, or just traffic)
+                if (actualOrders > 0 || missedSales > 0 || trafficStats.totalVisitors > 0) {
+                    const msg = `Tick: ${actualOrders} orders for ${product.name}. Visitors: ${trafficStats.totalVisitors}. Missed: ${missedSales}. Inventory: ${currentInventory}`;
+                    await this.db.saveLog('System', 'simulate_traffic', 'info', { 
+                        visitors: trafficStats.totalVisitors,
+                        orders: actualOrders,
+                        missed: missedSales,
+                        inventory: currentInventory
+                    });
                     await this.activityLog?.log({
                         agent: 'System',
                         action: 'simulate_traffic',
@@ -521,7 +493,7 @@ export class SimulationService {
                         status: 'completed',
                         entityType: 'product',
                         entityId: product.id,
-                        message: `Tick: ${actualOrders} orders for ${product.name}. Missed: ${missedSales}. Inventory: ${currentInventory}`,
+                        message: msg,
                         details: { 
                             visitors: trafficStats.totalVisitors,
                             orders: actualOrders,
@@ -534,7 +506,6 @@ export class SimulationService {
         }
 
         // 3. Optimization Cycle (Every 12 ticks)
-        this.tickCount++;
         if (this.tickCount % 12 === 0) {
             await this.runOptimizationCycle();
         }
@@ -547,6 +518,7 @@ export class SimulationService {
   async runOptimizationCycle() {
       console.log("[Simulation] Running Optimization Cycle...");
       
+      await this.db.saveLog('System', 'optimization_cycle', 'info', { message: 'Starting daily optimization cycle' });
       await this.activityLog?.log({
         agent: 'System',
         action: 'optimization_cycle',
@@ -560,6 +532,7 @@ export class SimulationService {
           const report = await this.agents.analytics.generateReport({ period: 'daily' });
           
           console.log(`[Simulation] Optimization Report: Profit $${report.profit}`);
+          await this.db.saveLog('Analytics', 'generate_report', 'info', { profit: report.profit, revenue: report.revenue });
 
           // 2. Analyze Campaigns
           if (report.campaigns && report.campaigns.length > 0) {
@@ -570,6 +543,8 @@ export class SimulationService {
                       
                       await this.agents.marketing.stopCampaign({ campaign_id: camp.id });
                       
+                      const stopMsg = `Stopped campaign ${camp.id} due to poor performance (Profit: $${camp.profit})`;
+                      await this.db.saveLog('Marketing', 'stop_campaign', 'warning', { campaignId: camp.id, profit: camp.profit });
                       await this.activityLog?.log({
                         agent: 'Marketing',
                         action: 'stop_campaign',
@@ -577,7 +552,7 @@ export class SimulationService {
                         status: 'completed',
                         entityType: 'campaign',
                         entityId: camp.id,
-                        message: `Stopped campaign ${camp.id} due to poor performance (Profit: $${camp.profit})`,
+                        message: stopMsg,
                         details: { profit: camp.profit, threshold: -50 }
                       });
                   }
@@ -586,6 +561,7 @@ export class SimulationService {
 
       } catch (e: any) {
           console.error("[Simulation] Optimization failed:", e);
+          await this.db.saveLog('System', 'optimization_cycle_failed', 'error', { error: e.message });
           await this.activityLog?.log({
             agent: 'System',
             action: 'optimization_cycle',
@@ -594,5 +570,10 @@ export class SimulationService {
             message: `Optimization cycle failed: ${e.message}`
           });
       }
+  }
+
+  getTickCount() {
+      console.log(`[SimulationService] getTickCount called. Returning: ${this.tickCount}`);
+      return this.tickCount;
   }
 }

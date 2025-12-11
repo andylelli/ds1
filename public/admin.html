@@ -55,8 +55,23 @@
 
                     <div class="card mb-5">
                         <div class="card-content">
-                            <h2 class="title is-5">Continuous Loop</h2>
-                            <p class="subtitle is-6 has-text-grey">Run the simulation clock to generate traffic and events over time.</p>
+                            <div class="level">
+                                <div class="level-left">
+                                    <div>
+                                        <h2 class="title is-5">Continuous Loop</h2>
+                                        <p class="subtitle is-6 has-text-grey">Run the simulation clock to generate traffic and events over time.</p>
+                                    </div>
+                                </div>
+                                <div class="level-right">
+                                    <div class="box has-background-black has-text-green" style="border: 2px solid #00d1b2; min-width: 200px;">
+                                        <div class="has-text-centered">
+                                            <div class="is-size-7 has-text-grey-light">SIMULATION TIME</div>
+                                            <div id="simClock" class="is-size-4 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">00:00</div>
+                                            <div id="simDay" class="is-size-6 has-text-weight-bold" style="font-family: monospace; color: #00d1b2;">Day 1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="buttons">
                                 <button class="button is-success" onclick="startLoop()">
                                     <span class="icon"><i class="fas fa-clock"></i></span>
@@ -71,9 +86,14 @@
                     </div>
                     
                     <div class="card">
-                        <div class="card-content">
-                            <h2 class="title is-5">Simulation Logs</h2>
-                            <div id="logViewer" class="box has-background-dark has-text-light" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; font-family: monospace;">Waiting for logs...</div>
+                        <div class="card-content" style="padding: 0;">
+                            <div class="has-background-black-ter p-3" style="border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
+                                <h2 class="title is-6 has-text-light m-0">SYSTEM LOGS</h2>
+                                <span class="tag is-dark">LIVE</span>
+                            </div>
+                            <div id="logViewer" class="box has-background-black has-text-light" style="height: 600px; overflow-y: auto; overflow-x: hidden; word-break: break-word; white-space: normal; font-family: 'Consolas', 'Monaco', monospace; border-radius: 0; border: none; padding: 1rem;">
+                                <div class="has-text-grey">System initialized. Waiting for data stream...</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -384,7 +404,11 @@
             // Handle Simulation Logs
             if (tabId === 'simulation') {
                 fetchLogs();
-                if (!logInterval) logInterval = setInterval(fetchLogs, 5000);
+                updateClock();
+                if (!logInterval) logInterval = setInterval(() => {
+                    fetchLogs();
+                    updateClock();
+                }, 1000); // Faster refresh for clock (1s)
             } else {
                 if (logInterval) {
                     clearInterval(logInterval);
@@ -429,6 +453,33 @@
                 showStatus('Failed to start simulation.', 'error');
             }
         }
+        
+        async function updateClock() {
+            try {
+                const res = await fetch('/api/simulation/status');
+                if (!res.ok) {
+                    console.error('Clock API failed:', res.status, res.statusText);
+                    return;
+                }
+                const data = await res.json();
+                console.log('Clock Data from API:', data); // Debug
+
+                if (data.tickCount !== undefined) {
+                    // 1 tick = 2 hours
+                    // Start Date: Jan 1, 2025 08:00
+                    const start = new Date('2025-01-01T08:00:00');
+                    const current = new Date(start.getTime() + (data.tickCount * 2 * 60 * 60 * 1000));
+                    
+                    const timeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const dayStr = `Day ${Math.floor(data.tickCount / 12) + 1}`; // 12 ticks per day
+                    
+                    document.getElementById('simClock').textContent = timeStr;
+                    document.getElementById('simDay').textContent = dayStr;
+                }
+            } catch (e) {
+                console.error('Clock update error:', e);
+            }
+        }
 
         async function startLoop() {
             try {
@@ -462,7 +513,16 @@
                 const res = await fetch('/api/simulation/clear', { method: 'POST' });
                 const data = await res.json();
                 showStatus(data.message, 'success');
-                // Refresh logs display
+                
+                // Clear UI immediately
+                document.getElementById('logViewer').innerHTML = '<div class="has-text-grey-light is-italic">Logs cleared...</div>';
+                document.getElementById('simClock').textContent = '08:00';
+                document.getElementById('simDay').textContent = 'Day 1';
+                
+                // Reset Clock immediately (fetch from server to confirm)
+                await updateClock();
+                
+                // Refresh logs (should be empty)
                 await fetchLogs();
             } catch (e) {
                 showStatus('Failed to clear simulation database.', 'error');
@@ -478,21 +538,67 @@
                 const viewer = document.getElementById('logViewer');
                 
                 if (filteredLogs.length === 0) {
-                    viewer.innerHTML = `<div class="p-4 has-text-grey">No new logs...</div>`;
+                    // Don't clear if we are just waiting for more
+                    if (viewer.innerHTML === 'Waiting for logs...') {
+                         viewer.innerHTML = `<div class="p-4 has-text-grey">No new logs...</div>`;
+                    }
                     return;
                 }
 
                 // Remember if user was at top (within 50px tolerance)
                 const wasAtTop = viewer.scrollTop < 50;
                 
-                viewer.innerHTML = filteredLogs.reverse().map(log => `
-                    <div class="mb-1">
-                        <span class="has-text-grey-light">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
-                        <span class="has-text-info has-text-weight-bold">${log.agent}</span>
-                        <span class="has-text-light">${log.message}</span>
-                        ${log.data ? `<pre class="has-background-black-ter has-text-grey-lighter is-size-7 mt-1 p-2" style="border-radius: 4px;">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
-                    </div>
-                `).join('');
+                // Game-style log rendering
+                const html = filteredLogs.map(log => {
+                    let colorClass = 'has-text-light';
+                    let icon = '<i class="fas fa-info-circle mr-1"></i>'; // Default icon
+                    
+                    if (log.agent === 'System') {
+                        colorClass = 'has-text-grey-light';
+                        icon = '<i class="fas fa-cog mr-1"></i>';
+                        if (log.message.includes('Tick')) {
+                            colorClass = 'has-text-grey-light is-size-7'; // Dim ticks
+                            icon = '<i class="fas fa-clock mr-1" style="font-size: 0.8em;"></i>';
+                        }
+                    } else if (log.agent === 'Marketing' || log.agent === 'Marketer') {
+                        colorClass = 'has-text-info';
+                        icon = '<i class="fas fa-bullhorn mr-1"></i>';
+                    } else if (log.agent === 'Supplier') {
+                        colorClass = 'has-text-warning';
+                        icon = '<i class="fas fa-truck mr-1"></i>';
+                    } else if (log.agent === 'Analytics') {
+                        colorClass = 'has-text-primary';
+                        icon = '<i class="fas fa-chart-line mr-1"></i>';
+                    } else if (log.agent === 'Research') {
+                        colorClass = 'has-text-link';
+                        icon = '<i class="fas fa-search mr-1"></i>';
+                    } else if (log.agent === 'Store') {
+                        colorClass = 'has-text-success';
+                        icon = '<i class="fas fa-store mr-1"></i>';
+                    } else if (log.agent === 'CEO') {
+                        colorClass = 'has-text-white has-text-weight-bold';
+                        icon = '<i class="fas fa-user-tie mr-1"></i>';
+                    }
+                    
+                    // Override for orders
+                    if (log.message.includes('orders') && !log.message.includes('0 orders')) {
+                        colorClass = 'has-text-success has-text-weight-bold';
+                        icon = '<i class="fas fa-dollar-sign mr-1"></i>';
+                    }
+
+                    return `
+                    <div class="mb-1" style="line-height: 1.4;">
+                        <span class="has-text-grey-dark is-size-7 is-family-monospace mr-2">[${new Date(log.timestamp).toLocaleTimeString([], {hour12: false})}]</span>
+                        <span class="${colorClass}">
+                            ${icon}
+                            <span class="has-text-weight-bold mr-1">${log.agent}:</span>
+                            ${log.message}
+                        </span>
+                        ${log.data && Object.keys(log.data).length > 0 ? `<div class="has-text-grey is-size-7 ml-4 pl-2" style="border-left: 2px solid #333;">${JSON.stringify(log.data)}</div>` : ''}
+                    </div>`;
+                }).join('');
+                
+                viewer.innerHTML = html;
                 
                 // Only auto-scroll to top if user was already at top, otherwise preserve scroll position
                 if (wasAtTop) {

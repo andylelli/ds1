@@ -306,7 +306,17 @@ export class PostgresAdapter implements PersistencePort {
   async clearSimulationData(): Promise<void> {
     console.log('[PostgresAdapter.clearSimulationData] Clearing SIMULATION pool only');
     
-    const tables = ['consumer_offsets', 'events_archive', 'events', 'orders', 'ads', 'products'];
+    // Order matters for foreign keys: delete children first
+    const tables = [
+        'research_staging', 
+        'research_sessions', 
+        'consumer_offsets', 
+        'events_archive', 
+        'events', 
+        'orders', 
+        'ads', 
+        'products'
+    ];
     
     if (!this.simPool) {
         console.log('[PostgresAdapter.clearSimulationData] simPool is null, nothing to clear');

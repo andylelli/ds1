@@ -63,7 +63,9 @@ export class MarketingAgent extends BaseAgent {
         status: 'draft'
     };
 
+    this.log('info', `[DEBUG] Calling ads.createCampaign...`);
     const created = await this.ads.createCampaign(campaign);
+    this.log('info', `[DEBUG] ads.createCampaign returned: ${created.id}`);
 
     return {
       campaign_id: created.id,

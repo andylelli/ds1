@@ -5,6 +5,7 @@ export class MockAdsAdapter implements AdsPlatformPort {
   private campaigns: Map<string, Campaign> = new Map();
 
   async createCampaign(campaignData: Omit<Campaign, 'id'>): Promise<Campaign> {
+    console.log(`[MockAds] createCampaign called for ${campaignData.product}`);
     const id = `ad_camp_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
     const newCampaign: Campaign = {
       ...campaignData,
