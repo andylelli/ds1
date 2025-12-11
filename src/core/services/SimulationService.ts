@@ -6,11 +6,21 @@ import { ProductResearchAgent } from '../../agents/ProductResearchAgent.js';
 import { SupplierAgent } from '../../agents/SupplierAgent.js';
 import { StoreBuildAgent } from '../../agents/StoreBuildAgent.js';
 import { MarketingAgent } from '../../agents/MarketingAgent.js';
+import { AnalyticsAgent } from '../../agents/AnalyticsAgent.js';
 import { simulateTraffic } from '../domain/environment/trafficSimulator.js';
+import { MarketEvent, getMarketEvent } from '../domain/environment/marketEvents.js';
 import { configService } from '../../infra/config/ConfigService.js';
 import { ActivityLogService } from './ActivityLogService.js';
+import { ResearchStagingService } from './ResearchStagingService.js';
 
 export class SimulationService {
+  private loopInterval: NodeJS.Timeout | null = null;
+  private isRunning: boolean = false;
+  private tickCount: number = 0;
+  private pendingRestocks: { productId: string, quantity: number, ticksRemaining: number }[] = [];
+  private currentEvent: MarketEvent | null = null;
+  private eventDuration: number = 0;
+
   constructor(
     private db: PersistencePort,
     private agents: {
@@ -19,11 +29,13 @@ export class SimulationService {
       supplier: SupplierAgent;
       store: StoreBuildAgent;
       marketing: MarketingAgent;
+      analytics: AnalyticsAgent;
     },
-    private activityLog?: ActivityLogService
+    private activityLog?: ActivityLogService,
+    private stagingService?: ResearchStagingService
   ) {}
 
-  async runSimulationFlow(category: string = 'Fitness') {
+  async runResearchPhase(category: string = 'Fitness') {
     console.log(`[Simulation] Starting flow for category: ${category}`);
     
     // Log simulation start
@@ -142,164 +154,38 @@ export class SimulationService {
         details: { approved: true, reason: approval.reason }
       });
 
-      // 2. Source
-      await this.activityLog?.log({
-        agent: 'Supplier',
-        action: 'find_suppliers',
-        category: 'sourcing',
-        status: 'started',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Finding suppliers for ${productData.name}`
-      });
+      // 2. Source - REMOVED for Phase 1 Split
 
-      await this.agents.supplier.findSuppliers({ product_id: productData.id });
 
-      await this.activityLog?.log({
-        agent: 'Supplier',
-        action: 'find_suppliers',
-        category: 'sourcing',
-        status: 'completed',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Suppliers found for ${productData.name}`
-      });
+      // 3. Build Store - REMOVED for Phase 1 Split
 
-      // 3. Build Store
-      await this.activityLog?.log({
-        agent: 'Store',
-        action: 'create_page',
-        category: 'store',
-        status: 'started',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Building product page for ${productData.name}`
-      });
 
-      const page = await this.agents.store.createProductPage({ product_data: productData });
-      console.log(`[Simulation] Store Page Created: ${page.url}`);
-
-      await this.activityLog?.log({
-        agent: 'Store',
-        action: 'create_page',
-        category: 'store',
-        status: 'completed',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Product page created: ${page.url}`,
-        details: { url: page.url }
-      });
-
-      // 4. Marketing
-      await this.activityLog?.log({
-        agent: 'Marketing',
-        action: 'create_campaign',
-        category: 'marketing',
-        status: 'started',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Creating ad campaign for ${productData.name}`
-      });
-
-      const campaign = await this.agents.marketing.createAdCampaign({ 
-          platform: 'Facebook', 
-          budget: 100, 
-          product: productData.name 
-      });
-      
-      if (!campaign) {
-          console.error("[Simulation] Campaign creation failed");
-          await this.db.saveLog('Simulation', 'Campaign creation failed', 'error', {});
-          await this.activityLog?.log({
-            agent: 'Marketing',
-            action: 'create_campaign',
-            category: 'marketing',
-            status: 'failed',
-            entityType: 'product',
-            entityId: productData.id,
-            message: `Campaign creation failed for ${productData.name}`
-          });
-          return;
+      // STAGE FOR APPROVAL
+      if (this.stagingService) {
+        const sessionId = await this.stagingService.createSession(category, 'simulation', { trends: 'sim', research: 'sim' });
+        await this.stagingService.stageItem(sessionId, {
+            itemType: 'product',
+            name: productData.name,
+            description: productData.description || `A ${category} product`,
+            rawData: productData,
+            confidenceScore: productData.demandScore || 0,
+            source: 'simulation',
+            trendEvidence: 'Generated by Research Agent'
+        });
+        
+        console.log(`[Simulation] Product staged for approval: ${productData.name}`);
+        await this.activityLog?.log({
+            agent: 'System',
+            action: 'stage_product',
+            category: 'system',
+            status: 'completed',
+            message: `Product staged for approval: ${productData.name}`,
+            details: { sessionId }
+        });
+      } else {
+          console.warn("[Simulation] Staging service not available, skipping staging.");
       }
 
-      console.log(`[Simulation] Campaign Created: ${campaign.campaign_id}`);
-
-      await this.activityLog?.log({
-        agent: 'Marketing',
-        action: 'create_campaign',
-        category: 'marketing',
-        status: 'completed',
-        entityType: 'campaign',
-        entityId: campaign.campaign_id,
-        message: `Campaign created: ${campaign.campaign_id}`,
-        details: { campaignId: campaign.campaign_id, platform: 'Facebook', budget: 100 }
-      });
-
-      // 5. Traffic Simulation
-      console.log("[Simulation] Simulating Traffic...");
-      // We need the full Product object and Campaign object to run traffic sim
-      // Fetch them back to ensure we have IDs and correct types
-      const products = await this.db.getProducts('sim');
-      const campaigns = await this.db.getCampaigns('sim');
-
-      const targetProduct = products.find(p => p.name === productData.name) || { ...productData, id: 'temp', price: 29.99 };
-      const activeCampaigns = campaigns.filter(c => c.product === productData.name);
-
-      // If we just created them, they might be in the mock adapter or DB.
-      // For the purpose of this flow, let's construct the objects if not found (e.g. if async DB lag)
-      const simProduct = targetProduct;
-      const simCampaigns = activeCampaigns.length > 0 ? activeCampaigns : [{ 
-          id: campaign.campaign_id, 
-          platform: 'Facebook', 
-          product: productData.name, 
-          budget: 100, 
-          status: 'active' 
-      } as any];
-
-      const scale = configService.get('trafficScale') || 1.0;
-      const trafficStats = simulateTraffic(simProduct, simCampaigns, null, scale);
-      console.log(`[Simulation] Traffic Results: ${trafficStats.totalVisitors} visitors (Scale: ${scale})`);
-      
-      await this.activityLog?.log({
-        agent: 'System',
-        action: 'simulate_traffic',
-        category: 'operations',
-        status: 'completed',
-        entityType: 'product',
-        entityId: productData.id,
-        message: `Traffic simulated: ${trafficStats.totalVisitors} visitors, ${trafficStats.orders} orders`,
-        details: { 
-          visitors: trafficStats.totalVisitors,
-          orders: trafficStats.orders,
-          scale
-        }
-      });
-      
-      // Save orders to simulation database
-      for (const order of trafficStats.orders) {
-        await this.db.saveOrder({ ...order, source: 'sim' });
-      }
-      console.log(`[Simulation] Saved ${trafficStats.orders.length} orders to simulation database`);
-      
-      // Save campaign to simulation database  
-      await this.db.saveCampaign({ 
-        id: campaign.campaign_id,
-        platform: 'Facebook' as any,
-        product: productData.name,
-        budget: 100,
-        status: 'active',
-        _db: 'sim'
-      });
-      
-      // Log traffic stats
-      await this.db.saveLog('Simulation', 'Traffic Run', 'info', trafficStats);
-      
-      console.log("[Simulation] Flow Completed Successfully.");
-      await this.db.saveLog('Simulation', 'Flow Completed', 'success', { 
-          product: productData.name, 
-          visitors: trafficStats.totalVisitors,
-          orders: trafficStats.orders.length 
-      });
 
     } catch (e: any) {
       console.error("[Simulation] Flow failed:", e);
@@ -311,6 +197,143 @@ export class SimulationService {
       this.agents.supplier.setMode('live');
       this.agents.store.setMode('live');
       this.agents.marketing.setMode('live');
+    }
+  }
+
+  async runLaunchPhase(stagedItemId: number) {
+    console.log(`[Simulation] Launching staged item: ${stagedItemId}`);
+    
+    if (!this.stagingService) {
+        throw new Error("Staging service not available");
+    }
+
+    const stagedItem = await this.stagingService.getItem(stagedItemId);
+    if (!stagedItem) {
+        throw new Error(`Staged item ${stagedItemId} not found`);
+    }
+
+    const productData = stagedItem.rawData;
+    
+    // Initialize Inventory
+    productData.inventory = 50; // Start with 50 units
+    await this.db.saveProduct({ ...productData, source: 'sim' });
+
+    console.log(`[Simulation] Resuming flow for product: ${productData.name}`);
+
+    // Set agents to simulation mode
+    this.agents.supplier.setMode('simulation');
+    this.agents.store.setMode('simulation');
+    this.agents.marketing.setMode('simulation');
+
+    try {
+        // 2. Source
+        await this.activityLog?.log({
+            agent: 'Supplier',
+            action: 'find_suppliers',
+            category: 'sourcing',
+            status: 'started',
+            entityType: 'product',
+            entityId: productData.id,
+            message: `Finding suppliers for ${productData.name}`
+        });
+
+        await this.agents.supplier.findSuppliers({ product_id: productData.id });
+
+        await this.activityLog?.log({
+            agent: 'Supplier',
+            action: 'find_suppliers',
+            category: 'sourcing',
+            status: 'completed',
+            entityType: 'product',
+            entityId: productData.id,
+            message: `Suppliers found for ${productData.name}`
+        });
+
+        // 3. Build Store
+        await this.activityLog?.log({
+            agent: 'Store',
+            action: 'create_page',
+            category: 'store',
+            status: 'started',
+            entityType: 'product',
+            entityId: productData.id,
+            message: `Building product page for ${productData.name}`
+        });
+
+        const page = await this.agents.store.createProductPage({ product_data: productData });
+        console.log(`[Simulation] Store Page Created: ${page.url}`);
+
+        await this.activityLog?.log({
+            agent: 'Store',
+            action: 'create_page',
+            category: 'store',
+            status: 'completed',
+            entityType: 'product',
+            entityId: productData.id,
+            message: `Product page created: ${page.url}`,
+            details: { url: page.url }
+        });
+
+        // 4. Marketing
+        await this.activityLog?.log({
+            agent: 'Marketing',
+            action: 'create_campaign',
+            category: 'marketing',
+            status: 'started',
+            entityType: 'product',
+            entityId: productData.id,
+            message: `Creating ad campaign for ${productData.name}`
+        });
+
+        const campaign = await this.agents.marketing.createAdCampaign({ 
+            platform: 'Facebook', 
+            budget: 100, 
+            product: productData.name 
+        });
+        
+        if (!campaign) {
+            throw new Error("Campaign creation failed");
+        }
+
+        console.log(`[Simulation] Campaign Created: ${campaign.campaign_id}`);
+
+        await this.activityLog?.log({
+            agent: 'Marketing',
+            action: 'create_campaign',
+            category: 'marketing',
+            status: 'completed',
+            entityType: 'campaign',
+            entityId: campaign.campaign_id,
+            message: `Campaign created: ${campaign.campaign_id}`,
+            details: { campaignId: campaign.campaign_id, platform: 'Facebook', budget: 100 }
+        });
+
+        // 5. Activate Campaign (Traffic will be handled by the loop)
+        console.log("[Simulation] Activating Campaign...");
+        
+        await this.db.saveCampaign({ 
+            id: campaign.campaign_id,
+            platform: 'Facebook' as any,
+            product: productData.name,
+            budget: 100,
+            status: 'active',
+            _db: 'sim'
+        });
+        
+        console.log("[Simulation] Launch Phase Completed Successfully. Campaign is active.");
+        await this.db.saveLog('Simulation', 'Launch Phase Completed', 'success', { 
+            product: productData.name, 
+            campaign: campaign.campaign_id
+        });
+
+    } catch (e: any) {
+        console.error("[Simulation] Launch Phase failed:", e);
+        await this.db.saveLog('Simulation', 'Launch Phase Failed', 'error', e.message || e);
+        throw e;
+    } finally {
+        this.agents.supplier.setMode('live');
+        this.agents.store.setMode('live');
+        this.agents.marketing.setMode('live');
     }
   }
 
@@ -330,5 +353,246 @@ export class SimulationService {
     }
     
     console.log('[SimulationService] Simulation database cleared');
+  }
+
+  // === Continuous Simulation Loop ===
+
+  startLoop(intervalMs: number = 10000) {
+    if (this.isRunning) {
+        console.warn("[Simulation] Loop already running.");
+        return;
+    }
+    console.log(`[Simulation] Starting continuous loop (Interval: ${intervalMs}ms)`);
+    this.isRunning = true;
+    
+    this.loopInterval = setInterval(() => {
+        this.tick().catch(err => console.error("[Simulation] Tick failed:", err));
+    }, intervalMs);
+  }
+
+  stopLoop() {
+    if (this.loopInterval) {
+        clearInterval(this.loopInterval);
+        this.loopInterval = null;
+    }
+    this.isRunning = false;
+    console.log("[Simulation] Loop stopped.");
+  }
+
+  async tick() {
+    if (!this.isRunning) return;
+    
+    // console.log("[Simulation] Tick..."); // Verbose
+    
+    try {
+        // 0. Handle Market Events
+        if (this.eventDuration > 0) {
+            this.eventDuration--;
+            if (this.eventDuration === 0) {
+                console.log(`[Simulation] Market Event Ended: ${this.currentEvent?.name}`);
+                this.currentEvent = null;
+            }
+        } else {
+            // 10% chance to start a new event if none active
+            if (Math.random() < 0.1) {
+                const event = getMarketEvent();
+                if (event) {
+                    this.currentEvent = event;
+                    this.eventDuration = 10; // Lasts 10 ticks
+                    console.log(`[Simulation] New Market Event: ${event.name} (${event.description})`);
+                    await this.activityLog?.log({
+                        agent: 'System',
+                        action: 'market_event',
+                        category: 'environment',
+                        status: 'started',
+                        message: `Market Event: ${event.name}`,
+                        details: event
+                    });
+                }
+            }
+        }
+
+        // 0.5 Handle Restocks
+        this.pendingRestocks.forEach(r => r.ticksRemaining--);
+        const arriving = this.pendingRestocks.filter(r => r.ticksRemaining <= 0);
+        this.pendingRestocks = this.pendingRestocks.filter(r => r.ticksRemaining > 0);
+
+        for (const stock of arriving) {
+            const products = await this.db.getProducts('sim');
+            const p = products.find(prod => prod.id === stock.productId || prod.name === stock.productId); // Handle name vs ID mismatch if any
+            if (p) {
+                p.inventory = (p.inventory || 0) + stock.quantity;
+                await this.db.saveProduct(p);
+                console.log(`[Simulation] Restock arrived: ${stock.quantity} units for ${p.name}. New Inventory: ${p.inventory}`);
+                await this.activityLog?.log({
+                    agent: 'Supplier',
+                    action: 'order_stock',
+                    category: 'operations',
+                    status: 'completed',
+                    entityType: 'product',
+                    entityId: p.id,
+                    message: `Restock arrived: ${stock.quantity} units. Inventory: ${p.inventory}`
+                });
+            }
+        }
+
+        // 1. Get Active Campaigns & Products
+        const campaigns = await this.db.getCampaigns('sim');
+        const activeCampaigns = campaigns.filter(c => c.status === 'active');
+        
+        if (activeCampaigns.length === 0) {
+            // No active campaigns, nothing to simulate
+            return;
+        }
+
+        const products = await this.db.getProducts('sim');
+        
+        // Group campaigns by product
+        const productCampaigns = new Map<string, any[]>();
+        for (const camp of activeCampaigns) {
+            if (!productCampaigns.has(camp.product)) {
+                productCampaigns.set(camp.product, []);
+            }
+            productCampaigns.get(camp.product)?.push(camp);
+        }
+
+        // 2. Simulate Traffic for each Product
+        for (const [productName, camps] of productCampaigns.entries()) {
+            const product = products.find(p => p.name === productName);
+            if (!product) continue;
+
+            // Scale = 0.05 (approx 1/20th of a day per tick)
+            // If interval is 10s, and we want 1 tick = 1 hour, we need to balance this.
+            // Let's assume 1 tick = 1 hour of activity.
+            const scale = 0.05; 
+            
+            const trafficStats = simulateTraffic(product, camps, this.currentEvent, scale);
+            
+            if (trafficStats.totalVisitors > 0) {
+                // Check Inventory
+                let currentInventory = product.inventory || 0;
+                const potentialOrders = trafficStats.orders.length;
+                let actualOrders = 0;
+                let missedSales = 0;
+
+                const processedOrders = [];
+
+                for (const order of trafficStats.orders) {
+                    if (currentInventory > 0) {
+                        currentInventory--;
+                        actualOrders++;
+                        processedOrders.push(order);
+                    } else {
+                        missedSales++;
+                    }
+                }
+
+                // Update Inventory in DB
+                if (actualOrders > 0) {
+                    product.inventory = currentInventory;
+                    await this.db.saveProduct(product);
+                }
+
+                // Auto-Restock Logic (Low Stock Trigger)
+                if (currentInventory < 10 && !this.pendingRestocks.find(r => r.productId === product.id)) {
+                    console.log(`[Simulation] Low stock for ${product.name} (${currentInventory}). Ordering more...`);
+                    const restockQty = 50;
+                    await this.agents.supplier.orderStock({ product_id: product.id, quantity: restockQty });
+                    this.pendingRestocks.push({
+                        productId: product.id,
+                        quantity: restockQty,
+                        ticksRemaining: 5 // Arrives in 5 ticks
+                    });
+                }
+
+                console.log(`[Simulation] Tick: ${product.name} - ${trafficStats.totalVisitors} visitors, ${actualOrders} orders, ${missedSales} missed (Inv: ${currentInventory})`);
+                
+                // Save orders
+                for (const order of processedOrders) {
+                    await this.db.saveOrder({ ...order, source: 'sim' });
+                }
+
+                // Log if significant
+                if (actualOrders > 0 || missedSales > 0) {
+                    await this.activityLog?.log({
+                        agent: 'System',
+                        action: 'simulate_traffic',
+                        category: 'operations',
+                        status: 'completed',
+                        entityType: 'product',
+                        entityId: product.id,
+                        message: `Tick: ${actualOrders} orders for ${product.name}. Missed: ${missedSales}. Inventory: ${currentInventory}`,
+                        details: { 
+                            visitors: trafficStats.totalVisitors,
+                            orders: actualOrders,
+                            missed: missedSales,
+                            inventory: currentInventory
+                        }
+                    });
+                }
+            }
+        }
+
+        // 3. Optimization Cycle (Every 12 ticks)
+        this.tickCount++;
+        if (this.tickCount % 12 === 0) {
+            await this.runOptimizationCycle();
+        }
+
+    } catch (error) {
+        console.error("[Simulation] Error in tick:", error);
+    }
+  }
+
+  async runOptimizationCycle() {
+      console.log("[Simulation] Running Optimization Cycle...");
+      
+      await this.activityLog?.log({
+        agent: 'System',
+        action: 'optimization_cycle',
+        category: 'optimization',
+        status: 'started',
+        message: 'Starting daily optimization cycle'
+      });
+
+      try {
+          // 1. Generate Report
+          const report = await this.agents.analytics.generateReport({ period: 'daily' });
+          
+          console.log(`[Simulation] Optimization Report: Profit $${report.profit}`);
+
+          // 2. Analyze Campaigns
+          if (report.campaigns && report.campaigns.length > 0) {
+              for (const camp of report.campaigns) {
+                  // Rule: Kill if profit < -$50 (Loss limit)
+                  if (camp.profit < -50) {
+                      console.log(`[Simulation] Optimization: Killing campaign ${camp.id} (Loss: $${camp.profit})`);
+                      
+                      await this.agents.marketing.stopCampaign({ campaign_id: camp.id });
+                      
+                      await this.activityLog?.log({
+                        agent: 'Marketing',
+                        action: 'stop_campaign',
+                        category: 'optimization',
+                        status: 'completed',
+                        entityType: 'campaign',
+                        entityId: camp.id,
+                        message: `Stopped campaign ${camp.id} due to poor performance (Profit: $${camp.profit})`,
+                        details: { profit: camp.profit, threshold: -50 }
+                      });
+                  }
+              }
+          }
+
+      } catch (e: any) {
+          console.error("[Simulation] Optimization failed:", e);
+          await this.activityLog?.log({
+            agent: 'System',
+            action: 'optimization_cycle',
+            category: 'optimization',
+            status: 'failed',
+            message: `Optimization cycle failed: ${e.message}`
+          });
+      }
   }
 }

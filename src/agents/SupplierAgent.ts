@@ -11,6 +11,22 @@ export class SupplierAgent extends BaseAgent {
     this.fulfilment = fulfilment;
     this.registerTool('find_suppliers', this.findSuppliers.bind(this));
     this.registerTool('negotiate_price', this.negotiatePrice.bind(this));
+    this.registerTool('order_stock', this.orderStock.bind(this));
+  }
+
+  async orderStock(args: { product_id: string, quantity: number }) {
+    const { product_id, quantity } = args;
+    this.log('info', `Ordering ${quantity} units for product ${product_id}`);
+    
+    // In a real system, this would call the fulfilment port.
+    // For simulation, we return a success message.
+    
+    return {
+        status: 'ordered',
+        product_id,
+        quantity,
+        estimated_arrival: '5 ticks'
+    };
   }
 
   /**

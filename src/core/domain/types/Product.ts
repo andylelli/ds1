@@ -8,6 +8,7 @@ export interface Product {
   potential?: string;
   images?: string[];
   tags?: string[];
+  inventory?: number;
   timestamp?: string;
   _db?: 'live' | 'sim';
 }

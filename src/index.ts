@@ -32,6 +32,7 @@ import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
 import { configService } from './infra/config/ConfigService.js';
 
 import { SimulationService } from './core/services/SimulationService.js';
+import { ResearchStagingService } from './core/services/ResearchStagingService.js';
 import { createStagingRoutes } from './api/staging-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
 import { createActivityRoutes } from './api/activity-routes.js';
@@ -109,7 +110,8 @@ const container = new Container(configPath);
 
     // Initialize Services
     const activityLog = new ActivityLogService(db.getPool());
-    const simulationService = new SimulationService(db, agents, activityLog);
+    const stagingService = new ResearchStagingService(db.getPool());
+    const simulationService = new SimulationService(db, agents, activityLog, stagingService);
 
     // --- Configuration API ---
     app.get('/api/config', (req, res) => {
@@ -304,12 +306,53 @@ const container = new Container(configPath);
         res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
         return;
       }
-      console.log("Starting simulation flow...");
+      console.log("Starting simulation flow (Research Phase)...");
       
       // Async background task
-      simulationService.runSimulationFlow().catch(console.error);
+      simulationService.runResearchPhase().catch(console.error);
 
-      res.json({ status: 'started', message: 'Simulation running in background.' });
+      res.json({ status: 'started', message: 'Simulation research phase running in background.' });
+    });
+
+    app.post('/api/simulation/approve', async (req, res) => {
+      if (mode !== 'simulation') {
+        res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+        return;
+      }
+      const { itemId } = req.body;
+      if (!itemId) {
+          res.status(400).json({ error: 'itemId is required' });
+          return;
+      }
+
+      console.log(`Approving item ${itemId} and starting Launch Phase...`);
+      
+      // Update status in DB first
+      try {
+          await stagingService.approveItem(itemId, 'User', 'Approved via UI');
+      } catch (e) {
+          console.error("Failed to approve item in DB:", e);
+          res.status(500).json({ error: "Failed to approve item" });
+          return;
+      }
+
+      // Async background task
+      simulationService.runLaunchPhase(itemId).catch(console.error);
+
+      res.json({ status: 'started', message: 'Simulation launch phase running in background.' });
+    });
+
+    app.post('/api/simulation/loop/start', (req, res) => {
+      if (mode !== 'simulation') return res.status(403).json({ error: 'Simulation mode only' });
+      const { interval } = req.body;
+      simulationService.startLoop(interval || 10000);
+      res.json({ status: 'success', message: 'Continuous simulation loop started' });
+    });
+
+    app.post('/api/simulation/loop/stop', (req, res) => {
+      if (mode !== 'simulation') return res.status(403).json({ error: 'Simulation mode only' });
+      simulationService.stopLoop();
+      res.json({ status: 'success', message: 'Continuous simulation loop stopped' });
     });
 
     app.post('/api/simulation/clear', async (req, res) => {

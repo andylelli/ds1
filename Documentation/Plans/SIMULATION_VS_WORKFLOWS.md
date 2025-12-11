@@ -33,7 +33,7 @@ This document compares the current `simulation.js` implementation against the de
 *   **Step 4 (Marketing)**: Calls `agents.marketing.createAdCampaign` for 3 platforms.
 
 **✅ Action Items:**
-*   [ ] **Implement Staging Pause**: The simulation should PAUSE after Step 1 and wait for user approval via `staging.html`.
+*   [x] **Implement Staging Pause**: The simulation should PAUSE after Step 1 and wait for user approval via `staging.html`.
 *   [ ] **Implement Supplier Selection**: If multiple suppliers are found, allow selection or simulate CEO logic more deeply.
 
 ### 2. Operations Engine (Fulfillment & Support)
@@ -50,7 +50,7 @@ This document compares the current `simulation.js` implementation against the de
     *   `agents.support.handleTicket` and `agents.ops.handleShippingIssue` are called to resolve them.
 
 **✅ Action Items:**
-*   [ ] **Inventory Logic**: Currently assumes infinite inventory. Add stock checks.
+*   [x] **Inventory Logic**: Currently assumes infinite inventory. Add stock checks.
 
 ### 3. Optimization Engine (Analysis & Feedback)
 
@@ -65,7 +65,7 @@ This document compares the current `simulation.js` implementation against the de
     *   *Gap*: The simulation **ENDS** here. It does not loop back.
 
 **✅ Action Items:**
-*   [ ] **Implement The Loop**: The simulation should use the report to decide the *next* action (e.g., "Profit is low, kill ads" or "Profit is high, run again").
+*   [x] **Implement The Loop**: The simulation should use the report to decide the *next* action (e.g., "Profit is low, kill ads" or "Profit is high, run again").
 
 ---
 

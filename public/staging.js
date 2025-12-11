@@ -126,16 +126,35 @@ function renderItemsTable(items) {
 
 async function updateStatus(itemId, status) {
     try {
-        const res = await fetch(`/api/staging/items/${itemId}/status`, {
-            method: 'PUT',
+        let url, method, body;
+        
+        if (status === 'approved') {
+            // Trigger the Launch Phase
+            url = '/api/simulation/approve';
+            method = 'POST';
+            body = JSON.stringify({ itemId });
+        } else if (status === 'rejected') {
+            // Just reject in the database
+            url = `/api/staging/items/${itemId}/reject`;
+            method = 'POST';
+            body = JSON.stringify({});
+        } else {
+             console.error("Unknown status action");
+             return;
+        }
+
+        const res = await fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status })
+            body: body
         });
         
         if (res.ok) {
-            refreshStaging();
+            // Give it a moment to update DB
+            setTimeout(refreshStaging, 500);
         } else {
-            alert('Failed to update status');
+            const err = await res.json();
+            alert('Failed to update status: ' + (err.error || err.message));
         }
     } catch (e) {
         console.error(e);

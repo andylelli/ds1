@@ -12,7 +12,20 @@ export class MarketingAgent extends BaseAgent {
     super('Marketer', db, eventBus);
     this.ads = ads;
     this.registerTool('create_ad_campaign', this.createAdCampaign.bind(this));
+    this.registerTool('stop_campaign', this.stopCampaign.bind(this));
     this.registerTool('write_copy', this.writeCopy.bind(this));
+  }
+
+  async stopCampaign(args: { campaign_id: string }) {
+      const { campaign_id } = args;
+      this.log('info', `Stopping campaign ${campaign_id}`);
+      try {
+          await this.ads.stopCampaign(campaign_id);
+          return { status: 'success', message: `Campaign ${campaign_id} stopped` };
+      } catch (e: any) {
+          this.log('error', `Failed to stop campaign: ${e.message}`);
+          throw e;
+      }
   }
 
   async create_ad_campaign(payload: any) {

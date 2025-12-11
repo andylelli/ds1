@@ -52,6 +52,23 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card mb-5">
+                        <div class="card-content">
+                            <h2 class="title is-5">Continuous Loop</h2>
+                            <p class="subtitle is-6 has-text-grey">Run the simulation clock to generate traffic and events over time.</p>
+                            <div class="buttons">
+                                <button class="button is-success" onclick="startLoop()">
+                                    <span class="icon"><i class="fas fa-clock"></i></span>
+                                    <span>Start Loop</span>
+                                </button>
+                                <button class="button is-danger" onclick="stopLoop()">
+                                    <span class="icon"><i class="fas fa-stop"></i></span>
+                                    <span>Stop Loop</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="card">
                         <div class="card-content">
@@ -410,6 +427,30 @@
                 fetchLogs();
             } catch (e) {
                 showStatus('Failed to start simulation.', 'error');
+            }
+        }
+
+        async function startLoop() {
+            try {
+                const res = await fetch('/api/simulation/loop/start', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ interval: 5000 }) // 5 seconds per tick
+                });
+                const data = await res.json();
+                showStatus(data.message, 'success');
+            } catch (e) {
+                showStatus('Failed to start loop.', 'error');
+            }
+        }
+
+        async function stopLoop() {
+            try {
+                const res = await fetch('/api/simulation/loop/stop', { method: 'POST' });
+                const data = await res.json();
+                showStatus(data.message, 'success');
+            } catch (e) {
+                showStatus('Failed to stop loop.', 'error');
             }
         }
 
