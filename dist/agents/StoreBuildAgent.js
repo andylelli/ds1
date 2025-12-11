@@ -9,6 +9,34 @@ export class StoreBuildAgent extends BaseAgent {
         this.registerTool('create_product_page', this.createProductPage.bind(this));
         this.registerTool('optimize_seo', this.optimizeSEO.bind(this));
     }
+    /**
+     * Workflow Action: create_product_page
+     * Triggered by: SUPPLIER_APPROVED
+     */
+    async create_product_page(payload) {
+        const { product, supplier } = payload;
+        this.log('info', `Workflow: Creating product page for ${product.name} (Supplier: ${supplier.name})`);
+        // Enhance description if needed (mock logic for now)
+        const enhancedDescription = product.description + `\n\nSourced from premium supplier: ${supplier.name}.`;
+        try {
+            const newProduct = await this.shop.createProduct({
+                name: product.name,
+                description: enhancedDescription,
+                price: product.price * 1.5, // Markup
+                // category: 'Fitness', // Removed as not in Product type
+                images: product.images || [],
+                // status: 'active', // Removed as not in Product type
+                inventory: 100,
+                tags: ['Fitness']
+            });
+            this.log('info', `Product page created: ${newProduct.id}`);
+            const pageUrl = `https://myshop.com/products/${newProduct.id}`;
+            await this.eventBus.publish('PRODUCT_PAGE_CREATED', 'PRODUCT_PAGE_CREATED', { product: newProduct, pageUrl });
+        }
+        catch (error) {
+            this.log('error', `Failed to create product page: ${error.message}`);
+        }
+    }
     async createProductPage(args) {
         const { product_data } = args;
         this.log('info', `Creating product page for: ${product_data.name}`);

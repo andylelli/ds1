@@ -4,7 +4,7 @@ system:
   event_bus: "postgres" # Options: "postgres"
 
 services:
-  # Options for all services: "mock", "live", "simulation"
+  # Options for all services: "mock", "live"
   ceo: "mock"
   shop: "mock"
   ads: "mock"

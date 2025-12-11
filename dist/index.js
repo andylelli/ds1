@@ -32,6 +32,7 @@ import { fileURLToPath } from 'url';
 import { Container } from './core/bootstrap/Container.js';
 import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
 import { SimulationService } from './core/services/SimulationService.js';
+import { ResearchStagingService } from './core/services/ResearchStagingService.js';
 import { createStagingRoutes } from './api/staging-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
 import { createActivityRoutes } from './api/activity-routes.js';
@@ -62,7 +63,10 @@ app.get('/', (req, res) => {
     res.redirect('/admin.html');
 });
 // --- Initialize Container ---
-const configPath = path.join(process.cwd(), 'config', 'bootstrap.yaml');
+const mode = process.env.DS1_MODE || 'simulation';
+const configFileName = mode === 'live' ? 'bootstrap.live.yaml' : 'bootstrap.sim.yaml';
+console.log(`Initializing Container in ${mode} mode using ${configFileName}`);
+const configPath = path.join(process.cwd(), 'config', configFileName);
 const container = new Container(configPath);
 // We need to wrap initialization in an async function
 (async () => {
@@ -92,10 +96,15 @@ const container = new Container(configPath);
         }
         // Initialize Services
         const activityLog = new ActivityLogService(db.getPool());
-        const simulationService = new SimulationService(db, agents, activityLog);
+        const stagingService = new ResearchStagingService(db.getPool());
+        const simulationService = new SimulationService(db, agents, activityLog, stagingService);
         // --- Configuration API ---
         app.get('/api/config', (req, res) => {
-            res.json(container.getConfig());
+            res.json({
+                mode: mode,
+                useSimulatedEndpoints: mode === 'simulation',
+                ...container.getConfig()
+            });
         });
         app.post('/api/config', (req, res) => {
             // TODO: Implement dynamic config updates via Container or ConfigService
@@ -110,14 +119,22 @@ const container = new Container(configPath);
             // ... (We can keep the existing metadata logic or simplify it)
             // For safety, let's keep the existing response structure but maybe simplify the logic
             // Since we are refactoring, let's just return the list of active agents from the container
-            const agentList = config.agents?.agents.map(a => ({
-                id: a.id,
-                name: a.class, // simplified for now
-                role: 'Agent',
-                subscriptions: [],
-                capabilities: [],
-                externalEndpoints: []
-            })) || [];
+            const agentList = config.agents?.agents.map(a => {
+                const instance = container.getAgent(a.id);
+                // Check if instance has getMode method (it should if it extends BaseAgent)
+                const mode = instance?.getMode ? instance.getMode() : 'unknown';
+                // Debug log
+                console.log(`API Agent Check: ${a.id} -> Mode: ${mode}`);
+                return {
+                    id: a.id,
+                    name: a.class, // simplified for now
+                    role: 'Agent',
+                    mode: mode,
+                    subscriptions: [],
+                    capabilities: [],
+                    externalEndpoints: []
+                };
+            }) || [];
             res.json(agentList);
         });
         app.get('/api/logs', async (req, res) => {
@@ -149,7 +166,6 @@ const container = new Container(configPath);
             }
         });
         app.get('/api/ads', async (req, res) => {
-            console.log("GET /api/ads called");
             try {
                 const ads = await db.getCampaigns();
                 res.json(ads);
@@ -272,12 +288,59 @@ const container = new Container(configPath);
         });
         // --- Simulation API ---
         app.post('/api/simulation/start', async (req, res) => {
-            console.log("Starting simulation flow...");
+            if (mode !== 'simulation') {
+                res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+                return;
+            }
+            const { category } = req.body;
+            const topic = category || 'Fitness'; // Default if missing
+            console.log(`Starting simulation flow (Research Phase) for topic: ${topic}...`);
             // Async background task
-            simulationService.runSimulationFlow().catch(console.error);
-            res.json({ status: 'started', message: 'Simulation running in background.' });
+            simulationService.runResearchPhase(topic).catch(console.error);
+            res.json({ status: 'started', message: `Simulation research phase started for: ${topic}` });
+        });
+        app.post('/api/simulation/approve', async (req, res) => {
+            if (mode !== 'simulation') {
+                res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+                return;
+            }
+            const { itemId } = req.body;
+            if (!itemId) {
+                res.status(400).json({ error: 'itemId is required' });
+                return;
+            }
+            console.log(`Approving item ${itemId} and starting Launch Phase...`);
+            // Update status in DB first
+            try {
+                await stagingService.approveItem(itemId, 'User', 'Approved via UI');
+            }
+            catch (e) {
+                console.error("Failed to approve item in DB:", e);
+                res.status(500).json({ error: "Failed to approve item" });
+                return;
+            }
+            // Async background task
+            simulationService.runLaunchPhase(itemId).catch(console.error);
+            res.json({ status: 'started', message: 'Simulation launch phase running in background.' });
+        });
+        app.post('/api/simulation/loop/start', (req, res) => {
+            if (mode !== 'simulation')
+                return res.status(403).json({ error: 'Simulation mode only' });
+            const { interval } = req.body;
+            simulationService.startLoop(interval || 10000);
+            res.json({ status: 'success', message: 'Continuous simulation loop started' });
+        });
+        app.post('/api/simulation/loop/stop', (req, res) => {
+            if (mode !== 'simulation')
+                return res.status(403).json({ error: 'Simulation mode only' });
+            simulationService.stopLoop();
+            res.json({ status: 'success', message: 'Continuous simulation loop stopped' });
         });
         app.post('/api/simulation/clear', async (req, res) => {
+            if (mode !== 'simulation') {
+                res.status(403).json({ error: 'Simulation endpoints are only available in simulation mode.' });
+                return;
+            }
             console.log("Clearing simulation database...");
             try {
                 await simulationService.clearSimulationData();
@@ -288,11 +351,16 @@ const container = new Container(configPath);
                 res.status(500).json({ status: 'error', message: error.message });
             }
         });
+        app.get('/api/simulation/status', (req, res) => {
+            res.json({
+                tickCount: simulationService.getTickCount()
+            });
+        });
         // Start Server
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
-            console.log(`Admin Panel: http://localhost:${PORT}`);
+            console.log(`Control Panel: http://localhost:${PORT}`);
         });
     }
     catch (err) {

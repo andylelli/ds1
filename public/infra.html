@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Custom row styling for modes */
-        tr.mode-mock td:nth-child(2) .select select { background-color: #f3f4f6; color: #4b5563; border-color: #d1d5db; }
-        tr.mode-test td:nth-child(2) .select select { background-color: #fffbeb; color: #92400e; border-color: #fcd34d; }
-        tr.mode-live td:nth-child(2) .select select { background-color: #ecfdf5; color: #065f46; border-color: #6ee7b7; }
+        tr.mode-mock td:nth-child(2) .select select { background-color: #fef3c7; color: #92400e; border-color: #fcd34d; } /* Yellow/Amber */
+        tr.mode-simulation td:nth-child(2) .select select { background-color: #eff6ff; color: #1e40af; border-color: #60a5fa; } /* Blue */
+        tr.mode-live td:nth-child(2) .select select { background-color: #fef2f2; color: #991b1b; border-color: #f87171; } /* Red */
         
         /* Indicator strip */
-        tr.mode-mock td:first-child { border-left: 4px solid #9ca3af; }
-        tr.mode-test td:first-child { border-left: 4px solid #f59e0b; }
-        tr.mode-live td:first-child { border-left: 4px solid #10b981; }
+        tr.mode-mock td:first-child { border-left: 4px solid #f59e0b; }
+        tr.mode-simulation td:first-child { border-left: 4px solid #3b82f6; }
+        tr.mode-live td:first-child { border-left: 4px solid #ef4444; }
     </style>
 </head>
 <body>
@@ -56,107 +56,24 @@
                         <table class="table is-fullwidth is-hoverable">
                             <thead>
                                 <tr>
-                                    <th style="width: 25%">Component</th>
+                                    <th style="width: 25%">Service / Component</th>
                                     <th style="width: 30%">Configuration Mode</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Shop -->
-                                <tr class="config-row" id="row-shop">
-                                    <td><strong>Shop Platform</strong></td>
-                                    <td>
-                                        <div class="control">
-                                            <div class="select is-fullwidth">
-                                                <select id="shopMode" name="shopMode" onchange="updateRowStyle(this)">
-                                                    <option value="mock">Mock (Local Simulation)</option>
-                                                    <option value="test">Test (Shopify Dev Store)</option>
-                                                    <option value="live">Live (Real Shopify Store)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Controls where products are created and orders are fetched from.</td>
-                                </tr>
-
-                                <!-- Ads -->
-                                <tr class="config-row" id="row-ads">
-                                    <td><strong>Advertising Platform</strong></td>
-                                    <td>
-                                        <div class="control">
-                                            <div class="select is-fullwidth">
-                                                <select id="adsMode" name="adsMode" onchange="updateRowStyle(this)">
-                                                    <option value="mock">Mock (Local Simulation)</option>
-                                                    <option value="test">Test (Sandbox APIs)</option>
-                                                    <option value="live">Live (Real Ad Spend)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Controls where ad campaigns are launched and tracked.</td>
-                                </tr>
-
-                                <!-- Social -->
-                                <tr class="config-row" id="row-social">
-                                    <td><strong>Social Media</strong></td>
-                                    <td>
-                                        <div class="control">
-                                            <div class="select is-fullwidth">
-                                                <select id="socialMode" name="socialMode" onchange="updateRowStyle(this)">
-                                                    <option value="mock">Mock (Local Simulation)</option>
-                                                    <option value="test">Test (Private Accounts)</option>
-                                                    <option value="live">Live (Public Accounts)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Controls where social posts are published.</td>
-                                </tr>
-
-                                <!-- Research -->
-                                <tr class="config-row" id="row-research">
-                                    <td><strong>Market Research</strong></td>
-                                    <td>
-                                        <div class="control">
-                                            <div class="select is-fullwidth">
-                                                <select id="researchMode" name="researchMode" onchange="updateRowStyle(this)">
-                                                    <option value="mock">Mock (Static Data)</option>
-                                                    <option value="test">Test (Limited API Calls)</option>
-                                                    <option value="live">Live (Real-time Trends)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Controls data sources for product research (Google Trends, etc).</td>
-                                </tr>
-
-                                <!-- Supplier -->
-                                <tr class="config-row" id="row-supplier">
-                                    <td><strong>Supplier Network</strong></td>
-                                    <td>
-                                        <div class="control">
-                                            <div class="select is-fullwidth">
-                                                <select id="supplierMode" name="supplierMode" onchange="updateRowStyle(this)">
-                                                    <option value="mock">Mock (Local Inventory)</option>
-                                                    <option value="test">Test (AliExpress Sandbox)</option>
-                                                    <option value="live">Live (Real Orders)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Controls product sourcing and fulfillment.</td>
-                                </tr>
+                            <tbody id="configTableBody">
+                                <!-- Dynamic Content -->
                             </tbody>
                         </table>
                     </div>
 
                     <div class="field is-grouped is-grouped-right mt-5">
                         <div class="control">
-                            <button type="button" class="button is-primary" onclick="saveConfig()">
+                            <button type="button" class="button is-primary" onclick="saveConfig()" disabled title="Configuration updates via UI are currently read-only">
                                 <span class="icon is-small">
-                                    <i class="fas fa-save"></i>
+                                    <i class="fas fa-lock"></i>
                                 </span>
-                                <span>Save Configuration</span>
+                                <span>Save Configuration (Edit YAML to change)</span>
                             </button>
                         </div>
                     </div>
@@ -167,62 +84,58 @@
 
     <script src="sidebar.js"></script>
     <script>
+        const services = [
+            { id: 'ceo', name: 'CEO Agent', desc: 'Executive decision making and team coordination.' },
+            { id: 'trends', name: 'Product Research (Trends)', desc: 'Market trend analysis and product discovery (Google Trends).' },
+            { id: 'competitor', name: 'Competitor Analysis', desc: 'Competitor store tracking and price monitoring.' },
+            { id: 'fulfilment', name: 'Supplier Network', desc: 'Product sourcing, inventory, and order fulfillment.' },
+            { id: 'shop', name: 'Shop Platform', desc: 'E-commerce store management (Shopify).' },
+            { id: 'ads', name: 'Advertising Platform', desc: 'Ad campaign management (Facebook/TikTok Ads).' },
+            { id: 'email', name: 'Customer Service (Email)', desc: 'Customer support and email communication.' },
+            { id: 'operations', name: 'Operations', desc: 'Daily business operations and order processing.' },
+            { id: 'analytics', name: 'Analytics', desc: 'Business performance reporting and insights.' },
+            { id: 'ai', name: 'AI Core Services', desc: 'Underlying LLM and cognitive services.' }
+        ];
+
         // Load Config
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
-                const config = await res.json();
+                const fullConfig = await res.json();
+                const serviceConfig = fullConfig.bootstrap?.services || {};
                 
-                // Set values
-                setSelect('shopMode', config.shopMode);
-                setSelect('adsMode', config.adsMode);
-                setSelect('socialMode', config.socialMode);
-                setSelect('researchMode', config.researchMode);
-                setSelect('supplierMode', config.supplierMode);
+                const tbody = document.getElementById('configTableBody');
+                tbody.innerHTML = services.map(service => {
+                    const currentMode = serviceConfig[service.id] || 'mock';
+                    return `
+                        <tr class="config-row mode-${currentMode}" id="row-${service.id}">
+                            <td><strong>${service.name}</strong></td>
+                            <td>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="${service.id}Mode" name="${service.id}" onchange="updateRowStyle(this)" disabled>
+                                            <option value="mock" ${currentMode === 'mock' ? 'selected' : ''}>Mock (Fake Data)</option>
+                                            <option value="simulation" ${currentMode === 'simulation' ? 'selected' : ''}>Simulation (System Logic)</option>
+                                            <option value="live" ${currentMode === 'live' ? 'selected' : ''}>Live (Real API Calls)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${service.desc}</td>
+                        </tr>
+                    `;
+                }).join('');
 
             } catch (e) {
                 showStatus('Failed to load configuration', 'error');
-            }
-        }
-
-        function setSelect(id, value) {
-            const el = document.getElementById(id);
-            if (el) {
-                el.value = value || 'mock';
-                updateRowStyle(el);
+                console.error(e);
             }
         }
 
         function updateRowStyle(selectElement) {
             const row = selectElement.closest('tr');
-            row.classList.remove('mode-mock', 'mode-test', 'mode-live');
+            row.classList.remove('mode-mock', 'mode-simulation', 'mode-live');
             row.classList.add('mode-' + selectElement.value);
-        }
-
-        async function saveConfig() {
-            const config = {
-                shopMode: document.getElementById('shopMode').value,
-                adsMode: document.getElementById('adsMode').value,
-                socialMode: document.getElementById('socialMode').value,
-                researchMode: document.getElementById('researchMode').value,
-                supplierMode: document.getElementById('supplierMode').value
-            };
-
-            try {
-                const res = await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(config)
-                });
-
-                if (res.ok) {
-                    showStatus('Configuration saved successfully. Please restart the server.', 'success');
-                } else {
-                    showStatus('Error saving configuration.', 'error');
-                }
-            } catch (e) {
-                showStatus('Network error.', 'error');
-            }
         }
 
         function showStatus(msg, type) {

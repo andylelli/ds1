@@ -32,10 +32,11 @@ export class StoreBuildAgent extends BaseAgent {
               name: product.name,
               description: enhancedDescription,
               price: product.price * 1.5, // Markup
-              category: 'Fitness', // Should come from product data
+              // category: 'Fitness', // Removed as not in Product type
               images: product.images || [],
-              status: 'active',
-              inventory: 100
+              // status: 'active', // Removed as not in Product type
+              inventory: 100,
+              tags: ['Fitness']
           });
 
           this.log('info', `Product page created: ${newProduct.id}`);

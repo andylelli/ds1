@@ -86,6 +86,10 @@ export class ResearchStagingService {
         const result = await this.pool.query(query, params);
         return result.rows.map(r => this.mapStagedItem(r));
     }
+    async getItem(id) {
+        const result = await this.pool.query('SELECT * FROM research_staging WHERE id = $1', [id]);
+        return result.rows[0] ? this.mapStagedItem(result.rows[0]) : null;
+    }
     async getPendingCount() {
         const result = await this.pool.query(`
       SELECT COUNT(*) FROM research_staging WHERE status = 'pending'

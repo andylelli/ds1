@@ -33,7 +33,7 @@ export class OperationsAgent extends BaseAgent {
     };
   }
 
-  async fulfillOrder(args: { order_id: string }) {
+  async fulfillOrder(args: { order_id: string }): Promise<{ order_id: string; tracking_number: string; status: string; }> {
     const { order_id } = args;
     if (configService.get('useSimulatedEndpoints')) {
       return this._fulfillOrderMock(order_id);
@@ -42,7 +42,7 @@ export class OperationsAgent extends BaseAgent {
     }
   }
 
-  async _fulfillOrderMock(order_id: string) {
+  async _fulfillOrderMock(order_id: string): Promise<{ order_id: string; tracking_number: string; status: string; }> {
     this.log('info', `Fulfilling order ${order_id}`);
     return {
       order_id,
@@ -51,7 +51,7 @@ export class OperationsAgent extends BaseAgent {
     };
   }
 
-  async _fulfillOrderReal(order_id: string) {
+  async _fulfillOrderReal(order_id: string): Promise<{ order_id: string; tracking_number: string; status: string; }> {
     this.log('info', `[REAL] Fulfilling order ${order_id} via Supplier API`);
     throw new Error("Real Fulfillment API not implemented yet. Switch to mock mode.");
   }

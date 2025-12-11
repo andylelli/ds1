@@ -76,7 +76,7 @@ export class MockAdapter {
             id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         });
     }
-    async getRecentLogs(limit) {
+    async getRecentLogs(limit, source) {
         const logs = await this.getItems("AgentMemory");
         return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);
     }

@@ -38,7 +38,7 @@ export class MarketingAgent extends BaseAgent {
       try {
           const campaign = await this.ads.createCampaign({
               product: productName,
-              platform: 'facebook', // Default for now
+              platform: 'Facebook', // Default for now
               budget: 500, // Default budget
               status: 'active'
           });

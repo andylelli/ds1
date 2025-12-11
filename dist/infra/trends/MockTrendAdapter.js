@@ -15,26 +15,28 @@ export class MockTrendAdapter {
         };
     }
     async findProducts(category) {
-        console.log(`[MockTrend] Returning mock products for ${category}`);
-        return [
-            {
-                id: 'prod_001',
-                name: `Premium ${category} Resistance Bands Set`,
-                description: `Professional-grade resistance bands perfect for home workouts and physical therapy. Includes 5 resistance levels, door anchor, and carrying case. Made from durable latex-free material.`,
-                price: 29.99,
-                potential: 'High',
-                margin: '60%',
-                images: [`https://via.placeholder.com/600x600.png?text=${category}+Bands`]
-            },
-            {
-                id: 'prod_002',
-                name: `${category} Yoga Mat with Alignment Lines`,
-                description: `Extra-thick yoga mat with printed alignment guides for proper form. Non-slip surface, eco-friendly TPE material, and includes carrying strap.`,
-                price: 19.99,
-                potential: 'Medium',
-                margin: '40%',
-                images: [`https://via.placeholder.com/600x600.png?text=${category}+Mat`]
-            }
-        ];
+        console.log(`[MockTrend] Generating smart mock products for ${category}`);
+        const adjectives = ['Premium', 'Eco-Friendly', 'Smart', 'Portable', 'Luxury', 'Compact', 'Durable'];
+        const nouns = ['Kit', 'Set', 'Device', 'Tool', 'Accessory', 'Bundle'];
+        const products = [];
+        const count = Math.floor(Math.random() * 3) + 1; // 1 to 3 products
+        for (let i = 0; i < count; i++) {
+            const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+            const noun = nouns[Math.floor(Math.random() * nouns.length)];
+            const price = parseFloat((Math.random() * 100 + 10).toFixed(2));
+            const cost = price * (0.3 + Math.random() * 0.4); // Cost is 30-70% of price
+            const marginVal = ((price - cost) / price) * 100;
+            products.push({
+                id: `prod_${Date.now()}_${i}`,
+                name: `${adj} ${category} ${noun}`,
+                description: `A high-quality ${category.toLowerCase()} product designed for the modern consumer. Features state-of-the-art materials and ergonomic design.`,
+                price: price,
+                cost: parseFloat(cost.toFixed(2)),
+                margin: `${marginVal.toFixed(0)}%`,
+                potential: marginVal > 50 ? 'High' : 'Medium',
+                images: [`https://via.placeholder.com/600x600.png?text=${category}+${noun}`]
+            });
+        }
+        return products;
     }
 }

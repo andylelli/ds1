@@ -7,6 +7,18 @@ export class OperationsAgent extends BaseAgent {
         this.registerTool('check_inventory', this.checkInventory.bind(this));
         this.registerTool('handle_shipping_issue', this.handleShippingIssue.bind(this));
     }
+    async process_order(payload) {
+        const order = payload.order || payload;
+        this.log('info', `Workflow: Processing order ${order.id}`);
+        try {
+            const result = await this.fulfillOrder({ order_id: order.id });
+            this.log('info', `Order fulfilled: ${result.tracking_number}`);
+            await this.eventBus.publish('ORDER_SHIPPED', 'ORDER_SHIPPED', { order, tracking: result.tracking_number });
+        }
+        catch (error) {
+            this.log('error', `Failed to process order: ${error.message}`);
+        }
+    }
     async handleShippingIssue(args) {
         const { order_id, issue_type } = args;
         this.log('warn', `Handling shipping issue for ${order_id}: ${issue_type}`);

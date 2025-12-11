@@ -26,6 +26,28 @@ export class CEOAgent extends BaseAgent {
             }
         },
         {
+            name: 'approveSupplier',
+            description: 'Approve a supplier.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    reason: { type: 'string', description: 'Reason for approval' }
+                },
+                required: ['reason']
+            }
+        },
+        {
+            name: 'rejectSupplier',
+            description: 'Reject a supplier.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    reason: { type: 'string', description: 'Reason for rejection' }
+                },
+                required: ['reason']
+            }
+        },
+        {
             name: 'startProductResearch',
             description: 'Instruct the Research Agent to find winning products in a specific category.',
             parameters: {
@@ -79,6 +101,89 @@ export class CEOAgent extends BaseAgent {
     setTeam(team) {
         this.team = team;
     }
+    /**
+     * Workflow Action: review_product
+     * Triggered by: PRODUCT_FOUND
+     */
+    async review_product(payload) {
+        const { product } = payload;
+        this.log('info', `Workflow: Reviewing product ${product.name}`);
+        const systemPrompt = `You are the CEO. Review this product candidate.
+      Product: ${JSON.stringify(product)}
+      
+      Decide if we should sell this. 
+      - Approve if margin is high (e.g. > 50%) or potential is High.
+      - Reject otherwise.
+      `;
+        // We only need the approval/rejection tools for this specific task
+        const reviewTools = [
+            this.aiTools.find(t => t.name === 'approveProduct'),
+            this.aiTools.find(t => t.name === 'rejectProduct')
+        ];
+        try {
+            const response = await this.ai.chat(systemPrompt, "Please review this product.", reviewTools);
+            // Handle Tool Calls
+            if (response.toolCalls && response.toolCalls.length > 0) {
+                for (const call of response.toolCalls) {
+                    if (call.name === 'approveProduct') {
+                        this.log('info', `Approved product ${product.name}: ${call.arguments.reason}`);
+                        // In a real app, we'd save to DB here with status 'APPROVED'
+                        await this.eventBus.publish('PRODUCT_APPROVED', 'PRODUCT_APPROVED', { product, reason: call.arguments.reason });
+                    }
+                    else if (call.name === 'rejectProduct') {
+                        this.log('info', `Rejected product ${product.name}: ${call.arguments.reason}`);
+                    }
+                }
+            }
+            else {
+                // Fallback if AI just chats
+                this.log('warn', `AI did not make a formal decision for ${product.name}. Response: ${response.content}`);
+            }
+        }
+        catch (error) {
+            this.log('error', `Failed to review product: ${error.message}`);
+        }
+    }
+    /**
+     * Workflow Action: review_supplier
+     * Triggered by: SUPPLIER_FOUND
+     */
+    async review_supplier(payload) {
+        const { product, supplier } = payload;
+        this.log('info', `Workflow: Reviewing supplier ${supplier.name} for ${product.name}`);
+        const systemPrompt = `You are the CEO. Review this supplier candidate.
+      Product: ${product.name}
+      Supplier: ${JSON.stringify(supplier)}
+      
+      Decide if we should use this supplier.
+      - Approve if rating > 4.5.
+      - Reject otherwise.
+      `;
+        const reviewTools = [
+            this.aiTools.find(t => t.name === 'approveSupplier'),
+            this.aiTools.find(t => t.name === 'rejectSupplier')
+        ];
+        try {
+            const response = await this.ai.chat(systemPrompt, "Please review this supplier.", reviewTools);
+            if (response.toolCalls && response.toolCalls.length > 0) {
+                for (const call of response.toolCalls) {
+                    if (call.name === 'approveSupplier') {
+                        this.log('info', `Approved supplier ${supplier.name}: ${call.arguments.reason}`);
+                        await this.eventBus.publish('SUPPLIER_APPROVED', 'SUPPLIER_APPROVED', { product, supplier, reason: call.arguments.reason });
+                    }
+                    else if (call.name === 'rejectSupplier') {
+                        this.log('info', `Rejected supplier ${supplier.name}: ${call.arguments.reason}`);
+                    }
+                }
+            }
+            else {
+                this.log('warn', `AI did not make a decision for supplier ${supplier.name}.`);
+            }
+        }
+        catch (error) {
+            this.log('error', `Failed to review supplier: ${error.message}`);
+        }
+    }
     async chat(userMessage, mode) {
         await this.log('chat_request', { message: userMessage, mode });
         try {
@@ -86,7 +191,7 @@ export class CEOAgent extends BaseAgent {
             // If mode='simulation', only get sim data; otherwise get live data
             const source = mode === 'simulation' ? 'sim' : 'live';
             const [logs, products, orders, campaigns] = await Promise.all([
-                this.db.getRecentLogs(50),
+                this.db.getRecentLogs(50, source),
                 this.db.getProducts(source),
                 this.db.getOrders(source),
                 this.db.getCampaigns(source)

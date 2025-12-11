@@ -4,7 +4,11 @@ import { configService } from '../config/ConfigService.js';
 export class PostgresAdapter {
     pgPool = null;
     simPool = null;
-    constructor() {
+    liveUrl;
+    simUrl;
+    constructor(liveUrl, simUrl) {
+        this.liveUrl = liveUrl;
+        this.simUrl = simUrl;
         this.initPools();
     }
     // Expose pool for services that need direct database access
@@ -17,8 +21,8 @@ export class PostgresAdapter {
         return pool;
     }
     initPools() {
-        const dbUrl = configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
-        const simDbUrl = configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
+        const dbUrl = this.liveUrl || configService.get('databaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship";
+        const simDbUrl = this.simUrl || configService.get('simulatorDatabaseUrl') || "postgresql://postgres:postgres@localhost:5432/dropship_sim";
         try {
             this.pgPool = new Pool({ connectionString: dbUrl });
             this.simPool = new Pool({ connectionString: simDbUrl });
@@ -181,26 +185,32 @@ export class PostgresAdapter {
             console.error(`Failed to save log to PG (${mode}):`, e.message);
         }
     }
-    async getRecentLogs(limit) {
+    async getRecentLogs(limit, source) {
         const mode = configService.get('dbMode');
-        const pool = mode === 'test' ? this.simPool : this.pgPool;
+        const useSimPool = source === 'sim' || (!source && mode === 'test');
+        const pool = useSimPool ? this.simPool : this.pgPool;
         if (!pool) {
             return [];
         }
         try {
-            const result = await pool.query(`SELECT topic, type, payload, created_at 
-         FROM events 
+            const result = await pool.query(`SELECT agent, message, data, created_at FROM (
+           SELECT topic as agent, type as message, payload as data, created_at 
+           FROM events 
+           UNION ALL
+           SELECT agent, message, details as data, created_at 
+           FROM activity_log
+         ) as combined_logs
          ORDER BY created_at DESC 
          LIMIT $1`, [limit]);
             return result.rows.map(row => ({
-                agent: row.topic,
-                message: row.type,
-                data: typeof row.payload === 'string' ? JSON.parse(row.payload) : row.payload,
+                agent: row.agent,
+                message: row.message,
+                data: typeof row.data === 'string' ? JSON.parse(row.data) : row.data,
                 timestamp: row.created_at
             }));
         }
         catch (e) {
-            console.error(`Failed to fetch logs from PG (${mode}):`, e.message || e);
+            console.error(`Failed to fetch logs from PG (${useSimPool ? 'sim' : 'live'}):`, e.message || e);
             console.error('Full error:', e);
             return [];
         }
@@ -265,7 +275,17 @@ export class PostgresAdapter {
     }
     async clearSimulationData() {
         console.log('[PostgresAdapter.clearSimulationData] Clearing SIMULATION pool only');
-        const tables = ['consumer_offsets', 'events_archive', 'events', 'orders', 'ads', 'products'];
+        // Order matters for foreign keys: delete children first
+        const tables = [
+            'research_staging',
+            'research_sessions',
+            'consumer_offsets',
+            'events_archive',
+            'events',
+            'orders',
+            'ads',
+            'products'
+        ];
         if (!this.simPool) {
             console.log('[PostgresAdapter.clearSimulationData] simPool is null, nothing to clear');
             return;

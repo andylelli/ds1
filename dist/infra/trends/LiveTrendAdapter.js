@@ -15,6 +15,14 @@ export class LiveTrendAdapter {
     }
     async analyzeTrend(category) {
         console.log(`[LiveTrend] Analyzing trend for ${category} using Google Trends`);
+        await this.activityLog.log({
+            agent: 'ProductResearcher',
+            action: 'analyze_trend',
+            category: 'research',
+            status: 'started',
+            message: `Analyzing trend for ${category} using Google Trends`,
+            details: { category, source: 'google_trends' }
+        });
         try {
             // 1. Get interest over time from Google Trends
             const interestData = await this.getInterestOverTime(category);
@@ -22,7 +30,7 @@ export class LiveTrendAdapter {
             const relatedQueries = await this.getRelatedQueries(category);
             // 3. Calculate trend score
             const trendScore = this.calculateTrendScore(interestData);
-            return {
+            const result = {
                 category,
                 trendScore, // 0-100
                 direction: trendScore > 60 ? 'rising' : trendScore > 40 ? 'stable' : 'declining',
@@ -32,18 +40,43 @@ export class LiveTrendAdapter {
                 recommendation: trendScore > 50 ? 'PROCEED' : 'CAUTION',
                 source: 'google_trends'
             };
+            await this.activityLog.log({
+                agent: 'ProductResearcher',
+                action: 'analyze_trend',
+                category: 'research',
+                status: 'completed',
+                message: `Successfully analyzed trend for ${category}`,
+                details: { trendScore: result.trendScore, direction: result.direction }
+            });
+            return result;
         }
         catch (error) {
             console.error(`[LiveTrend] Google Trends failed, falling back to AI:`, error.message);
+            await this.activityLog.log({
+                agent: 'ProductResearcher',
+                action: 'analyze_trend',
+                category: 'research',
+                status: 'warning',
+                message: `Google Trends failed for ${category}, falling back to AI`,
+                details: { error: error.message }
+            });
             return this.analyzeTrendWithAI(category);
         }
     }
     async checkSaturation(productName) {
         console.log(`[LiveTrend] Checking saturation for ${productName}`);
+        await this.activityLog.log({
+            agent: 'ProductResearcher',
+            action: 'check_saturation',
+            category: 'research',
+            status: 'started',
+            message: `Checking saturation for ${productName} using Google Trends`,
+            details: { productName, source: 'google_trends' }
+        });
         try {
             const interestData = await this.getInterestOverTime(productName);
             const recentTrend = this.analyzeRecentTrend(interestData);
-            return {
+            const result = {
                 productName,
                 saturationLevel: recentTrend.stable && recentTrend.high ? 'HIGH' :
                     recentTrend.rising ? 'LOW' : 'MEDIUM',
@@ -52,16 +85,33 @@ export class LiveTrendAdapter {
                 trendData: recentTrend,
                 source: 'google_trends'
             };
+            await this.activityLog.log({
+                agent: 'ProductResearcher',
+                action: 'check_saturation',
+                category: 'research',
+                status: 'completed',
+                message: `Saturation check complete for ${productName}`,
+                details: { saturation: result.saturationLevel, recommendation: result.recommendation }
+            });
+            return result;
         }
         catch (error) {
             console.error(`[LiveTrend] Saturation check failed, using AI:`, error.message);
+            await this.activityLog.log({
+                agent: 'ProductResearcher',
+                action: 'check_saturation',
+                category: 'research',
+                status: 'warning',
+                message: `Google Trends saturation check failed for ${productName}, falling back to AI`,
+                details: { error: error.message }
+            });
             return this.checkSaturationWithAI(productName);
         }
     }
     async findProducts(category) {
         console.log(`[LiveTrend] Finding products in ${category} using Google Trends + AI`);
         await this.activityLog.log({
-            agent: 'Research',
+            agent: 'ProductResearcher',
             action: 'find_products',
             category: 'research',
             status: 'started',
@@ -91,7 +141,7 @@ export class LiveTrendAdapter {
                 }
                 await this.stagingService.completeSession(sessionId);
                 await this.activityLog.log({
-                    agent: 'Research',
+                    agent: 'ProductResearcher',
                     action: 'find_products',
                     category: 'research',
                     status: 'completed',
@@ -121,7 +171,7 @@ export class LiveTrendAdapter {
         catch (error) {
             console.error(`[LiveTrend] Google Trends + AI failed: ${error.message}`);
             await this.activityLog.log({
-                agent: 'Research',
+                agent: 'ProductResearcher',
                 action: 'find_products',
                 category: 'research',
                 status: 'warning',
@@ -136,30 +186,73 @@ export class LiveTrendAdapter {
         return this.stagingService.getApprovedProducts(sessionId);
     }
     // === Google Trends Helper Methods ===
+    async retry(fn, retries = 3, delay = 2000) {
+        try {
+            return await fn();
+        }
+        catch (error) {
+            if (retries === 0)
+                throw error;
+            // Check if it's a rate limit (HTML response)
+            if (error.message && error.message.includes('Response starts with: <')) {
+                console.warn(`[LiveTrend] Google Trends returned HTML (likely Rate Limit). Retrying in ${delay * 2}ms...`);
+                // Increase delay significantly for rate limits
+                await new Promise(resolve => setTimeout(resolve, delay * 2));
+                return this.retry(fn, retries - 1, delay * 4);
+            }
+            console.warn(`[LiveTrend] Operation failed, retrying in ${delay}ms... (${retries} attempts left)`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return this.retry(fn, retries - 1, delay * 2);
+        }
+    }
     async getInterestOverTime(keyword) {
         return this.cachedRequest(`interest_${keyword}`, async () => {
-            const result = await googleTrends.interestOverTime({
-                keyword,
-                startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
-                geo: 'US'
+            return this.retry(async () => {
+                const result = await googleTrends.interestOverTime({
+                    keyword,
+                    startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
+                    geo: 'US'
+                });
+                try {
+                    return JSON.parse(result);
+                }
+                catch (e) {
+                    console.error(`[LiveTrend] JSON Parse Error (interestOverTime): ${result.substring(0, 200)}`);
+                    throw new Error(`Invalid JSON from Google Trends (interestOverTime). Response starts with: ${result.substring(0, 500)}...`);
+                }
             });
-            return JSON.parse(result);
         });
     }
     async getRelatedQueries(keyword) {
         return this.cachedRequest(`queries_${keyword}`, async () => {
-            const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
-            const parsed = JSON.parse(result);
-            return {
-                rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
-                top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
-            };
+            return this.retry(async () => {
+                const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
+                try {
+                    const parsed = JSON.parse(result);
+                    return {
+                        rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
+                        top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
+                    };
+                }
+                catch (e) {
+                    console.error(`[LiveTrend] JSON Parse Error (relatedQueries): ${result.substring(0, 200)}`);
+                    throw new Error(`Invalid JSON from Google Trends (relatedQueries). Response starts with: ${result.substring(0, 500)}...`);
+                }
+            });
         });
     }
     async getDailyTrends() {
         return this.cachedRequest('daily_trends', async () => {
-            const result = await googleTrends.dailyTrends({ geo: 'US' });
-            return JSON.parse(result);
+            return this.retry(async () => {
+                const result = await googleTrends.dailyTrends({ geo: 'US' });
+                try {
+                    return JSON.parse(result);
+                }
+                catch (e) {
+                    console.error(`[LiveTrend] JSON Parse Error (dailyTrends): ${result.substring(0, 200)}`);
+                    throw new Error(`Invalid JSON from Google Trends (dailyTrends). Response starts with: ${result.substring(0, 500)}...`);
+                }
+            });
         });
     }
     async synthesizeProductsWithAI(category, risingQueries, dailyTrends) {

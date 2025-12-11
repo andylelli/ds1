@@ -7,6 +7,8 @@ async function initSidebar() {
         const res = await fetch('/api/config');
         const config = await res.json();
         const isSim = config.mode === 'simulation';
+        const modeLabel = isSim ? 'SIMULATION' : 'LIVE';
+        const modeColor = isSim ? 'has-text-info' : 'has-text-danger';
 
         let html = `
     <div class="p-4 mb-2">
@@ -16,7 +18,7 @@ async function initSidebar() {
                 <span>DS1 Control</span>
             </span>
         </h1>
-        <p class="is-size-7 has-text-grey pl-5">${isSim ? 'SIMULATION' : 'LIVE'} MODE</p>
+        <p class="is-size-7 has-text-grey pl-5"><span class="${modeColor} has-text-weight-bold">${modeLabel}</span> MODE</p>
     </div>
     <aside class="menu p-4 pt-0">`;
 

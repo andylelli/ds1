@@ -44,26 +44,37 @@ export class ServiceFactory {
     }
     createPersistence() {
         // Currently only Postgres is supported/requested
-        return new PostgresAdapter();
+        const dbConfig = this.config.infrastructure?.database;
+        return new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
     }
     createEventBus() {
-        // Currently only Postgres is supported/requested
-        return new PostgresEventStore();
+        // Always use PostgresEventStore
+        const dbConfig = this.config.infrastructure?.database;
+        return new PostgresEventStore(dbConfig?.live_url, dbConfig?.simulation_url);
     }
     /**
      * Creates an adapter instance based on the class name from configuration
      * and the current system mode (live/simulation).
      */
     createAdapter(className, deps) {
-        const mode = this.config.bootstrap.system.mode;
-        const isLive = mode === 'live';
+        const systemMode = this.config.bootstrap.system.mode;
+        const services = this.config.bootstrap.services || {};
+        // Helper to determine if a specific service should be live
+        const isServiceLive = (serviceKey) => {
+            const serviceMode = services[serviceKey];
+            if (serviceMode)
+                return serviceMode === 'live';
+            return systemMode === 'live';
+        };
         switch (className) {
             case 'ShopifyAdapter':
-                return isLive ? new LiveShopAdapter() : new MockShopAdapter();
+                return isServiceLive('shop') ? new LiveShopAdapter() : new MockShopAdapter();
             case 'AdsAdapter':
+                const isLive = isServiceLive('ads');
+                console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${isLive}`);
                 return isLive ? new LiveAdsAdapter() : new MockAdsAdapter();
             case 'TrendAdapter':
-                if (isLive) {
+                if (isServiceLive('trends')) {
                     if (!deps || !deps.db) {
                         throw new Error("LiveTrendAdapter requires a database connection (deps.db).");
                     }
@@ -72,13 +83,13 @@ export class ServiceFactory {
                 }
                 return new MockTrendAdapter();
             case 'CompetitorAdapter':
-                return isLive ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
+                return isServiceLive('competitor') ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
             case 'FulfilmentAdapter':
-                return isLive ? new LiveFulfilmentAdapter() : new MockFulfilmentAdapter();
+                return isServiceLive('fulfilment') ? new LiveFulfilmentAdapter() : new MockFulfilmentAdapter();
             case 'EmailAdapter':
-                return isLive ? new LiveEmailAdapter() : new MockEmailAdapter();
+                return isServiceLive('email') ? new LiveEmailAdapter() : new MockEmailAdapter();
             case 'AiAdapter':
-                return isLive ? new LiveAiAdapter() : new MockAiAdapter();
+                return isServiceLive('ai') ? new LiveAiAdapter() : new MockAiAdapter();
             default:
                 throw new Error(`Unknown adapter class: ${className}`);
         }
@@ -120,6 +131,7 @@ export class ServiceFactory {
             case 'StoreBuildAgent':
                 return new StoreBuildAgent(deps.db, deps.eventBus, deps.shop);
             case 'MarketingAgent':
+                console.log(`[ServiceFactory] Creating MarketingAgent with ads adapter: ${deps.ads ? deps.ads.constructor.name : 'undefined'}`);
                 return new MarketingAgent(deps.db, deps.eventBus, deps.ads);
             case 'CustomerServiceAgent':
                 return new CustomerServiceAgent(deps.db, deps.eventBus, deps.email);

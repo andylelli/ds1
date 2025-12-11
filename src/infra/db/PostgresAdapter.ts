@@ -219,17 +219,22 @@ export class PostgresAdapter implements PersistencePort {
 
     try {
       const result = await pool.query(
-        `SELECT topic, type, payload, created_at 
-         FROM events 
+        `SELECT agent, message, data, created_at FROM (
+           SELECT topic as agent, type as message, payload as data, created_at 
+           FROM events 
+           UNION ALL
+           SELECT agent, message, details as data, created_at 
+           FROM activity_log
+         ) as combined_logs
          ORDER BY created_at DESC 
          LIMIT $1`,
         [limit]
       );
       
       return result.rows.map(row => ({
-        agent: row.topic,
-        message: row.type,
-        data: typeof row.payload === 'string' ? JSON.parse(row.payload) : row.payload,
+        agent: row.agent,
+        message: row.message,
+        data: typeof row.data === 'string' ? JSON.parse(row.data) : row.data,
         timestamp: row.created_at
       }));
     } catch (e: any) {

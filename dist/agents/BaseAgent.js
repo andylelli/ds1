@@ -17,16 +17,24 @@ export class BaseAgent extends MCPServer {
         this.eventBus = eventBus;
     }
     /**
-     * Set the agent's operating mode (simulation or live)
+     * Set the agent's operating mode (simulation or live or mock)
      */
     setMode(mode) {
         this.mode = mode;
     }
     /**
+     * Get the agent's operating mode
+     */
+    getMode() {
+        return this.mode;
+    }
+    /**
      * Get the database source based on current mode
      */
     getSource() {
-        return this.mode === 'simulation' ? 'sim' : 'live';
+        if (this.mode === 'simulation' || this.mode === 'mock')
+            return 'sim';
+        return 'live';
     }
     async log(type, data) {
         const currentLevel = configService.get('logLevel') || 'info';

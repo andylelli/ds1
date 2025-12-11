@@ -142,6 +142,9 @@ const container = new Container(configPath);
           // Check if instance has getMode method (it should if it extends BaseAgent)
           const mode = (instance as any)?.getMode ? (instance as any).getMode() : 'unknown';
           
+          // Debug log
+          console.log(`API Agent Check: ${a.id} -> Mode: ${mode}`);
+
           return {
               id: a.id,
               name: a.class, // simplified for now

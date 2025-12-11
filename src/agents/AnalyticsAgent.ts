@@ -48,8 +48,9 @@ export class AnalyticsAgent extends BaseAgent {
         // Find Top Product
         const productSales = new Map<string, number>();
         orders.forEach(o => {
-            const current = productSales.get(o.product) || 0;
-            productSales.set(o.product, current + (o.amount || 0));
+            const key = o.productName || o.productId;
+            const current = productSales.get(key) || 0;
+            productSales.set(key, current + (o.amount || 0));
         });
         
         let topProduct = 'None';
@@ -70,7 +71,7 @@ export class AnalyticsAgent extends BaseAgent {
             // But if multiple campaigns on same platform, it's tricky.
             // Let's assume we can map by product + platform.
             
-            const campOrders = orders.filter(o => o.product === c.product && o.source.includes(c.platform));
+            const campOrders = orders.filter(o => (o.productName || o.productId) === c.product && o.source.includes(c.platform));
             const campRevenue = campOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
             const campSpend = c.budget || 0;
             const campProfit = campRevenue - (campRevenue * 0.3) - campSpend; // 30% COGS

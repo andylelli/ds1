@@ -1,6 +1,7 @@
 export class MockAdsAdapter {
     campaigns = new Map();
     async createCampaign(campaignData) {
+        console.log(`[MockAds] createCampaign called for ${campaignData.product}`);
         const id = `ad_camp_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
         const newCampaign = {
             ...campaignData,
