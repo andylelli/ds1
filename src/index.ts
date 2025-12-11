@@ -137,14 +137,21 @@ const container = new Container(configPath);
       // For safety, let's keep the existing response structure but maybe simplify the logic
       // Since we are refactoring, let's just return the list of active agents from the container
       
-      const agentList = config.agents?.agents.map(a => ({
-          id: a.id,
-          name: a.class, // simplified for now
-          role: 'Agent',
-          subscriptions: [],
-          capabilities: [],
-          externalEndpoints: []
-      })) || [];
+      const agentList = config.agents?.agents.map(a => {
+          const instance = container.getAgent(a.id);
+          // Check if instance has getMode method (it should if it extends BaseAgent)
+          const mode = (instance as any)?.getMode ? (instance as any).getMode() : 'unknown';
+          
+          return {
+              id: a.id,
+              name: a.class, // simplified for now
+              role: 'Agent',
+              mode: mode,
+              subscriptions: [],
+              capabilities: [],
+              externalEndpoints: []
+          };
+      }) || [];
       
       res.json(agentList);
     });

@@ -5,13 +5,16 @@ export interface BootstrapConfig {
     event_bus: string;
   };
   services?: {
-    shop?: 'live' | 'mock';
-    ads?: 'live' | 'mock';
-    trends?: 'live' | 'mock';
-    competitor?: 'live' | 'mock';
-    fulfilment?: 'live' | 'mock';
-    email?: 'live' | 'mock';
-    ai?: 'live' | 'mock';
+    ceo?: 'live' | 'mock' | 'simulation';
+    shop?: 'live' | 'mock' | 'simulation';
+    ads?: 'live' | 'mock' | 'simulation';
+    trends?: 'live' | 'mock' | 'simulation';
+    competitor?: 'live' | 'mock' | 'simulation';
+    fulfilment?: 'live' | 'mock' | 'simulation';
+    email?: 'live' | 'mock' | 'simulation';
+    ai?: 'live' | 'mock' | 'simulation';
+    operations?: 'live' | 'mock' | 'simulation';
+    analytics?: 'live' | 'mock' | 'simulation';
   };
   paths: {
     infrastructure: string;

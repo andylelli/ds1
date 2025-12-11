@@ -67,12 +67,39 @@ export class Container {
     }
 
     // 3. Initialize Agents
+    const systemMode = this.config.bootstrap?.system?.mode || 'live';
+    const servicesConfig = this.config.bootstrap?.services || {};
+    logger.info(`[Container] System Mode from config: ${systemMode}`);
+    logger.info(`[Container] Services Config: ${JSON.stringify(servicesConfig)}`);
+    
     if (this.config.agents && this.config.agents.agents) {
         for (const agentConfig of this.config.agents.agents) {
              try {
                  const agent = this.factory.createAgent(agentConfig.class, dependencies);
+                 
+                 // Determine Agent Mode
+                 let agentMode = systemMode;
+                 const serviceKey = this.mapAgentToService(agentConfig.id);
+                 
+                 if (serviceKey) {
+                     const specificMode = (servicesConfig as any)[serviceKey];
+                     if (specificMode) {
+                         agentMode = specificMode;
+                         logger.info(`[Container] Agent ${agentConfig.id} mapped to service ${serviceKey} with mode ${specificMode}`);
+                     } else {
+                         logger.info(`[Container] Agent ${agentConfig.id} mapped to service ${serviceKey} but no specific mode found. Using system mode: ${systemMode}`);
+                     }
+                 } else {
+                     logger.info(`[Container] Agent ${agentConfig.id} has no service mapping. Using system mode: ${systemMode}`);
+                 }
+
+                 // Set Agent Mode
+                 if (typeof agent.setMode === 'function') {
+                     agent.setMode(agentMode);
+                 }
+
                  this.agents.set(agentConfig.id, agent);
-                 logger.info(`Registered agent: ${agentConfig.id}`);
+                 logger.info(`Registered agent: ${agentConfig.id} [${agentMode}]`);
              } catch (e: any) {
                  logger.error(`Failed to register agent ${agentConfig.id}: ${e.message}`);
              }
@@ -106,6 +133,20 @@ export class Container {
           case 'FulfilmentAdapter': return 'fulfilment';
           case 'EmailAdapter': return 'email';
           case 'AiAdapter': return 'ai';
+          default: return null;
+      }
+  }
+
+  private mapAgentToService(agentId: string): string | null {
+      switch(agentId) {
+          case 'ceo_agent': return 'ceo';
+          case 'product_research_agent': return 'trends';
+          case 'marketing_agent': return 'ads';
+          case 'store_build_agent': return 'shop';
+          case 'customer_service_agent': return 'email';
+          case 'supplier_agent': return 'fulfilment';
+          case 'operations_agent': return 'operations';
+          case 'analytics_agent': return 'analytics';
           default: return null;
       }
   }

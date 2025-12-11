@@ -4,7 +4,8 @@ system:
   event_bus: "postgres" # Options: "postgres"
 
 services:
-  # Options for all services: "mock", "live"
+  # Options for all services: "mock", "live", "simulation"
+  ceo: "live"
   shop: "live"
   ads: "live"
   trends: "live"
@@ -12,6 +13,8 @@ services:
   fulfilment: "live"
   email: "live"
   ai: "live"
+  operations: "live"
+  analytics: "live"
 
 paths:
   infrastructure: "config/infrastructure.yaml"

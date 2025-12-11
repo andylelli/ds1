@@ -85,6 +85,24 @@
             }
         }
 
+        function getModeColor(mode) {
+            switch(mode) {
+                case 'live': return 'is-danger';
+                case 'mock': return 'is-warning';
+                case 'simulation': return 'is-info';
+                default: return 'is-light';
+            }
+        }
+
+        function getModeLabel(mode) {
+            switch(mode) {
+                case 'live': return 'Live (Real API Calls)';
+                case 'mock': return 'Mock (Fake Data)';
+                case 'simulation': return 'Simulation (System Logic)';
+                default: return 'Unknown';
+            }
+        }
+
         function renderSidebar() {
             const list = document.getElementById('agentList');
             list.innerHTML = agents.map(agent => `
@@ -95,7 +113,10 @@
                     <div style="width: 100%;">
                         <div class="is-flex is-justify-content-space-between">
                             <span>${agent.name}</span>
-                            <span class="tag is-light is-small">${agent.role}</span>
+                            <div>
+                                <span class="tag is-light is-small mr-1">${agent.role}</span>
+                                <span class="tag ${getModeColor(agent.mode)} is-small">${agent.mode ? agent.mode.toUpperCase() : 'UNKNOWN'}</span>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -134,12 +155,14 @@
                             ${agent.name}
                         </p>
                         <div class="card-header-icon">
-                            <span class="tag is-info is-light is-medium">${agent.role}</span>
+                            <span class="tag is-light is-medium mr-2">${agent.role}</span>
+                            <span class="tag ${getModeColor(agent.mode)} is-medium">${agent.mode ? agent.mode.toUpperCase() : 'UNKNOWN'}</span>
                         </div>
                     </header>
                     <div class="card-content">
                         <div class="content">
                             <p><strong>Status:</strong> <span class="has-text-success">Active</span></p>
+                            <p><strong>Mode:</strong> ${getModeLabel(agent.mode)}</p>
                             <p><strong>Last Active:</strong> ${new Date().toLocaleTimeString()}</p>
                         </div>
                     </div>
