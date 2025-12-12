@@ -132,7 +132,70 @@ We are using the `google-trends-api` Node.js library. Below are the specific met
 
 ---
 
-## 4. Implementation Roadmap
+## 4. Data Transformation (The AI Layer)
+While "Live Mode" strictly uses real data for *discovery* and *validation*, we utilize AI (OpenAI) to *transform* this raw data into actionable product recommendations. This is **not** simulation; it is synthesis.
+
+### The Synthesis Process
+1.  **Input:** The AI receives a structured prompt containing:
+    *   The **Rising Query** (e.g., "mushroom lamp").
+    *   The **Trend Metrics** (e.g., "+300% growth").
+    *   The **Context** (e.g., "Home Decor" category).
+2.  **Task:** The AI is asked to:
+    *   Generate a catchy, marketing-friendly **Product Name**.
+    *   Write a compelling **Description** explaining *why* it is trending based on the provided data.
+    *   Estimate a **Confidence Score** based on the strength of the trend metrics.
+3.  **Output:** A JSON object representing a `Product` entity, ready for the staging area.
+
+---
+
+## 5. Operational Resilience
+
+### A. Caching Strategy
+To respect Google's rate limits and improve performance, all API responses are cached.
+*   **Mechanism:** In-memory `Map<string, { data: any, timestamp: number }>`.
+*   **TTL (Time To Live):** 1 hour.
+*   **Key Generation:** Unique keys based on query parameters (e.g., `queries_viral_products`, `interest_galaxy_projector`).
+
+### B. Rate Limit Handling
+The `google-trends-api` is an unofficial scraper and is subject to rate limiting (HTTP 429).
+*   **Detection:** The adapter detects HTML responses (which usually indicate a block page).
+*   **Retry Logic:**
+    *   **Exponential Backoff:** If a request fails, we wait `2s`, then `4s`, then `8s`.
+    *   **Max Retries:** 3 attempts.
+    *   **Circuit Breaker:** If multiple requests fail consecutively, the adapter may temporarily stop sending requests to prevent a long-term IP ban.
+
+---
+
+## 6. Future / Potential API Methods
+
+While the current strategy relies on `relatedQueries` and `interestOverTime`, the following methods from the `google-trends-api` library could be integrated in future iterations to enhance the Research Agent's capabilities.
+
+### A. `relatedTopics` (Contextual Expansion)
+**Purpose:** To find broader topics or entities related to a keyword, rather than just specific search queries. This is useful for identifying "Concepts" rather than just "Keywords".
+
+*   **Function:** `googleTrends.relatedTopics(optionsObject)`
+*   **Potential Use Case:** If a specific product keyword (e.g., "galaxy projector") is too narrow, we can query `relatedTopics` to find the broader category (e.g., "Home Theater" or "Nightlight") to expand our search.
+*   **Response Structure:** Similar to `relatedQueries`, returning "Top" and "Rising" topics with `mid` (Machine ID) and `title`.
+
+### B. `interestByRegion` (Geo-Targeting)
+**Purpose:** To identify *where* a product is trending geographically.
+
+*   **Function:** `googleTrends.interestByRegion(optionsObject)`
+*   **Potential Use Case:**
+    *   **Ad Targeting:** If "snow boots" are trending, `interestByRegion` can tell us *which states* are searching for them most (e.g., NY, MA, MN), allowing for hyper-targeted ad campaigns.
+    *   **Validation:** If a product is only trending in one small city, it might be a local anomaly rather than a national trend.
+
+### C. `autoComplete` (Input Refinement)
+**Purpose:** To correct or refine user input before querying the main Trends API.
+
+*   **Function:** `googleTrends.autoComplete(optionsObject)`
+*   **Potential Use Case:**
+    *   **Typos:** If the agent generates a slightly misspelled keyword, `autoComplete` can provide the canonical Google search term.
+    *   **Entity Resolution:** It can map a string like "apple" to the specific entity "Apple Inc. (Technology Company)" vs "Apple (Fruit)", ensuring our trend data is relevant to the correct domain.
+
+---
+
+## 7. Implementation Roadmap
 
 1.  **Refactor `LiveTrendAdapter.ts`**:
     *   Remove `getRealTimeTrends` (Broken).
