@@ -67,7 +67,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         category: 'research',
         status: 'warning',
         message: `Google Trends failed for ${category}, falling back to AI`,
-        details: { error: error.message }
+        details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
       });
       return this.analyzeTrendWithAI(category);
     }
@@ -116,7 +116,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         category: 'research',
         status: 'warning',
         message: `Google Trends saturation check failed for ${productName}, falling back to AI`,
-        details: { error: error.message }
+        details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
       });
       return this.checkSaturationWithAI(productName);
     }
@@ -205,7 +205,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         category: 'research',
         status: 'warning',
         message: `Google Trends API failed for ${category}, falling back to AI-only`,
-        details: { category, error: error.message, fallback: true }
+        details: { category, error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), fallback: true }
       });
       
       return this.fallbackToAIOnly(category);
@@ -219,7 +219,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
 
   // === Google Trends Helper Methods ===
 
-  private async retry<T>(fn: () => Promise<T>, retries = 3, delay = 2000): Promise<T> {
+  private async retry<T>(fn: () => Promise<T>, retries = 0, delay = 2000): Promise<T> {
     try {
       return await fn();
     } catch (error: any) {
@@ -237,7 +237,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
             category: 'system',
             status: 'warning',
             message: 'Google Trends Rate Limit detected (HTML response)',
-            details: { error: error.message, retryDelay: delay * 2, retriesLeft: retries - 1 }
+            details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), retryDelay: delay * 2, retriesLeft: retries - 1 }
          });
 
          // Increase delay significantly for rate limits

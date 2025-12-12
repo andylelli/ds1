@@ -492,6 +492,9 @@
                 return;
             }
 
+            const btnStart = document.getElementById('btnStart');
+            btnStart.classList.add('is-loading');
+
             try {
                 logStartTime = Date.now() - 2000;
                 
@@ -519,6 +522,8 @@
             } catch (e) {
                 showStatus('Failed to start simulation.', 'error');
                 console.error(e);
+            } finally {
+                btnStart.classList.remove('is-loading');
             }
         }
 
@@ -559,7 +564,16 @@
                     return;
                 }
                 const data = await res.json();
-                console.log('Clock Data from API:', data); // Debug
+                // console.log('Clock Data from API:', data); // Debug
+
+                // Sync UI state with server state
+                if (data.isRunning) {
+                     updateSimControls('running');
+                } else if (data.tickCount > 0) {
+                     updateSimControls('paused');
+                } else {
+                     updateSimControls('stopped');
+                }
 
                 if (data.tickCount !== undefined) {
                     // 1 tick = 2 hours
@@ -567,7 +581,7 @@
                     const start = new Date('2025-01-01T08:00:00');
                     const current = new Date(start.getTime() + (data.tickCount * 2 * 60 * 60 * 1000));
                     
-                    const timeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const timeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
                     const dayStr = `Day ${Math.floor(data.tickCount / 12) + 1}`; // 12 ticks per day
                     
                     document.getElementById('simClock').textContent = timeStr;
@@ -626,8 +640,10 @@
                     return;
                 }
 
-                // Remember if user was at top (within 50px tolerance)
-                const wasAtTop = viewer.scrollTop < 50;
+                // Remember scroll state
+                const oldScrollHeight = viewer.scrollHeight;
+                const oldScrollTop = viewer.scrollTop;
+                const wasAtTop = oldScrollTop < 50;
                 
                 // Game-style log rendering
                 const html = filteredLogs.map(log => {
@@ -681,9 +697,12 @@
                 
                 viewer.innerHTML = html;
                 
-                // Only auto-scroll to top if user was already at top, otherwise preserve scroll position
+                // Smart scroll: If at top, stay at top. If scrolled down, maintain relative position.
                 if (wasAtTop) {
                     viewer.scrollTop = 0;
+                } else {
+                    const newScrollHeight = viewer.scrollHeight;
+                    viewer.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
                 }
             } catch (e) { console.error("Log fetch failed", e); }
         }

@@ -28,12 +28,7 @@ export class SimulationService {
             message: `Starting simulation for category: ${category}`,
             details: { category }
         });
-        // Set all agents to simulation mode
-        this.agents.ceo.setMode('simulation');
-        this.agents.research.setMode('simulation');
-        this.agents.supplier.setMode('simulation');
-        this.agents.store.setMode('simulation');
-        this.agents.marketing.setMode('simulation');
+        // Agents mode is determined by container config, not forced here.
         try {
             await this.db.saveLog('Simulation', 'Flow Started', 'info', { category });
         }
@@ -114,14 +109,6 @@ export class SimulationService {
             console.error("[Simulation] Flow failed:", e);
             await this.db.saveLog('Simulation', 'Flow Failed', 'error', e.message || e);
         }
-        finally {
-            // Reset all agents to live mode
-            this.agents.ceo.setMode('live');
-            this.agents.research.setMode('live');
-            this.agents.supplier.setMode('live');
-            this.agents.store.setMode('live');
-            this.agents.marketing.setMode('live');
-        }
     }
     async runLaunchPhase(stagedItemId) {
         console.log(`[Simulation] Launching staged item: ${stagedItemId}`);
@@ -137,10 +124,7 @@ export class SimulationService {
         productData.inventory = 50; // Start with 50 units
         await this.db.saveProduct({ ...productData, source: 'sim' });
         console.log(`[Simulation] Resuming flow for product: ${productData.name}`);
-        // Set agents to simulation mode
-        this.agents.supplier.setMode('simulation');
-        this.agents.store.setMode('simulation');
-        this.agents.marketing.setMode('simulation');
+        // Agents mode is determined by container config
         try {
             // 2. Source
             await this.activityLog?.log({
@@ -233,11 +217,6 @@ export class SimulationService {
             console.error("[Simulation] Launch Phase failed:", e);
             await this.db.saveLog('Simulation', 'Launch Phase Failed', 'error', e.message || e);
             throw e;
-        }
-        finally {
-            this.agents.supplier.setMode('live');
-            this.agents.store.setMode('live');
-            this.agents.marketing.setMode('live');
         }
     }
     async clearSimulationData() {

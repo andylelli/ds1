@@ -48,12 +48,7 @@ export class SimulationService {
       details: { category }
     });
     
-    // Set all agents to simulation mode
-    this.agents.ceo.setMode('simulation');
-    this.agents.research.setMode('simulation');
-    this.agents.supplier.setMode('simulation');
-    this.agents.store.setMode('simulation');
-    this.agents.marketing.setMode('simulation');
+    // Agents mode is determined by container config, not forced here.
     
     try {
       await this.db.saveLog('Simulation', 'Flow Started', 'info', { category });
@@ -141,13 +136,14 @@ export class SimulationService {
     } catch (e: any) {
       console.error("[Simulation] Flow failed:", e);
       await this.db.saveLog('Simulation', 'Flow Failed', 'error', e.message || e);
-    } finally {
-      // Reset all agents to live mode
-      this.agents.ceo.setMode('live');
-      this.agents.research.setMode('live');
-      this.agents.supplier.setMode('live');
-      this.agents.store.setMode('live');
-      this.agents.marketing.setMode('live');
+      await this.activityLog?.log({
+        agent: 'Simulation',
+        action: 'research_phase',
+        category: 'simulation',
+        status: 'failed',
+        message: `Research phase failed: ${e.message}`,
+        details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
+      });
     }
   }
 
@@ -171,10 +167,7 @@ export class SimulationService {
 
     console.log(`[Simulation] Resuming flow for product: ${productData.name}`);
 
-    // Set agents to simulation mode
-    this.agents.supplier.setMode('simulation');
-    this.agents.store.setMode('simulation');
-    this.agents.marketing.setMode('simulation');
+    // Agents mode is determined by container config
 
     try {
         // 2. Source
@@ -280,11 +273,15 @@ export class SimulationService {
     } catch (e: any) {
         console.error("[Simulation] Launch Phase failed:", e);
         await this.db.saveLog('Simulation', 'Launch Phase Failed', 'error', e.message || e);
+        await this.activityLog?.log({
+            agent: 'Simulation',
+            action: 'launch_phase',
+            category: 'simulation',
+            status: 'failed',
+            message: `Launch phase failed: ${e.message}`,
+            details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
+        });
         throw e;
-    } finally {
-        this.agents.supplier.setMode('live');
-        this.agents.store.setMode('live');
-        this.agents.marketing.setMode('live');
     }
   }
 
@@ -567,12 +564,17 @@ export class SimulationService {
             action: 'optimization_cycle',
             category: 'optimization',
             status: 'failed',
-            message: `Optimization cycle failed: ${e.message}`
+            message: `Optimization cycle failed: ${e.message}`,
+            details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
           });
       }
   }
 
   getTickCount() {
       return this.tickCount;
+  }
+
+  getIsRunning() {
+      return this.isRunning;
   }
 }

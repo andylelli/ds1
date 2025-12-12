@@ -396,7 +396,8 @@ const container = new Container(configPath);
 
     app.get('/api/simulation/status', (req, res) => {
         res.json({
-            tickCount: simulationService.getTickCount()
+            tickCount: simulationService.getTickCount(),
+            isRunning: simulationService.getIsRunning()
         });
     });
 

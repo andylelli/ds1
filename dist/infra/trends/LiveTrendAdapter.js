@@ -186,7 +186,7 @@ export class LiveTrendAdapter {
         return this.stagingService.getApprovedProducts(sessionId);
     }
     // === Google Trends Helper Methods ===
-    async retry(fn, retries = 3, delay = 2000) {
+    async retry(fn, retries = 0, delay = 2000) {
         try {
             return await fn();
         }
