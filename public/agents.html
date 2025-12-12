@@ -66,24 +66,43 @@
 
         // Fetch Data
         async function fetchData() {
+            const list = document.getElementById('agentList');
+            if (agents.length === 0) {
+                list.innerHTML = '<div class="panel-block has-text-grey-light is-italic"><span class="icon mr-2"><i class="fas fa-spinner fa-pulse"></i></span> Loading agents...</div>';
+            }
+
             try {
                 const [agentsRes, logsRes] = await Promise.all([
                     fetch('/api/agents?t=' + Date.now()),
                     fetch('/api/logs?t=' + Date.now())
                 ]);
+                
+                if (!agentsRes.ok) throw new Error("Failed to fetch agents");
+                if (!logsRes.ok) throw new Error("Failed to fetch logs");
+
                 agents = await agentsRes.json();
                 logs = await logsRes.json();
                 
-                console.log('Fetched Agents:', agents); // Debug log
+                // console.log('Fetched Agents:', agents); // Debug log
 
                 renderSidebar();
-                if (selectedAgentId) {
+                
+                // Handle Deep Linking (Rule 2)
+                const hash = window.location.hash.substring(1);
+                if (hash && agents.find(a => a.id === hash)) {
+                    if (selectedAgentId !== hash) {
+                        selectAgent(hash);
+                    } else {
+                        renderDetails(selectedAgentId); // Just refresh details
+                    }
+                } else if (selectedAgentId) {
                     renderDetails(selectedAgentId);
-                } else if (agents.length > 0 && !selectedAgentId) {
+                } else if (agents.length > 0) {
                     selectAgent(agents[0].id);
                 }
             } catch (e) {
                 console.error("Failed to fetch data", e);
+                list.innerHTML = `<div class="panel-block has-text-danger"><span class="icon mr-2"><i class="fas fa-exclamation-circle"></i></span> Error: ${e.message}</div>`;
             }
         }
 
@@ -127,6 +146,10 @@
 
         function selectAgent(id) {
             selectedAgentId = id;
+            // Update URL hash (Rule 2)
+            if (window.location.hash.substring(1) !== id) {
+                window.history.replaceState(null, null, '#' + id);
+            }
             renderSidebar();
             renderDetails(id);
         }

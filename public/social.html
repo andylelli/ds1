@@ -79,8 +79,11 @@
 
         async function loadAds() {
             const feed = document.getElementById('feed');
+            feed.innerHTML = '<div class="has-text-centered has-text-grey p-6"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading ads...</div>';
+            
             try {
                 const res = await fetch('/api/ads');
+                if (!res.ok) throw new Error("Failed to fetch ads");
                 allAds = await res.json();
 
                 if (allAds.length === 0) {
@@ -88,27 +91,39 @@
                     return;
                 }
 
+                // Handle Deep Linking (Rule 2)
+                const hash = window.location.hash.substring(1);
+                if (hash && ['tiktok', 'facebook', 'instagram'].includes(hash)) {
+                    currentPlatform = hash;
+                }
+
                 renderFeed();
 
             } catch (e) {
-                feed.innerHTML = `<div class="has-text-centered has-text-danger p-6">Error: ${e.message}</div>`;
+                feed.innerHTML = `<div class="has-text-centered has-text-danger p-6"><span class="icon"><i class="fas fa-exclamation-circle"></i></span> Error: ${e.message}</div>`;
             }
         }
 
         function filterFeed(platform) {
             currentPlatform = platform;
             
-            // Update tabs
-            document.querySelectorAll('.tabs li').forEach(t => {
-                t.classList.remove('is-active');
-                if (t.dataset.tab === platform) t.classList.add('is-active');
-            });
-
+            // Update URL hash (Rule 2)
+            if (window.location.hash.substring(1) !== platform) {
+                window.history.replaceState(null, null, '#' + platform);
+            }
+            
             renderFeed();
         }
 
         function renderFeed() {
             const feed = document.getElementById('feed');
+            
+            // Update tabs UI
+            document.querySelectorAll('.tabs li').forEach(t => {
+                t.classList.remove('is-active');
+                if (t.dataset.tab === currentPlatform) t.classList.add('is-active');
+            });
+
             const filteredAds = allAds.filter(ad => ad.platform.toLowerCase() === currentPlatform);
 
             if (filteredAds.length === 0) {

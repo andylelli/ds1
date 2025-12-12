@@ -158,6 +158,15 @@ const container = new Container(configPath);
                 res.status(500).json({ error: "Failed to fetch error logs", details: error.message });
             }
         });
+        app.post('/api/logs/clear', async (req, res) => {
+            try {
+                await db.clearLogs();
+                res.json({ success: true });
+            }
+            catch (error) {
+                res.status(500).json({ error: "Failed to clear logs" });
+            }
+        });
         app.get('/api/products', async (req, res) => {
             try {
                 const products = await db.getProducts();
@@ -364,7 +373,8 @@ const container = new Container(configPath);
         });
         app.get('/api/simulation/status', (req, res) => {
             res.json({
-                tickCount: simulationService.getTickCount()
+                tickCount: simulationService.getTickCount(),
+                isRunning: simulationService.getIsRunning()
             });
         });
         // Start Server

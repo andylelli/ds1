@@ -343,6 +343,29 @@ export class PostgresAdapter implements PersistencePort {
     return Array.from(topics);
   }
 
+  async clearLogs(source?: string): Promise<void> {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'test' ? this.simPool : this.pgPool;
+    if (!pool) {
+      console.log('[PostgresAdapter.clearLogs] Pool is null');
+      return;
+    }
+
+    try {
+      if (source) {
+        await pool.query("DELETE FROM events WHERE topic = $1 OR payload::text LIKE $2", [source, `%${source}%`]);
+        await pool.query("DELETE FROM activity_log WHERE agent = $1", [source]);
+        console.log(`[PostgresAdapter.clearLogs] Cleared logs for source: ${source}`);
+      } else {
+        await pool.query("DELETE FROM events");
+        await pool.query("DELETE FROM activity_log");
+        console.log('[PostgresAdapter.clearLogs] Cleared all logs');
+      }
+    } catch (e: any) {
+      console.error(`[PostgresAdapter] Failed to clear logs:`, e.message);
+    }
+  }
+
   async clearSimulationData(): Promise<void> {
     console.log('[PostgresAdapter.clearSimulationData] Clearing SIMULATION pool only');
     
@@ -374,25 +397,5 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
-  async clearLogs(source?: string): Promise<void> {
-    const mode = configService.get('dbMode');
-    const pool = mode === 'test' ? this.simPool : this.pgPool;
-    if (!pool) {
-      console.log('[PostgresAdapter.clearLogs] Pool is null');
-      return;
-    }
 
-    try {
-      if (source) {
-        await pool.query("DELETE FROM events WHERE topic = $1 OR payload::text LIKE $2", [source, `%${source}%`]);
-        console.log(`[PostgresAdapter.clearLogs] Cleared logs for source: ${source}`);
-      } else {
-        await pool.query("DELETE FROM events");
-        console.log('[PostgresAdapter.clearLogs] Cleared all logs');
-      }
-    } catch (error) {
-      console.error('[PostgresAdapter.clearLogs] Error:', error);
-      throw error;
-    }
-  }
 }

@@ -60,15 +60,15 @@
                                         <span class="icon"><i class="fas fa-play"></i></span>
                                         <span>Start</span>
                                     </button>
-                                    <button id="btnPause" class="button is-warning is-hidden" onclick="pauseSimulation()">
+                                    <button id="btnPause" class="button is-warning" onclick="pauseSimulation()" disabled>
                                         <span class="icon"><i class="fas fa-pause"></i></span>
                                         <span>Pause</span>
                                     </button>
-                                    <button id="btnResume" class="button is-success is-hidden" onclick="resumeSimulation()">
+                                    <button id="btnResume" class="button is-success" onclick="resumeSimulation()" disabled>
                                         <span class="icon"><i class="fas fa-play"></i></span>
                                         <span>Resume</span>
                                     </button>
-                                    <button id="btnStop" class="button is-danger is-hidden" onclick="stopSimulation()">
+                                    <button id="btnStop" class="button is-danger" onclick="stopSimulation()" disabled>
                                         <span class="icon"><i class="fas fa-stop"></i></span>
                                         <span>Stop</span>
                                     </button>
@@ -462,27 +462,32 @@
             const status = document.getElementById('simStatus');
             const input = document.getElementById('simProductInput');
 
-            // Reset all
-            btnStart.classList.add('is-hidden');
-            btnPause.classList.add('is-hidden');
-            btnResume.classList.add('is-hidden');
-            btnStop.classList.add('is-hidden');
-            input.disabled = false;
+            // Reset all to disabled first
+            btnStart.disabled = true;
+            btnPause.disabled = true;
+            btnResume.disabled = true;
+            btnStop.disabled = true;
+            
+            // Ensure they are visible
+            btnStart.classList.remove('is-hidden');
+            btnPause.classList.remove('is-hidden');
+            btnResume.classList.remove('is-hidden');
+            btnStop.classList.remove('is-hidden');
 
             if (state === 'running') {
-                btnPause.classList.remove('is-hidden');
-                btnStop.classList.remove('is-hidden');
+                btnPause.disabled = false;
+                btnStop.disabled = false;
                 status.textContent = 'RUNNING';
                 status.className = 'tag is-success';
                 input.disabled = true;
             } else if (state === 'paused') {
-                btnResume.classList.remove('is-hidden');
-                btnStop.classList.remove('is-hidden');
+                btnResume.disabled = false;
+                // btnStop.disabled = false; // Keep disabled when paused
                 status.textContent = 'PAUSED';
                 status.className = 'tag is-warning';
                 input.disabled = true;
             } else { // stopped
-                btnStart.classList.remove('is-hidden');
+                btnStart.disabled = false;
                 status.textContent = 'STOPPED';
                 status.className = 'tag is-light';
                 input.disabled = false;

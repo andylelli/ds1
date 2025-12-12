@@ -108,6 +108,14 @@ export class SimulationService {
         catch (e) {
             console.error("[Simulation] Flow failed:", e);
             await this.db.saveLog('Simulation', 'Flow Failed', 'error', e.message || e);
+            await this.activityLog?.log({
+                agent: 'Simulation',
+                action: 'research_phase',
+                category: 'simulation',
+                status: 'failed',
+                message: `Research phase failed: ${e.message}`,
+                details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
+            });
         }
     }
     async runLaunchPhase(stagedItemId) {
@@ -216,6 +224,14 @@ export class SimulationService {
         catch (e) {
             console.error("[Simulation] Launch Phase failed:", e);
             await this.db.saveLog('Simulation', 'Launch Phase Failed', 'error', e.message || e);
+            await this.activityLog?.log({
+                agent: 'Simulation',
+                action: 'launch_phase',
+                category: 'simulation',
+                status: 'failed',
+                message: `Launch phase failed: ${e.message}`,
+                details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
+            });
             throw e;
         }
     }
@@ -467,11 +483,15 @@ export class SimulationService {
                 action: 'optimization_cycle',
                 category: 'optimization',
                 status: 'failed',
-                message: `Optimization cycle failed: ${e.message}`
+                message: `Optimization cycle failed: ${e.message}`,
+                details: { error: e.message, stack: e.stack, fullError: JSON.stringify(e, Object.getOwnPropertyNames(e)) }
             });
         }
     }
     getTickCount() {
         return this.tickCount;
+    }
+    getIsRunning() {
+        return this.isRunning;
     }
 }

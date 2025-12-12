@@ -65,11 +65,13 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         agent: 'ProductResearcher',
         action: 'analyze_trend',
         category: 'research',
-        status: 'warning',
-        message: `Google Trends failed for ${category}, falling back to AI`,
+        status: 'failed',
+        message: `Google Trends failed for ${category}. Aborting (Live Mode).`,
         details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
       });
-      return this.analyzeTrendWithAI(category);
+      
+      // STRICT LIVE MODE: Do not fallback to AI simulation. Fail loudly so we can fix the API.
+      throw error;
     }
   }
 
@@ -109,16 +111,18 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
 
       return result;
     } catch (error: any) {
-      console.error(`[LiveTrend] Saturation check failed, using AI:`, error.message);
+      console.error(`[LiveTrend] Saturation check failed:`, error.message);
       await this.activityLog.log({
         agent: 'ProductResearcher',
         action: 'check_saturation',
         category: 'research',
-        status: 'warning',
-        message: `Google Trends saturation check failed for ${productName}, falling back to AI`,
+        status: 'failed',
+        message: `Google Trends saturation check failed for ${productName}. Aborting (Live Mode).`,
         details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
       });
-      return this.checkSaturationWithAI(productName);
+      
+      // STRICT LIVE MODE: Do not fallback to AI simulation.
+      throw error;
     }
   }
 
@@ -138,11 +142,11 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
       // 1. Get rising queries from Google Trends
       const { rising } = await this.getRelatedQueries(category);
       
-      // 2. Get daily trends for the region
-      const dailyTrends = await this.getDailyTrends();
+      // 2. Get real-time trends for the region (Daily Trends is broken)
+      const realTimeTrends = await this.getRealTimeTrends();
       
       // 3. Use AI to synthesize into product recommendations
-      const products = await this.synthesizeProductsWithAI(category, rising, dailyTrends);
+      const products = await this.synthesizeProductsWithAI(category, rising, realTimeTrends);
       
       // 4. If staging enabled, put in staging area
       if (this.stagingEnabled) {
@@ -203,12 +207,13 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         agent: 'ProductResearcher',
         action: 'find_products',
         category: 'research',
-        status: 'warning',
-        message: `Google Trends API failed for ${category}, falling back to AI-only`,
-        details: { category, error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), fallback: true }
+        status: 'failed',
+        message: `Google Trends API failed for ${category}. Aborting (Live Mode).`,
+        details: { category, error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), fallback: false }
       });
       
-      return this.fallbackToAIOnly(category);
+      // STRICT LIVE MODE: Do not fallback to AI simulation.
+      throw error;
     }
   }
 
@@ -287,24 +292,31 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
     });
   }
 
-  private async getDailyTrends(): Promise<any> {
-    return this.cachedRequest('daily_trends', async () => {
-      return this.retry(async () => {
-        const result = await googleTrends.dailyTrends({ geo: 'US' });
-        try {
-          return JSON.parse(result);
-        } catch (e) {
-          console.error(`[LiveTrend] JSON Parse Error (dailyTrends): ${result.substring(0, 200)}`);
-          throw new Error(`Invalid JSON from Google Trends (dailyTrends). Response starts with: ${result.substring(0, 500)}...`);
-        }
-      });
+  private async getRealTimeTrends(): Promise<any> {
+    return this.cachedRequest('real_time_trends', async () => {
+      try {
+        // Try to get real data
+        return await this.retry(async () => {
+          const result = await googleTrends.realTimeTrends({ geo: 'US' });
+          try {
+            return JSON.parse(result);
+          } catch (e) {
+            throw new Error(`Invalid JSON from Google Trends (realTimeTrends).`);
+          }
+        });
+      } catch (e: any) {
+        // If it fails (e.g. 404/HTML response), return empty. 
+        // Do NOT simulate data. Live mode must rely on real data or nothing.
+        console.warn(`[LiveTrend] Real Time Trends failed. Continuing without this specific data point. Error: ${e.message}`);
+        return { storySummaries: { trendingStories: [] } };
+      }
     });
   }
 
   private async synthesizeProductsWithAI(
     category: string, 
     risingQueries: any[], 
-    dailyTrends: any
+    realTimeTrends: any
   ): Promise<any[]> {
     const client = openAIService.getClient();
     
@@ -315,8 +327,8 @@ Based on the following REAL Google Trends data, identify 3 specific products to 
 RISING SEARCH QUERIES (opportunity indicators):
 ${risingQueries.slice(0, 10).map((q: any) => `- "${q.query || q}" (${q.formattedValue || 'rising'})`).join('\n')}
 
-TODAY'S TRENDING TOPICS:
-${dailyTrends.default?.trendingSearchesDays?.[0]?.trendingSearches?.slice(0, 5).map((t: any) => `- ${t.title.query}`).join('\n') || 'N/A'}
+REAL-TIME TRENDING STORIES (General Context):
+${realTimeTrends.storySummaries?.trendingStories?.slice(0, 5).map((t: any) => `- ${t.title} (Entities: ${t.entityNames?.join(', ')})`).join('\n') || 'N/A'}
 
 For each product, provide:
 1. Specific product name (not generic)

@@ -1,6 +1,8 @@
 import { openAIService } from './OpenAIService.js';
+import { ActivityLogService } from '../../core/services/ActivityLogService.js';
 const _SHOW_DEBUG_ENV = process.env.DEBUG_ENV === 'true';
 export class LiveAiAdapter {
+    activityLog = null;
     // Simple retry + circuit-breaker implementation to protect AI calls
     static _failureCount = 0;
     static _failureWindowMs = 1000 * 60; // 1 minute window
@@ -8,6 +10,11 @@ export class LiveAiAdapter {
     static _openUntil = 0; // timestamp ms until circuit is open
     static _openDurationMs = 1000 * 60; // 1 minute open
     static _lastFailureTime = 0;
+    constructor(pool) {
+        if (pool) {
+            this.activityLog = new ActivityLogService(pool);
+        }
+    }
     async chat(systemPrompt, userMessage, tools) {
         const now = Date.now();
         if (LiveAiAdapter._openUntil && now < LiveAiAdapter._openUntil) {
@@ -58,6 +65,22 @@ export class LiveAiAdapter {
                 console.error(`[LiveAiAdapter] attempt ${attempt} failed:`, err?.message || err);
                 if (_SHOW_DEBUG_ENV)
                     console.error(err);
+                if (this.activityLog) {
+                    await this.activityLog.log({
+                        agent: 'System',
+                        action: 'ai_chat',
+                        category: 'system',
+                        status: 'failed',
+                        message: `AI Chat failed attempt ${attempt}`,
+                        details: {
+                            error: err.message,
+                            stack: err.stack,
+                            fullError: JSON.stringify(err, Object.getOwnPropertyNames(err)),
+                            attempt,
+                            deployment: openAIService.deploymentName
+                        }
+                    }).catch(e => console.error('Failed to log AI error to DB:', e));
+                }
                 // increment failure count and possibly open circuit
                 LiveAiAdapter._failureCount = (LiveAiAdapter._failureCount || 0) + 1;
                 const windowPassed = (now - (LiveAiAdapter['_lastFailureTime'] || 0)) > LiveAiAdapter._failureWindowMs;
@@ -76,6 +99,21 @@ export class LiveAiAdapter {
                 await new Promise(r => setTimeout(r, backoff));
             }
         }
-        return { content: `Error communicating with AI: ${lastErr?.message || 'unknown error'}` };
+        const finalErrorMsg = `Error communicating with AI: ${lastErr?.message || 'unknown error'}`;
+        if (this.activityLog) {
+            await this.activityLog.log({
+                agent: 'System',
+                action: 'ai_chat',
+                category: 'system',
+                status: 'failed',
+                message: `AI Chat failed all attempts`,
+                details: {
+                    error: lastErr?.message,
+                    stack: lastErr?.stack,
+                    fullError: lastErr ? JSON.stringify(lastErr, Object.getOwnPropertyNames(lastErr)) : 'null'
+                }
+            }).catch(e => console.error('Failed to log AI final error to DB:', e));
+        }
+        return { content: finalErrorMsg };
     }
 }

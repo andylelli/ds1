@@ -124,6 +124,19 @@ function renderItemsTable(items) {
     `;
 }
 
+function showStatus(msg, type) {
+    const el = document.getElementById('statusMessage');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'notification ' + (type === 'success' ? 'is-success' : 'is-danger');
+    el.classList.remove('is-hidden');
+    el.style.display = 'block';
+    setTimeout(() => {
+        el.classList.add('is-hidden');
+        el.style.display = 'none';
+    }, 3000);
+}
+
 async function updateStatus(itemId, status) {
     try {
         let url, method, body;
@@ -150,21 +163,23 @@ async function updateStatus(itemId, status) {
         });
         
         if (res.ok) {
+            showStatus(`Item ${status} successfully!`, 'success');
             // Give it a moment to update DB
             setTimeout(refreshStaging, 500);
         } else {
             const err = await res.json();
-            alert('Failed to update status: ' + (err.error || err.message));
+            showStatus('Failed to update status: ' + (err.error || err.message), 'error');
         }
     } catch (e) {
         console.error(e);
-        alert('Error updating status');
+        showStatus('Error updating status', 'error');
     }
 }
 
 function showDetails(itemId) {
     // Placeholder for details modal
-    alert('Details view coming soon for item: ' + itemId);
+    // alert('Details view coming soon for item: ' + itemId);
+    showStatus('Details view coming soon for item: ' + itemId, 'success'); // Temporary feedback
 }
 
 // Init

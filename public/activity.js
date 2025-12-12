@@ -66,9 +66,15 @@ function applyFilters() {
     }
 
     if (level) {
-        // Mapping 'level' filter to 'status' or 'category' if needed. 
-        // For now, let's assume 'status' holds success/error/info
-        filtered = filtered.filter(a => a.status && a.status.toLowerCase() === level);
+        // Mapping 'level' filter to 'status'
+        filtered = filtered.filter(a => {
+            if (!a.status) return false;
+            const s = a.status.toLowerCase();
+            if (level === 'error') return s === 'failed' || s === 'error';
+            if (level === 'warn') return s === 'warning';
+            if (level === 'info') return s === 'completed' || s === 'started' || s === 'info';
+            return s === level;
+        });
     }
 
     renderTable(filtered);

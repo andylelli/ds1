@@ -99,12 +99,16 @@
 
         // Load Config
         async function loadConfig() {
+            const tbody = document.getElementById('configTableBody');
+            tbody.innerHTML = '<tr><td colspan="3" class="has-text-centered p-4"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading configuration...</td></tr>';
+
             try {
                 const res = await fetch('/api/config');
+                if (!res.ok) throw new Error("Failed to fetch config");
+                
                 const fullConfig = await res.json();
                 const serviceConfig = fullConfig.bootstrap?.services || {};
                 
-                const tbody = document.getElementById('configTableBody');
                 tbody.innerHTML = services.map(service => {
                     const currentMode = serviceConfig[service.id] || 'mock';
                     return `
@@ -127,7 +131,8 @@
                 }).join('');
 
             } catch (e) {
-                showStatus('Failed to load configuration', 'error');
+                showStatus('Failed to load configuration: ' + e.message, 'error');
+                tbody.innerHTML = `<tr><td colspan="3" class="has-text-danger has-text-centered">Error loading configuration: ${e.message}</td></tr>`;
                 console.error(e);
             }
         }

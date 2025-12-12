@@ -100,5 +100,9 @@ function highlightSidebar() {
         else if (dataPage === page) {
             item.classList.add('is-active');
         }
+        // Logic for Social Page Tabs (Deep Linking)
+        else if (page === 'social.html' && dataPage === 'social.html') {
+             item.classList.add('is-active');
+        }
     });
 }

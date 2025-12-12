@@ -58,7 +58,7 @@ export class LiveTrendAdapter {
                 category: 'research',
                 status: 'warning',
                 message: `Google Trends failed for ${category}, falling back to AI`,
-                details: { error: error.message }
+                details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
             });
             return this.analyzeTrendWithAI(category);
         }
@@ -103,7 +103,7 @@ export class LiveTrendAdapter {
                 category: 'research',
                 status: 'warning',
                 message: `Google Trends saturation check failed for ${productName}, falling back to AI`,
-                details: { error: error.message }
+                details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)) }
             });
             return this.checkSaturationWithAI(productName);
         }
@@ -121,10 +121,10 @@ export class LiveTrendAdapter {
         try {
             // 1. Get rising queries from Google Trends
             const { rising } = await this.getRelatedQueries(category);
-            // 2. Get daily trends for the region
-            const dailyTrends = await this.getDailyTrends();
+            // 2. Get real-time trends for the region (Daily Trends is broken)
+            const realTimeTrends = await this.getRealTimeTrends();
             // 3. Use AI to synthesize into product recommendations
-            const products = await this.synthesizeProductsWithAI(category, rising, dailyTrends);
+            const products = await this.synthesizeProductsWithAI(category, rising, realTimeTrends);
             // 4. If staging enabled, put in staging area
             if (this.stagingEnabled) {
                 const sessionId = await this.stagingService.createSession(category, 'product_discovery', { trends: 'live', research: 'mock' });
@@ -176,7 +176,7 @@ export class LiveTrendAdapter {
                 category: 'research',
                 status: 'warning',
                 message: `Google Trends API failed for ${category}, falling back to AI-only`,
-                details: { category, error: error.message, fallback: true }
+                details: { category, error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), fallback: true }
             });
             return this.fallbackToAIOnly(category);
         }
@@ -204,7 +204,7 @@ export class LiveTrendAdapter {
                     category: 'system',
                     status: 'warning',
                     message: 'Google Trends Rate Limit detected (HTML response)',
-                    details: { error: error.message, retryDelay: delay * 2, retriesLeft: retries - 1 }
+                    details: { error: error.message, stack: error.stack, fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)), retryDelay: delay * 2, retriesLeft: retries - 1 }
                 });
                 // Increase delay significantly for rate limits
                 await new Promise(resolve => setTimeout(resolve, delay * 2));
@@ -251,21 +251,27 @@ export class LiveTrendAdapter {
             });
         });
     }
-    async getDailyTrends() {
-        return this.cachedRequest('daily_trends', async () => {
-            return this.retry(async () => {
-                const result = await googleTrends.dailyTrends({ geo: 'US' });
-                try {
-                    return JSON.parse(result);
-                }
-                catch (e) {
-                    console.error(`[LiveTrend] JSON Parse Error (dailyTrends): ${result.substring(0, 200)}`);
-                    throw new Error(`Invalid JSON from Google Trends (dailyTrends). Response starts with: ${result.substring(0, 500)}...`);
-                }
-            });
+    async getRealTimeTrends() {
+        return this.cachedRequest('real_time_trends', async () => {
+            try {
+                return await this.retry(async () => {
+                    const result = await googleTrends.realTimeTrends({ geo: 'US' });
+                    try {
+                        return JSON.parse(result);
+                    }
+                    catch (e) {
+                        console.error(`[LiveTrend] JSON Parse Error (realTimeTrends): ${result.substring(0, 200)}`);
+                        throw new Error(`Invalid JSON from Google Trends (realTimeTrends). Response starts with: ${result.substring(0, 500)}...`);
+                    }
+                });
+            }
+            catch (e) {
+                console.warn(`[LiveTrend] Real Time Trends failed. Continuing without trend data. Error: ${e.message}`);
+                return { storySummaries: { trendingStories: [] } };
+            }
         });
     }
-    async synthesizeProductsWithAI(category, risingQueries, dailyTrends) {
+    async synthesizeProductsWithAI(category, risingQueries, realTimeTrends) {
         const client = openAIService.getClient();
         const prompt = `You are an expert dropshipping product researcher.
 
@@ -274,8 +280,8 @@ Based on the following REAL Google Trends data, identify 3 specific products to 
 RISING SEARCH QUERIES (opportunity indicators):
 ${risingQueries.slice(0, 10).map((q) => `- "${q.query || q}" (${q.formattedValue || 'rising'})`).join('\n')}
 
-TODAY'S TRENDING TOPICS:
-${dailyTrends.default?.trendingSearchesDays?.[0]?.trendingSearches?.slice(0, 5).map((t) => `- ${t.title.query}`).join('\n') || 'N/A'}
+REAL-TIME TRENDING STORIES (General Context):
+${realTimeTrends.storySummaries?.trendingStories?.slice(0, 5).map((t) => `- ${t.title} (Entities: ${t.entityNames?.join(', ')})`).join('\n') || 'N/A'}
 
 For each product, provide:
 1. Specific product name (not generic)

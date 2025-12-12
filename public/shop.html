@@ -72,8 +72,11 @@
 
         async function loadProducts() {
             const grid = document.getElementById('productGrid');
+            grid.innerHTML = '<div class="column is-full"><div class="box has-text-centered py-6"><span class="icon is-large"><i class="fas fa-spinner fa-pulse fa-2x"></i></span><p class="mt-2">Loading products...</p></div></div>';
+            
             try {
                 const res = await fetch('/api/products');
+                if (!res.ok) throw new Error("Failed to fetch products");
                 const products = await res.json();
 
                 if (products.length === 0) {
@@ -122,7 +125,7 @@
                                     </div>
                                 </div>
                                 
-                                <button class="button is-primary is-fullwidth" onclick="buyProduct('${p.name}', ${price})">
+                                <button class="button is-primary is-fullwidth" onclick="buyProduct('${p.name}', ${price}, this)">
                                     <span class="icon is-small"><i class="fas fa-shopping-cart"></i></span>
                                     <span>Buy Now</span>
                                 </button>
@@ -133,11 +136,12 @@
                 }).join('');
 
             } catch (e) {
-                grid.innerHTML = `<div class="column is-full"><div class="notification is-danger">Error loading products: ${e.message}</div></div>`;
+                grid.innerHTML = `<div class="column is-full"><div class="notification is-danger"><span class="icon"><i class="fas fa-exclamation-circle"></i></span> Error loading products: ${e.message}</div></div>`;
             }
         }
 
-        async function buyProduct(name, price) {
+        async function buyProduct(name, price, btn) {
+            if(btn) btn.classList.add('is-loading');
             try {
                 const res = await fetch('/api/orders', {
                     method: 'POST',
@@ -148,10 +152,13 @@
                 if (res.ok) {
                     showStatus(`Order placed for ${name}!`, 'success');
                 } else {
-                    showStatus('Failed to place order.', 'error');
+                    const err = await res.json();
+                    showStatus('Failed to place order: ' + (err.error || 'Unknown error'), 'error');
                 }
             } catch (e) {
-                showStatus('Error placing order.', 'error');
+                showStatus('Error placing order: ' + e.message, 'error');
+            } finally {
+                if(btn) btn.classList.remove('is-loading');
             }
         }
 

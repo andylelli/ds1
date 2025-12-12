@@ -68,11 +68,19 @@ export class ServiceFactory {
         };
         switch (className) {
             case 'ShopifyAdapter':
-                return isServiceLive('shop') ? new LiveShopAdapter() : new MockShopAdapter();
+                if (isServiceLive('shop')) {
+                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                    return new LiveShopAdapter(pool);
+                }
+                return new MockShopAdapter();
             case 'AdsAdapter':
                 const isLive = isServiceLive('ads');
                 console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${isLive}`);
-                return isLive ? new LiveAdsAdapter() : new MockAdsAdapter();
+                if (isLive) {
+                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                    return new LiveAdsAdapter(pool);
+                }
+                return new MockAdsAdapter();
             case 'TrendAdapter':
                 if (isServiceLive('trends')) {
                     if (!deps || !deps.db) {
@@ -85,11 +93,20 @@ export class ServiceFactory {
             case 'CompetitorAdapter':
                 return isServiceLive('competitor') ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
             case 'FulfilmentAdapter':
-                return isServiceLive('fulfilment') ? new LiveFulfilmentAdapter() : new MockFulfilmentAdapter();
+                if (isServiceLive('fulfilment')) {
+                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                    return new LiveFulfilmentAdapter(pool);
+                }
+                return new MockFulfilmentAdapter();
             case 'EmailAdapter':
                 return isServiceLive('email') ? new LiveEmailAdapter() : new MockEmailAdapter();
             case 'AiAdapter':
-                return isServiceLive('ai') ? new LiveAiAdapter() : new MockAiAdapter();
+                if (isServiceLive('ai')) {
+                    // Pass DB pool if available for logging
+                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                    return new LiveAiAdapter(pool);
+                }
+                return new MockAiAdapter();
             default:
                 throw new Error(`Unknown adapter class: ${className}`);
         }

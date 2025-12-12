@@ -180,6 +180,15 @@ const container = new Container(configPath);
       }
     });
 
+    app.post('/api/logs/clear', async (req, res) => {
+        try {
+            await db.clearLogs();
+            res.json({ success: true });
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to clear logs" });
+        }
+    });
+
     app.get('/api/products', async (req, res) => {
       try {
         const products = await db.getProducts();

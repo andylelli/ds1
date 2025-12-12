@@ -301,6 +301,29 @@ export class PostgresAdapter {
         }
         return Array.from(topics);
     }
+    async clearLogs(source) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'test' ? this.simPool : this.pgPool;
+        if (!pool) {
+            console.log('[PostgresAdapter.clearLogs] Pool is null');
+            return;
+        }
+        try {
+            if (source) {
+                await pool.query("DELETE FROM events WHERE topic = $1 OR payload::text LIKE $2", [source, `%${source}%`]);
+                await pool.query("DELETE FROM activity_log WHERE agent = $1", [source]);
+                console.log(`[PostgresAdapter.clearLogs] Cleared logs for source: ${source}`);
+            }
+            else {
+                await pool.query("DELETE FROM events");
+                await pool.query("DELETE FROM activity_log");
+                console.log('[PostgresAdapter.clearLogs] Cleared all logs');
+            }
+        }
+        catch (e) {
+            console.error(`[PostgresAdapter] Failed to clear logs:`, e.message);
+        }
+    }
     async clearSimulationData() {
         console.log('[PostgresAdapter.clearSimulationData] Clearing SIMULATION pool only');
         // Order matters for foreign keys: delete children first
@@ -327,28 +350,6 @@ export class PostgresAdapter {
         catch (e) {
             console.error(`[PostgresAdapter] Failed to clear simulation pool:`, e.message);
             throw e;
-        }
-    }
-    async clearLogs(source) {
-        const mode = configService.get('dbMode');
-        const pool = mode === 'test' ? this.simPool : this.pgPool;
-        if (!pool) {
-            console.log('[PostgresAdapter.clearLogs] Pool is null');
-            return;
-        }
-        try {
-            if (source) {
-                await pool.query("DELETE FROM events WHERE topic = $1 OR payload::text LIKE $2", [source, `%${source}%`]);
-                console.log(`[PostgresAdapter.clearLogs] Cleared logs for source: ${source}`);
-            }
-            else {
-                await pool.query("DELETE FROM events");
-                console.log('[PostgresAdapter.clearLogs] Cleared all logs');
-            }
-        }
-        catch (error) {
-            console.error('[PostgresAdapter.clearLogs] Error:', error);
-            throw error;
         }
     }
 }
