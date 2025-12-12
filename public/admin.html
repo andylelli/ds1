@@ -408,6 +408,11 @@
                 tab.classList.remove('is-hidden');
             }
 
+            // Update URL hash (Rule 2: Shortcuts/Deep Linking)
+            if (window.location.hash.substring(1) !== tabId) {
+                window.history.replaceState(null, null, '#' + tabId);
+            }
+
             // Handle Simulation Logs
             if (tabId === 'simulation') {
                 fetchLogs();
@@ -710,6 +715,7 @@
         // --- Data Fetching ---
         async function fetchProducts() {
             const list = document.getElementById('productsList');
+            list.innerHTML = '<div class="has-text-centered p-4"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading products...</div>';
             try {
                 const res = await fetch('/api/products');
                 const products = await res.json();
@@ -731,6 +737,7 @@
 
         async function fetchOrders() {
             const list = document.getElementById('ordersList');
+            list.innerHTML = '<div class="has-text-centered p-4"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading orders...</div>';
             try {
                 const res = await fetch('/api/orders');
                 const orders = await res.json();
@@ -754,6 +761,7 @@
 
         async function fetchAds() {
             const list = document.getElementById('adsList');
+            list.innerHTML = '<div class="has-text-centered p-4"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Loading campaigns...</div>';
             try {
                 const res = await fetch('/api/ads');
                 const ads = await res.json();
@@ -806,6 +814,8 @@
             const topic = document.getElementById('dbTopicFilter').value;
             const db = document.getElementById('dbSelector').value;
             
+            list.innerHTML = '<div class="has-text-centered p-4"><span class="icon"><i class="fas fa-spinner fa-pulse"></i></span> Fetching data...</div>';
+
             try {
                 let url = `/api/db/table/${table}?db=${db}`;
                 if (table === 'events' && topic) url += `&topic=${encodeURIComponent(topic)}`;
