@@ -20,8 +20,8 @@ import { MockAdsAdapter } from '../../infra/ads/MockAdsAdapter.js';
 import { TestAdsAdapter } from '../../infra/ads/TestAdsAdapter.js';
 
 // Trends
-import { LiveTrendAdapter } from '../../infra/trends/LiveTrendAdapter.js';
-import { MockTrendAdapter } from '../../infra/trends/MockTrendAdapter.js';
+import { LiveTrendAdapter } from '../../infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.js';
+import { MockTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
 
 // Research / Competitor
 import { LiveCompetitorAdapter } from '../../infra/research/LiveCompetitorAdapter.js';

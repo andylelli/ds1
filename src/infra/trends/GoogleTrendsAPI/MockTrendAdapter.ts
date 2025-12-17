@@ -1,4 +1,4 @@
-import { TrendAnalysisPort } from '../../core/domain/ports/TrendAnalysisPort.js';
+import { TrendAnalysisPort } from '../../../core/domain/ports/TrendAnalysisPort.js';
 
 export class MockTrendAdapter implements TrendAnalysisPort {
   async analyzeTrend(category: string): Promise<any> {

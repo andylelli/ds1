@@ -1,7 +1,7 @@
-import { TrendAnalysisPort } from '../../core/domain/ports/TrendAnalysisPort.js';
-import { openAIService } from '../ai/OpenAIService.js';
-import { ResearchStagingService } from '../../core/services/ResearchStagingService.js';
-import { ActivityLogService } from '../../core/services/ActivityLogService.js';
+import { TrendAnalysisPort } from '../../../core/domain/ports/TrendAnalysisPort.js';
+import { openAIService } from '../../ai/OpenAIService.js';
+import { ResearchStagingService } from '../../../core/services/ResearchStagingService.js';
+import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
 import googleTrends from 'google-trends-api';
 
