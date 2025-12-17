@@ -121,19 +121,40 @@ The `ServiceFactory` is the central place where adapters are instantiated.
 - **BigQuery Sandbox/Free Tier**: 1TB of query data processing per month is free.
 - **Monitoring**: Log query bytes processed in `ActivityLogService`.
 
-## 6. Implementation Checklist
-- [ ] **Restructure Folders**:
-    - [ ] Create `src/infra/trends/GoogleTrendsAPI/`.
-    - [ ] Move old `LiveTrendAdapter.ts` to `GoogleTrendsAPI/`.
-    - [ ] Create `src/infra/trends/GoogleBigQueryAPI/`.
-- [ ] **Install Dependencies**: `@google-cloud/bigquery`.
-- [ ] **Implement New Adapter**:
-    - [ ] `src/infra/trends/GoogleBigQueryAPI/BigQueryClient.ts`.
-    - [ ] `src/infra/trends/GoogleBigQueryAPI/TrendsRepo.ts`.
-    - [ ] `src/infra/trends/GoogleBigQueryAPI/TrendScoring.ts`.
-    - [ ] `src/infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.ts`.
-- [ ] **Update System**:
-    - [ ] Update `ServiceFactory.ts` to import the new adapter.
-    - [ ] Update `.env` with `GCP_PROJECT_ID`.
-- [ ] **Verification**:
-    - [ ] Smoke Test: Run a query for "United Kingdom".
+## 6. Phased Implementation Plan
+
+### Phase 1: Environment & Structure (Safe Setup)
+*Goal: Prepare the workspace without breaking existing code.*
+1.  **Install Dependencies**: Add `@google-cloud/bigquery` to the project.
+2.  **Create Directory Structure**:
+    - Create `src/infra/trends/GoogleTrendsAPI/` (Legacy).
+    - Create `src/infra/trends/GoogleBigQueryAPI/` (New).
+3.  **Migrate Legacy Code**:
+    - Move `LiveTrendAdapter.ts` and `MockTrendAdapter.ts` to `GoogleTrendsAPI/`.
+    - Update imports in `ServiceFactory` temporarily to point to the new location of the *old* adapter (to keep the app running during dev).
+
+### Phase 2: Core Logic (The "Engine")
+*Goal: Build the BigQuery integration components in isolation.*
+1.  **BigQuery Client**: Create `src/infra/trends/GoogleBigQueryAPI/BigQueryClient.ts` to handle auth and connection.
+2.  **Trends Repo**: Create `src/infra/trends/GoogleBigQueryAPI/TrendsRepo.ts` containing the SQL queries for `international_top_rising_terms`.
+3.  **Scoring Logic**: Create `src/infra/trends/GoogleBigQueryAPI/TrendScoring.ts` to handle topic filtering and product-likeness heuristics.
+
+### Phase 3: Adapter Implementation (The "Driver")
+*Goal: Connect the core logic to the application interface.*
+1.  **Create Adapter**: Create `src/infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.ts`.
+2.  **Implement Interface**: Ensure it implements `TrendAnalysisPort` methods:
+    - `analyzeTrend(category)`: Calls Repo -> Scoring -> Returns Result.
+    - `findProducts(category)`: Wraps `analyzeTrend`.
+    - `checkSaturation(product)`: Returns default/neutral response (limitation of rising terms dataset).
+
+### Phase 4: Integration (The "Switch")
+*Goal: Switch the application to use the new adapter.*
+1.  **Update Configuration**: Add `GCP_PROJECT_ID` to `.env`.
+2.  **Update Factory**: Modify `src/core/bootstrap/ServiceFactory.ts` to import and instantiate the **new** `GoogleBigQueryAPI/LiveTrendAdapter`.
+3.  **Verify Secrets**: Ensure `.gitignore` excludes the key file path.
+
+### Phase 5: Verification
+*Goal: Confirm the system works with real data.*
+1.  **Smoke Test**: Run a manual script or the `test_trends.ts` script to trigger the new adapter.
+2.  **Check Logs**: Verify `ActivityLogService` records the BigQuery execution.
+3.  **Cost Check**: Verify query bytes processed (via logs or GCP Console).
