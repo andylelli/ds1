@@ -69,27 +69,28 @@ We will replace the current `LiveTrendAdapter` logic with a BigQuery-backed impl
         - **Allowlist**: "buy", "price", "review", "best", etc.
     - **Ranking**: Sort by `rank` ASC.
 
-### 4.2 Adapter Implementation
-The `LiveTrendAdapter` will be updated to use `BigQueryTrendsRepo` instead of `google-trends-api`.
+### 4.2 Adapter Implementation (New Strategy)
+We will create a **new** adapter `src/infra/trends/BigQueryTrendAdapter.ts` implementing `TrendAnalysisPort`.
+- **Legacy**: The existing `LiveTrendAdapter.ts` (using `google-trends-api`) will be preserved as-is but decoupled from the active workflow.
+- **Interface Compliance**: The new adapter must implement all methods of `TrendAnalysisPort`:
+    1.  `analyzeTrend(category)`: Main logic using BigQuery rising terms.
+    2.  `findProducts(category)`: Can reuse `analyzeTrend` logic to return product-like terms.
+    3.  `checkSaturation(productName)`: Return a neutral/default response (or check if term is *declining* in BigQuery) as this is harder to determine from "rising" lists.
 
 ```typescript
-// Pseudo-code for new Adapter
-class BigQueryTrendAdapter implements TrendAnalysisPort {
-    async analyzeTrend(category: string): Promise<Result> {
-        // 1. Fetch raw rising terms from BigQuery
-        const rawTerms = await repo.getLatestRisingTermsByCountry("United Kingdom");
-        
-        // 2. Filter by Category/Topic
-        const filtered = scorer.filterByTopic(rawTerms, category);
-        
-        // 3. Filter for "Product-Likeness"
-        const products = scorer.filterProductLikeness(filtered);
-        
-        // 4. Map to Domain Object
-        return this.mapToTrendResult(products);
-    }
+// src/infra/trends/BigQueryTrendAdapter.ts
+export class BigQueryTrendAdapter implements TrendAnalysisPort {
+    // ... implementation using BigQueryTrendsRepo
 }
 ```
+
+### 4.3 Service Factory & Agent Integration
+The `ServiceFactory` is the central place where adapters are instantiated.
+- **File**: `src/core/bootstrap/ServiceFactory.ts`
+- **Action**:
+    1.  Import `BigQueryTrendAdapter`.
+    2.  In `createAdapter`, case `'TrendAdapter'`, replace `new LiveTrendAdapter(...)` with `new BigQueryTrendAdapter(...)`.
+- **MCP Impact**: `TrendMcpWrapper` depends on the `TrendAnalysisPort` interface, so it requires **no changes** as long as the new adapter implements the interface correctly.
 
 ## 5. Cost & Quota Management
 
@@ -111,7 +112,7 @@ class BigQueryTrendAdapter implements TrendAnalysisPort {
 - [ ] Create `src/infra/bigquery/BigQueryClient.ts`.
 - [ ] Create `src/infra/trends/BigQueryTrendsRepo.ts` with SQL.
 - [ ] Create `src/infra/trends/TrendScoring.ts` with heuristics.
-- [ ] Refactor `LiveTrendAdapter.ts` to use the new Repo.
+- [ ] Create `src/infra/trends/BigQueryTrendAdapter.ts` (New Adapter).
+- [ ] Update Agent Code to inject `BigQueryTrendAdapter` instead of `LiveTrendAdapter`.
 - [ ] Update `.env` with `GCP_PROJECT_ID`.
-- [ ] Verify `.gitignore` includes `*.json`.
 - [ ] Smoke Test: Run a query for "United Kingdom" and verify results.
