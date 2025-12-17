@@ -115,7 +115,10 @@
             }
         }
 
-        function getModeLabel(mode) {
+        function getModeLabel(mode, agentId) {
+            if (mode === 'live' && agentId === 'product_research_agent') {
+                return 'Live (Google BigQuery)';
+            }
             switch(mode) {
                 case 'live': return 'Live (Real API Calls)';
                 case 'mock': return 'Mock (Fake Data)';
@@ -188,7 +191,7 @@
                     <div class="card-content">
                         <div class="content">
                             <p><strong>Status:</strong> <span class="has-text-success">Active</span></p>
-                            <p><strong>Mode:</strong> ${getModeLabel(agent.mode)}</p>
+                            <p><strong>Mode:</strong> ${getModeLabel(agent.mode, agent.id)}</p>
                             <p><strong>Last Active:</strong> ${new Date().toLocaleTimeString()}</p>
                         </div>
                     </div>

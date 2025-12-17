@@ -86,7 +86,7 @@
     <script>
         const services = [
             { id: 'ceo', name: 'CEO Agent', desc: 'Executive decision making and team coordination.' },
-            { id: 'trends', name: 'Product Research (Trends)', desc: 'Market trend analysis and product discovery (Google Trends).' },
+            { id: 'trends', name: 'Product Research (Trends)', desc: 'Market trend analysis (Google BigQuery Public Dataset).' },
             { id: 'competitor', name: 'Competitor Analysis', desc: 'Competitor store tracking and price monitoring.' },
             { id: 'fulfilment', name: 'Supplier Network', desc: 'Product sourcing, inventory, and order fulfillment.' },
             { id: 'shop', name: 'Shop Platform', desc: 'E-commerce store management (Shopify).' },
@@ -111,6 +111,11 @@
                 
                 tbody.innerHTML = services.map(service => {
                     const currentMode = serviceConfig[service.id] || 'mock';
+                    let liveLabel = 'Live (Real API Calls)';
+                    if (service.id === 'trends') {
+                        liveLabel = 'Live (Google BigQuery)';
+                    }
+
                     return `
                         <tr class="config-row mode-${currentMode}" id="row-${service.id}">
                             <td><strong>${service.name}</strong></td>
@@ -120,7 +125,7 @@
                                         <select id="${service.id}Mode" name="${service.id}" onchange="updateRowStyle(this)" disabled>
                                             <option value="mock" ${currentMode === 'mock' ? 'selected' : ''}>Mock (Fake Data)</option>
                                             <option value="simulation" ${currentMode === 'simulation' ? 'selected' : ''}>Simulation (System Logic)</option>
-                                            <option value="live" ${currentMode === 'live' ? 'selected' : ''}>Live (Real API Calls)</option>
+                                            <option value="live" ${currentMode === 'live' ? 'selected' : ''}>${liveLabel}</option>
                                         </select>
                                     </div>
                                 </div>
