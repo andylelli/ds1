@@ -8,16 +8,19 @@
 ## 2. Authentication & Setup
 
 ### 2.1 Service Account
+- **Project Name**: `My Project`
+- **Project ID**: `hale-treat-109915`
 - **Account Name**: `bq-trends-reader` (or similar)
-- **Key File**: `hale-treat-109915-fb095f60b831.json` (Already present in root/README reference)
+- **Key File**: `hale-treat-109915-fb095f60b831.json`
+    - **Location**: `C:\DropShip\` (Parent directory, outside repo)
+    - **Strategy**: Keep key outside repository to prevent accidental commits.
 - **Required Roles**:
     - `roles/bigquery.jobUser` (Run queries)
     - `roles/bigquery.dataViewer` (Read public datasets)
 
 ### 2.2 Environment Configuration
 - **Local Dev**:
-    - Set `GOOGLE_APPLICATION_CREDENTIALS` to the path of the JSON key file.
-    - **Security**: Ensure `*.json` keys are in `.gitignore`.
+    - Set `GOOGLE_APPLICATION_CREDENTIALS` to `C:\DropShip\hale-treat-109915-fb095f60b831.json`.
 - **Production**:
     - Inject credentials via Secret Manager or Environment Variable (JSON string).
 
@@ -29,6 +32,8 @@
 ### 3.1 Target Table
 We will query the **International Top Rising Terms** table:
 `bigquery-public-data.google_trends.international_top_rising_terms`
+
+- **Default Country**: `United Kingdom` (Mapped from user preference "GB").
 
 ### 3.2 Data Mapping
 | BigQuery Field | TypeScript Type | Description |
