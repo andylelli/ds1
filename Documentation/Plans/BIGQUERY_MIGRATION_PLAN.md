@@ -48,32 +48,46 @@ We will query the **International Top Rising Terms** table:
 
 We will replace the current `LiveTrendAdapter` logic with a BigQuery-backed implementation.
 
-### 4.1 New Infrastructure Components
-1.  **`src/infra/bigquery/BigQueryClient.ts`**:
-    - Singleton wrapper for the BigQuery SDK.
-    - Handles authentication and job execution.
-    - Default location: `US`.
+### 4.1 Directory Structure & Naming (Refined)
+To ensure consistency and separation of concerns, we will restructure `src/infra/trends/` into subfolders:
 
-2.  **`src/infra/trends/BigQueryTrendsRepo.ts`**:
-    - Contains the SQL queries.
-    - **Key Query**: `getLatestRisingTermsByCountry`
-    - **Logic**:
-        - CTE to find `MAX(refresh_date)` for the country (handles missing days).
-        - `CROSS JOIN` to filter main table by that date.
-        - Limit 25.
+1.  **`src/infra/trends/GoogleTrendsAPI/`** (Legacy)
+    - Move existing `LiveTrendAdapter.ts` here.
+    - Keeps the old logic isolated.
 
-3.  **`src/infra/trends/TrendScoring.ts`**:
-    - **Topic Filtering**: Simple string inclusion.
-    - **Product Heuristic**:
-        - **Blocklist**: "weather", "election", "lyrics", "who is", etc.
-        - **Allowlist**: "buy", "price", "review", "best", etc.
-    - **Ranking**: Sort by `rank` ASC.
+2.  **`src/infra/trends/GoogleBigQueryAPI/`** (New)
+    - `LiveTrendAdapter.ts`: The new adapter implementation (same class name, different namespace).
+    - `BigQueryClient.ts`: Singleton wrapper.
+    - `TrendsRepo.ts`: SQL queries (renamed from `BigQueryTrendsRepo` for simplicity).
+    - `TrendScoring.ts`: Heuristics and filtering.
 
-### 4.2 Adapter Implementation (New Strategy)
-We will create a **new** adapter `src/infra/trends/BigQueryTrendAdapter.ts` implementing `TrendAnalysisPort`.
-- **Legacy**: The existing `LiveTrendAdapter.ts` (using `google-trends-api`) will be preserved as-is but decoupled from the active workflow.
-- **Interface Compliance**: The new adapter must implement all methods of `TrendAnalysisPort`:
-    1.  `analyzeTrend(category)`: Main logic using BigQuery rising terms.
+### 4.2 Adapter Implementation
+We will implement `src/infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.ts`.
+
+```typescript
+// src/infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.ts
+import { TrendsRepo } from './TrendsRepo';
+import { TrendScoring } from './TrendScoring';
+
+export class LiveTrendAdapter implements TrendAnalysisPort {
+    // ... implementation
+}
+```
+
+### 4.3 Service Factory Updates
+We will update `src/core/bootstrap/ServiceFactory.ts` to import the **new** adapter.
+
+```typescript
+// src/core/bootstrap/ServiceFactory.ts
+// import { LiveTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/LiveTrendAdapter.js'; // OLD (Commented out or removed)
+import { LiveTrendAdapter } from '../../infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.js'; // NEW
+
+// ...
+case 'TrendAdapter':
+    return new LiveTrendAdapter(deps.db.getPool()); // Instantiates the BigQuery version
+```
+
+## 5. Cost & Quota Management
     2.  `findProducts(category)`: Can reuse `analyzeTrend` logic to return product-like terms.
     3.  `checkSaturation(productName)`: Return a neutral/default response (or check if term is *declining* in BigQuery) as this is harder to determine from "rising" lists.
 
@@ -108,11 +122,18 @@ The `ServiceFactory` is the central place where adapters are instantiated.
 - **Monitoring**: Log query bytes processed in `ActivityLogService`.
 
 ## 6. Implementation Checklist
-- [ ] Install `@google-cloud/bigquery`.
-- [ ] Create `src/infra/bigquery/BigQueryClient.ts`.
-- [ ] Create `src/infra/trends/BigQueryTrendsRepo.ts` with SQL.
-- [ ] Create `src/infra/trends/TrendScoring.ts` with heuristics.
-- [ ] Create `src/infra/trends/BigQueryTrendAdapter.ts` (New Adapter).
-- [ ] Update Agent Code to inject `BigQueryTrendAdapter` instead of `LiveTrendAdapter`.
-- [ ] Update `.env` with `GCP_PROJECT_ID`.
-- [ ] Smoke Test: Run a query for "United Kingdom" and verify results.
+- [ ] **Restructure Folders**:
+    - [ ] Create `src/infra/trends/GoogleTrendsAPI/`.
+    - [ ] Move old `LiveTrendAdapter.ts` to `GoogleTrendsAPI/`.
+    - [ ] Create `src/infra/trends/GoogleBigQueryAPI/`.
+- [ ] **Install Dependencies**: `@google-cloud/bigquery`.
+- [ ] **Implement New Adapter**:
+    - [ ] `src/infra/trends/GoogleBigQueryAPI/BigQueryClient.ts`.
+    - [ ] `src/infra/trends/GoogleBigQueryAPI/TrendsRepo.ts`.
+    - [ ] `src/infra/trends/GoogleBigQueryAPI/TrendScoring.ts`.
+    - [ ] `src/infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.ts`.
+- [ ] **Update System**:
+    - [ ] Update `ServiceFactory.ts` to import the new adapter.
+    - [ ] Update `.env` with `GCP_PROJECT_ID`.
+- [ ] **Verification**:
+    - [ ] Smoke Test: Run a query for "United Kingdom".
