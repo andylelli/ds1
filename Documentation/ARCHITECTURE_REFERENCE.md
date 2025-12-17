@@ -14,14 +14,14 @@ These tools are available to Agents. In Simulation, "Mock" versions are used.
 
 | Tool ID | Type | Real Implementation | Mock Implementation | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `ai_tool` | `internal` | `src/adapters/AiAdapter.ts` | `src/adapters/mock/MockAiAdapter.ts` | LLM Provider interface. |
-| `trend_tool` | `internal` | `src/adapters/TrendAdapter.ts` | `src/adapters/mock/MockTrendAdapter.ts` | Fetches market trends. |
-| `competitor_tool` | `internal` | `src/adapters/CompetitorAdapter.ts` | `src/adapters/mock/MockCompetitorAdapter.ts` | Analyzes competitor data. |
-| `supplier_tool` | `internal` | `src/adapters/SupplierAdapter.ts` | `src/adapters/mock/MockSupplierAdapter.ts` | Manages supplier relationships. |
-| `shop_tool` | `internal` | `src/adapters/ShopifyAdapter.ts` | `src/adapters/mock/MockShopifyAdapter.ts` | E-commerce platform (Shopify). |
-| `ads_tool` | `internal` | `src/adapters/AdsAdapter.ts` | `src/adapters/mock/MockAdsAdapter.ts` | Ad network management (Meta/Google). |
-| `email_tool` | `internal` | `src/adapters/EmailAdapter.ts` | `src/adapters/mock/MockEmailAdapter.ts` | Customer support & email. |
-| `shipping_tool` | `internal` | `src/adapters/ShippingAdapter.ts` | `src/adapters/mock/MockShippingAdapter.ts` | Logistics and fulfillment. |
+| `ai_tool` | `internal` | `src/infra/ai/LiveAiAdapter.ts` | `src/infra/ai/MockAiAdapter.ts` | LLM Provider interface. |
+| `trend_tool` | `internal` | `src/infra/trends/LiveTrendAdapter.ts` | `src/infra/trends/MockTrendAdapter.ts` | Fetches market trends. |
+| `competitor_tool` | `internal` | `src/infra/competitor/LiveCompetitorAdapter.ts` | `src/infra/competitor/MockCompetitorAdapter.ts` | Analyzes competitor data. |
+| `supplier_tool` | `internal` | `src/infra/supplier/LiveSupplierAdapter.ts` | `src/infra/supplier/MockSupplierAdapter.ts` | Manages supplier relationships. |
+| `shop_tool` | `internal` | `src/infra/shop/LiveShopAdapter.ts` | `src/infra/shop/MockShopifyAdapter.ts` | E-commerce platform (Shopify). |
+| `ads_tool` | `internal` | `src/infra/ads/LiveAdsAdapter.ts` | `src/infra/ads/MockAdsAdapter.ts` | Ad network management (Meta/Google). |
+| `email_tool` | `internal` | `src/infra/email/LiveEmailAdapter.ts` | `src/infra/email/MockEmailAdapter.ts` | Customer support & email. |
+| `shipping_tool` | `internal` | `src/infra/fulfillment/LiveFulfilmentAdapter.ts` | `src/infra/fulfillment/MockFulfilmentAdapter.ts` | Logistics and fulfillment. |
 | `filesystem_tool` | `stdio` | `McpClient` (Generic) | N/A | External MCP server (e.g., filesystem). |
 
 ## 3. Agents (`agents.yaml`)
@@ -110,3 +110,11 @@ interface WorkflowsConfig {
   }>;
 }
 ```
+
+## 7. Adapter Strategies (Live Mode)
+
+### Google Trends (Strict Mode)
+- **Strategy**: Active Exploration (Seed -> Related Queries -> Interest Over Time).
+- **Constraint**: No AI simulation or "hallucination" of data.
+- **Failure Handling**: Throws `TrendAnalysisError` on API failure (429/404).
+- **Reference**: See `Documentation/PMO/GOOGLE_TRENDS_INTEGRATION_STRATEGY.md` for full API details.

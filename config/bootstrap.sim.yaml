@@ -8,7 +8,7 @@ services:
   ceo: "mock"
   shop: "mock"
   ads: "mock"
-  trends: "live"
+  trends: "mock"
   competitor: "mock"
   fulfilment: "mock"
   email: "mock"
