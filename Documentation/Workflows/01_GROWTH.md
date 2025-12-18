@@ -95,10 +95,11 @@ flowchart TD
 
 ### Phase 2: Feasibility & Strategic Review
 *   **Actor:** `SupplierAgent` & `CEOAgent`
-*   **Trigger Event:** `OpportunityResearch.BriefsPublished` / `Supplier.FeasibilityRequested`
-*   **Actions:**
-    *   **Supplier Agent:** Performs a "Feasibility Check" (MOQ, Lead Time, Cost) based on the Brief's `risk_assessment`.
-    *   **CEO Agent:** Reviews the Brief against the `StrategyProfile`. Checks `kill_criteria` and `certainty_score`.
+*   **Trigger Event:** `OpportunityResearch.BriefsPublished`
+*   **Parallel Execution:**
+    *   **CEO Agent (Strategic Filter):** Immediately reviews the Brief against the `StrategyProfile`. If the product category or risk level violates strategy, the CEO **rejects** the brief immediately ("Fast Fail"), bypassing the need for deep sourcing.
+    *   **Supplier Agent (Feasibility Check):** Simultaneously searches for real suppliers to validate the `estimated_cost` and `logistics` assumptions in the Brief.
+*   **Convergence:** If the CEO passes the strategic check, they wait for the Supplier Agent's feasibility data before making the final `Approval` decision.
 *   **Output Event:** `PRODUCT_APPROVED` or `PRODUCT_REJECTED`
 
 ### Phase 3: Store Build & Asset Creation
