@@ -6,6 +6,7 @@ import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 
 export class CEOAgent extends BaseAgent {
   private ai: AiPort;
+  public team: any;
   
   private aiTools: ToolDefinition[] = [
     {
@@ -112,6 +113,10 @@ export class CEOAgent extends BaseAgent {
     this.eventBus.subscribe('Sales.OrderReceived', 'CEOAgent', async (event) => {
         this.log('info', `CEO Celebrates Order: ${event.payload.order_id} for $${event.payload.total}`);
     });
+  }
+
+  public setTeam(team: any) {
+      this.team = team;
   }
 
   /**

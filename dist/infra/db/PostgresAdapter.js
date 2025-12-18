@@ -31,6 +31,46 @@ export class PostgresAdapter {
             console.error("Failed to initialize Postgres pools", e);
         }
     }
+    async saveBrief(brief) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'test' ? this.simPool : this.pgPool;
+        if (!pool)
+            return;
+        try {
+            await pool.query(`INSERT INTO opportunity_briefs (id, theme_name, score, phase, status, data, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, NOW())
+         ON CONFLICT (id) DO UPDATE SET
+           theme_name = EXCLUDED.theme_name,
+           score = EXCLUDED.score,
+           phase = EXCLUDED.phase,
+           status = EXCLUDED.status,
+           data = EXCLUDED.data`, [
+                brief.id,
+                brief.opportunity_definition.theme_name,
+                Math.round((brief.certainty_score || 0) * 100),
+                brief.market_evidence?.trend_phase || 'Unknown',
+                brief.meta.status,
+                JSON.stringify(brief)
+            ]);
+        }
+        catch (e) {
+            console.error(`Failed to save brief to PG (${mode}):`, e.message);
+        }
+    }
+    async getBriefs(source) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'test' ? this.simPool : this.pgPool;
+        if (!pool)
+            return [];
+        try {
+            const res = await pool.query("SELECT data FROM opportunity_briefs ORDER BY created_at DESC");
+            return res.rows.map(r => r.data);
+        }
+        catch (e) {
+            console.error(`Failed to get briefs from PG (${mode}):`, e.message);
+            return [];
+        }
+    }
     async saveProduct(product) {
         const mode = configService.get('dbMode');
         const pool = (mode === 'test') ? this.simPool : this.pgPool;
@@ -183,6 +223,32 @@ export class PostgresAdapter {
         }
         catch (e) {
             console.error(`Failed to save log to PG (${mode}):`, e.message);
+        }
+    }
+    async saveActivity(entry) {
+        const mode = configService.get('dbMode');
+        const pool = mode === 'test' ? this.simPool : this.pgPool;
+        if (!pool)
+            return;
+        const query = `
+      INSERT INTO activity_log (agent, action, category, status, entity_type, entity_id, details, message, metadata)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
+        try {
+            await pool.query(query, [
+                entry.agent,
+                entry.action,
+                entry.category,
+                entry.status || 'completed',
+                entry.entityType || null,
+                entry.entityId || null,
+                entry.details ? JSON.stringify(entry.details) : null,
+                entry.message,
+                entry.metadata ? JSON.stringify(entry.metadata) : null
+            ]);
+        }
+        catch (e) {
+            console.error(`Failed to save activity to PG (${mode}):`, e.message);
         }
     }
     async getErrorLogs(limit, source) {

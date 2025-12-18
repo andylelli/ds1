@@ -85,6 +85,27 @@ export class ActivityLogService {
         return this.getActivities({ limit });
     }
     /**
+     * Get the latest status for a specific agent
+     */
+    async getAgentStatus(agentName) {
+        const query = `
+      SELECT id, timestamp, agent, action, category, status, entity_type as "entityType", 
+             entity_id as "entityId", details, message, metadata
+      FROM activity_log
+      WHERE agent = $1
+      ORDER BY timestamp DESC
+      LIMIT 1
+    `;
+        try {
+            const result = await this.pool.query(query, [agentName]);
+            return result.rows[0] || null;
+        }
+        catch (error) {
+            console.error(`[ActivityLog] Failed to get status for ${agentName}:`, error);
+            return null;
+        }
+    }
+    /**
      * Get activity by category
      */
     async getByCategory(category, limit = 50) {

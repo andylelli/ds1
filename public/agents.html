@@ -157,11 +157,31 @@
             renderDetails(id);
         }
 
-        function renderDetails(id) {
+        async function renderDetails(id) {
             const agent = agents.find(a => a.id === id);
             if (!agent) return;
 
             const container = document.getElementById('agentDetails');
+            
+            // Fetch detailed status for progress bar
+            let progressHtml = '';
+            if (id === 'product_research_agent') {
+                try {
+                    const statusRes = await fetch(`/api/activity/status?agent=ProductResearcher`);
+                    const statusData = await statusRes.json();
+                    if (statusData && statusData.progress !== undefined) {
+                        progressHtml = `
+                            <div class="box mb-4">
+                                <h3 class="title is-5 mb-2">Pipeline Progress</h3>
+                                <progress class="progress is-primary is-large" value="${statusData.progress}" max="100">${statusData.progress}%</progress>
+                                <p class="has-text-centered has-text-grey">${statusData.status ? statusData.status.message : 'Idle'}</p>
+                            </div>
+                        `;
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch progress", e);
+                }
+            }
             
             // Filter logs logic
             const agentLogs = logs.filter(l => 
@@ -196,6 +216,8 @@
                         </div>
                     </div>
                 </div>
+
+                ${progressHtml}
 
                 <div class="card">
                     <header class="card-header">

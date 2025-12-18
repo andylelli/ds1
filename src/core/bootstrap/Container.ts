@@ -27,6 +27,7 @@ export class Container {
     
     // 1. Infrastructure
     this.persistence = this.factory.createPersistence();
+    this.services.set('db', this.persistence);
     this.eventBus = this.factory.createEventBus();
     
     // 2. Register Internal Services (Adapters)

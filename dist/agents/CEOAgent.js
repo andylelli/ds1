@@ -1,7 +1,7 @@
 import { BaseAgent } from './BaseAgent.js';
 export class CEOAgent extends BaseAgent {
     ai;
-    team = null;
+    team;
     aiTools = [
         {
             name: 'approveProduct',
@@ -97,6 +97,13 @@ export class CEOAgent extends BaseAgent {
     constructor(db, eventBus, ai) {
         super('CEO', db, eventBus);
         this.ai = ai;
+        // Subscribe to high-level events
+        this.eventBus.subscribe('System.Error', 'CEOAgent', async (event) => {
+            this.log('error', `CEO Noticed System Error: ${event.payload.error}`);
+        });
+        this.eventBus.subscribe('Sales.OrderReceived', 'CEOAgent', async (event) => {
+            this.log('info', `CEO Celebrates Order: ${event.payload.order_id} for $${event.payload.total}`);
+        });
     }
     setTeam(team) {
         this.team = team;

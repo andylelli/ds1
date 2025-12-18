@@ -49,6 +49,12 @@ export class MockAdapter {
         const db = this.readDb();
         return db[this.dbId]?.[containerId] || [];
     }
+    async saveBrief(brief) {
+        await this.saveItem("Briefs", brief);
+    }
+    async getBriefs(source) {
+        return await this.getItems("Briefs");
+    }
     async saveProduct(product) {
         await this.saveItem("Products", product);
     }
@@ -74,6 +80,12 @@ export class MockAdapter {
             level,
             data,
             id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        });
+    }
+    async saveActivity(entry) {
+        await this.saveItem("ActivityLog", {
+            ...entry,
+            id: entry.id || `act_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         });
     }
     async getRecentLogs(limit, source) {

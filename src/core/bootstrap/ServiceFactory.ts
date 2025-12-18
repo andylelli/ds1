@@ -1,5 +1,6 @@
 import { AppConfig } from './ConfigTypes.js';
 import { PostgresAdapter } from '../../infra/db/PostgresAdapter.js';
+import { MockAdapter } from '../../infra/db/MockAdapter.js';
 import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
 
 // Shop
@@ -62,6 +63,9 @@ export class ServiceFactory {
   }
 
   public createPersistence(): PersistencePort {
+    if (process.env.DS1_MODE === 'mock') {
+        return new MockAdapter();
+    }
     // Currently only Postgres is supported/requested
     const dbConfig = this.config.infrastructure?.database;
     return new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);

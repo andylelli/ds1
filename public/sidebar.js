@@ -27,6 +27,7 @@ async function initSidebar() {
         <p class="menu-label">Simulation</p>
         <ul class="menu-list">
             <li><a href="/admin.html#simulation" class="nav-item" data-tab="simulation"><span class="icon"><i class="fas fa-play"></i></span> Run Simulation</a></li>
+            <li><a href="/briefs.html" class="nav-item" data-page="briefs.html"><span class="icon"><i class="fas fa-file-contract"></i></span> Opportunity Briefs</a></li>
             <li><a href="/staging.html" class="nav-item" data-page="staging.html"><span class="icon"><i class="fas fa-magnifying-glass"></i></span> Staging Review</a></li>
         </ul>`;
         }

@@ -4,6 +4,7 @@ import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { TrendAnalysisPort } from '../core/domain/ports/TrendAnalysisPort.js';
 import { CompetitorAnalysisPort } from '../core/domain/ports/CompetitorAnalysisPort.js';
 import { openAIService } from '../infra/ai/OpenAIService.js';
+import { ActivityLogEntry } from '../core/domain/types/ActivityLogEntry.js';
 import { OpportunityBrief, ProductConcept, Seasonality, OpportunityDefinition, CustomerProblem, ProblemFrequency, ProblemUrgency, DemandEvidence, SignalType, TrendDirection, ConfidenceLevel, CompetitionAnalysis, CompetitionDensity, CompetitionQuality, SaturationRisk, PricingAndEconomics, MarginFeasibility, PriceSensitivity, OfferConcept, Complexity, DifferentiationStrategy, RiskAssessment, RiskLevel, TimeAndCycle, TrendPhase, ExecutionSpeedFit, ValidationPlan, TestType, KillCriteria, AssumptionsAndCertainty, EvidenceReferences } from '../core/domain/types/OpportunityBrief.js';
 
 // --- Section 0 & 1 Interfaces ---
@@ -125,6 +126,18 @@ export class ProductResearchAgent extends BaseAgent {
     this.eventBus.subscribe('OpportunityResearch.Requested', 'ProductResearchAgent', async (event) => {
       this.log('info', `Received Research Request: ${event.payload.request_id}`);
       await this.handleResearchRequest(event.payload);
+    });
+  }
+
+  private async logStep(action: string, category: string, status: 'started' | 'completed' | 'failed' | 'warning', message: string, details?: any) {
+    await this.db.saveActivity({
+      agent: this.name,
+      action,
+      category,
+      status,
+      message,
+      details,
+      timestamp: new Date()
     });
   }
 
@@ -274,8 +287,9 @@ export class ProductResearchAgent extends BaseAgent {
                });
           }
 
-      } catch (e) {
+      } catch (e: any) {
           this.log('warn', `Failed to query past products: ${e}`);
+          await this.logStep('Prior Learning Failed', 'Research', 'warning', `Failed to query past products: ${e.message}`, { error: e.stack });
       }
 
       // Store in context
@@ -311,8 +325,9 @@ export class ProductResearchAgent extends BaseAgent {
                   });
               }
           }
-      } catch (e) {
+      } catch (e: any) {
           this.log('error', `Failed to collect Search signals: ${e}`);
+          await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Search signals: ${e.message}`, { error: e.stack });
       }
 
       // 2. Competitor Analysis (Marketplace Movement)
@@ -341,8 +356,9 @@ export class ProductResearchAgent extends BaseAgent {
                   });
               }
           }
-      } catch (e) {
+      } catch (e: any) {
           this.log('error', `Failed to collect Competitor signals: ${e}`);
+          await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
       }
 
       // Check constraint: At least two families
@@ -858,14 +874,18 @@ export class ProductResearchAgent extends BaseAgent {
   private async handleResearchRequest(payload: { request_id: string, criteria: any }) {
     const { request_id, criteria } = payload;
     this.log('info', `[Section 1] Processing Request: ${request_id}`);
+    await this.logStep('Pipeline Start', 'System', 'started', `Starting Research Pipeline for Request: ${request_id}`, payload);
 
     try {
         // Section 0: Preconditions
+        await this.logStep('Step 0: Dependencies', 'Initialization', 'started', 'Loading dependencies...');
         if (!await this.loadDependencies()) {
             throw new Error("Failed to load dependencies (Strategy Profile, etc.)");
         }
+        await this.logStep('Step 0: Dependencies', 'Initialization', 'completed', 'Dependencies loaded.');
 
         // Section 1: Request Intake & Normalization
+        await this.logStep('Step 1: Brief', 'Research', 'started', 'Creating research brief...');
         const brief = await this.createResearchBrief(request_id, criteria);
         
         if (brief.alignment_score < 0.5) {
@@ -881,15 +901,11 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 1] Brief Created: ${briefId}`);
+        await this.logStep('Step 1: Brief', 'Research', 'completed', 'Research brief created.', brief);
 
         // Section 2: Prior Learning Ingestion
+        await this.logStep('Step 2: Learnings', 'Research', 'started', 'Ingesting prior learnings...');
         const { learnings, adjustments } = await this.ingestPriorLearnings(brief);
-        
-        // Emit PriorLearningsAttached (Custom event for this agent's internal tracking or observability)
-        // Note: This event might not be in the global registry yet, so we might need to add it or just log it.
-        // The checklist says "Emit OpportunityResearch.PriorLearningsAttached".
-        // I should check if it exists in Registry.ts. If not, I'll use a generic log or add it.
-        // For now, I'll assume I can publish it.
         
         await this.eventBus.publish('OpportunityResearch.PriorLearningsAttached' as any, {
             brief_id: briefId,
@@ -899,8 +915,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 2] Prior Learnings Attached: ${learnings.length} items`);
+        await this.logStep('Step 2: Learnings', 'Research', 'completed', 'Prior learnings ingested.', { count: learnings.length });
 
         // Section 3: Multi-Signal Discovery
+        await this.logStep('Step 3: Signals', 'Discovery', 'started', 'Collecting signals...');
         const signals = await this.collectSignals(brief);
         
         await this.eventBus.publish('OpportunityResearch.SignalsCollected', {
@@ -910,8 +928,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 3] Signals Collected: ${signals.length} items from ${[...new Set(signals.map(s => s.family))].join(', ')}`);
+        await this.logStep('Step 3: Signals', 'Discovery', 'completed', `Collected ${signals.length} signals.`, { count: signals.length });
 
         // Section 4: Theme Generation
+        await this.logStep('Step 4: Themes', 'Analysis', 'started', 'Generating themes...');
         const themes = await this.generateThemes(signals);
 
         await this.eventBus.publish('OpportunityResearch.ThemesGenerated' as any, {
@@ -920,8 +940,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 4] Themes Generated: ${themes.length} themes`);
+        await this.logStep('Step 4: Themes', 'Analysis', 'completed', `Generated ${themes.length} themes.`, { count: themes.length });
 
         // Section 5: Hard-Gate Filtering
+        await this.logStep('Step 5: Gating', 'Filtering', 'started', 'Gating themes...');
         const { passed, rejected } = await this.gateThemes(themes, brief);
 
         await this.eventBus.publish('OpportunityResearch.ThemesGated' as any, {
@@ -932,8 +954,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 5] Themes Gated: ${passed.length} passed, ${rejected.length} rejected`);
+        await this.logStep('Step 5: Gating', 'Filtering', 'completed', `Gated down to ${passed.length} themes.`, { count: passed.length });
 
         // Section 6: Preliminary Scoring & Ranking
+        await this.logStep('Step 6: Scoring', 'Ranking', 'started', 'Scoring and ranking themes...');
         const rankedThemes = await this.scoreAndRankThemes(passed, adjustments);
 
         await this.eventBus.publish('OpportunityResearch.ShortlistRanked' as any, {
@@ -942,8 +966,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 6] Shortlist Ranked: Top ${rankedThemes.length} themes`);
+        await this.logStep('Step 6: Scoring', 'Ranking', 'completed', `Ranked ${rankedThemes.length} themes.`, { top: rankedThemes[0]?.name });
 
         // Section 7: Time & Cycle Fitness Check
+        await this.logStep('Step 7: Time Fitness', 'Filtering', 'started', 'Checking time fitness...');
         const { passed: timePassed, notes: timeNotes } = await this.checkTimeFitness(rankedThemes, brief);
 
         await this.eventBus.publish('OpportunityResearch.TimeFiltered' as any, {
@@ -954,8 +980,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 7] Time Filtered: ${timePassed.length} passed`);
+        await this.logStep('Step 7: Time Fitness', 'Filtering', 'completed', `${timePassed.length} themes passed time fitness.`, { count: timePassed.length });
 
         // Section 8: Deep Validation
+        await this.logStep('Step 8: Deep Validation', 'Validation', 'started', 'Performing deep validation...');
         const validatedThemes = await this.performDeepValidation(timePassed);
 
         await this.eventBus.publish('OpportunityResearch.ValidatedCandidatesReady' as any, {
@@ -965,8 +993,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 8] Validated Candidates Ready: ${validatedThemes.length} themes`);
+        await this.logStep('Step 8: Deep Validation', 'Validation', 'completed', `Validated ${validatedThemes.length} themes.`, { count: validatedThemes.length });
 
         // Section 9: Productization
+        await this.logStep('Step 9: Productization', 'Concepting', 'started', 'Creating offer concepts...');
         const concepts = await this.createOfferConcepts(validatedThemes);
 
         await this.eventBus.publish('OpportunityResearch.OfferConceptsCreated' as any, {
@@ -976,9 +1006,16 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 9] Offer Concepts Created: ${concepts.length} concepts`);
+        await this.logStep('Step 9: Productization', 'Concepting', 'completed', `Created ${concepts.length} concepts.`, { count: concepts.length });
 
         // Section 10: Opportunity Brief Creation
+        await this.logStep('Step 10: Briefs', 'Output', 'started', 'Creating opportunity briefs...');
         const briefs = await this.createOpportunityBriefs(concepts, validatedThemes, request_id, brief);
+
+        // Save briefs to DB
+        for (const b of briefs) {
+            await this.db.saveBrief(b);
+        }
 
         await this.eventBus.publish('OpportunityResearch.BriefsPublished' as any, {
             brief_id: briefId,
@@ -987,9 +1024,11 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 10] Briefs Published: ${briefs.length} briefs`);
+        await this.logStep('Step 10: Briefs', 'Output', 'completed', `Created ${briefs.length} briefs.`, { count: briefs.length });
 
         // Section 11: Handoff via Events
         this.log('info', `[Section 11] Initiating Handoff for ${briefs.length} opportunities...`);
+        await this.logStep('Step 11: Handoff', 'Output', 'started', 'Initiating handoff...');
 
         for (const brief of briefs) {
             // 1. Request Supplier Feasibility Check
@@ -1008,9 +1047,12 @@ export class ProductResearchAgent extends BaseAgent {
         }
 
         this.log('info', `[Section 11] Handoff Complete. Research Cycle Finished.`);
+        await this.logStep('Step 11: Handoff', 'Output', 'completed', 'Handoff complete.');
+        await this.logStep('Pipeline Complete', 'System', 'completed', `Pipeline Complete. Generated ${briefs.length} briefs.`, { briefs: briefs.map(b => b.id) });
 
     } catch (error: any) {
       this.log('error', `Research Aborted: ${error.message}`);
+      await this.logStep('Pipeline Failed', 'System', 'failed', `Pipeline Failed: ${error.message}`, { error: error.stack });
       await this.eventBus.publish('OpportunityResearch.Aborted', {
         brief_id: `unknown_${request_id}`,
         reason: error.message

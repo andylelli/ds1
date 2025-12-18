@@ -1,7 +1,10 @@
-import { Product, Order, Campaign } from '../types/index.js';
+import { Product, Order, Campaign, ActivityLogEntry, OpportunityBrief } from '../types/index.js';
 import { DomainEvent } from '../events/Registry.js';
 
 export interface PersistencePort {
+  saveBrief(brief: OpportunityBrief): Promise<void>;
+  getBriefs(source?: string): Promise<OpportunityBrief[]>;
+
   saveProduct(product: Product): Promise<void>;
   getProducts(source?: string): Promise<Product[]>;
   
@@ -12,6 +15,7 @@ export interface PersistencePort {
   getCampaigns(source?: string): Promise<Campaign[]>;
   
   saveLog(agent: string, message: string, level: string, data?: any): Promise<void>;
+  saveActivity(entry: ActivityLogEntry): Promise<void>;
   getRecentLogs(limit: number, source?: string): Promise<any[]>;
 
   // Clear simulation data

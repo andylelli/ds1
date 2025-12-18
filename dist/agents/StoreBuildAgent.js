@@ -8,6 +8,15 @@ export class StoreBuildAgent extends BaseAgent {
         this.shop = shop;
         this.registerTool('create_product_page', this.createProductPage.bind(this));
         this.registerTool('optimize_seo', this.optimizeSEO.bind(this));
+        // Subscribe to Supplier Found (Skipping CEO approval for now as per plan)
+        // Or should we listen to Supplier.Approved?
+        // The plan says "Phase 3... Sourcing Agent... Marketing Agent".
+        // It doesn't explicitly mention StoreBuildAgent, but it's part of the chain.
+        // Let's wire it up: Supplier.Found -> StoreBuildAgent -> Store.PageCreated -> MarketingAgent
+        this.eventBus.subscribe('Supplier.Found', 'StoreBuildAgent', async (event) => {
+            this.log('info', `Received Supplier Found: ${event.payload.supplier.name}`);
+            await this.create_product_page(event.payload);
+        });
     }
     /**
      * Workflow Action: create_product_page

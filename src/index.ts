@@ -37,6 +37,7 @@ import { configService } from './infra/config/ConfigService.js';
 import { SimulationService } from './core/services/SimulationService.js';
 import { ResearchStagingService } from './core/services/ResearchStagingService.js';
 import { createStagingRoutes } from './api/staging-routes.js';
+import { createBriefRoutes } from './api/brief-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
 import { createActivityRoutes } from './api/activity-routes.js';
 
@@ -109,7 +110,7 @@ const container = new Container(configPath);
     // Initialize Services
     const activityLog = new ActivityLogService(db.getPool());
     const stagingService = new ResearchStagingService(db.getPool());
-    const simulationService = new SimulationService(db, agents, activityLog, stagingService);
+    const simulationService = new SimulationService(db, container.getEventBus(), agents, activityLog, stagingService);
 
     // --- Configuration API ---
     app.get('/api/config', (req, res) => {
@@ -183,6 +184,11 @@ const container = new Container(configPath);
       
       res.json(agentList);
     });
+
+    // Register Routes
+    app.use('/api/staging', createStagingRoutes(db.getPool()));
+    app.use('/api/activity', createActivityRoutes(activityLog));
+    app.use('/api/briefs', createBriefRoutes(db));
 
     app.get('/api/logs', async (req, res) => {
       try {

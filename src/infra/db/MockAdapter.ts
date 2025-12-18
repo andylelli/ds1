@@ -5,6 +5,8 @@ import { DomainEvent } from '../../core/domain/events/Registry.js';
 import { Product } from '../../core/domain/types/Product.js';
 import { Order } from '../../core/domain/types/Order.js';
 import { Campaign } from '../../core/domain/types/Campaign.js';
+import { ActivityLogEntry } from '../../core/domain/types/ActivityLogEntry.js';
+import { OpportunityBrief } from '../../core/domain/types/OpportunityBrief.js';
 
 const DB_FILE = path.resolve(process.cwd(), 'sandbox_db.json');
 
@@ -62,6 +64,14 @@ export class MockAdapter implements PersistencePort {
     return db[this.dbId]?.[containerId] || [];
   }
 
+  async saveBrief(brief: OpportunityBrief): Promise<void> {
+    await this.saveItem("Briefs", brief);
+  }
+
+  async getBriefs(source?: string): Promise<OpportunityBrief[]> {
+    return await this.getItems("Briefs");
+  }
+
   async saveProduct(product: Product): Promise<void> {
     await this.saveItem("Products", product);
   }
@@ -93,6 +103,13 @@ export class MockAdapter implements PersistencePort {
       level,
       data,
       id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    });
+  }
+
+  async saveActivity(entry: ActivityLogEntry): Promise<void> {
+    await this.saveItem("ActivityLog", {
+      ...entry,
+      id: entry.id || `act_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     });
   }
 

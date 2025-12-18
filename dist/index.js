@@ -25,6 +25,7 @@ else {
     console.log('ENV DEBUG: disabled (set DEBUG_ENV=true to enable filtered env output)');
 }
 import express from 'express';
+import crypto from 'crypto';
 import { openAIService } from './infra/ai/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -36,6 +37,7 @@ import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
 import { SimulationService } from './core/services/SimulationService.js';
 import { ResearchStagingService } from './core/services/ResearchStagingService.js';
 import { createStagingRoutes } from './api/staging-routes.js';
+import { createBriefRoutes } from './api/brief-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
 import { createActivityRoutes } from './api/activity-routes.js';
 // Fix for __dirname in ES modules
@@ -92,14 +94,10 @@ const container = new Container(configPath);
             ops: container.getAgent('operations_agent'),
             analytics: container.getAgent('analytics_agent')
         };
-        // Inject team into CEO (Legacy behavior support)
-        if (agents.ceo && typeof agents.ceo.setTeam === 'function') {
-            agents.ceo.setTeam(agents);
-        }
         // Initialize Services
         const activityLog = new ActivityLogService(db.getPool());
         const stagingService = new ResearchStagingService(db.getPool());
-        const simulationService = new SimulationService(db, agents, activityLog, stagingService);
+        const simulationService = new SimulationService(db, container.getEventBus(), agents, activityLog, stagingService);
         // --- Configuration API ---
         app.get('/api/config', (req, res) => {
             res.json({
@@ -164,6 +162,10 @@ const container = new Container(configPath);
             }) || [];
             res.json(agentList);
         });
+        // Register Routes
+        app.use('/api/staging', createStagingRoutes(db.getPool()));
+        app.use('/api/activity', createActivityRoutes(activityLog));
+        app.use('/api/briefs', createBriefRoutes(db));
         app.get('/api/logs', async (req, res) => {
             try {
                 const logs = await db.getRecentLogs(50);
@@ -332,6 +334,28 @@ const container = new Container(configPath);
                 res.status(500).json({ status: 'error', message: e.message });
             }
         });
+        // --- Live API ---
+        app.post('/api/research', async (req, res) => {
+            const { category } = req.body;
+            if (!category) {
+                res.status(400).json({ error: 'Category is required' });
+                return;
+            }
+            const requestId = crypto.randomUUID();
+            const eventBus = container.getEventBus();
+            await eventBus.publish('OpportunityResearch.Requested', {
+                request_id: requestId,
+                criteria: {
+                    category,
+                    priority: 'high'
+                }
+            });
+            res.json({
+                status: 'accepted',
+                requestId,
+                message: `Research requested for: ${category}`
+            });
+        });
         // --- Simulation API ---
         app.post('/api/simulation/start', async (req, res) => {
             if (mode !== 'simulation') {
@@ -341,9 +365,14 @@ const container = new Container(configPath);
             const { category } = req.body;
             const topic = category || 'Fitness'; // Default if missing
             console.log(`Starting simulation flow (Research Phase) for topic: ${topic}...`);
-            // Async background task
-            simulationService.runResearchPhase(topic).catch(console.error);
-            res.json({ status: 'started', message: `Simulation research phase started for: ${topic}` });
+            try {
+                const requestId = await simulationService.runResearchPhase(topic);
+                res.json({ status: 'started', requestId, message: `Simulation research phase started for: ${topic}` });
+            }
+            catch (e) {
+                console.error(e);
+                res.status(500).json({ error: 'Failed to start simulation' });
+            }
         });
         app.post('/api/simulation/approve', async (req, res) => {
             if (mode !== 'simulation') {

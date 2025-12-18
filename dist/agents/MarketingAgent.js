@@ -7,6 +7,16 @@ export class MarketingAgent extends BaseAgent {
         this.registerTool('create_ad_campaign', this.createAdCampaign.bind(this));
         this.registerTool('stop_campaign', this.stopCampaign.bind(this));
         this.registerTool('write_copy', this.writeCopy.bind(this));
+        // Subscribe to Supplier Handoff
+        // We listen for Supplier.Found (or Supplier.Approved if we had a CEO step in between)
+        // For this phase, let's assume we go straight from Supplier Found -> Marketing (or Store -> Marketing)
+        // The legacy flow was Store -> Marketing (PRODUCT_PAGE_CREATED).
+        // The Registry has 'Store.PageCreated'.
+        // Let's listen to 'Store.PageCreated' to maintain the logical flow: Research -> Supplier -> Store -> Marketing
+        this.eventBus.subscribe('Store.PageCreated', 'MarketingAgent', async (event) => {
+            this.log('info', `Received Page Created: ${event.payload.pageUrl}`);
+            await this.create_ad_campaign(event.payload);
+        });
     }
     async stopCampaign(args) {
         const { campaign_id } = args;

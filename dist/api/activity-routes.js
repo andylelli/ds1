@@ -101,5 +101,36 @@ export function createActivityRoutes(activityLog) {
             res.status(500).json({ error: 'Failed to clear old logs' });
         }
     });
+    /**
+     * GET /api/activity/status - Get current status of an agent
+     */
+    router.get('/status', async (req, res) => {
+        try {
+            const agent = req.query.agent;
+            if (!agent) {
+                return res.status(400).json({ error: 'Agent name is required' });
+            }
+            const status = await activityLog.getAgentStatus(agent);
+            // Calculate progress if it's the ProductResearchAgent
+            let progress = 0;
+            if (agent === 'ProductResearcher' && status) {
+                // Extract step number from message or action if possible
+                // Our logs are like "Step 4: Themes"
+                const match = status.message.match(/Step (\d+)/);
+                if (match) {
+                    const step = parseInt(match[1]);
+                    progress = Math.min(100, Math.round((step / 11) * 100));
+                }
+                else if (status.message.includes("Pipeline Complete")) {
+                    progress = 100;
+                }
+            }
+            res.json({ status, progress });
+        }
+        catch (error) {
+            console.error('[Activity API] Error fetching agent status:', error);
+            res.status(500).json({ error: 'Failed to fetch agent status' });
+        }
+    });
     return router;
 }

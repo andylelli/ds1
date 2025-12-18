@@ -1,29 +1,5 @@
 import { Pool } from 'pg';
-
-export interface ActivityLogEntry {
-  id?: number;
-  timestamp?: Date;
-  agent: string;
-  action: string;
-  category: string;
-  status?: 'started' | 'completed' | 'failed' | 'warning';
-  entityType?: string;
-  entityId?: string;
-  details?: Record<string, any>;
-  message: string;
-  metadata?: Record<string, any>;
-}
-
-export interface ActivityLogFilter {
-  agent?: string;
-  category?: string;
-  status?: string;
-  entityType?: string;
-  entityId?: string;
-  startDate?: Date;
-  endDate?: Date;
-  limit?: number;
-}
+import { ActivityLogEntry, ActivityLogFilter } from '../domain/types/ActivityLogEntry.js';
 
 export class ActivityLogService {
   constructor(private pool: Pool) {}
@@ -120,6 +96,28 @@ export class ActivityLogService {
    */
   async getRecent(limit: number = 50): Promise<ActivityLogEntry[]> {
     return this.getActivities({ limit });
+  }
+
+  /**
+   * Get the latest status for a specific agent
+   */
+  async getAgentStatus(agentName: string): Promise<ActivityLogEntry | null> {
+    const query = `
+      SELECT id, timestamp, agent, action, category, status, entity_type as "entityType", 
+             entity_id as "entityId", details, message, metadata
+      FROM activity_log
+      WHERE agent = $1
+      ORDER BY timestamp DESC
+      LIMIT 1
+    `;
+    
+    try {
+      const result = await this.pool.query(query, [agentName]);
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error(`[ActivityLog] Failed to get status for ${agentName}:`, error);
+      return null;
+    }
   }
 
   /**
