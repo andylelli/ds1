@@ -201,6 +201,17 @@ The agent logic (Brain) is fully implemented with the 11-step pipeline and schem
 1.  **Implement `LiveCompetitorAdapter`**: Basic scraping or API calls to fetch competitor pricing/offers.
 2.  **Implement `LiveAdsAdapter` (Read-Only)**: Connect to Meta Ad Library for "Evidence" collection.
 
+### Path to Full Maturity (Post-MVP)
+To evolve from MV-PRA to a fully autonomous "Hunter", the following integrations (Tier 2 & 3) are required:
+
+| Integration | Tier | Purpose |
+| :--- | :--- | :--- |
+| **Instagram Graph API** | Tier 2 | Hashtag trend scanning & visual theme discovery. |
+| **Pinterest API v5** | Tier 2 | Seasonal intent & aesthetic trend validation (Home/Decor). |
+| **TikTok Business API** | Tier 3 | Viral trend spotting & creative format analysis. |
+| **Amazon SP-API** | Tier 3 | Price band validation & listing density checks. |
+| **Alibaba Open Platform** | Tier 3 | Supplier availability & COGS estimation signals. |
+
 ---
 
 ## 7. Configuration & Strategy
