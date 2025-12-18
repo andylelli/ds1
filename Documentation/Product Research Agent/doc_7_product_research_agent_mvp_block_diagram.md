@@ -21,12 +21,13 @@ flowchart TB
   end
 
   %% --- CENTER COLUMN: PIPELINE ---
-  subgraph Process [Product Research Agent Pipeline]
+  subgraph Pipeline [Product Research Agent Pipeline]
     direction TB
     
     Trigger(["Event: Research Requested"])
 
     subgraph P1 [Phase 1: Discovery]
+      direction TB
       S1["1. Request Intake"]
       S2["2. Load Context"]
       S3["3. Signal Discovery"]
@@ -34,6 +35,7 @@ flowchart TB
     end
 
     subgraph P2 [Phase 2: Filtering]
+      direction TB
       S5{"5. Strategic Gate"}
       S6["6. Score & Rank"]
       S7{"7. Time Fitness"}
@@ -41,6 +43,7 @@ flowchart TB
     end
 
     subgraph P3 [Phase 3: Packaging]
+      direction TB
       S8["8. Deep Validation"]
       S9["9. Offer Concepts"]
       S10["10. Build Brief"]
@@ -50,14 +53,16 @@ flowchart TB
 
   %% --- RIGHT COLUMN: EXTERNAL ---
   subgraph External [External World]
-    direction TB
+    direction LR
     
     subgraph MCP [MCP Adapters]
+      direction TB
       TA["Trend Adapter"]
       CA["Competitor Adapter"]
     end
 
     subgraph Sources [Data Sources]
+      direction TB
       GT["Google Trends"]
       GADS["Google Ads"]
       FB["Meta Ads"]
@@ -77,23 +82,35 @@ flowchart TB
   S7 -->|Fail| Reject
 
   %% Persistence Links (Left)
-  CS -.->|Read Rules| S1
-  EM -.->|Read History| S2
-  S11 -.->|Update History| EM
-  S3 -.->|Store Raw| ES
-  S8 -.->|Store Validated| ES
-  S10 -.->|Save Final| BS
+  CS -.->|Read| S1
+  EM -.->|Read| S2
+  S11 -.->|Write| EM
+  S3 -.->|Write| ES
+  S8 -.->|Write| ES
+  S10 -.->|Write| BS
 
   %% External Links (Right)
   S3 -->|Query| TA
   S3 -->|Query| CA
   S8 -->|Verify| CA
 
+  %% Adapter to Source Links (Left to Right)
   TA -->|Active| GT
   TA -.->|Missing| GADS
   CA -.->|Missing| FB
   CA -.->|Missing| IG
   CA -.->|Missing| YT
+
+  %% Layout Hints (Invisible Links for Alignment)
+  %% 1. Persistence Left of Pipeline
+  EM ~~~ S2
+  
+  %% 2. Pipeline Left of External
+  S3 ~~~ TA
+  
+  %% 3. Align Sources to Adapters
+  TA ~~~ GT
+  CA ~~~ FB
 
   %% Class Assignments
   class CS,EM,ES,BS store

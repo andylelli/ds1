@@ -81,12 +81,10 @@ flowchart TD
 ### Phase 1: Deep Research & Opportunity Briefing
 *   **Actor:** `ProductResearchAgent`
 *   **Trigger Event:** `RESEARCH_REQUESTED`
-*   **Process:** The agent executes a rigorous 8-step pipeline:
-    1.  **Signal Collection:** Aggregates data from Social, Search, and Marketplaces.
-    2.  **Theme Generation:** Clusters signals into coherent product themes.
-    3.  **Gating:** Applies strict "Kill Criteria" (e.g., margin < 20%, high return risk).
-    4.  **Validation:** Checks competition density and pricing viability.
-    5.  **Brief Creation:** Generates a structured **Opportunity Brief** with 14 required sections.
+*   **Process:** The agent executes a rigorous **11-step pipeline** (see [Agent Doc](../Agents/03_PRODUCT_RESEARCH_AGENT.md)):
+    1.  **Discovery:** Ingests request, loads prior learnings, and aggregates signals (Social, Search, Marketplaces).
+    2.  **Filtering:** Clusters themes and applies strategic gates (Margin, Risk) and time-fitness checks.
+    3.  **Packaging:** Validates competition, builds offer concepts, and generates the **Opportunity Brief**.
 *   **Key Artifact:** `OpportunityBrief` (JSON) containing:
     *   `kill_criteria`: Explicit stop rules.
     *   `validation_plan`: How to test the product.
