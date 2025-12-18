@@ -27,8 +27,29 @@ export class TrendsRepo {
             WHERE t.country_name = @countryName
             AND t.refresh_date = latest.max_date
             ORDER BY t.rank ASC
-            LIMIT 25
+            LIMIT 100
         `;
         return runQuery<RisingTermRow>(query, { countryName });
+    }
+
+    async searchRisingTerms(keyword: string, countryName: string): Promise<RisingTermRow[]> {
+        // Search for terms containing the keyword in the last 30 days
+        const query = `
+            SELECT
+                CAST(refresh_date AS STRING) AS refresh_date,
+                country_name,
+                term,
+                rank,
+                score
+            FROM \`bigquery-public-data.google_trends.international_top_rising_terms\`
+            WHERE country_name = @countryName
+              AND refresh_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 1000 DAY)
+              AND LOWER(term) LIKE @keywordPattern
+            ORDER BY refresh_date DESC, rank ASC
+            LIMIT 100
+        `;
+        // Add wildcards for LIKE operator
+        const keywordPattern = `%${keyword.toLowerCase()}%`;
+        return runQuery<RisingTermRow>(query, { countryName, keywordPattern });
     }
 }

@@ -1,24 +1,31 @@
 import { BigQuery } from "@google-cloud/bigquery";
 
-const PROJECT_ID = process.env.GCP_PROJECT_ID;
-const JOB_LOCATION = process.env.BQ_LOCATION || "US";
+let bigqueryInstance: BigQuery | null = null;
 
-if (!PROJECT_ID) {
-  // Warn but don't crash immediately on import, allows for graceful failure in non-live modes
-  console.warn("Missing env var GCP_PROJECT_ID. BigQuery operations will fail.");
+function getBigQueryClient() {
+  if (bigqueryInstance) return bigqueryInstance;
+
+  const PROJECT_ID = process.env.GCP_PROJECT_ID;
+  if (!PROJECT_ID) {
+    console.warn("Missing env var GCP_PROJECT_ID. BigQuery operations will fail.");
+  }
+
+  bigqueryInstance = new BigQuery({
+    projectId: PROJECT_ID,
+    // Auth will use GOOGLE_APPLICATION_CREDENTIALS automatically if set.
+  });
+  return bigqueryInstance;
 }
-
-export const bigquery = new BigQuery({
-  projectId: PROJECT_ID,
-  // Auth will use GOOGLE_APPLICATION_CREDENTIALS automatically if set.
-});
 
 export async function runQuery<T = any>(
   query: string,
   params: Record<string, any> = {}
 ): Promise<T[]> {
+  const PROJECT_ID = process.env.GCP_PROJECT_ID;
+  const JOB_LOCATION = process.env.BQ_LOCATION || "US";
+
   if (!PROJECT_ID) {
-      throw new Error("GCP_PROJECT_ID is not set.");
+      throw new Error("GCP_PROJECT_ID is not set in your .env file. This is required to bill the compute for BigQuery (even for public datasets).");
   }
   
   const options = {
@@ -28,7 +35,8 @@ export async function runQuery<T = any>(
   };
 
   try {
-    const [job] = await bigquery.createQueryJob(options);
+    const client = getBigQueryClient();
+    const [job] = await client.createQueryJob(options);
     const [rows] = await job.getQueryResults();
     return rows as T[];
   } catch (error) {

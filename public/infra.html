@@ -69,11 +69,11 @@
 
                     <div class="field is-grouped is-grouped-right mt-5">
                         <div class="control">
-                            <button type="button" class="button is-primary" onclick="saveConfig()" disabled title="Configuration updates via UI are currently read-only">
+                            <button type="button" class="button is-primary" onclick="saveConfig()">
                                 <span class="icon is-small">
-                                    <i class="fas fa-lock"></i>
+                                    <i class="fas fa-save"></i>
                                 </span>
-                                <span>Save Configuration (Edit YAML to change)</span>
+                                <span>Save Configuration</span>
                             </button>
                         </div>
                     </div>
@@ -122,7 +122,7 @@
                             <td>
                                 <div class="control">
                                     <div class="select is-fullwidth">
-                                        <select id="${service.id}Mode" name="${service.id}" onchange="updateRowStyle(this)" disabled>
+                                        <select id="${service.id}Mode" name="${service.id}" onchange="updateRowStyle(this)">
                                             <option value="mock" ${currentMode === 'mock' ? 'selected' : ''}>Mock (Fake Data)</option>
                                             <option value="simulation" ${currentMode === 'simulation' ? 'selected' : ''}>Simulation (System Logic)</option>
                                             <option value="live" ${currentMode === 'live' ? 'selected' : ''}>${liveLabel}</option>
@@ -146,6 +146,38 @@
             const row = selectElement.closest('tr');
             row.classList.remove('mode-mock', 'mode-simulation', 'mode-live');
             row.classList.add('mode-' + selectElement.value);
+        }
+
+        async function saveConfig() {
+            const form = document.getElementById('configForm');
+            const formData = new FormData(form);
+            const updates = {};
+            
+            // Collect all select values
+            services.forEach(service => {
+                const select = document.getElementById(service.id + 'Mode');
+                if (select) {
+                    updates[service.id] = select.value;
+                }
+            });
+
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ services: updates })
+                });
+
+                if (!res.ok) throw new Error("Failed to save config");
+                
+                const result = await res.json();
+                showStatus('Configuration saved successfully! Please restart the server to apply changes.', 'success');
+            } catch (e) {
+                showStatus('Failed to save configuration: ' + e.message, 'error');
+                console.error(e);
+            }
         }
 
         function showStatus(msg, type) {

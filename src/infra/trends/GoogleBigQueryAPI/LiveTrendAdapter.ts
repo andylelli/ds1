@@ -19,10 +19,16 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         console.log(`[BigQueryTrend] Analyzing trend for category: ${category}`);
         
         try {
-            // 1. Fetch raw rising terms
-            const rawTerms = await this.repo.getLatestRisingTermsByCountry(this.country);
+            let rawTerms;
+            // If category is specific, search for it directly in BigQuery
+            if (category && category.toLowerCase() !== 'general' && category.toLowerCase() !== 'all') {
+                rawTerms = await this.repo.searchRisingTerms(category, this.country);
+            } else {
+                // Otherwise get the generic top 25
+                rawTerms = await this.repo.getLatestRisingTermsByCountry(this.country);
+            }
             
-            // 2. Filter by Category/Topic
+            // 2. Filter by Category/Topic (still useful for secondary filtering or if we fell back to generic)
             const topicFiltered = this.scoring.filterByTopic(rawTerms, category);
             
             // 3. Filter for "Product-Likeness"
@@ -56,18 +62,55 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
     async findProducts(category: string): Promise<any[]> {
         console.log(`[BigQueryTrend] Finding products for category: ${category}`);
         try {
-            const rawTerms = await this.repo.getLatestRisingTermsByCountry(this.country);
-            const topicFiltered = this.scoring.filterByTopic(rawTerms, category);
+            let rawTerms: any[] = [];
+            const isSpecificSearch = category && category.toLowerCase() !== 'general' && category.toLowerCase() !== 'all';
+
+            if (isSpecificSearch) {
+                // 1. Try Primary Country (UK)
+                rawTerms = await this.repo.searchRisingTerms(category, this.country);
+                
+                // 2. Fallback to US if no results found (US dataset is often larger/fresher)
+                if (!rawTerms || rawTerms.length === 0) {
+                    console.log(`[BigQueryTrend] No results in ${this.country}, trying United States...`);
+                    rawTerms = await this.repo.searchRisingTerms(category, "United States");
+                }
+            } else {
+                rawTerms = await this.repo.getLatestRisingTermsByCountry(this.country);
+            }
+
+            // NOTE: If we searched via SQL, we don't want to filter AGAIN by the exact string, 
+            // because the SQL 'LIKE' is broader than our strict filterByTopic logic might be.
+            // Let's skip filterByTopic if we did a specific search.
+            let topicFiltered = rawTerms;
+            if (!isSpecificSearch) {
+                 topicFiltered = this.scoring.filterByTopic(rawTerms, category);
+            }
+            if (!category || category.toLowerCase() === 'general' || category.toLowerCase() === 'all') {
+                 topicFiltered = this.scoring.filterByTopic(rawTerms, category);
+            }
+            
             const products = topicFiltered.filter(t => this.scoring.isLikelyProductTerm(t.term));
             const ranked = this.scoring.rankEmerging(products);
 
-            return ranked.map(r => ({
-                name: r.term,
-                score: 100 - (r.rank * 2), // Synthetic score
-                reason: `Rising term in ${this.country} (Rank ${r.rank})`
-            }));
-        } catch (error) {
+            return ranked.map(r => {
+                const demandScore = 100 - (r.rank * 2);
+                // Synthetic competition score (inverse of demand for now, or random)
+                const competitionScore = Math.floor(Math.random() * 40) + 30; 
+                
+                return {
+                    name: r.term,
+                    demandScore: demandScore,
+                    competitionScore: competitionScore,
+                    profitPotential: demandScore - (competitionScore * 0.5), // Simple heuristic
+                    reason: `Rising term in ${this.country} (Rank ${r.rank})`
+                };
+            });
+        } catch (error: any) {
             console.error("[BigQueryTrend] Error finding products:", error);
+            // Rethrow configuration errors so the agent knows it's a system failure, not just "no results"
+            if (error.message && error.message.includes("GCP_PROJECT_ID")) {
+                throw error;
+            }
             return [];
         }
     }

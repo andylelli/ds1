@@ -8,7 +8,32 @@ export class TrendScoring {
     filterByTopic(rows: RisingTermRow[], topic: string): RisingTermRow[] {
         const t = normalize(topic);
         if (!t) return rows;
-        return rows.filter(r => normalize(r.term).includes(t));
+
+        // 1. Try exact match (substring) first
+        // If the user typed a specific phrase like "air fryer", we prioritize that.
+        const exactMatches = rows.filter(r => normalize(r.term).includes(t));
+        if (exactMatches.length > 0) return exactMatches;
+
+        // 2. If no exact matches, try keyword matching (Fallback for natural language)
+        // e.g. "Find me a good pet product" -> keywords: ["pet"]
+        const stopWords = [
+            "find", "me", "a", "good", "best", "top", "trending", "product", "products", 
+            "items", "dropshipping", "for", "in", "the", "of", "with", "looking", "search"
+        ];
+        
+        const keywords = t.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 2);
+
+        if (keywords.length === 0) {
+            // If the topic was just stop words (e.g. "best products"), return everything
+            // rather than nothing.
+            return rows; 
+        }
+
+        // Return rows that contain AT LEAST ONE of the keywords
+        return rows.filter(r => {
+            const term = normalize(r.term);
+            return keywords.some(k => term.includes(k));
+        });
     }
 
     isLikelyProductTerm(term: string): boolean {

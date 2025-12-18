@@ -227,15 +227,25 @@ export class PostgresAdapter implements PersistencePort {
         [limit]
       );
       
-      return result.rows.map(row => ({
-        agent: row.agent,
-        action: row.action,
-        category: row.category,
-        status: row.status,
-        message: row.message,
-        details: typeof row.details === 'string' ? JSON.parse(row.details) : row.details,
-        timestamp: row.created_at
-      }));
+      return result.rows.map(row => {
+        let parsedDetails = row.details;
+        if (typeof row.details === 'string') {
+          try {
+            parsedDetails = JSON.parse(row.details);
+          } catch (e) {
+            parsedDetails = { raw_content: row.details, parse_error: 'Invalid JSON' };
+          }
+        }
+        return {
+          agent: row.agent,
+          action: row.action,
+          category: row.category,
+          status: row.status,
+          message: row.message,
+          details: parsedDetails,
+          timestamp: row.created_at
+        };
+      });
     } catch (e: any) {
       console.error(`Failed to fetch error logs from PG:`, e.message);
       return [];
@@ -266,12 +276,23 @@ export class PostgresAdapter implements PersistencePort {
         [limit]
       );
       
-      return result.rows.map(row => ({
-        agent: row.agent,
-        message: row.message,
-        data: typeof row.data === 'string' ? JSON.parse(row.data) : row.data,
-        timestamp: row.created_at
-      }));
+      return result.rows.map(row => {
+        let parsedData = row.data;
+        if (typeof row.data === 'string') {
+          try {
+            parsedData = JSON.parse(row.data);
+          } catch (e) {
+            // If parsing fails, return the raw string wrapped in an object so the UI can still show it
+            parsedData = { raw_content: row.data, parse_error: 'Invalid JSON' };
+          }
+        }
+        return {
+          agent: row.agent,
+          message: row.message,
+          data: parsedData,
+          timestamp: row.created_at
+        };
+      });
     } catch (e: any) {
       console.error(`Failed to fetch logs from PG (${useSimPool ? 'sim' : 'live'}):`, e.message || e);
       console.error('Full error:', e);

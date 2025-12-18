@@ -66,16 +66,23 @@ export class SimulationService {
       });
 
       const researchResult = await this.agents.research.findWinningProducts({ category });
+      
+      // Extract the actual keyword used (if AI optimized it) or fallback to original category
+      const actualSearchTerm = researchResult?.usedKeyword || category;
+
       if (!researchResult || !researchResult.products || researchResult.products.length === 0) {
-        console.error("[Simulation] No products found.");
-        await this.db.saveLog('Simulation', 'No products found', 'error', {});
+        console.error(`[Simulation] No products found for term: ${actualSearchTerm}`);
+        await this.db.saveLog('Simulation', `No products found for: ${actualSearchTerm}`, 'error', { originalCategory: category });
         await this.activityLog?.log({
           agent: 'Research',
           action: 'find_products',
           category: 'research',
           status: 'failed',
-          message: 'No products found in category',
-          details: { category }
+          message: `No products found for: ${actualSearchTerm}`,
+          details: { 
+            category: actualSearchTerm,
+            originalInput: category 
+          }
         });
         return;
       }

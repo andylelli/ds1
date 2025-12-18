@@ -25,6 +25,8 @@ import express from 'express';
 import { openAIService } from './infra/ai/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
+import yaml from 'js-yaml';
 
 // New Container Import
 import { Container } from './core/bootstrap/Container.js';
@@ -123,9 +125,35 @@ const container = new Container(configPath);
     });
 
     app.post('/api/config', (req, res) => {
-      // TODO: Implement dynamic config updates via Container or ConfigService
-      // For now, we just return the current config
-      res.json({ status: 'ok', config: container.getConfig() });
+      try {
+        const { services } = req.body;
+        if (!services) {
+           res.status(400).json({ error: "Missing services config" });
+           return;
+        }
+
+        // Read current YAML
+        // configPath is defined in the outer scope
+        const currentConfig = yaml.load(fs.readFileSync(configPath, 'utf8')) as any;
+        
+        // Update services
+        if (!currentConfig.bootstrap) currentConfig.bootstrap = {};
+        if (!currentConfig.bootstrap.services) currentConfig.bootstrap.services = {};
+        
+        currentConfig.bootstrap.services = {
+            ...currentConfig.bootstrap.services,
+            ...services
+        };
+
+        // Write back
+        fs.writeFileSync(configPath, yaml.dump(currentConfig));
+        
+        console.log(`[Config] Updated configuration in ${configPath}`);
+        res.json({ status: 'ok', message: 'Configuration saved' });
+      } catch (e: any) {
+        console.error("Failed to save config:", e);
+        res.status(500).json({ error: "Failed to save config" });
+      }
     });
 
     // --- Data APIs ---
