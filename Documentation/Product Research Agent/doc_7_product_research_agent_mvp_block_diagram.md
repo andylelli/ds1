@@ -2,70 +2,92 @@
 
 ```mermaid
 flowchart TB
-  %% Core Components
-  EB[(EventBus)]
-  PRA[Product Research Agent]
+  %% Global Styling
+  classDef store fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:black;
+  classDef step fill:#e1f5fe,stroke:#01579b,color:black;
+  classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:black;
+  classDef adapter fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:black;
+  classDef active fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:black;
+  classDef missing fill:#ffebee,stroke:#c62828,stroke-width:2px,stroke-dasharray: 5 5,color:black;
+  classDef bus fill:#212121,stroke:#000,color:#fff;
 
-  %% Flow Connections
-  EB -->|Event: Requested| PRA
-
-  %% 11-Step Pipeline
-  subgraph Pipeline [11-Step Research Pipeline]
+  %% --- LEFT COLUMN: PERSISTENCE ---
+  subgraph Persistence [Persistence Layer]
     direction TB
-    S1[1. Request Intake]
-    S2[2. Load Prior Learnings]
-    S3[3. Multi-Signal Discovery]
-    S4[4. Theme Generation]
-    S5{5. Strategic Gating}
-    S6[6. Score & Rank]
-    S7{7. Time Fitness}
-    S8[8. Deep Validation]
-    S9[9. Create Offer Concepts]
-    S10[10. Build Opportunity Brief]
-    S11[11. Publish Events]
-
-    S1 --> S2 --> S3 --> S4 --> S5
-    S5 -->|Pass| S6 --> S7
-    S7 -->|Pass| S8 --> S9 --> S10 --> S11
-    S5 -->|Fail| Reject[Log Rejection]
-    S7 -->|Fail| Reject
-  end
-
-  PRA --> S1
-
-  %% Data Stores
-  subgraph STORES [Persistence Layer]
-    CS[(Config / Strategy)]
-    EM[(Learnings / Memory)]
+    CS[(Config Store)]
+    EM[(Memory Store)]
     ES[(Evidence Store)]
     BS[(Brief Store)]
   end
 
-  S1 -.->|Read| CS
-  S2 -.->|Read| EM
-  S11 -.->|Write| EM
-  S3 -.->|Write| ES
-  S8 -.->|Write| ES
-  S10 -.->|Write| BS
+  %% --- CENTER COLUMN: PIPELINE ---
+  subgraph Process [Product Research Agent Pipeline]
+    direction TB
+    
+    Trigger([Event: Research Requested])
 
-  %% MCP Layer
-  subgraph MCP [MCP Tool Layer]
-    TA[Trend Adapter]
-    CA[Competitor Adapter]
+    subgraph P1 [Phase 1: Discovery]
+      S1[1. Request Intake]
+      S2[2. Load Context]
+      S3[3. Signal Discovery]
+      S4[4. Theme Gen]
+    end
+
+    subgraph P2 [Phase 2: Filtering]
+      S5{5. Strategic Gate}
+      S6[6. Score & Rank]
+      S7{7. Time Fitness}
+      Reject[Log Rejection]
+    end
+
+    subgraph P3 [Phase 3: Packaging]
+      S8[8. Deep Validation]
+      S9[9. Offer Concepts]
+      S10[10. Build Brief]
+      S11[11. Publish Events]
+    end
   end
 
-  S3 --> TA
-  S3 --> CA
-  S8 --> CA
+  %% --- RIGHT COLUMN: EXTERNAL ---
+  subgraph External [External World]
+    direction TB
+    
+    subgraph MCP [MCP Adapters]
+      TA[Trend Adapter]
+      CA[Competitor Adapter]
+    end
 
-  %% External Sources (Color Coded for Status)
-  subgraph EXT [External Sources]
-    GT[Google Trends]
-    GADS[Google Ads]
-    FB[Meta Ads]
-    IG[Instagram]
-    YT[YouTube]
+    subgraph Sources [Data Sources]
+      GT[Google Trends]
+      GADS[Google Ads]
+      FB[Meta Ads]
+      IG[Instagram]
+      YT[YouTube]
+    end
   end
+
+  %% --- WIRING ---
+  
+  %% Main Flow
+  Trigger --> S1
+  S1 --> S2 --> S3 --> S4 --> S5
+  S5 -->|Pass| S6 --> S7
+  S7 -->|Pass| S8 --> S9 --> S10 --> S11
+  S5 -->|Fail| Reject
+  S7 -->|Fail| Reject
+
+  %% Persistence Links (Left)
+  CS -.->|Read Rules| S1
+  EM -.->|Read History| S2
+  S11 -.->|Update History| EM
+  S3 -.->|Store Raw| ES
+  S8 -.->|Store Validated| ES
+  S10 -.->|Save Final| BS
+
+  %% External Links (Right)
+  S3 -->|Query| TA
+  S3 -->|Query| CA
+  S8 -->|Verify| CA
 
   TA -->|Active| GT
   TA -.->|Missing| GADS
@@ -73,18 +95,13 @@ flowchart TB
   CA -.->|Missing| IG
   CA -.->|Missing| YT
 
-  %% Styling
-  classDef actor fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:black;
-  classDef step fill:#e1f5fe,stroke:#01579b,color:black;
-  classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:black;
-  classDef fail fill:#ffebee,stroke:#c62828,stroke-width:2px,color:black;
-  classDef active fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:black;
-  classDef missing fill:#ffebee,stroke:#c62828,stroke-width:2px,stroke-dasharray: 5 5,color:black;
-
-  class EB,PRA actor;
+  %% Class Assignments
+  class CS,EM,ES,BS store;
   class S1,S2,S3,S4,S6,S8,S9,S10,S11 step;
   class S5,S7 decision;
-  class Reject fail;
+  class Reject missing; %% Reusing red style for reject
+  class TA,CA adapter;
   class GT active;
   class GADS,FB,IG,YT missing;
+  class Trigger bus;
 ```
