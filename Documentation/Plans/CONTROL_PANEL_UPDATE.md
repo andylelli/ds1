@@ -63,7 +63,30 @@ A simple visual indicator of where the agent is in the 11-step process.
 
 ---
 
-## 5. Execution Steps
+## 5. Phased Implementation Plan
+
+### Phase 1: Visibility (Logging & Errors)
+*Goal: Ensure we can see what the agent is doing and where it fails.*
+1.  **Audit `ProductResearchAgent.ts`**: Add `activityLog.log()` calls to all 11 steps.
+2.  **Error Handling**: Ensure `LiveTrendAdapter` catches API errors and logs them with `status: 'failed'`.
+3.  **Verify `activity.html`**: Run a simulation and check that logs appear with correct colors (Red for errors, Yellow for warnings).
+
+### Phase 2: The Brief Inspector (Data Visualization)
+*Goal: View the complex JSON output in a human-readable way.*
+1.  **Backend**: Create `GET /api/briefs` endpoint to fetch from `brief_store`.
+2.  **Frontend**: Clone `staging.html` to `briefs.html`.
+3.  **Table Update**: Change columns to show `Theme`, `Score`, `Phase`, `Status`.
+4.  **Modal**: Add a "View Brief" modal that pretty-prints the JSON `OpportunityBrief`.
+
+### Phase 3: Real-Time Monitoring (Pipeline State)
+*Goal: See "Where are we now?" without refreshing logs.*
+1.  **Backend**: Create `GET /api/agent/status` to return current step (e.g., "Step 4/11").
+2.  **Frontend**: Add a Progress Bar to `agents.html` or the sidebar.
+3.  **Auto-Refresh**: Poll status every 5 seconds during active research.
+
+---
+
+## 6. Execution Steps
 1.  [ ] Audit `ProductResearchAgent.ts` logging calls.
 2.  [ ] Update `staging.js` to render `OpportunityBrief` properties.
 3.  [ ] Add JSON viewer modal to `staging.html`.
