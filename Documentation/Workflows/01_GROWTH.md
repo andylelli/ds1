@@ -60,6 +60,7 @@ flowchart TD
     end
 
     Approval -->|No| Archive
+    CEO -->|Fast Fail| Archive
 
     %% Styling
     classDef agent fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:black;
