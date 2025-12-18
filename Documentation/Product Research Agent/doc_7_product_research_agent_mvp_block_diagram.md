@@ -2,85 +2,89 @@
 
 ```mermaid
 flowchart TB
+  %% Core Components
   EB[(EventBus)]
-  PRA[Product Research Agent Orchestrator]
+  PRA[Product Research Agent]
 
-  EB -->|Request| PRA
+  %% Flow Connections
+  EB -->|Event: Requested| PRA
 
-  S1[1 Normalize Request
-  Create Research Brief]
-  S2[2 Collect Signals
-  Social Search Marketplace]
-  S3[3 Generate Themes
-  Cluster and Dedupe]
-  S4[4 Hard Gates
-  Risk Strategy Feasibility]
-  S5[5 Score and Rank
-  Top Shortlist]
-  S6[6 Validate
-  Pricing Competition Spot checks]
-  S7[7 Build Offer Concepts]
-  S8[8 Publish Opportunity Brief
-  Schema validated JSON]
+  %% 11-Step Pipeline
+  subgraph Pipeline [11-Step Research Pipeline]
+    direction TB
+    S1[1. Request Intake]
+    S2[2. Load Prior Learnings]
+    S3[3. Multi-Signal Discovery]
+    S4[4. Theme Generation]
+    S5{5. Strategic Gating}
+    S6[6. Score & Rank]
+    S7{7. Time Fitness}
+    S8[8. Deep Validation]
+    S9[9. Create Offer Concepts]
+    S10[10. Build Opportunity Brief]
+    S11[11. Publish Events]
 
-  PRA --> S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
+    S1 --> S2 --> S3 --> S4 --> S5
+    S5 -->|Pass| S6 --> S7
+    S7 -->|Pass| S8 --> S9 --> S10 --> S11
+    S5 -->|Fail| Reject[Log Rejection]
+    S7 -->|Fail| Reject
+  end
 
-  subgraph STORES[Stores]
-    CS[(Config Store)]
-    EM[(Memory Store)]
+  PRA --> S1
+
+  %% Data Stores
+  subgraph STORES [Persistence Layer]
+    CS[(Config / Strategy)]
+    EM[(Learnings / Memory)]
     ES[(Evidence Store)]
     BS[(Brief Store)]
   end
 
-  PRA -->|Load rules| CS
-  PRA -->|Read learnings| EM
-  PRA -->|Write learnings| EM
-  S2 -->|Write evidence| ES
-  S6 -->|Write evidence| ES
-  S8 -->|Write briefs| BS
+  S1 -.->|Read| CS
+  S2 -.->|Read| EM
+  S11 -.->|Write| EM
+  S3 -.->|Write| ES
+  S8 -.->|Write| ES
+  S10 -.->|Write| BS
 
-  subgraph MCP[MCP Tool Layer]
-    MC[Standard MCP Contract
-    scan and sample]
-    SOC[MCP SOCIAL]
-    SEA[MCP SEARCH]
-    MAR[MCP MARKETPLACE]
-    SUP[MCP SUPPLIER
-    light check]
+  %% MCP Layer
+  subgraph MCP [MCP Tool Layer]
+    TA[Trend Adapter]
+    CA[Competitor Adapter]
   end
 
-  S2 --> MC
-  S6 --> MC
-  S7 --> SUP
-  MC --> SOC
-  MC --> SEA
-  MC --> MAR
+  S3 --> TA
+  S3 --> CA
+  S8 --> CA
 
-  subgraph EXT[External Sources Examples]
-    YT[YouTube]
+  %% External Sources (Color Coded for Status)
+  subgraph EXT [External Sources]
+    GT[Google Trends]
+    GADS[Google Ads]
+    FB[Meta Ads]
     IG[Instagram]
-    GADS[Google Ads Keywords]
-    PIN[Pinterest]
-    AMZ[Amazon]
-    ALI[Alibaba]
+    YT[YouTube]
   end
 
-  SOC --> YT
-  SOC --> IG
-  SEA --> GADS
-  SEA --> PIN
-  MAR --> AMZ
-  SUP --> ALI
+  TA -->|Active| GT
+  TA -.->|Missing| GADS
+  CA -.->|Missing| FB
+  CA -.->|Missing| IG
+  CA -.->|Missing| YT
 
-  subgraph DOWN[Downstream Consumers]
-    SA[Supplier Agent]
-    MA[Marketing Agent]
-    OA[Ops and Risk Review]
-    AA[Analytics Review]
-  end
+  %% Styling
+  classDef actor fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:black;
+  classDef step fill:#e1f5fe,stroke:#01579b,color:black;
+  classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:black;
+  classDef fail fill:#ffebee,stroke:#c62828,stroke-width:2px,color:black;
+  classDef active fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:black;
+  classDef missing fill:#ffebee,stroke:#c62828,stroke-width:2px,stroke-dasharray: 5 5,color:black;
 
-  EB -->|Feasibility| SA
-  EB -->|Angles| MA
-  EB -->|Risk review| OA
-  EB -->|Score review| AA
+  class EB,PRA actor;
+  class S1,S2,S3,S4,S6,S8,S9,S10,S11 step;
+  class S5,S7 decision;
+  class Reject fail;
+  class GT active;
+  class GADS,FB,IG,YT missing;
 ```
