@@ -182,6 +182,25 @@ The agent relies on the **Model Context Protocol (MCP)** to interface with exter
 | **Competitors** | `CompetitorAnalysisPort` | Analyze market saturation, pricing, and existing offers. | `amazon_scraper`, `tiktok_creative_center` |
 | **Database** | `PersistencePort` | Retrieve past learnings and store new briefs. | `postgres`, `vector_db` |
 
+### Current Integration Status (MV-PRA)
+*Status as of Dec 18, 2025*
+
+**Overall State:** "Brain Ready, Senses Numb"
+The agent logic (Brain) is fully implemented with the 11-step pipeline and schema. The external sensors (Adapters) are currently mocks or stubs.
+
+| Integration | Priority | Status | Implementation Notes |
+| :--- | :--- | :--- | :--- |
+| **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
+| **Google Ads (Keywords)** | Tier 1 | 🔴 Missing | No implementation. Required for search volume validation. |
+| **Meta Ad Library** | Tier 1 | 🔴 Missing | `LiveCompetitorAdapter` is a stub. Required for saturation checks. |
+| **YouTube Data** | Tier 1 | 🔴 Missing | No implementation. |
+| **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
+| **Competitor Scraper** | Tier 1 | ⚪ Stub | `LiveCompetitorAdapter` exists but throws "Not Implemented". |
+
+**Immediate Next Steps:**
+1.  **Implement `LiveCompetitorAdapter`**: Basic scraping or API calls to fetch competitor pricing/offers.
+2.  **Implement `LiveAdsAdapter` (Read-Only)**: Connect to Meta Ad Library for "Evidence" collection.
+
 ---
 
 ## 7. Configuration & Strategy
