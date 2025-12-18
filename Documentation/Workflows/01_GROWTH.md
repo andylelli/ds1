@@ -47,7 +47,7 @@ flowchart TD
     subgraph P2 [Phase 2: Feasibility & Review]
         direction TB
         Brief -->|Event: BriefPublished| Supplier
-        Brief -->|Event: BriefPublished| CEO
+        Brief -->|Fast Fail Check| CEO
         Supplier -->|Feasibility Data| CEO
         CEO -->|Strategic Review| Approval
     end
