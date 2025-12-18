@@ -84,10 +84,23 @@ A simple visual indicator of where the agent is in the 11-step process.
 2.  **Frontend**: Add a Progress Bar to `agents.html` or the sidebar.
 3.  **Auto-Refresh**: Poll status every 5 seconds during active research.
 
+### Phase 4: Automated Testing
+*Goal: Prevent regression and ensure UI reliability.*
+1.  **Unit Tests**:
+    *   Test `ActivityLogService` filters (ensure `status='failed'` is correctly retrieved).
+    *   Test `ProductResearchAgent` logging (mock the logger and verify calls).
+2.  **E2E / Integration Tests**:
+    *   Create a new test suite `test-control-panel.ts`.
+    *   Simulate a research run.
+    *   Fetch from `/api/activity` and assert that 11 steps are present.
+    *   Fetch from `/api/briefs` and assert the JSON structure matches the schema.
+3.  **UI Smoke Test**:
+    *   Manual check (or simple script) to verify `briefs.html` loads without console errors.
+
 ---
 
 ## 6. Execution Steps
 1.  [ ] Audit `ProductResearchAgent.ts` logging calls.
 2.  [ ] Update `staging.js` to render `OpportunityBrief` properties.
 3.  [ ] Add JSON viewer modal to `staging.html`.
-4.  [ ] Test with a simulation run to verify logs appear correctly.
+4.  [ ] Create `test-control-panel.ts` and run validation.
