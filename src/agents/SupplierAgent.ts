@@ -12,6 +12,39 @@ export class SupplierAgent extends BaseAgent {
     this.registerTool('find_suppliers', this.findSuppliers.bind(this));
     this.registerTool('negotiate_price', this.negotiatePrice.bind(this));
     this.registerTool('order_stock', this.orderStock.bind(this));
+
+    // Subscribe to Research Handoff
+    // In the new flow, we listen for OpportunityResearch.BriefPublished
+    this.eventBus.subscribe('OpportunityResearch.BriefPublished', 'SupplierAgent', async (event) => {
+        this.log('info', `Received Brief: ${event.payload.brief_id}`);
+        await this.handleBriefPublished(event.payload);
+    });
+  }
+
+  /**
+   * Event Handler for OpportunityResearch.BriefPublished
+   */
+  private async handleBriefPublished(payload: { brief_id: string, brief_json: any }) {
+      const { brief_json } = payload;
+      const products = brief_json.products || [];
+
+      for (const product of products) {
+          this.log('info', `Finding suppliers for product: ${product.name}`);
+          
+          // Reuse existing logic
+          const result = await this.fulfilment.findSuppliers(product.id || product.name);
+          const suppliers = result.suppliers || [];
+
+          if (suppliers.length > 0) {
+              for (const supplier of suppliers) {
+                  this.log('info', `Found supplier: ${supplier.name} (Rating: ${supplier.rating})`);
+                  // Publish Sourcing.SupplierFound (or Supplier.Found for legacy compat)
+                  await this.eventBus.publish('Supplier.Found', { product, supplier });
+              }
+          } else {
+              this.log('warn', `No suppliers found for ${product.name}`);
+          }
+      }
   }
 
   async orderStock(args: { product_id: string, quantity: number }) {

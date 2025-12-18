@@ -35084,6 +35084,325 @@
         "id": "log_1765396807514_xmwuop504",
         "timestamp": "2025-12-10T20:00:07.522Z",
         "_ts": 1765396807
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Received Research Request: test-req-1",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077656999_4akajrn6r",
+        "timestamp": "2025-12-18T17:07:37.007Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "AI strategy generation failed: Error: AZURE_OPENAI_ENDPOINT is not set. Using original input.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1766077657033_hvgkc79gh",
+        "timestamp": "2025-12-18T17:07:37.042Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "🔎 Strategy: Searching BigQuery for \"Smart Home\"...",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077657050_xwpcg8b0u",
+        "timestamp": "2025-12-18T17:07:37.061Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   Found 2 products for \"Smart Home\"",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077657080_6dkmb9xl6",
+        "timestamp": "2025-12-18T17:07:37.093Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "🏆 Winner Selected: \"Eco-Friendly Smart Home Accessory\"",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077657120_e4q7ipj93",
+        "timestamp": "2025-12-18T17:07:37.134Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   Stats: Profit Potential undefined | Demand undefined | Competition undefined",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077657153_q2p9ij5dm",
+        "timestamp": "2025-12-18T17:07:37.161Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   (Selected over 1 other candidates like \"Portable Smart Home Kit\")",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077657173_7ktkrtvm6",
+        "timestamp": "2025-12-18T17:07:37.185Z",
+        "_ts": 1766077657
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "Received Research Request: exec-test-1",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926462_52l5ci7os",
+        "timestamp": "2025-12-18T17:12:06.470Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "AI strategy generation failed: Error: AZURE_OPENAI_ENDPOINT is not set. Using original input.",
+        "level": "info",
+        "data": {
+          "type": "warn"
+        },
+        "id": "log_1766077926500_7pz3lw636",
+        "timestamp": "2025-12-18T17:12:06.511Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "🔎 Strategy: Searching BigQuery for \"Fitness\"...",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926518_nnvtroo8x",
+        "timestamp": "2025-12-18T17:12:06.527Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   Found 3 products for \"Fitness\"",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926535_tujwzsav5",
+        "timestamp": "2025-12-18T17:12:06.544Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "🏆 Winner Selected: \"Compact Fitness Accessory\"",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926554_7yydbg44l",
+        "timestamp": "2025-12-18T17:12:06.562Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   Stats: Profit Potential undefined | Demand undefined | Competition undefined",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926570_zjcvopjbp",
+        "timestamp": "2025-12-18T17:12:06.578Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "ProductResearcher",
+        "message": "   (Selected over 2 other candidates like \"Durable Fitness Bundle\")",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926586_i65quvmdk",
+        "timestamp": "2025-12-18T17:12:06.596Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Received Brief: brief_exec-test-1_1766077926479",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926640_n8803kikc",
+        "timestamp": "2025-12-18T17:12:06.648Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Finding suppliers for product: Compact Fitness Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926657_jdzwf241q",
+        "timestamp": "2025-12-18T17:12:06.665Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926673_b0kay1vsu",
+        "timestamp": "2025-12-18T17:12:06.681Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Received Supplier Found: AliExpress Vendor A",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926722_jbvtnkrrr",
+        "timestamp": "2025-12-18T17:12:06.730Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Compact Fitness Accessory (Supplier: AliExpress Vendor A)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926738_fsrh4ce58",
+        "timestamp": "2025-12-18T17:12:06.747Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1766077926754_uwwaz",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926755_cjiikwxos",
+        "timestamp": "2025-12-18T17:12:06.763Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: CJ Dropshipping (Rating: 4.9)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926787_fnv276zv9",
+        "timestamp": "2025-12-18T17:12:06.796Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "Marketer",
+        "message": "Received Page Created: https://myshop.com/products/shop_prod_1766077926754_uwwaz",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926839_qslca2dcc",
+        "timestamp": "2025-12-18T17:12:06.848Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "Marketer",
+        "message": "Workflow: Creating ad campaign for Compact Fitness Accessory",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926857_k41emewsf",
+        "timestamp": "2025-12-18T17:12:06.865Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Received Supplier Found: CJ Dropshipping",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926873_1ngeklna1",
+        "timestamp": "2025-12-18T17:12:06.881Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Workflow: Creating product page for Compact Fitness Accessory (Supplier: CJ Dropshipping)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926889_w2rw0f4an",
+        "timestamp": "2025-12-18T17:12:06.897Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "Marketer",
+        "message": "Campaign started: ad_camp_1766077926872_u69o7",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926906_d6kl8r3sn",
+        "timestamp": "2025-12-18T17:12:06.914Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "StoreBuilder",
+        "message": "Product page created: shop_prod_1766077926905_0nb09",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926938_wh0qqnovi",
+        "timestamp": "2025-12-18T17:12:06.947Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Finding suppliers for product: Durable Fitness Bundle",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077926971_vw17zez81",
+        "timestamp": "2025-12-18T17:12:06.979Z",
+        "_ts": 1766077926
+      },
+      {
+        "agent": "SupplierManager",
+        "message": "Found supplier: AliExpress Vendor A (Rating: 4.8)",
+        "level": "info",
+        "data": {
+          "type": "info"
+        },
+        "id": "log_1766077927004_2n5rwzw3l",
+        "timestamp": "2025-12-18T17:12:07.013Z",
+        "_ts": 1766077927
       }
     ],
     "Products": [
@@ -37895,6 +38214,37 @@
         "headline": "Special Offer: Smart Posture Corrector (Fallback) - 50% OFF",
         "image": "https://via.placeholder.com/600x600.png?text=Posture+Corrector",
         "timestamp": "2025-12-05T17:02:55.287Z"
+      }
+    ],
+    "Events": [
+      {
+        "event_id": "f179a7d9-d929-48cf-8d6e-a89c20e11d81",
+        "correlation_id": "cafd81f2-35d2-41a2-b556-640d0369fbd7",
+        "timestamp": "2025-12-18T17:12:07.020Z",
+        "topic": "Supplier",
+        "type": "Found",
+        "source": "System",
+        "payload": {
+          "product": {
+            "id": "prod_1766077926534_1",
+            "name": "Durable Fitness Bundle",
+            "description": "A high-quality fitness product designed for the modern consumer. Features state-of-the-art materials and ergonomic design.",
+            "price": 103.5,
+            "cost": 44.27,
+            "margin": "57%",
+            "potential": "High",
+            "images": [
+              "https://via.placeholder.com/600x600.png?text=Fitness+Bundle"
+            ]
+          },
+          "supplier": {
+            "id": "s1",
+            "name": "AliExpress Vendor A",
+            "rating": 4.8,
+            "shippingTime": "12-20 days"
+          }
+        },
+        "_ts": 1766077927
       }
     ]
   }

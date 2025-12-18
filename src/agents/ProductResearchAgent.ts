@@ -16,6 +16,68 @@ export class ProductResearchAgent extends BaseAgent {
     this.registerTool('find_winning_products', this.findWinningProducts.bind(this));
     this.registerTool('analyze_niche', this.analyzeNiche.bind(this));
     this.registerTool('analyze_competitors', this.analyzeCompetitors.bind(this));
+
+    // Subscribe to Research Requests
+    this.eventBus.subscribe('OpportunityResearch.Requested', 'ProductResearchAgent', async (event) => {
+      this.log('info', `Received Research Request: ${event.payload.request_id}`);
+      await this.handleResearchRequest(event.payload);
+    });
+  }
+
+  /**
+   * Event Handler for OpportunityResearch.Requested
+   */
+  private async handleResearchRequest(payload: { request_id: string, criteria: any }) {
+    const { request_id, criteria } = payload;
+    const briefId = `brief_${request_id}_${Date.now()}`;
+
+    // 1. Create Brief
+    await this.eventBus.publish('OpportunityResearch.BriefCreated', {
+      brief_id: briefId,
+      initial_scope: criteria
+    }, request_id);
+
+    try {
+      // 2. Execute Research (reusing existing logic for now)
+      const result = await this.findWinningProducts({ category: criteria.category || 'General' });
+
+      // 3. Publish Results
+      if (result.products && result.products.length > 0) {
+        // Publish Signals Collected
+        await this.eventBus.publish('OpportunityResearch.SignalsCollected', {
+          brief_id: briefId,
+          signal_count: result.products.length,
+          sources: ['GoogleTrends', 'BigQuery']
+        }, request_id);
+
+        // Publish Final Brief
+        await this.eventBus.publish('OpportunityResearch.BriefPublished', {
+          brief_id: briefId,
+          brief_json: {
+            products: result.products,
+            strategy: 'Trend Analysis'
+          }
+        }, request_id);
+
+        // Legacy compatibility
+        for (const product of result.products) {
+           await this.eventBus.publish('Product.Found', { product }, request_id);
+        }
+
+      } else {
+        await this.eventBus.publish('OpportunityResearch.Aborted', {
+          brief_id: briefId,
+          reason: 'No products found matching criteria'
+        }, request_id);
+      }
+
+    } catch (error: any) {
+      this.log('error', `Research failed: ${error.message}`);
+      await this.eventBus.publish('OpportunityResearch.Aborted', {
+        brief_id: briefId,
+        reason: error.message
+      }, request_id);
+    }
   }
 
   private async generateSearchStrategies(userInput: string): Promise<string[]> {
@@ -68,7 +130,7 @@ export class ProductResearchAgent extends BaseAgent {
       }
   }
 
-  async findWinningProducts(args: { category: string, criteria?: any }) {
+  private async findWinningProducts(args: { category: string, criteria?: any }) {
     const { category: rawCategory, criteria } = args;
     
     // 1. Generate strategies (Iterative approach)

@@ -4,20 +4,8 @@ import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 
-// Define a Team interface to avoid circular imports if possible, or just use any for now
-interface Team {
-    research: any;
-    supplier: any;
-    store: any;
-    marketing: any;
-    support: any;
-    ops: any;
-    analytics: any;
-}
-
 export class CEOAgent extends BaseAgent {
   private ai: AiPort;
-  private team: Team | null = null;
   
   private aiTools: ToolDefinition[] = [
     {
@@ -115,10 +103,15 @@ export class CEOAgent extends BaseAgent {
   constructor(db: PersistencePort, eventBus: EventBusPort, ai: AiPort) {
     super('CEO', db, eventBus);
     this.ai = ai;
-  }
 
-  public setTeam(team: Team) {
-      this.team = team;
+    // Subscribe to high-level events
+    this.eventBus.subscribe('System.Error', 'CEOAgent', async (event) => {
+        this.log('error', `CEO Noticed System Error: ${event.payload.error}`);
+    });
+
+    this.eventBus.subscribe('Sales.OrderReceived', 'CEOAgent', async (event) => {
+        this.log('info', `CEO Celebrates Order: ${event.payload.order_id} for $${event.payload.total}`);
+    });
   }
 
   /**

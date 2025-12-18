@@ -22,6 +22,7 @@ if (showDebugEnv) {
   console.log('ENV DEBUG: disabled (set DEBUG_ENV=true to enable filtered env output)');
 }
 import express from 'express';
+import crypto from 'crypto';
 import { openAIService } from './infra/ai/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -104,11 +105,6 @@ const container = new Container(configPath);
       ops: container.getAgent('operations_agent'),
       analytics: container.getAgent('analytics_agent')
     };
-
-    // Inject team into CEO (Legacy behavior support)
-    if (agents.ceo && typeof agents.ceo.setTeam === 'function') {
-        agents.ceo.setTeam(agents);
-    }
 
     // Initialize Services
     const activityLog = new ActivityLogService(db.getPool());
@@ -358,6 +354,32 @@ const container = new Container(configPath);
       }
     });
 
+    // --- Live API ---
+    app.post('/api/research', async (req, res) => {
+        const { category } = req.body;
+        if (!category) {
+            res.status(400).json({ error: 'Category is required' });
+            return;
+        }
+
+        const requestId = crypto.randomUUID();
+        const eventBus = container.getEventBus();
+        
+        await eventBus.publish('OpportunityResearch.Requested', {
+            request_id: requestId,
+            criteria: {
+                category,
+                priority: 'high'
+            }
+        });
+
+        res.json({ 
+            status: 'accepted', 
+            requestId, 
+            message: `Research requested for: ${category}` 
+        });
+    });
+
     // --- Simulation API ---
     app.post('/api/simulation/start', async (req, res) => {
       if (mode !== 'simulation') {
@@ -369,10 +391,13 @@ const container = new Container(configPath);
       
       console.log(`Starting simulation flow (Research Phase) for topic: ${topic}...`);
       
-      // Async background task
-      simulationService.runResearchPhase(topic).catch(console.error);
-
-      res.json({ status: 'started', message: `Simulation research phase started for: ${topic}` });
+      try {
+        const requestId = await simulationService.runResearchPhase(topic);
+        res.json({ status: 'started', requestId, message: `Simulation research phase started for: ${topic}` });
+      } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Failed to start simulation' });
+      }
     });
 
     app.post('/api/simulation/approve', async (req, res) => {
