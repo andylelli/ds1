@@ -18,7 +18,7 @@ export class OperationsAgent extends BaseAgent {
       try {
           const result = await this.fulfillOrder({ order_id: order.id });
           this.log('info', `Order fulfilled: ${result.tracking_number}`);
-          await this.eventBus.publish('ORDER_SHIPPED', 'ORDER_SHIPPED', { order, tracking: result.tracking_number });
+          await this.eventBus.publish('Sales.OrderShipped', { order, tracking: result.tracking_number });
       } catch (error: any) {
           this.log('error', `Failed to process order: ${error.message}`);
       }

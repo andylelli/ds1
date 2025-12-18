@@ -33,7 +33,7 @@ export class MarketingAgent extends BaseAgent {
                 status: 'active'
             });
             this.log('info', `Campaign started: ${campaign.id}`);
-            await this.eventBus.publish('CAMPAIGN_STARTED', 'CAMPAIGN_STARTED', { campaign, product });
+            await this.eventBus.publish('Marketing.CampaignStarted', { campaign, product });
         }
         catch (error) {
             this.log('error', `Failed to create campaign: ${error.message}`);

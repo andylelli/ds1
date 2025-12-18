@@ -1,6 +1,7 @@
 import pg from 'pg';
 const { Pool } = pg;
 import { PersistencePort } from '../../core/domain/ports/PersistencePort.js';
+import { DomainEvent } from '../../core/domain/events/Registry.js';
 import { Product } from '../../core/domain/types/Product.js';
 import { Order } from '../../core/domain/types/Order.js';
 import { Campaign } from '../../core/domain/types/Campaign.js';
@@ -300,15 +301,24 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
-  async saveEvent(topic: string, type: string, payload: any): Promise<void> {
+  async saveEvent(event: DomainEvent): Promise<void> {
     const mode = configService.get('dbMode');
     const pool = mode === 'test' ? this.simPool : this.pgPool;
 
     if (pool) {
       try {
         await pool.query(
-          `INSERT INTO events (topic, type, payload, created_at) VALUES ($1, $2, $3, NOW())`,
-          [topic, type, JSON.stringify(payload)]
+          `INSERT INTO events (event_id, correlation_id, source, topic, type, payload, created_at) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            event.event_id,
+            event.correlation_id,
+            event.source,
+            event.topic,
+            event.type,
+            JSON.stringify(event.payload),
+            event.timestamp || new Date()
+          ]
         );
       } catch (e: any) {
         console.error(`Failed to save event to PG (${mode}):`, e.message);
@@ -316,9 +326,9 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
-  async getEvents(topic?: string, source?: string): Promise<any[]> {
+  async getEvents(topic?: string, source?: string): Promise<DomainEvent[]> {
     const mode = configService.get('dbMode');
-    let items: any[] = [];
+    let items: DomainEvent[] = [];
     const query = topic 
       ? "SELECT * FROM events WHERE topic = $1 ORDER BY created_at DESC" 
       : "SELECT * FROM events ORDER BY created_at DESC";
@@ -327,16 +337,26 @@ export class PostgresAdapter implements PersistencePort {
     const useSimPool = source === 'sim' || source === 'mock' || (!source && mode === 'test');
     const useLivePool = source === 'live' || (!source && mode === 'live');
 
+    const mapRow = (row: any): DomainEvent => ({
+        event_id: row.event_id,
+        correlation_id: row.correlation_id,
+        source: row.source,
+        topic: row.topic,
+        type: row.type,
+        payload: row.payload,
+        timestamp: row.created_at
+    });
+
     if (this.simPool && useSimPool) {
       try {
         const res = await this.simPool.query(query, params);
-        items = items.concat(res.rows);
+        items = items.concat(res.rows.map(mapRow));
       } catch (e) {}
     }
     if (this.pgPool && useLivePool) {
       try {
         const res = await this.pgPool.query(query, params);
-        items = items.concat(res.rows);
+        items = items.concat(res.rows.map(mapRow));
       } catch (e) {}
     }
     return items;

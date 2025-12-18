@@ -61,7 +61,7 @@ export class ProductResearchAgent extends BaseAgent {
       if (result.products && result.products.length > 0) {
           for (const product of result.products) {
               this.log('info', `✅ Found product: ${product.name}`);
-              await this.eventBus.publish('PRODUCT_FOUND', 'PRODUCT_FOUND', { product });
+              await this.eventBus.publish('Product.Found', { product });
           }
       } else {
           this.log('warn', `❌ No products found for category "${rawCategory}" after AI analysis.`);

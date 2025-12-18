@@ -7,7 +7,7 @@ export * from './db/PostgresAdapter.js';
 export * from './ai/OpenAIService.js';
 
 // Event Bus
-export * from './eventbus/PostgresEventStore.js';
+export * from './events/PostgresEventBus.js';
 
 // Shop
 export * from './shop/MockShopAdapter.js';
@@ -21,8 +21,8 @@ export * from './ads/TestAdsAdapter.js';
 export * from './ads/LiveAdsAdapter.js';
 
 // Trends
-export * from './trends/MockTrendAdapter.js';
-export * from './trends/LiveTrendAdapter.js';
+export * from './trends/GoogleTrendsAPI/MockTrendAdapter.js';
+export * from './trends/GoogleTrendsAPI/LiveTrendAdapter.js';
 
 // Research (Competitors)
 export * from './research/MockCompetitorAdapter.js';

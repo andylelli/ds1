@@ -1,5 +1,8 @@
 CREATE TABLE IF NOT EXISTS events (
   id BIGSERIAL PRIMARY KEY,
+  event_id TEXT,
+  correlation_id TEXT,
+  source TEXT,
   topic TEXT NOT NULL,
   type TEXT NOT NULL,
   payload JSONB NOT NULL,
@@ -8,6 +11,8 @@ CREATE TABLE IF NOT EXISTS events (
 );
 
 CREATE INDEX IF NOT EXISTS idx_events_topic_id ON events (topic, id);
+CREATE INDEX IF NOT EXISTS idx_events_correlation_id ON events (correlation_id);
+CREATE INDEX IF NOT EXISTS idx_events_event_id ON events (event_id);
 CREATE INDEX IF NOT EXISTS idx_events_archived_at ON events (archived_at);
 
 CREATE TABLE IF NOT EXISTS consumer_offsets (

@@ -1,5 +1,5 @@
 import { PostgresAdapter } from '../../infra/db/PostgresAdapter.js';
-import { PostgresEventStore } from '../../infra/eventbus/PostgresEventStore.js';
+import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
 // Shop
 import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
 import { MockShopAdapter } from '../../infra/shop/MockShopAdapter.js';
@@ -14,8 +14,8 @@ import { AiMcpWrapper } from '../../infra/mcp/wrappers/AiMcpWrapper.js';
 import { LiveAdsAdapter } from '../../infra/ads/LiveAdsAdapter.js';
 import { MockAdsAdapter } from '../../infra/ads/MockAdsAdapter.js';
 // Trends
-import { LiveTrendAdapter } from '../../infra/trends/LiveTrendAdapter.js';
-import { MockTrendAdapter } from '../../infra/trends/MockTrendAdapter.js';
+import { LiveTrendAdapter } from '../../infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.js';
+import { MockTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
 // Research / Competitor
 import { LiveCompetitorAdapter } from '../../infra/research/LiveCompetitorAdapter.js';
 import { MockCompetitorAdapter } from '../../infra/research/MockCompetitorAdapter.js';
@@ -48,9 +48,9 @@ export class ServiceFactory {
         return new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
     }
     createEventBus() {
-        // Always use PostgresEventStore
         const dbConfig = this.config.infrastructure?.database;
-        return new PostgresEventStore(dbConfig?.live_url, dbConfig?.simulation_url);
+        const persistence = new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
+        return new PostgresEventBus(persistence);
     }
     /**
      * Creates an adapter instance based on the class name from configuration

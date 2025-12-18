@@ -1,4 +1,5 @@
 import { Product, Order, Campaign } from '../types/index.js';
+import { DomainEvent } from '../events/Registry.js';
 
 export interface PersistencePort {
   saveProduct(product: Product): Promise<void>;
@@ -18,7 +19,7 @@ export interface PersistencePort {
   clearLogs(source?: string): Promise<void>;
 
   // Generic Event Sourcing / Inspection
-  saveEvent(topic: string, type: string, payload: any): Promise<void>;
-  getEvents(topic?: string, source?: string): Promise<any[]>;
+  saveEvent(event: DomainEvent): Promise<void>;
+  getEvents(topic?: string, source?: string): Promise<DomainEvent[]>;
   getTopics(source?: string): Promise<string[]>;
 }

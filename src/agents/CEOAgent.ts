@@ -152,7 +152,7 @@ export class CEOAgent extends BaseAgent {
                 if (call.name === 'approveProduct') {
                     this.log('info', `Approved product ${product.name}: ${call.arguments.reason}`);
                     // In a real app, we'd save to DB here with status 'APPROVED'
-                    await this.eventBus.publish('PRODUCT_APPROVED', 'PRODUCT_APPROVED', { product, reason: call.arguments.reason });
+                    await this.eventBus.publish('Product.Approved', { product, reason: call.arguments.reason });
                 } else if (call.name === 'rejectProduct') {
                     this.log('info', `Rejected product ${product.name}: ${call.arguments.reason}`);
                 }
@@ -195,7 +195,7 @@ export class CEOAgent extends BaseAgent {
             for (const call of response.toolCalls) {
                 if (call.name === 'approveSupplier') {
                     this.log('info', `Approved supplier ${supplier.name}: ${call.arguments.reason}`);
-                    await this.eventBus.publish('SUPPLIER_APPROVED', 'SUPPLIER_APPROVED', { product, supplier, reason: call.arguments.reason });
+                    await this.eventBus.publish('Supplier.Approved', { product, supplier, reason: call.arguments.reason });
                 } else if (call.name === 'rejectSupplier') {
                     this.log('info', `Rejected supplier ${supplier.name}: ${call.arguments.reason}`);
                 }

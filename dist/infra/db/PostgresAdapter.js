@@ -198,15 +198,26 @@ export class PostgresAdapter {
          WHERE status IN ('failed', 'warning')
          ORDER BY timestamp DESC 
          LIMIT $1`, [limit]);
-            return result.rows.map(row => ({
-                agent: row.agent,
-                action: row.action,
-                category: row.category,
-                status: row.status,
-                message: row.message,
-                details: typeof row.details === 'string' ? JSON.parse(row.details) : row.details,
-                timestamp: row.created_at
-            }));
+            return result.rows.map(row => {
+                let parsedDetails = row.details;
+                if (typeof row.details === 'string') {
+                    try {
+                        parsedDetails = JSON.parse(row.details);
+                    }
+                    catch (e) {
+                        parsedDetails = { raw_content: row.details, parse_error: 'Invalid JSON' };
+                    }
+                }
+                return {
+                    agent: row.agent,
+                    action: row.action,
+                    category: row.category,
+                    status: row.status,
+                    message: row.message,
+                    details: parsedDetails,
+                    timestamp: row.created_at
+                };
+            });
         }
         catch (e) {
             console.error(`Failed to fetch error logs from PG:`, e.message);
@@ -230,12 +241,24 @@ export class PostgresAdapter {
          ) as combined_logs
          ORDER BY created_at DESC 
          LIMIT $1`, [limit]);
-            return result.rows.map(row => ({
-                agent: row.agent,
-                message: row.message,
-                data: typeof row.data === 'string' ? JSON.parse(row.data) : row.data,
-                timestamp: row.created_at
-            }));
+            return result.rows.map(row => {
+                let parsedData = row.data;
+                if (typeof row.data === 'string') {
+                    try {
+                        parsedData = JSON.parse(row.data);
+                    }
+                    catch (e) {
+                        // If parsing fails, return the raw string wrapped in an object so the UI can still show it
+                        parsedData = { raw_content: row.data, parse_error: 'Invalid JSON' };
+                    }
+                }
+                return {
+                    agent: row.agent,
+                    message: row.message,
+                    data: parsedData,
+                    timestamp: row.created_at
+                };
+            });
         }
         catch (e) {
             console.error(`Failed to fetch logs from PG (${useSimPool ? 'sim' : 'live'}):`, e.message || e);
@@ -243,12 +266,21 @@ export class PostgresAdapter {
             return [];
         }
     }
-    async saveEvent(topic, type, payload) {
+    async saveEvent(event) {
         const mode = configService.get('dbMode');
         const pool = mode === 'test' ? this.simPool : this.pgPool;
         if (pool) {
             try {
-                await pool.query(`INSERT INTO events (topic, type, payload, created_at) VALUES ($1, $2, $3, NOW())`, [topic, type, JSON.stringify(payload)]);
+                await pool.query(`INSERT INTO events (event_id, correlation_id, source, topic, type, payload, created_at) 
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`, [
+                    event.event_id,
+                    event.correlation_id,
+                    event.source,
+                    event.topic,
+                    event.type,
+                    JSON.stringify(event.payload),
+                    event.timestamp || new Date()
+                ]);
             }
             catch (e) {
                 console.error(`Failed to save event to PG (${mode}):`, e.message);
@@ -264,17 +296,26 @@ export class PostgresAdapter {
         const params = topic ? [topic] : [];
         const useSimPool = source === 'sim' || source === 'mock' || (!source && mode === 'test');
         const useLivePool = source === 'live' || (!source && mode === 'live');
+        const mapRow = (row) => ({
+            event_id: row.event_id,
+            correlation_id: row.correlation_id,
+            source: row.source,
+            topic: row.topic,
+            type: row.type,
+            payload: row.payload,
+            timestamp: row.created_at
+        });
         if (this.simPool && useSimPool) {
             try {
                 const res = await this.simPool.query(query, params);
-                items = items.concat(res.rows);
+                items = items.concat(res.rows.map(mapRow));
             }
             catch (e) { }
         }
         if (this.pgPool && useLivePool) {
             try {
                 const res = await this.pgPool.query(query, params);
-                items = items.concat(res.rows);
+                items = items.concat(res.rows.map(mapRow));
             }
             catch (e) { }
         }

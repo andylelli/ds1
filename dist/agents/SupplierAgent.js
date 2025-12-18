@@ -34,7 +34,7 @@ export class SupplierAgent extends BaseAgent {
         if (suppliers.length > 0) {
             for (const supplier of suppliers) {
                 this.log('info', `Found supplier: ${supplier.name} (Rating: ${supplier.rating})`);
-                await this.eventBus.publish('SUPPLIER_FOUND', 'SUPPLIER_FOUND', { product, supplier });
+                await this.eventBus.publish('Supplier.Found', { product, supplier });
             }
         }
         else {

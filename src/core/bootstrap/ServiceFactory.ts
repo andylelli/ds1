@@ -1,6 +1,6 @@
 import { AppConfig } from './ConfigTypes.js';
 import { PostgresAdapter } from '../../infra/db/PostgresAdapter.js';
-import { PostgresEventStore } from '../../infra/eventbus/PostgresEventStore.js';
+import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
 
 // Shop
 import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
@@ -68,9 +68,9 @@ export class ServiceFactory {
   }
 
   public createEventBus(): EventBusPort {
-    // Always use PostgresEventStore
     const dbConfig = this.config.infrastructure?.database;
-    return new PostgresEventStore(dbConfig?.live_url, dbConfig?.simulation_url);
+    const persistence = new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
+    return new PostgresEventBus(persistence);
   }
 
   /**

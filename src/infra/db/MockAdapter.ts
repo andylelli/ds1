@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PersistencePort } from '../../core/domain/ports/PersistencePort.js';
+import { DomainEvent } from '../../core/domain/events/Registry.js';
 import { Product } from '../../core/domain/types/Product.js';
 import { Order } from '../../core/domain/types/Order.js';
 import { Campaign } from '../../core/domain/types/Campaign.js';
@@ -100,22 +101,16 @@ export class MockAdapter implements PersistencePort {
     return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);
   }
 
-  async saveEvent(topic: string, type: string, payload: any): Promise<void> {
-    await this.saveItem("Events", {
-      topic,
-      type,
-      payload,
-      id: `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      created_at: new Date().toISOString()
-    });
+  async saveEvent(event: DomainEvent): Promise<void> {
+    await this.saveItem("Events", event);
   }
 
-  async getEvents(topic?: string, source?: string): Promise<any[]> {
+  async getEvents(topic?: string, source?: string): Promise<DomainEvent[]> {
     const events = await this.getItems("Events");
     if (topic) {
-      return events.filter(e => e.topic === topic);
+      return events.filter((e: DomainEvent) => e.topic === topic);
     }
-    return events;
+    return events as DomainEvent[];
   }
 
   async getTopics(source?: string): Promise<string[]> {

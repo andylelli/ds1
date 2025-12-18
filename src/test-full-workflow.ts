@@ -1,11 +1,11 @@
-import { PostgresEventStore } from './infra/eventbus/PostgresEventStore.js';
+import { PostgresEventBus } from './infra/events/PostgresEventBus.js';
 import { MockAdapter } from './infra/db/MockAdapter.js';
 import { ProductResearchAgent } from './agents/ProductResearchAgent.js';
 import { CEOAgent } from './agents/CEOAgent.js';
 import { SupplierAgent } from './agents/SupplierAgent.js';
 import { StoreBuildAgent } from './agents/StoreBuildAgent.js';
 import { MarketingAgent } from './agents/MarketingAgent.js';
-import { MockTrendAdapter } from './infra/trends/MockTrendAdapter.js';
+import { MockTrendAdapter } from './infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
 import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
 import { MockFulfilmentAdapter } from './infra/fulfilment/MockFulfilmentAdapter.js';
 import { MockShopAdapter } from './infra/shop/MockShopAdapter.js';
@@ -20,8 +20,8 @@ async function runFullWorkflow() {
     console.log('--- Starting Full Autonomous Workflow Test ---');
 
     // 1. Infrastructure
-    const eventBus = new PostgresEventStore();
     const db = new MockAdapter();
+    const eventBus = new PostgresEventBus(db);
     const trendAnalyzer = new MockTrendAdapter();
     const competitorAnalyzer = new MockCompetitorAdapter();
     const fulfilment = new MockFulfilmentAdapter();
@@ -42,64 +42,64 @@ async function runFullWorkflow() {
 
     // 3. Subscribe Agents to Events (Wiring)
     // Research -> CEO
-    eventBus.subscribe('PRODUCT_FOUND', 'CEO_Reviewer', async (payload: any) => {
-        console.log(`[Event] PRODUCT_FOUND: ${payload.product.name}`);
-        await ceo.review_product(payload);
+    eventBus.subscribe('Product.Found', 'CEO_Reviewer', async (event) => {
+        console.log(`[Event] Product.Found: ${event.payload.product.name}`);
+        await ceo.review_product(event.payload);
     });
 
     // CEO (Approve Product) -> Supplier
-    eventBus.subscribe('PRODUCT_APPROVED', 'Supplier_Finder', async (payload: any) => {
-        console.log(`[Event] PRODUCT_APPROVED: ${payload.product.name}`);
-        await supplierAgent.find_suppliers(payload);
+    eventBus.subscribe('Product.Approved', 'Supplier_Finder', async (event) => {
+        console.log(`[Event] Product.Approved: ${event.payload.product.name}`);
+        await supplierAgent.find_suppliers(event.payload);
     });
 
     // Supplier -> CEO (Review Supplier)
-    eventBus.subscribe('SUPPLIER_FOUND', 'CEO_Supplier_Reviewer', async (payload: any) => {
-        console.log(`[Event] SUPPLIER_FOUND: ${payload.supplier.name} for ${payload.product.name}`);
-        await ceo.review_supplier(payload);
+    eventBus.subscribe('Supplier.Found', 'CEO_Supplier_Reviewer', async (event) => {
+        console.log(`[Event] Supplier.Found: ${event.payload.supplier.name} for ${event.payload.product.name}`);
+        await ceo.review_supplier(event.payload);
     });
 
     // CEO (Approve Supplier) -> Store
-    eventBus.subscribe('SUPPLIER_APPROVED', 'Store_Builder', async (payload: any) => {
-        console.log(`[Event] SUPPLIER_APPROVED: ${payload.supplier.name} for ${payload.product.name}`);
-        await storeAgent.create_product_page(payload);
+    eventBus.subscribe('Supplier.Approved', 'Store_Builder', async (event) => {
+        console.log(`[Event] Supplier.Approved: ${event.payload.supplier.name} for ${event.payload.product.name}`);
+        await storeAgent.create_product_page(event.payload);
     });
 
     // Store -> Marketing
-    eventBus.subscribe('PRODUCT_PAGE_CREATED', 'Marketing_Campaigner', async (payload: any) => {
-        console.log(`[Event] PRODUCT_PAGE_CREATED: ${payload.product.name} at ${payload.pageUrl}`);
-        await marketingAgent.create_ad_campaign(payload);
+    eventBus.subscribe('Store.PageCreated', 'Marketing_Campaigner', async (event) => {
+        console.log(`[Event] Store.PageCreated: ${event.payload.product.name} at ${event.payload.pageUrl}`);
+        await marketingAgent.create_ad_campaign(event.payload);
     });
 
     // Marketing -> Done
-    eventBus.subscribe('CAMPAIGN_STARTED', 'Workflow_Monitor', async (payload: any) => {
-        console.log(`[Event] CAMPAIGN_STARTED: Campaign ${payload.campaign.id} for ${payload.product.name}`);
+    eventBus.subscribe('Marketing.CampaignStarted', 'Workflow_Monitor', async (event) => {
+        console.log(`[Event] Marketing.CampaignStarted: Campaign ${event.payload.campaign.id} for ${event.payload.product.name}`);
         
         // Simulate an order coming in after campaign starts
         console.log('--- Simulating Customer Order ---');
-        const order = { id: 'ord_' + Date.now(), product: payload.product, customerEmail: 'test@customer.com' };
-        await eventBus.publish('ORDER_RECEIVED', 'Simulation', { order });
+        const order = { id: 'ord_' + Date.now(), product: event.payload.product, customerEmail: 'test@customer.com' };
+        await eventBus.publish('Sales.OrderReceived', { order_id: order.id, items: [order], total: 100 });
     });
 
     // Operations -> Customer Service
-    eventBus.subscribe('ORDER_RECEIVED', 'Operations_Manager', async (payload: any) => {
-        console.log(`[Event] ORDER_RECEIVED: ${payload.order.id}`);
-        await operationsAgent.process_order(payload);
+    eventBus.subscribe('Sales.OrderReceived', 'Operations_Manager', async (event) => {
+        console.log(`[Event] Sales.OrderReceived: ${event.payload.order_id}`);
+        await operationsAgent.process_order({ order: { id: event.payload.order_id } });
     });
 
     // Customer Service -> Done
-    eventBus.subscribe('ORDER_SHIPPED', 'CS_Agent', async (payload: any) => {
-        console.log(`[Event] ORDER_SHIPPED: ${payload.order.id} Tracking: ${payload.tracking}`);
-        await customerServiceAgent.notify_customer(payload);
+    eventBus.subscribe('Sales.OrderShipped', 'CS_Agent', async (event) => {
+        console.log(`[Event] Sales.OrderShipped: ${event.payload.order.id} Tracking: ${event.payload.tracking}`);
+        await customerServiceAgent.notify_customer(event.payload);
         
         // Trigger Analytics
-        await eventBus.publish('DAILY_REPORT_REQUESTED', 'Simulation', { period: 'daily' });
+        await eventBus.publish('Analytics.ReportRequested', { period: 'daily' });
     });
 
     // Analytics
-    eventBus.subscribe('DAILY_REPORT_REQUESTED', 'Analytics_Engine', async (payload: any) => {
-        console.log(`[Event] DAILY_REPORT_REQUESTED: ${payload.period}`);
-        await analyticsAgent.generate_report(payload);
+    eventBus.subscribe('Analytics.ReportRequested', 'Analytics_Engine', async (event) => {
+        console.log(`[Event] Analytics.ReportRequested: ${event.payload.period}`);
+        await analyticsAgent.generate_report(event.payload);
         console.log('--- Workflow Complete! ---');
     });
 

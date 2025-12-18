@@ -31,7 +31,7 @@ export class StoreBuildAgent extends BaseAgent {
             });
             this.log('info', `Product page created: ${newProduct.id}`);
             const pageUrl = `https://myshop.com/products/${newProduct.id}`;
-            await this.eventBus.publish('PRODUCT_PAGE_CREATED', 'PRODUCT_PAGE_CREATED', { product: newProduct, pageUrl });
+            await this.eventBus.publish('Store.PageCreated', { product: newProduct, pageUrl });
         }
         catch (error) {
             this.log('error', `Failed to create product page: ${error.message}`);
