@@ -14,36 +14,47 @@ export class SupplierAgent extends BaseAgent {
     this.registerTool('order_stock', this.orderStock.bind(this));
 
     // Subscribe to Research Handoff
-    // In the new flow, we listen for OpportunityResearch.BriefPublished
-    this.eventBus.subscribe('OpportunityResearch.BriefPublished', 'SupplierAgent', async (event) => {
-        this.log('info', `Received Brief: ${event.payload.brief_id}`);
-        await this.handleBriefPublished(event.payload);
+    // In the new flow, we listen for Product.Approved (manual or auto)
+    this.eventBus.subscribe('Product.Approved', 'SupplierAgent', async (event) => {
+        this.log('info', `Received Approved Product: ${event.payload.product.id}`);
+        await this.handleProductApproved(event.payload);
     });
   }
 
   /**
-   * Event Handler for OpportunityResearch.BriefPublished
+   * Event Handler for Product.Approved
    */
-  private async handleBriefPublished(payload: { brief_id: string, brief_json: any }) {
-      const { brief_json } = payload;
-      const products = brief_json.products || [];
+  private async handleProductApproved(payload: { product: any, approvedBy?: string }) {
+      const { product } = payload;
+      // product is the OpportunityBrief or ProductConcept
+      // We need to extract the product details.
+      // If it's an OpportunityBrief, it has 'concept' and 'products' array?
+      // Let's assume payload.product IS the brief for now, based on CEOAgent/Staging logic.
+      
+      // If the brief has multiple products, we iterate.
+      // Or if the brief IS the product concept.
+      
+      // Let's look at ProductResearchAgent output.
+      // It outputs OpportunityBrief.
+      // OpportunityBrief has `concept` (OfferConcept).
+      
+      const concept = product.concept || product;
+      const name = concept.title || concept.name || "Unknown Product";
+      
+      this.log('info', `Finding suppliers for product: ${name}`);
+      
+      // Reuse existing logic
+      const result = await this.fulfilment.findSuppliers(name);
+      const suppliers = result.suppliers || [];
 
-      for (const product of products) {
-          this.log('info', `Finding suppliers for product: ${product.name}`);
-          
-          // Reuse existing logic
-          const result = await this.fulfilment.findSuppliers(product.id || product.name);
-          const suppliers = result.suppliers || [];
-
-          if (suppliers.length > 0) {
-              for (const supplier of suppliers) {
-                  this.log('info', `Found supplier: ${supplier.name} (Rating: ${supplier.rating})`);
-                  // Publish Sourcing.SupplierFound (or Supplier.Found for legacy compat)
-                  await this.eventBus.publish('Supplier.Found', { product, supplier });
-              }
-          } else {
-              this.log('warn', `No suppliers found for ${product.name}`);
+      if (suppliers.length > 0) {
+          for (const supplier of suppliers) {
+              this.log('info', `Found supplier: ${supplier.name} (Rating: ${supplier.rating})`);
+              // Publish Sourcing.SupplierFound (or Supplier.Found for legacy compat)
+              await this.eventBus.publish('Supplier.Found', { product, supplier });
           }
+      } else {
+          this.log('warn', `No suppliers found for ${name}`);
       }
   }
 

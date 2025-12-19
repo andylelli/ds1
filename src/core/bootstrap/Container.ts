@@ -30,10 +30,20 @@ export class Container {
     this.services.set('db', this.persistence);
     this.eventBus = this.factory.createEventBus();
     
+    // Create Staging Service
+    let stagingService;
+    try {
+        stagingService = this.factory.createStagingService(this.persistence);
+        this.services.set('staging', stagingService);
+    } catch (e) {
+        logger.warn(`[Container] Failed to create Staging Service: ${e}`);
+    }
+    
     // 2. Register Internal Services (Adapters)
     const dependencies: any = {
         db: this.persistence,
-        eventBus: this.eventBus
+        eventBus: this.eventBus,
+        staging: stagingService
     };
 
     if (this.config.mcp && this.config.mcp.mcp_servers) {

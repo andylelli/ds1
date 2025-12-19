@@ -1,11 +1,13 @@
 import { BaseAgent } from './BaseAgent.js';
 import { AiPort, ToolDefinition } from '../core/domain/ports/AiPort.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
+import { ResearchStagingService } from '../core/services/ResearchStagingService.js';
 
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 
 export class CEOAgent extends BaseAgent {
   private ai: AiPort;
+  private staging?: ResearchStagingService;
   public team: any;
   
   private aiTools: ToolDefinition[] = [
@@ -101,18 +103,68 @@ export class CEOAgent extends BaseAgent {
     }
   ];
 
-  constructor(db: PersistencePort, eventBus: EventBusPort, ai: AiPort) {
+  constructor(db: PersistencePort, eventBus: EventBusPort, ai: AiPort, staging?: ResearchStagingService) {
     super('CEO', db, eventBus);
     this.ai = ai;
+    this.staging = staging;
 
     // Subscribe to high-level events
     this.eventBus.subscribe('System.Error', 'CEOAgent', async (event) => {
-        this.log('error', `CEO Noticed System Error: ${event.payload.error}`);
+        this.log('info', `CEO Noticed System Error: ${event.payload.error}`);
     });
 
     this.eventBus.subscribe('Sales.OrderReceived', 'CEOAgent', async (event) => {
         this.log('info', `CEO Celebrates Order: ${event.payload.order_id} for $${event.payload.total}`);
     });
+
+    // Subscribe to Research Output for Staging
+    this.eventBus.subscribe('OpportunityResearch.BriefsPublished', 'CEOAgent', async (event) => {
+        this.log('info', `CEO received ${event.payload.brief_count} briefs. Staging for review...`);
+        await this.stageBriefs(event.payload);
+    });
+  }
+
+  private async stageBriefs(payload: any) {
+      if (!this.staging) {
+          this.log('warn', 'Staging service not available. Skipping staging.');
+          return;
+      }
+
+      const { briefs, request_id } = payload;
+      // Create a session if one doesn't exist, or use request_id as session_id if possible.
+      // ResearchStagingService expects a session to exist in DB.
+      // We can try to create one or assume one exists.
+      // For simplicity, let's create a session for this batch.
+      
+      try {
+          // Check if session exists or create new
+          let sessionId = request_id;
+          const session = await this.staging.getSession(sessionId);
+          
+          if (!session) {
+             // Create a new session for this batch
+             // We need category and researchType. We can infer or use defaults.
+             const category = briefs[0]?.opportunity_definition?.category || 'Unknown';
+             sessionId = await this.staging.createSession(category, 'automated_research', { mode: 'simulation' });
+             this.log('info', `Created new staging session: ${sessionId}`);
+          }
+
+          for (const brief of briefs) {
+              await this.staging.stageItem(sessionId, {
+                  itemType: 'product',
+                  name: brief.opportunity_definition.theme_name,
+                  description: brief.concept.description,
+                  rawData: brief,
+                  confidenceScore: Math.round((brief.certainty_score || 0) * 100),
+                  source: 'ProductResearchAgent',
+                  trendEvidence: brief.market_evidence.trend_signal,
+                  status: 'pending'
+              });
+          }
+          this.log('info', `Staged ${briefs.length} items for manual review.`);
+      } catch (error: any) {
+          this.log('error', `Failed to stage briefs: ${error.message}`);
+      }
   }
 
   public setTeam(team: any) {
@@ -127,6 +179,12 @@ export class CEOAgent extends BaseAgent {
       const { product } = payload;
       this.log('info', `Workflow: Reviewing product ${product.name}`);
 
+      // MANUAL OVERRIDE: Auto-approval disabled.
+      // The product is now waiting in the staging area (or database) for manual approval via the UI.
+      this.log('info', `⏸️ Product ${product.name} is pending manual approval. Auto-approval disabled.`);
+      
+      /* 
+      // --- Legacy Auto-Approval Logic (Disabled) ---
       const systemPrompt = `You are the CEO. Review this product candidate.
       Product: ${JSON.stringify(product)}
       
@@ -162,6 +220,7 @@ export class CEOAgent extends BaseAgent {
       } catch (error: any) {
           this.log('error', `Failed to review product: ${error.message}`);
       }
+      */
   }
 
   /**

@@ -405,6 +405,10 @@ export class ProductResearchAgent extends BaseAgent {
           } else if (signal.family === 'competitor') {
               themeName = signal.data.product || 'Unknown';
               description = `Competitor activity in ${themeName}`;
+          } else if (signal.family === 'social') {
+              // Handle social signals (including mocks)
+              themeName = signal.data.hashtag ? signal.data.hashtag.replace('#', '') : 'Trending Topic';
+              description = `Viral social trend: ${themeName}`;
           } else {
               continue;
           }

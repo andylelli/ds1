@@ -2,6 +2,7 @@ import { AppConfig } from './ConfigTypes.js';
 import { PostgresAdapter } from '../../infra/db/PostgresAdapter.js';
 import { MockAdapter } from '../../infra/db/MockAdapter.js';
 import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
+import { ResearchStagingService } from '../services/ResearchStagingService.js';
 
 // Shop
 import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
@@ -75,6 +76,18 @@ export class ServiceFactory {
     const dbConfig = this.config.infrastructure?.database;
     const persistence = new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
     return new PostgresEventBus(persistence);
+  }
+
+  public createStagingService(persistence: PersistencePort): ResearchStagingService {
+      // Assuming persistence is PostgresAdapter
+      if (persistence instanceof PostgresAdapter) {
+          return new ResearchStagingService(persistence.getPool());
+      }
+      // Fallback or throw if not PostgresAdapter (e.g. MockAdapter)
+      // For now, we can return null or throw, but let's try to handle it gracefully if possible.
+      // If MockAdapter, we might need a MockStagingService.
+      // But for now, let's assume PostgresAdapter.
+      throw new Error("Staging Service requires PostgresAdapter");
   }
 
   /**
@@ -175,7 +188,7 @@ export class ServiceFactory {
   public createAgent(className: string, deps: any): any {
     switch (className) {
       case 'CEOAgent':
-        return new CEOAgent(deps.db, deps.eventBus, deps.ai);
+        return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
       case 'ProductResearchAgent':
         return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
       case 'SupplierAgent':

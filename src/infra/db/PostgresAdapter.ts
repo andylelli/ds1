@@ -494,7 +494,8 @@ export class PostgresAdapter implements PersistencePort {
         'events', 
         'orders', 
         'ads', 
-        'products'
+        'products',
+        'opportunity_briefs'
     ];
     
     if (!this.simPool) {
