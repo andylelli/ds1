@@ -255,19 +255,27 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
     return this.cachedRequest(`interest_${keyword}`, async () => {
       return this.retry(async () => {
         const start = Date.now();
-        const result = await googleTrends.interestOverTime({
-          keyword,
-          startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
-          geo: 'US'
-        });
-        const duration = Date.now() - start;
-        logger.external('GoogleTrends', 'interestOverTime', { keyword, duration });
-
+        let success = false;
+        let errorMsg = '';
         try {
-          return JSON.parse(result);
-        } catch (e) {
-          console.error(`[LiveTrend] JSON Parse Error (interestOverTime): ${result.substring(0, 200)}`);
-          throw new Error(`Invalid JSON from Google Trends (interestOverTime). Response starts with: ${result.substring(0, 500)}...`);
+          const result = await googleTrends.interestOverTime({
+            keyword,
+            startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
+            geo: 'US'
+          });
+          success = true;
+          try {
+            return JSON.parse(result);
+          } catch (e) {
+            console.error(`[LiveTrend] JSON Parse Error (interestOverTime): ${result.substring(0, 200)}`);
+            throw new Error(`Invalid JSON from Google Trends (interestOverTime). Response starts with: ${result.substring(0, 500)}...`);
+          }
+        } catch (err: any) {
+          errorMsg = err.message;
+          throw err;
+        } finally {
+          const duration = Date.now() - start;
+          logger.external('GoogleTrends', 'interestOverTime', { keyword, duration, success, error: errorMsg });
         }
       });
     });
@@ -277,19 +285,27 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
     return this.cachedRequest(`queries_${keyword}`, async () => {
       return this.retry(async () => {
         const start = Date.now();
-        const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
-        const duration = Date.now() - start;
-        logger.external('GoogleTrends', 'relatedQueries', { keyword, duration });
-
+        let success = false;
+        let errorMsg = '';
         try {
-          const parsed = JSON.parse(result);
-          return {
-            rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
-            top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
-          };
-        } catch (e) {
-          console.error(`[LiveTrend] JSON Parse Error (relatedQueries): ${result.substring(0, 200)}`);
-          throw new Error(`Invalid JSON from Google Trends (relatedQueries). Response starts with: ${result.substring(0, 500)}...`);
+          const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
+          success = true;
+          try {
+            const parsed = JSON.parse(result);
+            return {
+              rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
+              top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
+            };
+          } catch (e) {
+            console.error(`[LiveTrend] JSON Parse Error (relatedQueries): ${result.substring(0, 200)}`);
+            throw new Error(`Invalid JSON from Google Trends (relatedQueries). Response starts with: ${result.substring(0, 500)}...`);
+          }
+        } catch (err: any) {
+          errorMsg = err.message;
+          throw err;
+        } finally {
+          const duration = Date.now() - start;
+          logger.external('GoogleTrends', 'relatedQueries', { keyword, duration, success, error: errorMsg });
         }
       });
     });
@@ -301,14 +317,22 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
         // Try to get real data
         return await this.retry(async () => {
           const start = Date.now();
-          const result = await googleTrends.realTimeTrends({ geo: 'US' });
-          const duration = Date.now() - start;
-          logger.external('GoogleTrends', 'realTimeTrends', { duration });
-
+          let success = false;
+          let errorMsg = '';
           try {
-            return JSON.parse(result);
-          } catch (e) {
-            throw new Error(`Invalid JSON from Google Trends (realTimeTrends).`);
+            const result = await googleTrends.realTimeTrends({ geo: 'US' });
+            success = true;
+            try {
+              return JSON.parse(result);
+            } catch (e) {
+              throw new Error(`Invalid JSON from Google Trends (realTimeTrends).`);
+            }
+          } catch (err: any) {
+            errorMsg = err.message;
+            throw err;
+          } finally {
+            const duration = Date.now() - start;
+            logger.external('GoogleTrends', 'realTimeTrends', { duration, success, error: errorMsg });
           }
         });
       } catch (e: any) {

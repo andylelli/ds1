@@ -1,0 +1,7 @@
+[2025-12-20T16:54:38.899Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"golf accessories","duration":1991,"success":true,"error":""}
+[2025-12-20T16:54:38.956Z] [INFO] [GoogleTrends] realTimeTrends {"duration":55,"success":true,"error":"Invalid JSON from Google Trends (realTimeTrends)."}
+[2025-12-20T16:54:41.017Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":598,"duration":2060}
+[2025-12-20T16:54:42.458Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"golf training aids","duration":1395,"success":true,"error":""}
+[2025-12-20T16:54:44.520Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":561,"duration":2061}
+[2025-12-20T16:54:46.231Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"golf apparel","duration":1672,"success":true,"error":""}
+[2025-12-20T16:54:48.587Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":645,"duration":2355}

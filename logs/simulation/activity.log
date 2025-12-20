@@ -1,304 +1,147 @@
-[2025-12-20T10:30:34.360Z] [INFO] [API] GET /api/valid 200 1ms {"method":"GET","url":"/api/valid","status":200,"duration":1,"userAgent":"test-agent"}
-[2025-12-20T10:30:34.359Z] [DEBUG] [REQ] GET /api/valid {"body":{}}
-[2025-12-20T10:36:48.072Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T10:36:48.071Z] [INFO] Initializing Container... 
-[2025-12-20T10:36:48.072Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T10:36:48.072Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T10:36:48.072Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T10:36:48.072Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T10:36:48.073Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T10:36:48.073Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T10:36:48.073Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T10:36:48.073Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T10:36:48.073Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T10:36:48.073Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T10:36:48.073Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T10:36:48.073Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T10:36:48.074Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T10:36:48.074Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T10:36:48.074Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T10:36:48.075Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T10:36:48.074Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T10:36:48.075Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T10:36:48.075Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T10:36:48.075Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T10:36:48.075Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T10:36:48.075Z] [INFO] Container initialized. 
-[2025-12-20T10:36:48.075Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T10:36:48.702Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T10:36:48.707Z] [INFO] [API] GET / 302 5ms {"method":"GET","url":"/","status":302,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:11:49.382Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T16:11:49.385Z] [INFO] [API] GET / 302 3ms {"method":"GET","url":"/","status":302,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:11:52.977Z] [INFO] Initializing Container... 
-[2025-12-20T16:11:52.978Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T16:11:52.978Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T16:11:52.979Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T16:11:52.980Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T16:11:52.981Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T16:11:52.980Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T16:11:52.981Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T16:11:52.981Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T16:11:52.981Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T16:11:52.981Z] [INFO] Container initialized. 
-[2025-12-20T16:12:46.728Z] [INFO] [API] GET / 302 3ms {"method":"GET","url":"/","status":302,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:12:46.725Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T16:12:49.529Z] [INFO] Initializing Container... 
-[2025-12-20T16:12:49.530Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T16:12:49.530Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T16:12:49.531Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T16:12:49.530Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T16:12:49.530Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T16:12:49.531Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T16:12:49.531Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T16:12:49.531Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T16:12:49.531Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T16:12:49.531Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T16:12:49.531Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T16:12:49.531Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T16:12:49.531Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T16:12:49.531Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T16:12:49.531Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T16:12:49.532Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T16:12:49.531Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T16:12:49.532Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T16:12:49.532Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T16:12:49.532Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T16:12:49.532Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T16:12:49.532Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T16:12:49.532Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T16:12:49.532Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T16:12:49.532Z] [INFO] Container initialized. 
-[2025-12-20T16:13:22.675Z] [INFO] [API] POST /api/simulation/loop/stop 200 2ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:13:22.672Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-20T16:13:22.677Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-20T16:13:22.728Z] [INFO] [API] POST /api/simulation/clear 200 51ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":51,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:18:43.279Z] [INFO] Initializing Container... 
-[2025-12-20T16:18:43.281Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T16:18:43.281Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T16:18:43.281Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T16:18:43.281Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T16:18:43.281Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T16:18:43.281Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T16:18:43.281Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T16:18:43.281Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T16:18:43.282Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T16:18:43.282Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T16:18:43.282Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T16:18:43.282Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T16:18:43.281Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T16:18:43.282Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T16:18:43.282Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T16:18:43.282Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T16:18:43.282Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T16:18:43.282Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T16:18:43.282Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T16:18:43.283Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T16:18:43.283Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T16:18:43.283Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T16:18:43.283Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T16:18:43.283Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T16:18:43.283Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T16:18:43.283Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T16:18:43.283Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T16:18:43.283Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T16:18:43.283Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T16:18:43.283Z] [INFO] Container initialized. 
-[2025-12-20T16:18:43.750Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T16:18:43.754Z] [INFO] [API] GET / 302 4ms {"method":"GET","url":"/","status":302,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:21:59.996Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-20T16:21:59.997Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:22:00.002Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-20T16:22:00.038Z] [INFO] [API] POST /api/simulation/clear 200 36ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":36,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:23:08.483Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:23:08.488Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:23:28.682Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"Find tennis products"}}
-[2025-12-20T16:23:28.716Z] [INFO] Received Research Request: 52e65527-cbee-4f6d-82d4-4c39fe1a5a23 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:28.717Z] [INFO] [Section 1] Processing Request: 52e65527-cbee-4f6d-82d4-4c39fe1a5a23 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:28.719Z] [INFO] [API] POST /api/simulation/start 200 37ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":37,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:23:28.722Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:23:28.721Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-20T16:23:30.790Z] [INFO] [Section 1] Brief Created: brief_52e65527-cbee-4f6d-82d4-4c39fe1a5a23_1766247810783 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:30.800Z] [INFO] [Section 2] Ingesting Prior Learnings for Find tennis products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:30.823Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:30.831Z] [INFO] [Section 3] Collecting Signals for Find tennis products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:31.205Z] [INFO] 🤖 AI Search Strategy: "Find tennis products" ➔ [tennis racquets, tennis apparel, tennis accessories] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:23:37.601Z] [INFO] [Section 3] Only collected 0 signal families. Requirement is 2. {"agent":"ProductResearcher","type":"warn"}
-[2025-12-20T16:24:28.824Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:24:28.842Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:25:28.916Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:25:28.932Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:26:09.136Z] [INFO] Initializing Container... 
-[2025-12-20T16:26:09.138Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T16:26:09.137Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T16:26:09.137Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T16:26:09.138Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T16:26:09.138Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T16:26:09.138Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T16:26:09.138Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T16:26:09.138Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T16:26:09.138Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T16:26:09.138Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T16:26:09.138Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T16:26:09.138Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T16:26:09.139Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T16:26:09.139Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T16:26:09.139Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T16:26:09.139Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T16:26:09.139Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T16:26:09.139Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T16:26:09.139Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T16:26:09.140Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T16:26:09.140Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T16:26:09.140Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T16:26:09.140Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T16:26:09.140Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T16:26:09.140Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T16:26:09.140Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T16:26:09.140Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T16:26:09.140Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T16:26:09.141Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T16:26:09.141Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T16:26:09.141Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T16:26:09.141Z] [INFO] Container initialized. 
-[2025-12-20T16:26:09.658Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T16:26:09.661Z] [INFO] [API] GET / 302 3ms {"method":"GET","url":"/","status":302,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:26:47.703Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:26:47.708Z] [INFO] [API] GET /api/briefs 200 5ms {"method":"GET","url":"/api/briefs","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:26:53.019Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-20T16:26:53.020Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:26:53.022Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-20T16:26:53.047Z] [INFO] [API] POST /api/simulation/clear 200 25ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":25,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:05.547Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find football products"}}
-[2025-12-20T16:27:05.584Z] [INFO] Received Research Request: 53ccd5f7-e526-4c90-8fb4-c7475109959a {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:05.585Z] [INFO] [Section 1] Processing Request: 53ccd5f7-e526-4c90-8fb4-c7475109959a {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:05.586Z] [INFO] [API] POST /api/simulation/start 200 39ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":39,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:05.589Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-20T16:27:05.590Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:07.011Z] [INFO] [Section 1] Brief Created: brief_53ccd5f7-e526-4c90-8fb4-c7475109959a_1766248027008 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:07.020Z] [INFO] [Section 2] Ingesting Prior Learnings for find football products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:07.042Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:07.051Z] [INFO] [Section 3] Collecting Signals for find football products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:07.363Z] [INFO] 🤖 AI Search Strategy: "find football products" ➔ [football gear, soccer equipment, sports accessories] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:27:07.651Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:27:07.656Z] [INFO] [API] GET /api/briefs 200 5ms {"method":"GET","url":"/api/briefs","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:08.849Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T16:27:08.853Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:09.513Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:27:09.517Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:27:12.640Z] [INFO] [Section 3] Only collected 0 signal families. Requirement is 2. {"agent":"ProductResearcher","type":"warn"}
-[2025-12-20T16:28:05.704Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:28:05.721Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:29:05.780Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:29:05.798Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:30:05.877Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:30:05.896Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:31:05.955Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:31:05.976Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:32:06.071Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:32:06.089Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:33:06.148Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:33:06.169Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:34:06.211Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:34:06.232Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:35:06.299Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:35:06.315Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:36:06.399Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:36:06.423Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:37:06.479Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:37:06.501Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:38:06.546Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:38:06.561Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T16:54:06.548Z] [INFO] Initializing Container... 
+[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-20T16:54:06.550Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-20T16:54:06.550Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-20T16:54:06.550Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-20T16:54:06.550Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-20T16:54:06.551Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-20T16:54:06.552Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-20T16:54:06.552Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-20T16:54:06.552Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-20T16:54:06.552Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-20T16:54:06.552Z] [INFO] Container initialized. 
+[2025-12-20T16:54:06.698Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-20T16:54:06.703Z] [INFO] [API] GET / 302 5ms {"method":"GET","url":"/","status":302,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:54:21.951Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-20T16:54:21.952Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:54:21.956Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-20T16:54:21.980Z] [INFO] [API] POST /api/simulation/clear 200 24ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":24,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:54:35.192Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find golf products"}}
+[2025-12-20T16:54:35.227Z] [INFO] Received Research Request: 3e9c3c85-dcd0-4029-add6-5a072cae3b0c {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:35.229Z] [INFO] [Section 1] Processing Request: 3e9c3c85-dcd0-4029-add6-5a072cae3b0c {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:35.231Z] [INFO] [API] POST /api/simulation/start 200 39ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":39,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:54:35.233Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-20T16:54:35.236Z] [INFO] [API] POST /api/simulation/loop/start 200 3ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:54:36.579Z] [INFO] [Section 1] Brief Created: brief_3e9c3c85-dcd0-4029-add6-5a072cae3b0c_1766249676572 {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:36.589Z] [INFO] [Section 2] Ingesting Prior Learnings for find golf products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:36.612Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:36.619Z] [INFO] [Section 3] Collecting Signals for find golf products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:36.899Z] [INFO] 🤖 AI Search Strategy: "find golf products" ➔ [golf accessories, golf training aids, golf apparel] {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.640Z] [INFO] [Section 3] Signals Collected: 6 items from search, competitor {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.657Z] [INFO] [Section 4] Generating Themes from 6 signals... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.661Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.667Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.671Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.677Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.683Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.689Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.689Z] [INFO] Theme Golf Bag Organizer rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.689Z] [INFO] Theme Golf Cart Enclosure rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.689Z] [INFO] Theme Nike Women's Golf Polo rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.694Z] [INFO] [Section 7] Time Filtered: 6 passed {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.700Z] [INFO] [Section 8] Performing Deep Validation on top 6 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.704Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.708Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.712Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.718Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.732Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.732Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.732Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.738Z] [INFO] Created new staging session: research_a1a456ad {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.739Z] [INFO] Created new staging session: research_3033f890 {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.752Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:48.757Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.762Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-20T16:54:48.771Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
+[2025-12-20T16:54:58.789Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-20T16:54:58.794Z] [INFO] [API] GET /api/briefs 200 5ms {"method":"GET","url":"/api/briefs","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:55:05.991Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-20T16:55:05.996Z] [INFO] [API] GET /api/staging/sessions 200 5ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:55:05.999Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
+[2025-12-20T16:55:06.006Z] [INFO] [API] GET /api/staging/items 200 7ms {"method":"GET","url":"/api/staging/items","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:55:35.323Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T16:55:35.342Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T16:56:35.415Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T16:56:35.432Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T16:57:03.767Z] [DEBUG] [REQ] GET /api/agents?t=1766249823766 {"body":{}}
+[2025-12-20T16:57:03.769Z] [INFO] [API] GET /api/agents?t=1766249823766 200 2ms {"method":"GET","url":"/api/agents?t=1766249823766","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:06.779Z] [DEBUG] [REQ] GET /api/agents?t=1766249826778 {"body":{}}
+[2025-12-20T16:57:06.781Z] [INFO] [API] GET /api/agents?t=1766249826778 200 2ms {"method":"GET","url":"/api/agents?t=1766249826778","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:09.784Z] [DEBUG] [REQ] GET /api/agents?t=1766249829783 {"body":{}}
+[2025-12-20T16:57:09.786Z] [INFO] [API] GET /api/agents?t=1766249829783 200 2ms {"method":"GET","url":"/api/agents?t=1766249829783","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:12.770Z] [DEBUG] [REQ] GET /api/agents?t=1766249832769 {"body":{}}
+[2025-12-20T16:57:12.774Z] [INFO] [API] GET /api/agents?t=1766249832769 200 4ms {"method":"GET","url":"/api/agents?t=1766249832769","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:15.781Z] [DEBUG] [REQ] GET /api/agents?t=1766249835778 {"body":{}}
+[2025-12-20T16:57:15.786Z] [INFO] [API] GET /api/agents?t=1766249835778 200 5ms {"method":"GET","url":"/api/agents?t=1766249835778","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:18.770Z] [DEBUG] [REQ] GET /api/agents?t=1766249838768 {"body":{}}
+[2025-12-20T16:57:18.775Z] [INFO] [API] GET /api/agents?t=1766249838768 200 5ms {"method":"GET","url":"/api/agents?t=1766249838768","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:21.778Z] [DEBUG] [REQ] GET /api/agents?t=1766249841777 {"body":{}}
+[2025-12-20T16:57:21.782Z] [INFO] [API] GET /api/agents?t=1766249841777 200 4ms {"method":"GET","url":"/api/agents?t=1766249841777","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:24.779Z] [DEBUG] [REQ] GET /api/agents?t=1766249844775 {"body":{}}
+[2025-12-20T16:57:24.782Z] [INFO] [API] GET /api/agents?t=1766249844775 200 3ms {"method":"GET","url":"/api/agents?t=1766249844775","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:27.773Z] [DEBUG] [REQ] GET /api/agents?t=1766249847772 {"body":{}}
+[2025-12-20T16:57:27.776Z] [INFO] [API] GET /api/agents?t=1766249847772 200 3ms {"method":"GET","url":"/api/agents?t=1766249847772","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:30.783Z] [DEBUG] [REQ] GET /api/agents?t=1766249850779 {"body":{}}
+[2025-12-20T16:57:30.786Z] [INFO] [API] GET /api/agents?t=1766249850779 200 3ms {"method":"GET","url":"/api/agents?t=1766249850779","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:33.780Z] [DEBUG] [REQ] GET /api/agents?t=1766249853779 {"body":{}}
+[2025-12-20T16:57:33.784Z] [INFO] [API] GET /api/agents?t=1766249853779 200 4ms {"method":"GET","url":"/api/agents?t=1766249853779","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:35.532Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T16:57:35.552Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T16:57:36.781Z] [DEBUG] [REQ] GET /api/agents?t=1766249856778 {"body":{}}
+[2025-12-20T16:57:36.784Z] [INFO] [API] GET /api/agents?t=1766249856778 200 3ms {"method":"GET","url":"/api/agents?t=1766249856778","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:39.775Z] [DEBUG] [REQ] GET /api/agents?t=1766249859774 {"body":{}}
+[2025-12-20T16:57:39.780Z] [INFO] [API] GET /api/agents?t=1766249859774 200 5ms {"method":"GET","url":"/api/agents?t=1766249859774","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:42.780Z] [DEBUG] [REQ] GET /api/agents?t=1766249862776 {"body":{}}
+[2025-12-20T16:57:42.785Z] [INFO] [API] GET /api/agents?t=1766249862776 200 5ms {"method":"GET","url":"/api/agents?t=1766249862776","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:45.772Z] [DEBUG] [REQ] GET /api/agents?t=1766249865770 {"body":{}}
+[2025-12-20T16:57:45.777Z] [INFO] [API] GET /api/agents?t=1766249865770 200 5ms {"method":"GET","url":"/api/agents?t=1766249865770","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:48.084Z] [DEBUG] [REQ] GET /api/products {"body":{}}
+[2025-12-20T16:57:48.110Z] [INFO] [API] GET /api/products 200 26ms {"method":"GET","url":"/api/products","status":200,"duration":26,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:57:49.447Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-20T16:57:49.451Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-20T16:58:35.633Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T16:58:35.652Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T16:59:35.725Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T16:59:35.741Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T17:00:35.802Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T17:00:35.817Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T17:01:35.884Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T17:01:35.899Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T17:02:35.973Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T17:02:36.004Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T17:03:36.030Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T17:03:36.050Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-20T17:04:36.059Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-20T17:04:36.077Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
