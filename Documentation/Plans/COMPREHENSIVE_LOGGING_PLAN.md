@@ -5,17 +5,19 @@ Ensure every system action and error is persistently logged to specific file des
 
 - **Error Logs (`logs/error.log`)**: Must contain full stack traces, error context, and timestamp.
 - **Activity Logs (`logs/activity.log`)**: Must contain a record of every action, including method calls, MCP calls, and API requests, with full details.
+- **External Logs (`logs/external.log`)**: Dedicated log for all third-party API interactions (OpenAI, Shopify, Google Trends) to track costs, latency, and rate limits.
 
 ## 1. Infrastructure Enhancements
 
 ### 1.1 Enhanced Logger Service
-Modify `src/infra/logging/LoggerService.ts` and `FileLoggerAdapter.ts` to support dual-stream logging.
+Modify `src/infra/logging/LoggerService.ts` and `FileLoggerAdapter.ts` to support multi-stream logging.
 
 - **Current State**: Single `app.log` or console.
 - **Target State**:
-    - `LoggerService` manages two distinct streams: `errorStream` and `activityStream`.
-    - `error()` calls write to `logs/error.log`.
-    - `info()`, `debug()`, `warn()` calls write to `logs/activity.log`.
+    - `LoggerService` manages distinct streams:
+        - `errorStream` -> `logs/error.log`
+        - `activityStream` -> `logs/activity.log`
+        - `externalStream` -> `logs/external.log`
 
 ### 1.2 Log Format Standards
 - **Error Log Format**:
@@ -24,13 +26,18 @@ Modify `src/infra/logging/LoggerService.ts` and `FileLoggerAdapter.ts` to suppor
   Context: { ...json_data }
   Stack Trace:
   Error: ...
-      at Function.method (file.ts:10:20)
-      ...
   ```
 - **Activity Log Format**:
   ```text
   [ISO_TIMESTAMP] [INFO] [Category] [Action] Message
   Details: { method: "methodName", args: [...], ... }
+  ```
+- **External Log Format**:
+  ```text
+  [ISO_TIMESTAMP] [INFO] [Provider:OpenAI] [200 OK] [1450ms]
+  Request: { model: "gpt-4", tokens: 500 }
+  Response: { ... }
+  Cost: $0.03
   ```
 
 ## 2. Implementation Layers
@@ -52,7 +59,7 @@ Create a TypeScript decorator `@LogActivity` in `src/core/utils/decorators/LogAc
 - **Usage**: Apply to critical methods in Agents and Services.
 - **Behavior**:
     - Log "Started [MethodName]" with arguments.
-    - Log "Completed [MethodName]" with result (or summary).
+    - Log "Completed [MethodName]" with result (or summary) and **Execution Time**.
     - Catch errors, log to `error.log`, and re-throw.
 
 ### 2.3 MCP Layer (Protocol Interception)
@@ -63,37 +70,51 @@ Enhance `src/core/mcp/server.ts` (or the relevant MCP handler) to log all protoc
     - Outgoing JSON-RPC responses (result, error).
 - **Destination**: `logs/activity.log` (Category: MCP)
 
-### 2.4 Global Error Handling
+### 2.4 External Service Wrappers
+Instrument `OpenAIService`, `ShopifyAdapter`, and `TrendAdapter` to log to `logs/external.log`.
+
+- **Capture**:
+    - Endpoint URL
+    - Payload size / Token count
+    - Latency
+    - Rate Limit headers (if available)
+
+### 2.5 Global Error Handling
 Ensure no error goes unlogged.
 
 - **Express Error Handler**: Middleware to catch async route errors.
-- **Process Handlers**:
-    - `uncaughtException`
-    - `unhandledRejection`
+- **Process Handlers**: `uncaughtException`, `unhandledRejection`.
 - **Destination**: `logs/error.log`
 
-## 3. Execution Steps
+## 3. Log Lifecycle Management
+
+### 3.1 Clearing Logs with Database
+Modify `scripts/inspect_db.ts` (or the primary reset script) to include log clearing logic.
+
+- **Trigger**: When `clear-live`, `clear-sim`, or `clear-all` is executed.
+- **Action**:
+    - Truncate `logs/activity.log`
+    - Truncate `logs/error.log`
+    - Truncate `logs/external.log`
+    - (Optional) Archive current logs before clearing with a timestamp.
+
+## 4. Execution Steps
 
 1.  **Update Logger Infrastructure**:
-    - Modify `FileLoggerAdapter` to accept a filename in constructor.
-    - Update `LoggerService` to instantiate two adapters: `errorLogger` (`error.log`) and `activityLogger` (`activity.log`).
+    - Update `LoggerService` to support `error`, `activity`, and `external` streams.
 
-2.  **Create Request Middleware**:
+2.  **Instrument External Services**:
+    - Add logging to `OpenAIService` and `LiveTrendAdapter`.
+
+3.  **Create Request Middleware**:
     - Implement `requestLogger` middleware.
-    - Register it in `src/index.ts` before routes.
 
-3.  **Implement Decorators**:
-    - Create `@LogActivity` decorator.
-    - Apply to `BaseAgent` methods and key Service methods.
+4.  **Implement Decorators**:
+    - Create `@LogActivity` decorator with timing metrics.
 
-4.  **Instrument MCP Server**:
-    - Add logging hooks in `MCPServer.handleMessage`.
+5.  **Update Reset Scripts**:
+    - Modify `scripts/inspect_db.ts` to clear log files when clearing DB.
 
-5.  **Verify & Test**:
-    - Run a simulation.
-    - Check `logs/error.log` for forced errors.
-    - Check `logs/activity.log` for flow trace.
-
-## 4. File Rotation Policy (Future)
-- Implement log rotation (e.g., daily or size-based) to prevent files from growing indefinitely.
-- Archive old logs to `logs/archive/`.
+6.  **Verify & Test**:
+    - Run simulation, check all 3 log files.
+    - Run DB clear, verify logs are empty.
