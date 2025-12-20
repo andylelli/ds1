@@ -2,7 +2,30 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../../infra/logging/LoggerService.js';
 
+const IGNORED_EXTENSIONS = new Set(['.js', '.css', '.html', '.ico', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.map', '.woff', '.woff2', '.ttf']);
+const IGNORED_PATHS = ['/api/activity', '/api/config', '/api/simulation/status', '/api/logs'];
+
+function shouldLog(req: Request): boolean {
+  const path = req.path || req.url.split('?')[0];
+  
+  // 1. Ignore static assets
+  const ext = path.substring(path.lastIndexOf('.'));
+  if (IGNORED_EXTENSIONS.has(ext)) return false;
+
+  // 2. Ignore polling endpoints (GET only)
+  if (req.method === 'GET') {
+    if (IGNORED_PATHS.some(p => path.startsWith(p))) return false;
+  }
+
+  return true;
+}
+
 export function requestLogger(req: Request, res: Response, next: NextFunction) {
+  if (!shouldLog(req)) {
+    next();
+    return;
+  }
+
   const start = Date.now();
   const { method, url, body } = req;
 

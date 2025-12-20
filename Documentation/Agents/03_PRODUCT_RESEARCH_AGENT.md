@@ -86,24 +86,78 @@ flowchart TD
 ### Detailed Step Execution
 
 #### Phase 1: Context & Discovery
-1.  **Request Intake & Normalization**: Parses the `ResearchRequest` (e.g., "Find Pet Products") and aligns it with the global `StrategyProfile`.
-2.  **Prior Learning Ingestion**: Queries the `PersistencePort` for past failures/successes in the category to generate `RiskAdjustment` factors (e.g., "Avoid electronics in Pet category due to high returns").
-3.  **Multi-Signal Discovery**: Uses MCP tools (`trend_adapter`, `competitor_adapter`) to gather raw data points (`Signal[]`) from various sources.
-4.  **Theme Generation**: Clusters raw signals into `Theme[]` objects. A theme represents a potential product direction rather than a specific SKU.
+1.  **Request Intake & Normalization**:
+    *   **Purpose**: Converts a vague human request (e.g., "Find Pet Products") into a structured strategic directive.
+    *   **Actions**: Uses OpenAI to parse the request against the `StrategyProfile`. Determines seasonal windows, target personas, and execution speed (Fast/Normal/Thorough).
+    *   **MCP/API**: `OpenAI (Chat Completion)` -> Returns `ResearchBrief` JSON.
+
+2.  **Prior Learning Ingestion**:
+    *   **Purpose**: Prevents repeating past mistakes by loading historical context.
+    *   **Actions**: Queries the `PersistencePort` for past products in the target category. Calculates success/failure rates. Applies "Risk Adjustments" (e.g., -10% score for "Electronics" due to high returns).
+    *   **MCP/API**: `PersistencePort.getProducts('live')`.
+
+3.  **Multi-Signal Discovery**:
+    *   **Purpose**: Gathers raw market data from multiple independent sources to form a "Triangulated" view.
+    *   **Actions**:
+        1.  Generates search keywords using OpenAI.
+        2.  **Search Signals**: Calls `TrendAnalysisPort.findProducts(keyword)` (Google Trends/BigQuery).
+        3.  **Competitor Signals**: Calls `CompetitorAnalysisPort.analyzeCompetitors(product)` to find existing sellers.
+    *   **MCP/API**: `GoogleTrendsAdapter`, `CompetitorAdapter`, `OpenAI`.
+
+4.  **Theme Generation**:
+    *   **Purpose**: Clusters disparate signals into coherent product opportunities.
+    *   **Actions**: Groups signals by product name or keyword. Assigns a "Certainty" level:
+        *   *Observed*: Supported by multiple signal families (e.g., Search + Competitor).
+        *   *Inferred*: Supported by only one source.
+    *   **MCP/API**: Internal Clustering Logic.
 
 #### Phase 2: Filtering & Ranking
-5.  **Strategic Gating**: The "Kill Switch". Checks themes against hard constraints (Margin > 20%, Category Allowed).
-6.  **Scoring & Ranking**: Calculates a weighted score (0-100) based on signal volume, velocity, and risk adjustments.
-7.  **Time & Cycle Fitness**: Analyzes the `TrendPhase`. Rejects themes that are "Too Early" (unproven) or "Too Late" (saturated).
+5.  **Strategic Gating**:
+    *   **Purpose**: The "Kill Switch". Immediately discards ideas that violate business rules.
+    *   **Actions**: Checks themes against:
+        *   **Blacklist**: Weapons, drugs, adult content.
+        *   **Fulfillment Risks**: Glass, liquids, heavy items.
+        *   **Strategy Profile**: Allowed categories and margin constraints.
+    *   **MCP/API**: Internal Logic.
+
+6.  **Scoring & Ranking**:
+    *   **Purpose**: Prioritizes opportunities based on potential and risk.
+    *   **Actions**: Calculates a weighted score (0-100) based on:
+        *   Signal Velocity (Trend growth).
+        *   Signal Diversity (Certainty bonus).
+        *   Risk Adjustments (from Step 2).
+    *   **MCP/API**: Internal Logic.
+
+7.  **Time & Cycle Fitness**:
+    *   **Purpose**: Ensures the opportunity is actionable *now*.
+    *   **Actions**: Estimates the **Trend Phase** (Early, Mid, Late) and **Opportunity Window** (Days remaining). Rejects themes where the window < execution time (e.g., "Too Late" for a 30-day launch).
+    *   **MCP/API**: Internal Logic.
 
 #### Phase 3: Validation & Packaging
-8.  **Deep Validation**: Performs specific checks on the surviving themes:
-    *   **Competition Density**: How many sellers?
-    *   **Price Band**: Is there room for profit?
-    *   **Seasonality**: Is it a fad?
-9.  **Productization (Offer Concepts)**: Transforms a "Theme" into a concrete `ProductConcept` with a core hypothesis, target persona, and differentiation strategy.
-10. **Opportunity Brief Creation**: Maps all data into the strict `OpportunityBrief` schema. Populates critical sections like `kill_criteria`, `validation_plan`, and `assumptions_and_certainty`.
-11. **Handoff**: Publishes `OpportunityResearch.BriefsPublished` to the Event Bus.
+8.  **Deep Validation**:
+    *   **Purpose**: Rigorous stress-testing of the top 5 candidates.
+    *   **Actions**: Simulates a "Deep Scan" to generate:
+        *   **Qualitative Data**: Customer reviews/complaints.
+        *   **Competition Quality**: Weak vs. Strong incumbents.
+        *   **Price Band**: Min/Max viable pricing.
+    *   **MCP/API**: Internal Logic (Mocked in MVP, would be Social Listening/Scraper).
+
+9.  **Productization (Offer Concepts)**:
+    *   **Purpose**: Transforms a raw "Theme" into a sellable "Concept".
+    *   **Actions**: Defines the **Core Hypothesis**, **Target Persona**, **Usage Scenario**, and **Differentiation Strategy** (e.g., "Better packaging + Eco-friendly materials").
+    *   **MCP/API**: Internal Logic (Mocked in MVP, would be LLM).
+
+10. **Opportunity Brief Creation**:
+    *   **Purpose**: Creates the final artifact for the CEO.
+    *   **Actions**: Maps all collected data into the strict 14-section `OpportunityBrief` schema. Populates `kill_criteria`, `validation_plan`, and `risk_assessment`. Saves the brief to the Database.
+    *   **MCP/API**: `PersistencePort.saveBrief()`.
+
+11. **Handoff via Events**:
+    *   **Purpose**: Triggers the next phase of the business lifecycle.
+    *   **Actions**: Publishes events to wake up downstream agents:
+        *   `Supplier.FeasibilityRequested`: "Can we source this?"
+        *   `Marketing.AngleWhitespaceRequested`: "How do we sell this?"
+    *   **MCP/API**: `EventBus.publish()`.
 
 ---
 

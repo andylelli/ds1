@@ -1,1 +1,6 @@
-[2025-12-20T09:33:46.360Z] [ERROR] Test Error Log {}
+[2025-12-20T10:26:12.272Z] [ERROR] No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}
+[2025-12-20T10:26:12.285Z] [ERROR] Research Aborted: No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}
+[2025-12-20T16:23:37.602Z] [ERROR] No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}
+[2025-12-20T16:23:37.614Z] [ERROR] Research Aborted: No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}
+[2025-12-20T16:27:12.640Z] [ERROR] No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}
+[2025-12-20T16:27:12.652Z] [ERROR] Research Aborted: No signals collected. Aborting research pipeline. {"agent":"ProductResearcher","type":"error"}

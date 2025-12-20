@@ -61,7 +61,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
 
       return result;
     } catch (error: any) {
-      console.error(`[LiveTrend] Google Trends failed, falling back to AI:`, error.message);
+      console.error(`[LiveTrend] Google Trends failed:`, error.message);
       await this.activityLog.log({
         agent: 'ProductResearcher',
         action: 'analyze_trend',
@@ -72,11 +72,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
       });
       
       // STRICT LIVE MODE: Do not fallback to AI simulation. Fail loudly so we can fix the API.
-      // throw error;
-      
-      // FALLBACK: For now, fallback to AI synthesis so the user sees products even if Trends API fails.
-      console.log('[LiveTrend] Falling back to AI synthesis without trend data...');
-      return this.synthesizeProductsWithAI(category, [], { storySummaries: { trendingStories: [] } });
+      throw error;
     }
   }
 
