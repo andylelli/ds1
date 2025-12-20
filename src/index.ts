@@ -41,6 +41,7 @@ import { createStagingRoutes } from './api/staging-routes.js';
 import { createBriefRoutes } from './api/brief-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
 import { createActivityRoutes } from './api/activity-routes.js';
+import { requestLogger } from './api/middleware/RequestLogger.js';
 
 // Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -48,6 +49,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use(requestLogger);
 
 // --- Startup validation (fail fast if critical env missing)
 const requiredEnv = ['AZURE_OPENAI_ENDPOINT', 'AZURE_OPENAI_DEPLOYMENT_NAME'];

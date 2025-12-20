@@ -1,5 +1,6 @@
 import { createInterface } from 'readline';
 import { MCP_MESSAGE_TYPES } from './protocol.js';
+import { logger } from '../../infra/logging/LoggerService.js';
 export class MCPServer {
     tools;
     resources;
@@ -25,9 +26,11 @@ export class MCPServer {
                 continue;
             try {
                 const message = JSON.parse(line);
+                logger.debug('[MCP Inbound]', message);
                 await this.handleMessage(message);
             }
             catch (error) {
+                logger.error('[MCP Parse Error]', { error, line });
                 this.sendError(null, -32700, 'Parse error');
             }
         }
@@ -85,6 +88,7 @@ export class MCPServer {
             id,
             result
         };
+        logger.debug('[MCP Outbound Result]', response);
         console.log(JSON.stringify(response));
     }
     sendError(id, code, message) {
@@ -98,6 +102,7 @@ export class MCPServer {
                 message
             }
         };
+        logger.error('[MCP Outbound Error]', response);
         console.log(JSON.stringify(response));
     }
 }

@@ -1,7 +1,14 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 import { MCPServer } from '../core/mcp/server.js';
 import { MCP_MESSAGE_TYPES } from '../core/mcp/protocol.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { logger } from '../infra/logging/LoggerService.js';
+import { LogActivity } from '../core/utils/decorators/LogActivity.js';
 const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 };
 export class BaseAgent extends MCPServer {
     name;
@@ -102,3 +109,6 @@ export class BaseAgent extends MCPServer {
         await this.log('warn', `Agent ${this.name} received event '${event}' with action '${action}' but has no specific handler.`);
     }
 }
+__decorate([
+    LogActivity()
+], BaseAgent.prototype, "handleMessage", null);

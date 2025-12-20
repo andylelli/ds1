@@ -5,8 +5,11 @@ import { LoggerPort } from '../../core/domain/ports/LoggerPort.js';
 export class FileLoggerAdapter implements LoggerPort {
   private logFile: string;
 
-  constructor(filename: string = 'app.log') {
-    this.logFile = path.resolve(process.cwd(), 'logs', filename);
+  constructor(mode: 'live' | 'simulation' | 'mock', filename: string) {
+    // Map 'mock' to 'simulation' folder for simplicity, or keep separate if preferred.
+    // The plan said logs/live or logs/simulation.
+    const folder = mode === 'live' ? 'live' : 'simulation';
+    this.logFile = path.resolve(process.cwd(), 'logs', folder, filename);
     this.ensureLogDirectory();
   }
 

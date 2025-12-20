@@ -1,6 +1,7 @@
 import { openAIService } from '../../ai/OpenAIService.js';
 import { ResearchStagingService } from '../../../core/services/ResearchStagingService.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
+import { logger } from '../../logging/LoggerService.js';
 import googleTrends from 'google-trends-api';
 export class LiveTrendAdapter {
     stagingService;
@@ -218,11 +219,14 @@ export class LiveTrendAdapter {
     async getInterestOverTime(keyword) {
         return this.cachedRequest(`interest_${keyword}`, async () => {
             return this.retry(async () => {
+                const start = Date.now();
                 const result = await googleTrends.interestOverTime({
                     keyword,
                     startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
                     geo: 'US'
                 });
+                const duration = Date.now() - start;
+                logger.external('GoogleTrends', 'interestOverTime', { keyword, duration });
                 try {
                     return JSON.parse(result);
                 }
@@ -236,7 +240,10 @@ export class LiveTrendAdapter {
     async getRelatedQueries(keyword) {
         return this.cachedRequest(`queries_${keyword}`, async () => {
             return this.retry(async () => {
+                const start = Date.now();
                 const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
+                const duration = Date.now() - start;
+                logger.external('GoogleTrends', 'relatedQueries', { keyword, duration });
                 try {
                     const parsed = JSON.parse(result);
                     return {
@@ -256,7 +263,10 @@ export class LiveTrendAdapter {
             try {
                 // Try to get real data
                 return await this.retry(async () => {
+                    const start = Date.now();
                     const result = await googleTrends.realTimeTrends({ geo: 'US' });
+                    const duration = Date.now() - start;
+                    logger.external('GoogleTrends', 'realTimeTrends', { duration });
                     try {
                         return JSON.parse(result);
                     }
@@ -306,12 +316,19 @@ Return ONLY valid JSON:
     }
   ]
 }`;
+        const start = Date.now();
         const result = await client.chat.completions.create({
             model: openAIService.deploymentName,
             messages: [
                 { role: 'system', content: 'You are a data-driven product researcher. Base recommendations on the provided trend data.' },
                 { role: 'user', content: prompt }
             ]
+        });
+        const duration = Date.now() - start;
+        logger.external('OpenAI', 'chat.completions.create', {
+            model: openAIService.deploymentName,
+            tokens: result.usage?.total_tokens,
+            duration
         });
         const content = result.choices[0].message.content || '{"products":[]}';
         let data;

@@ -7,7 +7,7 @@
   "fulfilmentMode": "mock",
   "emailMode": "mock",
   "ceoMode": "live",
-  "loggingMode": "console",
+  "loggingMode": "file",
   "logLevel": "info",
   "useSimulatedEndpoints": true,
   "openaiEnabled": true,

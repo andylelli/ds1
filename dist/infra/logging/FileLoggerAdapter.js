@@ -2,8 +2,11 @@ import fs from 'fs';
 import path from 'path';
 export class FileLoggerAdapter {
     logFile;
-    constructor(filename = 'app.log') {
-        this.logFile = path.resolve(process.cwd(), 'logs', filename);
+    constructor(mode, filename) {
+        // Map 'mock' to 'simulation' folder for simplicity, or keep separate if preferred.
+        // The plan said logs/live or logs/simulation.
+        const folder = mode === 'live' ? 'live' : 'simulation';
+        this.logFile = path.resolve(process.cwd(), 'logs', folder, filename);
         this.ensureLogDirectory();
     }
     ensureLogDirectory() {

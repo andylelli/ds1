@@ -4,6 +4,7 @@ import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { logger } from '../infra/logging/LoggerService.js';
+import { LogActivity } from '../core/utils/decorators/LogActivity.js';
 
 const LOG_LEVELS: Record<string, number> = { debug: 0, info: 1, warn: 2, error: 3 };
 
@@ -78,6 +79,7 @@ export abstract class BaseAgent extends MCPServer {
     }
   }
 
+  @LogActivity()
   async handleMessage(message: any) {
     switch (message.method) {
       case MCP_MESSAGE_TYPES.PLAN_REQUEST:
