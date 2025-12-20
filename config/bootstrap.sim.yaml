@@ -1,23 +1,32 @@
 system:
-  mode: "simulation" # Options: "simulation", "live"
-  persistence: "postgres" # Options: "postgres"
-  event_bus: "postgres" # Options: "postgres"
-
+  mode: simulation
+  persistence: postgres
+  event_bus: postgres
 services:
-  # Options for all services: "mock", "live"
-  ceo: "mock"
-  shop: "mock"
-  ads: "mock"
-  trends: "live"
-  competitor: "mock"
-  fulfilment: "mock"
-  email: "mock"
-  ai: "live"
-  operations: "mock"
-  analytics: "mock"
-
+  ceo: mock
+  shop: mock
+  ads: mock
+  trends: mock
+  competitor: mock
+  fulfilment: mock
+  email: mock
+  ai: live
+  operations: mock
+  analytics: mock
 paths:
-  infrastructure: "config/infrastructure.yaml"
-  mcp: "config/mcp.yaml"
-  agents: "config/agents.yaml"
-  workflows: "config/workflows.yaml"
+  infrastructure: config/infrastructure.yaml
+  mcp: config/mcp.yaml
+  agents: config/agents.yaml
+  workflows: config/workflows.yaml
+bootstrap:
+  services:
+    ceo: mock
+    trends: simulation
+    competitor: mock
+    fulfilment: mock
+    shop: mock
+    ads: mock
+    email: mock
+    operations: mock
+    analytics: mock
+    ai: live

@@ -95,6 +95,7 @@ const container = new Container(configPath);
     // Casting to PostgresAdapter to access specific methods like getPool() if needed
     // In the future, we should avoid casting and use the interface.
     const db = container.getService('db') as PostgresAdapter || new PostgresAdapter(); 
+    const eventBus = container.getService('eventBus') as any; // Cast to any or EventBusPort
     
     // Initialize Services
     const activityLog = new ActivityLogService(db.getPool());
@@ -317,7 +318,7 @@ const container = new Container(configPath);
     });
 
     // --- Staging API Routes ---
-    app.use('/api/staging', createStagingRoutes(db.getPool()));
+    app.use('/api/staging', createStagingRoutes(db.getPool(), eventBus));
 
     // --- Activity Log API Routes ---
     app.use('/api/activity', createActivityRoutes(activityLog));

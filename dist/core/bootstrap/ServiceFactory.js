@@ -1,5 +1,7 @@
 import { PostgresAdapter } from '../../infra/db/PostgresAdapter.js';
+import { MockAdapter } from '../../infra/db/MockAdapter.js';
 import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
+import { ResearchStagingService } from '../services/ResearchStagingService.js';
 // Shop
 import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
 import { MockShopAdapter } from '../../infra/shop/MockShopAdapter.js';
@@ -43,6 +45,9 @@ export class ServiceFactory {
         this.config = config;
     }
     createPersistence() {
+        if (process.env.DS1_MODE === 'mock') {
+            return new MockAdapter();
+        }
         // Currently only Postgres is supported/requested
         const dbConfig = this.config.infrastructure?.database;
         return new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
@@ -51,6 +56,17 @@ export class ServiceFactory {
         const dbConfig = this.config.infrastructure?.database;
         const persistence = new PostgresAdapter(dbConfig?.live_url, dbConfig?.simulation_url);
         return new PostgresEventBus(persistence);
+    }
+    createStagingService(persistence) {
+        // Assuming persistence is PostgresAdapter
+        if (persistence instanceof PostgresAdapter) {
+            return new ResearchStagingService(persistence.getPool());
+        }
+        // Fallback or throw if not PostgresAdapter (e.g. MockAdapter)
+        // For now, we can return null or throw, but let's try to handle it gracefully if possible.
+        // If MockAdapter, we might need a MockStagingService.
+        // But for now, let's assume PostgresAdapter.
+        throw new Error("Staging Service requires PostgresAdapter");
     }
     /**
      * Creates an adapter instance based on the class name from configuration
@@ -140,7 +156,7 @@ export class ServiceFactory {
     createAgent(className, deps) {
         switch (className) {
             case 'CEOAgent':
-                return new CEOAgent(deps.db, deps.eventBus, deps.ai);
+                return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
             case 'ProductResearchAgent':
                 return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
             case 'SupplierAgent':

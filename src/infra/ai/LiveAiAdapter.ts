@@ -60,7 +60,7 @@ export class LiveAiAdapter implements AiPort {
                     }));
                 }
 
-                const result = await client.chat.completions.create(request);
+                const result = await client.chat.completions.create(request, { timeout: 30000 });
                 const choice = result.choices[0];
 
                 // success -> reset failure count

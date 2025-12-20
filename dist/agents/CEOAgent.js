@@ -1,6 +1,7 @@
 import { BaseAgent } from './BaseAgent.js';
 export class CEOAgent extends BaseAgent {
     ai;
+    staging;
     team;
     aiTools = [
         {
@@ -94,16 +95,61 @@ export class CEOAgent extends BaseAgent {
             }
         }
     ];
-    constructor(db, eventBus, ai) {
+    constructor(db, eventBus, ai, staging) {
         super('CEO', db, eventBus);
         this.ai = ai;
+        this.staging = staging;
         // Subscribe to high-level events
         this.eventBus.subscribe('System.Error', 'CEOAgent', async (event) => {
-            this.log('error', `CEO Noticed System Error: ${event.payload.error}`);
+            this.log('info', `CEO Noticed System Error: ${event.payload.error}`);
         });
         this.eventBus.subscribe('Sales.OrderReceived', 'CEOAgent', async (event) => {
             this.log('info', `CEO Celebrates Order: ${event.payload.order_id} for $${event.payload.total}`);
         });
+        // Subscribe to Research Output for Staging
+        this.eventBus.subscribe('OpportunityResearch.BriefsPublished', 'CEOAgent', async (event) => {
+            this.log('info', `CEO received ${event.payload.brief_count} briefs. Staging for review...`);
+            await this.stageBriefs(event.payload);
+        });
+    }
+    async stageBriefs(payload) {
+        if (!this.staging) {
+            this.log('warn', 'Staging service not available. Skipping staging.');
+            return;
+        }
+        const { briefs, request_id } = payload;
+        // Create a session if one doesn't exist, or use request_id as session_id if possible.
+        // ResearchStagingService expects a session to exist in DB.
+        // We can try to create one or assume one exists.
+        // For simplicity, let's create a session for this batch.
+        try {
+            // Check if session exists or create new
+            let sessionId = request_id;
+            const session = await this.staging.getSession(sessionId);
+            if (!session) {
+                // Create a new session for this batch
+                // We need category and researchType. We can infer or use defaults.
+                const category = briefs[0]?.opportunity_definition?.category || 'Unknown';
+                sessionId = await this.staging.createSession(category, 'automated_research', { mode: 'simulation' });
+                this.log('info', `Created new staging session: ${sessionId}`);
+            }
+            for (const brief of briefs) {
+                await this.staging.stageItem(sessionId, {
+                    itemType: 'product',
+                    name: brief.opportunity_definition.theme_name,
+                    description: brief.concept.description,
+                    rawData: brief,
+                    confidenceScore: Math.round((brief.certainty_score || 0) * 100),
+                    source: 'ProductResearchAgent',
+                    trendEvidence: brief.market_evidence.trend_signal,
+                    status: 'pending'
+                });
+            }
+            this.log('info', `Staged ${briefs.length} items for manual review.`);
+        }
+        catch (error) {
+            this.log('error', `Failed to stage briefs: ${error.message}`);
+        }
     }
     setTeam(team) {
         this.team = team;
@@ -115,41 +161,47 @@ export class CEOAgent extends BaseAgent {
     async review_product(payload) {
         const { product } = payload;
         this.log('info', `Workflow: Reviewing product ${product.name}`);
+        // MANUAL OVERRIDE: Auto-approval disabled.
+        // The product is now waiting in the staging area (or database) for manual approval via the UI.
+        this.log('info', `⏸️ Product ${product.name} is pending manual approval. Auto-approval disabled.`);
+        /*
+        // --- Legacy Auto-Approval Logic (Disabled) ---
         const systemPrompt = `You are the CEO. Review this product candidate.
-      Product: ${JSON.stringify(product)}
-      
-      Decide if we should sell this. 
-      - Approve if margin is high (e.g. > 50%) or potential is High.
-      - Reject otherwise.
-      `;
+        Product: ${JSON.stringify(product)}
+        
+        Decide if we should sell this.
+        - Approve if margin is high (e.g. > 50%) or potential is High.
+        - Reject otherwise.
+        `;
+  
         // We only need the approval/rejection tools for this specific task
         const reviewTools = [
-            this.aiTools.find(t => t.name === 'approveProduct'),
-            this.aiTools.find(t => t.name === 'rejectProduct')
+            this.aiTools.find(t => t.name === 'approveProduct')!,
+            this.aiTools.find(t => t.name === 'rejectProduct')!
         ];
+  
         try {
-            const response = await this.ai.chat(systemPrompt, "Please review this product.", reviewTools);
-            // Handle Tool Calls
-            if (response.toolCalls && response.toolCalls.length > 0) {
-                for (const call of response.toolCalls) {
-                    if (call.name === 'approveProduct') {
-                        this.log('info', `Approved product ${product.name}: ${call.arguments.reason}`);
-                        // In a real app, we'd save to DB here with status 'APPROVED'
-                        await this.eventBus.publish('Product.Approved', { product, reason: call.arguments.reason });
-                    }
-                    else if (call.name === 'rejectProduct') {
-                        this.log('info', `Rejected product ${product.name}: ${call.arguments.reason}`);
-                    }
-                }
-            }
-            else {
-                // Fallback if AI just chats
-                this.log('warn', `AI did not make a formal decision for ${product.name}. Response: ${response.content}`);
-            }
-        }
-        catch (error) {
+          const response = await this.ai.chat(systemPrompt, "Please review this product.", reviewTools);
+  
+          // Handle Tool Calls
+          if (response.toolCalls && response.toolCalls.length > 0) {
+              for (const call of response.toolCalls) {
+                  if (call.name === 'approveProduct') {
+                      this.log('info', `Approved product ${product.name}: ${call.arguments.reason}`);
+                      // In a real app, we'd save to DB here with status 'APPROVED'
+                      await this.eventBus.publish('Product.Approved', { product, reason: call.arguments.reason });
+                  } else if (call.name === 'rejectProduct') {
+                      this.log('info', `Rejected product ${product.name}: ${call.arguments.reason}`);
+                  }
+              }
+          } else {
+              // Fallback if AI just chats
+              this.log('warn', `AI did not make a formal decision for ${product.name}. Response: ${response.content}`);
+          }
+        } catch (error: any) {
             this.log('error', `Failed to review product: ${error.message}`);
         }
+        */
     }
     /**
      * Workflow Action: review_supplier
@@ -307,7 +359,7 @@ export class CEOAgent extends BaseAgent {
         }
         catch (error) {
             await this.log('error', { error: error.message });
-            return "I apologize, but I'm having trouble accessing my reports right now.";
+            return `I apologize, but I'm having trouble accessing my reports right now. (Error: ${error.message})`;
         }
     }
     // --- Tool Implementations ---

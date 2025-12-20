@@ -43,6 +43,11 @@ export type EventRegistry = {
     brief_id: string;
     brief_json: any;
   };
+  'OpportunityResearch.BriefsPublished': {
+    request_id: string;
+    brief_count: number;
+    briefs: any[];
+  };
   'OpportunityResearch.Aborted': {
     brief_id: string;
     reason: string;
@@ -82,7 +87,9 @@ export type EventRegistry = {
   // --- Product Domain (Legacy/Transition) ---
   'Product.Approved': {
     product: any;
-    reason: string;
+    reason?: string;
+    approvedBy?: string;
+    notes?: string;
   };
   'Product.Found': {
     product: any;

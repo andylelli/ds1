@@ -252,19 +252,8 @@ export class ProductResearchAgent extends BaseAgent {
         // Check constraint: At least two families
         const families = new Set(signals.map(s => s.family));
         if (families.size < 2) {
-            // Fallback: If we only have search, try to mock a social signal or force another call
-            // For now, we'll just log a warning, but strictly we should fail or retry.
             this.log('warn', `[Section 3] Only collected ${families.size} signal families. Requirement is 2.`);
-            // Mock a social signal if missing (for robustness in this dev phase)
-            if (!families.has('social')) {
-                signals.push({
-                    id: `sig_social_mock_${Date.now()}`,
-                    family: 'social',
-                    source: 'TikTok (Mock)',
-                    timestamp: new Date().toISOString(),
-                    data: { hashtag: `#${brief.raw_criteria.category}`, views: 1000000 }
-                });
-            }
+            // Strict Mode: Do not mock missing signals.
         }
         this.collectedSignals = signals;
         return signals;
@@ -278,6 +267,37 @@ export class ProductResearchAgent extends BaseAgent {
         // For now, we will group by product name/keyword from the signals.
         const themesMap = new Map();
         for (const signal of signals) {
+            // Handle Search Signals with specific products
+            if (signal.family === 'search' && signal.data.products && Array.isArray(signal.data.products) && signal.data.products.length > 0) {
+                for (const product of signal.data.products) {
+                    if (!product.name)
+                        continue; // Skip if name is missing (e.g. summary object)
+                    const themeName = product.name;
+                    const description = product.description || `High search interest in ${themeName}`;
+                    const key = themeName.toLowerCase();
+                    if (!themesMap.has(key)) {
+                        themesMap.set(key, {
+                            id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                            name: themeName,
+                            description: description,
+                            supporting_signals: [],
+                            certainty: 'Inferred'
+                        });
+                    }
+                    const theme = themesMap.get(key);
+                    if (!theme.supporting_signals.includes(signal.id)) {
+                        theme.supporting_signals.push(signal.id);
+                    }
+                    // Check certainty
+                    const signalFamilies = signals
+                        .filter(s => theme.supporting_signals.includes(s.id))
+                        .map(s => s.family);
+                    if (new Set(signalFamilies).size > 1) {
+                        theme.certainty = 'Observed';
+                    }
+                }
+                continue;
+            }
             let themeName = '';
             let description = '';
             if (signal.family === 'search') {
@@ -287,6 +307,11 @@ export class ProductResearchAgent extends BaseAgent {
             else if (signal.family === 'competitor') {
                 themeName = signal.data.product || 'Unknown';
                 description = `Competitor activity in ${themeName}`;
+            }
+            else if (signal.family === 'social') {
+                // Handle social signals (including mocks)
+                themeName = signal.data.hashtag ? signal.data.hashtag.replace('#', '') : 'Trending Topic';
+                description = `Viral social trend: ${themeName}`;
             }
             else {
                 continue;
@@ -734,6 +759,12 @@ export class ProductResearchAgent extends BaseAgent {
             // Section 3: Multi-Signal Discovery
             await this.logStep('Step 3: Signals', 'Discovery', 'started', 'Collecting signals...');
             const signals = await this.collectSignals(brief);
+            if (signals.length === 0) {
+                const msg = 'No signals collected. Aborting research pipeline.';
+                this.log('error', msg);
+                await this.logStep('Step 3: Signals', 'Discovery', 'failed', msg, { count: 0 });
+                throw new Error(msg);
+            }
             await this.eventBus.publish('OpportunityResearch.SignalsCollected', {
                 brief_id: briefId,
                 signal_count: signals.length,

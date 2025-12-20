@@ -36,6 +36,7 @@ import { Container } from './core/bootstrap/Container.js';
 import { PostgresAdapter } from './infra/db/PostgresAdapter.js';
 import { SimulationService } from './core/services/SimulationService.js';
 import { ResearchStagingService } from './core/services/ResearchStagingService.js';
+import { CEOAgent } from './agents/CEOAgent.js';
 import { createStagingRoutes } from './api/staging-routes.js';
 import { createBriefRoutes } from './api/brief-routes.js';
 import { ActivityLogService } from './core/services/ActivityLogService.js';
@@ -83,9 +84,13 @@ const container = new Container(configPath);
         // Casting to PostgresAdapter to access specific methods like getPool() if needed
         // In the future, we should avoid casting and use the interface.
         const db = container.getService('db') || new PostgresAdapter();
+        const eventBus = container.getService('eventBus'); // Cast to any or EventBusPort
+        // Initialize Services
+        const activityLog = new ActivityLogService(db.getPool());
+        const stagingService = new ResearchStagingService(db.getPool());
         // Retrieve Agents
         const agents = {
-            ceo: container.getAgent('ceo_agent'),
+            ceo: new CEOAgent(db, container.getEventBus(), container.getService('ai_service'), stagingService),
             research: container.getAgent('product_research_agent'),
             supplier: container.getAgent('supplier_agent'),
             store: container.getAgent('store_build_agent'),
@@ -95,8 +100,6 @@ const container = new Container(configPath);
             analytics: container.getAgent('analytics_agent')
         };
         // Initialize Services
-        const activityLog = new ActivityLogService(db.getPool());
-        const stagingService = new ResearchStagingService(db.getPool());
         const simulationService = new SimulationService(db, container.getEventBus(), agents, activityLog, stagingService);
         // --- Configuration API ---
         app.get('/api/config', (req, res) => {
@@ -163,7 +166,7 @@ const container = new Container(configPath);
             res.json(agentList);
         });
         // Register Routes
-        app.use('/api/staging', createStagingRoutes(db.getPool()));
+        app.use('/api/staging', createStagingRoutes(db.getPool(), container.getEventBus()));
         app.use('/api/activity', createActivityRoutes(activityLog));
         app.use('/api/briefs', createBriefRoutes(db));
         app.get('/api/logs', async (req, res) => {
@@ -293,7 +296,7 @@ const container = new Container(configPath);
             }
         });
         // --- Staging API Routes ---
-        app.use('/api/staging', createStagingRoutes(db.getPool()));
+        app.use('/api/staging', createStagingRoutes(db.getPool(), eventBus));
         // --- Activity Log API Routes ---
         app.use('/api/activity', createActivityRoutes(activityLog));
         // --- Docker Control API ---

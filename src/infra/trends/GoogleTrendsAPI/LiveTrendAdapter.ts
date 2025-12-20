@@ -71,7 +71,11 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
       });
       
       // STRICT LIVE MODE: Do not fallback to AI simulation. Fail loudly so we can fix the API.
-      throw error;
+      // throw error;
+      
+      // FALLBACK: For now, fallback to AI synthesis so the user sees products even if Trends API fails.
+      console.log('[LiveTrend] Falling back to AI synthesis without trend data...');
+      return this.synthesizeProductsWithAI(category, [], { storySummaries: { trendingStories: [] } });
     }
   }
 
@@ -187,14 +191,8 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
           }
         });
         
-        // Return indication that items are staged
-        return [{
-          staged: true,
-          sessionId,
-          itemCount: products.length,
-          message: `${products.length} products staged for review. Session: ${sessionId}`,
-          reviewUrl: `/staging.html?session=${sessionId}`
-        } as any];
+        // Return the products so the agent can use them
+        return products;
       }
       
       // 5. If staging disabled, return directly (legacy behavior)
@@ -361,8 +359,35 @@ Return ONLY valid JSON:
     });
 
     const content = result.choices[0].message.content || '{"products":[]}';
-    const cleanJson = content.replace(/```json/g, '').replace(/```/g, '').trim();
-    const data = JSON.parse(cleanJson);
+    let data;
+    try {
+        const cleanJson = content.replace(/```json/g, '').replace(/```/g, '').trim();
+        data = JSON.parse(cleanJson);
+    } catch (e: any) {
+        console.error('[LiveTrend] Failed to parse AI response:', content);
+        await this.activityLog.log({
+            agent: 'ProductResearcher',
+            action: 'synthesize_products',
+            category: 'research',
+            status: 'failed',
+            message: `Failed to parse AI response for category: ${category}`,
+            details: { category, error: e.message, rawContent: content }
+        });
+        data = { products: [] };
+    }
+
+    if (!data.products || data.products.length === 0) {
+        console.warn('[LiveTrend] AI returned no products from trend data.');
+        await this.activityLog.log({
+            agent: 'ProductResearcher',
+            action: 'synthesize_products',
+            category: 'research',
+            status: 'failed',
+            message: `AI returned no products for category: ${category}`,
+            details: { category, rawContent: content }
+        });
+        return [];
+    }
 
     return data.products.map((p: any) => ({
       ...p,

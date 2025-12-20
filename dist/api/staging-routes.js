@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ResearchStagingService } from '../core/services/ResearchStagingService.js';
-export function createStagingRoutes(pool) {
+export function createStagingRoutes(pool, eventBus) {
     const router = Router();
     const stagingService = new ResearchStagingService(pool);
     // === Sessions ===
@@ -60,7 +60,28 @@ export function createStagingRoutes(pool) {
     router.post('/items/:id/approve', async (req, res) => {
         try {
             const { reviewedBy = 'admin', notes } = req.body;
-            await stagingService.approveItem(parseInt(req.params.id), reviewedBy, notes);
+            const itemId = parseInt(req.params.id);
+            // 1. Approve in DB
+            await stagingService.approveItem(itemId, reviewedBy, notes);
+            // 2. Fetch the item to get details for the event
+            const item = await stagingService.getItem(itemId);
+            if (item && item.itemType === 'product') {
+                // 3. Publish Product.Approved
+                // Construct the product object from rawData
+                // rawData is the OpportunityBrief
+                const brief = item.rawData;
+                // We need to ensure the payload matches what SupplierAgent expects.
+                // SupplierAgent expects { product: ... } or { brief_id, brief_json }?
+                // Wait, SupplierAgent was listening to OpportunityResearch.BriefPublished which has { brief_id, brief_json }.
+                // But I am changing SupplierAgent to listen to Product.Approved.
+                // Let's define Product.Approved payload as { product: brief }.
+                await eventBus.publish('Product.Approved', {
+                    product: brief,
+                    approvedBy: reviewedBy,
+                    notes: notes
+                });
+                console.log(`[Staging API] Published Product.Approved for item ${itemId}`);
+            }
             res.json({ success: true, message: 'Item approved' });
         }
         catch (error) {

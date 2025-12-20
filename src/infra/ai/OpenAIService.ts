@@ -76,7 +76,8 @@ export class OpenAIService {
       return new AzureOpenAI({
         endpoint,
         apiKey: apiKey,
-        apiVersion: "2024-05-01-preview"
+        apiVersion: "2024-05-01-preview",
+        timeout: 30000 // 30 seconds timeout
       });
     }
 
@@ -87,7 +88,8 @@ export class OpenAIService {
     return new AzureOpenAI({ 
       endpoint, 
       azureADTokenProvider, 
-      apiVersion: "2024-05-01-preview" 
+      apiVersion: "2024-05-01-preview",
+      timeout: 30000 // 30 seconds timeout
     });
   }
 }

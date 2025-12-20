@@ -42,6 +42,7 @@ export class SimulationService {
     console.log(`[Simulation] Starting flow for category: ${category}`);
     
     // Log simulation start
+    console.log('[Simulation] Logging start to ActivityLog...');
     await this.activityLog?.log({
       agent: 'System',
       action: 'simulation_started',
@@ -50,15 +51,19 @@ export class SimulationService {
       message: `Starting simulation for category: ${category}`,
       details: { category }
     });
+    console.log('[Simulation] Logged to ActivityLog.');
     
     // Agents mode is determined by container config, not forced here.
     
     try {
+      console.log('[Simulation] Saving log to DB...');
       await this.db.saveLog('Simulation', 'Flow Started', 'info', { category });
+      console.log('[Simulation] Saved log to DB.');
     } catch (err) { console.error("Failed to log start", err); }
 
     try {
       // 1. Research
+      console.log('[Simulation] Logging research start...');
       await this.activityLog?.log({
         agent: 'Research',
         action: 'find_products',
@@ -67,6 +72,7 @@ export class SimulationService {
         message: `Searching for products in ${category}`,
         details: { category }
       });
+      console.log('[Simulation] Logged research start.');
 
       // --- EVENT DRIVEN REFACTOR ---
       // Instead of calling the agent directly, we publish a request.

@@ -389,7 +389,7 @@ export class CEOAgent extends BaseAgent {
 
     } catch (error: any) {
       await this.log('error', { error: error.message });
-      return "I apologize, but I'm having trouble accessing my reports right now.";
+      return `I apologize, but I'm having trouble accessing my reports right now. (Error: ${error.message})`;
     }
   }
 

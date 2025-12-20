@@ -442,7 +442,8 @@ export class PostgresAdapter {
             'events',
             'orders',
             'ads',
-            'products'
+            'products',
+            'opportunity_briefs'
         ];
         if (!this.simPool) {
             console.log('[PostgresAdapter.clearSimulationData] simPool is null, nothing to clear');

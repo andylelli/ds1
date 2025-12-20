@@ -85,8 +85,10 @@ function renderItemsTable(items) {
                         if (item.status === 'pending') statusClass = 'is-warning';
 
                         let confidenceClass = 'is-success';
-                        if (item.confidence < 0.7) confidenceClass = 'is-warning';
-                        if (item.confidence < 0.4) confidenceClass = 'is-danger';
+                        const confidence = item.confidenceScore || (item.confidence ? item.confidence * 100 : 0);
+                        
+                        if (confidence < 70) confidenceClass = 'is-warning';
+                        if (confidence < 40) confidenceClass = 'is-danger';
 
                         return `
                             <tr>
@@ -95,8 +97,8 @@ function renderItemsTable(items) {
                                     <p class="is-size-7 has-text-grey">${item.description ? item.description.substring(0, 50) + '...' : ''}</p>
                                 </td>
                                 <td style="width: 150px;">
-                                    <progress class="progress ${confidenceClass} is-small mb-1" value="${item.confidence * 100}" max="100">${item.confidence * 100}%</progress>
-                                    <span class="is-size-7">${Math.round(item.confidence * 100)}%</span>
+                                    <progress class="progress ${confidenceClass} is-small mb-1" value="${confidence}" max="100">${confidence}%</progress>
+                                    <span class="is-size-7">${Math.round(confidence)}%</span>
                                 </td>
                                 <td><span class="tag is-light is-small">${item.source}</span></td>
                                 <td><span class="tag ${statusClass}">${item.status}</span></td>
