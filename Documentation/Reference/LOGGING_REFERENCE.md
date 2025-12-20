@@ -99,3 +99,104 @@ External service wrappers (`OpenAIService`, `ShopifyAdapter`, `TrendAdapter`) lo
     - Payload size / Token count
     - Response time
     - Success/Failure status
+
+## 9. Planned Updates
+
+### 9.1 Phased Approach for Full Payload Logging
+To improve observability without overwhelming storage or performance, we will implement full request/response logging in phases.
+
+#### Phase 1: On-Demand Debug Logging (Current Priority)
+- **Goal**: Enable full payload logging only when specifically requested via configuration or environment variable.
+- **Implementation**:
+    - Add `debug_payloads: boolean` to `config.json`.
+    - Update `LiveTrendAdapter`, `OpenAIService`, and `ShopifyAdapter` to check this flag.
+    - If true, write full JSON bodies to `logs/{mode}/external_payloads.log` (separate file to keep main logs clean).
+
+#### Phase 2: Sampling Strategy
+- **Goal**: Log a percentage of requests to monitor health without full volume.
+- **Implementation**:
+    - Log 100% of errors (already planned).
+    - Log 5% of successful requests with full payloads.
+
+#### Phase 3: Rolling Window Retention
+- **Goal**: Keep full logs for 24 hours, then archive/delete.
+- **Implementation**:
+    - Use a log rotation library (e.g., `winston-daily-rotate-file` if we migrate, or custom script).
+
+### 9.2 API Request/Response Examples
+
+Below are examples of what the **External Log** entries will look like when full payload logging is enabled.
+
+#### Google Trends API (`interestOverTime`)
+**Request**:
+```json
+{
+  "provider": "GoogleTrends",
+  "method": "interestOverTime",
+  "params": {
+    "keyword": "Smart Home",
+    "startTime": "2025-09-21T00:00:00.000Z",
+    "geo": "US"
+  }
+}
+```
+**Response**:
+```json
+{
+  "default": {
+    "timelineData": [
+      { "time": "1726963200", "formattedTime": "Sep 22 – 28, 2025", "formattedAxisTime": "Sep 22", "value": [78], "hasData": [true], "formattedValue": ["78"] },
+      { "time": "1727568000", "formattedTime": "Sep 29 – Oct 5, 2025", "formattedAxisTime": "Sep 29", "value": [82], "hasData": [true], "formattedValue": ["82"] }
+    ]
+  }
+}
+```
+
+#### OpenAI API (`chat.completions`)
+**Request**:
+```json
+{
+  "provider": "OpenAI",
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "body": {
+    "model": "gpt-4",
+    "messages": [
+      { "role": "system", "content": "You are a product researcher..." },
+      { "role": "user", "content": "Analyze trends for 'Smart Home'..." }
+    ],
+    "temperature": 0.7
+  }
+}
+```
+**Response**:
+```json
+{
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1677652288,
+  "model": "gpt-4-0613",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "Based on the data, Smart Home security is rising..."
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {
+    "prompt_tokens": 150,
+    "completion_tokens": 50,
+    "total_tokens": 200
+  }
+}
+```
+
+### 9.3 Integration Status
+
+| Integration | Priority | Status | Implementation Notes |
+|---|---|---|---|
+| Google Trends | Tier 1 | 🟡 Partial | LiveTrendAdapter uses google-trends-api (unofficial). Covers interest over time. |
+| Google Ads (Keywords) | Tier 1 | 🔴 Missing | No implementation. Required for search volume validation. |
+| Meta Ad Library | Tier 1 | 🔴 Missing | LiveCompetitorAdapter is a stub. Required for saturation checks. |
+| YouTube Data | Tier 1 | 🔴 Missing | No implementation. |
+| Competitor Scraper | Tier 1 | ⚪ Stub | LiveCompetitorAdapter exists but throws "Not Implemented". |
