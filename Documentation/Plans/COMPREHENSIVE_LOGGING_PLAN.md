@@ -140,3 +140,61 @@ Modify `scripts/inspect_db.ts` (or the primary reset script) to include log clea
 6.  **Verify & Test**:
     - Run simulation, check `logs/simulation/` files.
     - Run DB clear, verify logs are empty.
+
+## 5. Detailed Phased Implementation Plan
+
+### Phase 1: Foundation (Logger Core)
+**Goal**: Establish the file structure and basic writing capability.
+1.  **Refactor `FileLoggerAdapter`**:
+    - Update constructor to accept `mode` ('live' | 'simulation') and `filename`.
+    - Implement logic to ensure `logs/{mode}/` directory exists.
+2.  **Refactor `LoggerService`**:
+    - Inject `ConfigService` to determine current mode.
+    - Instantiate three separate adapters:
+        - `activityLogger` -> `activity.log`
+        - `errorLogger` -> `error.log`
+        - `externalLogger` -> `external.log`
+    - Implement the routing logic:
+        - `info()` -> `activityLogger` (+ DB if configured)
+        - `error()` -> `errorLogger` (+ DB summary)
+        - `external()` -> `externalLogger`
+
+### Phase 2: Application Layer (Middleware & Decorators)
+**Goal**: Capture flow and performance data without cluttering business logic.
+1.  **Create `RequestLogger` Middleware**:
+    - Create `src/api/middleware/RequestLogger.ts`.
+    - Log `[REQ] Method URL` on start.
+    - Log `[RES] Status Duration` on finish.
+    - Register in `src/index.ts`.
+2.  **Create `@LogActivity` Decorator**:
+    - Create `src/core/utils/decorators/LogActivity.ts`.
+    - Implement `try/catch/finally` wrapper.
+    - Log entry arguments and exit result/duration.
+3.  **Apply Decorators**:
+    - Apply to `BaseAgent.handleMessage`.
+    - Apply to `ProductResearchAgent` main pipeline methods.
+
+### Phase 3: External & Protocol Layer
+**Goal**: Visibility into third-party costs and MCP traffic.
+1.  **Instrument `OpenAIService`**:
+    - Wrap `chat.completions.create`.
+    - Log token usage, model, and latency to `externalLogger`.
+2.  **Instrument `LiveTrendAdapter`**:
+    - Log Google Trends API calls and latencies.
+3.  **Instrument `MCPServer`**:
+    - Add logging to `handleMessage` for raw JSON-RPC traffic.
+
+### Phase 4: Lifecycle & Cleanup
+**Goal**: Maintain hygiene and prevent disk bloat during testing.
+1.  **Update `inspect_db.ts`**:
+    - Add `clearLogs(mode)` function.
+    - Call `clearLogs` inside `clear-live` and `clear-sim` blocks.
+2.  **Test Reset**:
+    - Run `npm run db:reset` (or equivalent) and verify logs are wiped.
+
+### Phase 5: Verification
+**Goal**: Confirm end-to-end visibility.
+1.  **Run Simulation**: Execute a full research cycle.
+2.  **Audit `activity.log`**: Ensure flow is readable and continuous.
+3.  **Audit `error.log`**: Force an error (e.g., bad API key) and verify stack trace.
+4.  **Audit `external.log`**: Verify OpenAI costs are tracked.
