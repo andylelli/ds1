@@ -32,7 +32,7 @@ graph LR
     subgraph External ["External Systems"]
         direction TB
         DB[(Database)]
-        Endpoints[External Endpoints\n(Shopify, Google, OpenAI)]
+        Endpoints["External Endpoints<br/>(Shopify, Google, OpenAI)"]
     end
 
     %% Data Flow
