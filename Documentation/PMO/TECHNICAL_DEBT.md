@@ -12,6 +12,7 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 *   **The Problem:**
     *   **Simulation:** It works fine for a "Turn-Based" game.
     *   **Live System:** Real business is **Real-Time**. A Shopify Webhook (`orders/create`) cannot wait for the "Research Phase" to finish. It must be handled immediately.
+*   **Status:** 🟡 **In Progress**. `PostgresEventBus` is implemented and used in tests, but the main CLI (`run_simulation_cli.js`) still relies on the missing/broken `simulation.js`.
 *   **Proposed Solution:** Move to an **Event-Driven Architecture**.
     *   Introduce an `EventBus` (e.g., Node `EventEmitter` for local, Redis for distributed).
     *   **Live Workflow:**
@@ -23,7 +24,7 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 ### 2. JSON Database Scalability (Partially Addressed)
 *   **Severity:** 🔸 Medium
 *   **Description:** We use `sandbox_db.json` for simulation persistence.
-*   **Status:** 🚧 **In Progress**. We have implemented the `PersistencePort` and `PostgresAdapter`, allowing us to switch to Postgres.
+*   **Status:** � **In Progress**. We have implemented the `PersistencePort` and `PostgresAdapter`, allowing us to switch to Postgres.
 *   **Remaining Debt:**
     *   **Schema Management:** We currently rely on manual table creation or raw SQL in the adapter. We need a proper migration tool (Knex/TypeORM) to manage schema changes safely.
     *   **Mock Parity:** The `MockAdapter` (JSON) and `PostgresAdapter` (SQL) might drift apart if we don't enforce strict interface compliance tests.
@@ -58,6 +59,8 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 *   **Description:** API keys and settings are often hardcoded or scattered.
 *   **The Problem:** Changing a setting requires code edits.
 *   **Proposed Solution:** Centralize all config in `src/config/settings.js` (or `.env`).
+
+### 7. Token Limit Management (Rolling Context)
 *   **Severity:** 🔥 High
 *   **Description:** Agents currently have no mechanism to "forget" or summarize past actions.
 *   **The Problem:** As the simulation runs for "days" or "weeks", the conversation history sent to OpenAI will exceed the token limit (e.g., 128k tokens), causing crashes or massive API bills.
@@ -67,19 +70,24 @@ This document tracks architectural shortcuts, "hacks," and limitations that were
 
 ## 🧹 Code Quality & Maintenance
 
-### 7. Logging Granularity
+### 8. Logging Granularity
 *   **Severity:** 🔹 Low
 *   **Description:** `saveAgentLog` saves everything to one big list.
 *   **Proposed Solution:** Implement structured logging (JSON lines) and log rotation. Separate "Audit Logs" (decisions made) from "Debug Logs" (API responses).
 
-### 8. Frontend Polling (Admin Panel)
+### 9. Frontend Polling (Admin Panel)
 *   **Severity:** 🔹 Low
 *   **Description:** The `admin.html` dashboard likely uses `setInterval` to fetch logs every few seconds.
 *   **The Problem:** This creates unnecessary server load and latency.
 *   **Proposed Solution:** Switch to **WebSockets** (Socket.io) for real-time log streaming from the server to the browser.
 
-### 9. Type Safety (TypeScript)
+### 10. Type Safety (TypeScript)
 *   **Severity:** 🔸 Medium
 *   **Description:** The codebase is a mix of JS and TS.
 *   **The Problem:** `any` types are used frequently in the new Adapters to bypass strict checks.
 *   **Proposed Solution:** Enable `noImplicitAny` in `tsconfig.json` and properly type all DTOs (Data Transfer Objects) between the Frontend and Backend.
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. Fixed malformed Item 6, split into Item 6 and 7. Renumbered subsequent items. |

@@ -447,4 +447,7 @@ SIMULATOR_DATABASE_URL=postgresql://...
 
 ---
 
-*Last Updated: December 2024*
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |

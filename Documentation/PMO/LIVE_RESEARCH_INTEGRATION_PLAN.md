@@ -2375,3 +2375,8 @@ STAGING_EXPIRY_DAYS=7
 *Created: December 2024*
 *Last Updated: December 2024*
 *Author: DS1 Development Team*
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |

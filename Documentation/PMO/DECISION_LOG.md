@@ -14,3 +14,9 @@
 | **ADR-005** | 2025-12-05 | **Hexagonal Persistence Layer** | ✅ Accepted | **Context:** Need to support both file-based mock DB and real Postgres without changing business logic.<br>**Decision:** Implement `PersistencePort` interface with `PostgresAdapter` and `MockAdapter`.<br>**Consequence:** Clean separation of concerns; easier testing. |
 | **ADR-006** | 2025-12-05 | **Dual-Pool Database Strategy** | ✅ Accepted | **Context:** Need to inspect Simulator data while running against Live DB, or vice versa.<br>**Decision:** `PostgresAdapter` maintains two pools (`simPool`, `pgPool`) and methods accept a `source` param.<br>**Consequence:** Admin Panel can view both datasets simultaneously. |
 | **ADR-007** | 2025-12-05 | **API Cache Control** | ✅ Accepted | **Context:** Admin Panel was showing stale data due to browser caching of API responses.<br>**Decision:** Enforce `Cache-Control: no-store` on all `/api/*` routes.<br>**Consequence:** Slightly higher server load, but guarantees data freshness. |
+| **ADR-008** | 2025-12-21 | **Google Ads Adapter Implementation** | ✅ Accepted | **Context:** Need to support both Live (Google Ads API) and Simulation (Mock data) modes for marketing.<br>**Decision:** Implement `LiveAdsAdapter` (using `google-ads-api`) and `MockAdsAdapter` (in-memory).<br>**Consequence:** Enables realistic simulation of ad spend and performance. |
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. Added ADR-008 (Google Ads). |

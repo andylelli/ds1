@@ -30,3 +30,8 @@
 
 *   **API Keys:** Never output API keys in logs or chat messages.
 *   **PII:** Never store Credit Card numbers. Redact emails in debug logs.
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |

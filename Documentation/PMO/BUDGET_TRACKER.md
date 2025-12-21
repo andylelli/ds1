@@ -30,3 +30,8 @@
 *   **Minimum Selling Price:** $49.99
 *   **Target Margin:** $18.49 (37%)
 *   **Target ROAS:** 3.0x
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |

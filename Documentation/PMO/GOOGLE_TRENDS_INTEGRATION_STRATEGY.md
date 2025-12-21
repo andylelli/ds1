@@ -208,3 +208,8 @@ While the current strategy relies on `relatedQueries` and `interestOverTime`, th
     *   Step 4: Return validated list.
 3.  **Testing**:
     *   Use `test_trends.ts` to verify the "Active Exploration" loop produces valid JSON output.
+
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |

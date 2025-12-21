@@ -100,3 +100,8 @@ This document lists the API endpoints required to simulate the external ecosyste
     *   *Response:* Forecasted revenue and confidence interval.
     *   *Real World Equivalent:* **Custom Python/Pandas Script** (No direct API, usually internal logic).
 
+## Change Log
+| Date | Author | Change Description |
+| :--- | :--- | :--- |
+| 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |
+
