@@ -111,40 +111,57 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 ### Persistence (`PersistencePort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `memory` | `MockAdapter` | [src/infra/db/MockAdapter.ts](src/infra/db/MockAdapter.ts) |
+| `mock` | `MockAdapter` | [src/infra/db/MockAdapter.ts](src/infra/db/MockAdapter.ts) |
 | `postgres` | `PostgresAdapter` | [src/infra/db/PostgresAdapter.ts](src/infra/db/PostgresAdapter.ts) |
 
 ### Event Bus (`EventBusPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `memory` | `InMemoryEventBus` | [src/infra/events/InMemoryEventBus.ts](src/infra/events/InMemoryEventBus.ts) |
 | `postgres` | `PostgresEventBus` | [src/infra/events/PostgresEventBus.ts](src/infra/events/PostgresEventBus.ts) |
 
 > **Note**: `PostgresEventBus` uses `PersistencePort.saveEvent()` to store events in the main database (Postgres or Mock), effectively treating the main DB as the "Event Store".
 
-### Trends Provider (`TrendsPort`)
+### Trends Provider (`TrendAnalysisPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `simulated` | `MockTrendAdapter` | [src/infra/trends/GoogleTrendsAPI/MockTrendAdapter.ts](src/infra/trends/GoogleTrendsAPI/MockTrendAdapter.ts) |
+| `mock` | `MockTrendAdapter` | [src/infra/trends/GoogleTrendsAPI/MockTrendAdapter.ts](src/infra/trends/GoogleTrendsAPI/MockTrendAdapter.ts) |
 | `live` | `LiveTrendAdapter` | [src/infra/trends/GoogleTrendsAPI/LiveTrendAdapter.ts](src/infra/trends/GoogleTrendsAPI/LiveTrendAdapter.ts) |
 
 ### Shop Platform (`ShopPlatformPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `simulated` | `MockShopAdapter` | [src/infra/shop/MockShopAdapter.ts](src/infra/shop/MockShopAdapter.ts) |
-| `shopify` | `LiveShopAdapter` | [src/infra/shop/LiveShopAdapter.ts](src/infra/shop/LiveShopAdapter.ts) |
+| `mock` | `MockShopAdapter` | [src/infra/shop/MockShopAdapter.ts](src/infra/shop/MockShopAdapter.ts) |
+| `live` | `LiveShopAdapter` | [src/infra/shop/LiveShopAdapter.ts](src/infra/shop/LiveShopAdapter.ts) |
 
 ### Ads Platform (`AdsPlatformPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `simulated` | `MockAdsAdapter` | [src/infra/ads/GoogleAds/MockAdsAdapter.ts](src/infra/ads/GoogleAds/MockAdsAdapter.ts) |
-| `google` | `LiveAdsAdapter` | [src/infra/ads/GoogleAds/LiveAdsAdapter.ts](src/infra/ads/GoogleAds/LiveAdsAdapter.ts) |
+| `mock` | `MockAdsAdapter` | [src/infra/ads/GoogleAds/MockAdsAdapter.ts](src/infra/ads/GoogleAds/MockAdsAdapter.ts) |
+| `live` | `LiveAdsAdapter` | [src/infra/ads/GoogleAds/LiveAdsAdapter.ts](src/infra/ads/GoogleAds/LiveAdsAdapter.ts) |
 
 ### AI Provider (`AiPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `simulated` | `MockAiAdapter` | [src/infra/ai/MockAiAdapter.ts](src/infra/ai/MockAiAdapter.ts) |
-| `openai` | `LiveAiAdapter` | [src/infra/ai/LiveAiAdapter.ts](src/infra/ai/LiveAiAdapter.ts) |
+| `mock` | `MockAiAdapter` | [src/infra/ai/MockAiAdapter.ts](src/infra/ai/MockAiAdapter.ts) |
+| `live` | `LiveAiAdapter` | [src/infra/ai/LiveAiAdapter.ts](src/infra/ai/LiveAiAdapter.ts) |
+
+### Competitor Analysis (`CompetitorAnalysisPort`)
+| Mode | Class Name | File Path |
+| :--- | :--- | :--- |
+| `mock` | `MockCompetitorAdapter` | [src/infra/research/MockCompetitorAdapter.ts](src/infra/research/MockCompetitorAdapter.ts) |
+| `live` | `LiveCompetitorAdapter` | [src/infra/research/LiveCompetitorAdapter.ts](src/infra/research/LiveCompetitorAdapter.ts) |
+
+### Fulfilment (`FulfilmentPort`)
+| Mode | Class Name | File Path |
+| :--- | :--- | :--- |
+| `mock` | `MockFulfilmentAdapter` | [src/infra/fulfilment/MockFulfilmentAdapter.ts](src/infra/fulfilment/MockFulfilmentAdapter.ts) |
+| `live` | `LiveFulfilmentAdapter` | [src/infra/fulfilment/LiveFulfilmentAdapter.ts](src/infra/fulfilment/LiveFulfilmentAdapter.ts) |
+
+### Email (`EmailPort`)
+| Mode | Class Name | File Path |
+| :--- | :--- | :--- |
+| `mock` | `MockEmailAdapter` | [src/infra/email/MockEmailAdapter.ts](src/infra/email/MockEmailAdapter.ts) |
+| `live` | `LiveEmailAdapter` | [src/infra/email/LiveEmailAdapter.ts](src/infra/email/LiveEmailAdapter.ts) |
 
 ## 4. Core Services
 
