@@ -30,4 +30,14 @@ export class MockAdsAdapter implements AdsPlatformPort {
       console.log(`[MockAds] Stopped campaign: ${id}`);
     }
   }
+
+  async getKeywordMetrics(keywords: string[]): Promise<any> {
+    console.log(`[MockAds] getKeywordMetrics for: ${keywords.join(', ')}`);
+    return keywords.map(k => ({
+      keyword: k,
+      avgMonthlySearches: Math.floor(Math.random() * 10000),
+      competition: 'MEDIUM',
+      cpc: (Math.random() * 2).toFixed(2)
+    }));
+  }
 }

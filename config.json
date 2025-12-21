@@ -1,6 +1,6 @@
 {
   "dbMode": "test",
-  "adsMode": "mock",
+  "adsMode": "live",
   "shopMode": "mock",
   "trendsMode": "live",
   "researchMode": "mock",

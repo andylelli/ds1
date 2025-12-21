@@ -195,8 +195,8 @@ Below are examples of what the **External Log** entries will look like when full
 
 | Integration | Priority | Status | Implementation Notes |
 |---|---|---|---|
-| Google Trends | Tier 1 | 🟡 Partial | LiveTrendAdapter uses google-trends-api (unofficial). Covers interest over time. |
-| Google Ads (Keywords) | Tier 1 | 🔴 Missing | No implementation. Required for search volume validation. |
+| Google Trends | Tier 1 | 🟡 Partial | LiveTrendAdapter uses google-trends-api (unofficial). Covers interest over time. Real-time trends disabled. |
+| Google Ads (Keywords) | Tier 1 | 🟢 Active | LiveAdsAdapter connected via google-ads-api. Can create/list campaigns. |
 | Meta Ad Library | Tier 1 | 🔴 Missing | LiveCompetitorAdapter is a stub. Required for saturation checks. |
 | YouTube Data | Tier 1 | 🔴 Missing | No implementation. |
 | Competitor Scraper | Tier 1 | ⚪ Stub | LiveCompetitorAdapter exists but throws "Not Implemented". |

@@ -144,7 +144,9 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
       const { rising } = await this.getRelatedQueries(category);
       
       // 2. Get real-time trends for the region (Daily Trends is broken)
-      const realTimeTrends = await this.getRealTimeTrends();
+      // const realTimeTrends = await this.getRealTimeTrends();
+      // DISABLED: Real-time trends API is unreliable/failing. Passing empty context.
+      const realTimeTrends = { storySummaries: { trendingStories: [] } };
       
       // 3. Use AI to synthesize into product recommendations
       const products = await this.synthesizeProductsWithAI(category, rising, realTimeTrends);

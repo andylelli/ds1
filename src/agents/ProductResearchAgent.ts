@@ -78,9 +78,12 @@ interface ValidationData {
     operational_risks: string[];
 }
 
+import { AdsPlatformPort } from '../core/domain/ports/AdsPlatformPort.js';
+
 export class ProductResearchAgent extends BaseAgent {
   private trendAnalyzer: TrendAnalysisPort;
   private competitorAnalyzer: CompetitorAnalysisPort;
+  private adsAnalyzer?: AdsPlatformPort; // Optional for now to maintain backward compatibility
   
   // Section 0: Dependencies
   private strategyProfile: StrategyProfile | null = null;
@@ -114,10 +117,18 @@ export class ProductResearchAgent extends BaseAgent {
   // Section 10: Opportunity Briefs
   private briefs: OpportunityBrief[] = [];
 
-  constructor(db: PersistencePort, eventBus: EventBusPort, trendAnalyzer: TrendAnalysisPort, competitorAnalyzer: CompetitorAnalysisPort) {
+  constructor(
+      db: PersistencePort, 
+      eventBus: EventBusPort, 
+      trendAnalyzer: TrendAnalysisPort, 
+      competitorAnalyzer: CompetitorAnalysisPort,
+      adsAnalyzer?: AdsPlatformPort
+  ) {
     super('ProductResearcher', db, eventBus);
     this.trendAnalyzer = trendAnalyzer;
     this.competitorAnalyzer = competitorAnalyzer;
+    this.adsAnalyzer = adsAnalyzer;
+    
     this.registerTool('find_winning_products', this.findWinningProducts.bind(this));
     this.registerTool('analyze_niche', this.analyzeNiche.bind(this));
     this.registerTool('analyze_competitors', this.analyzeCompetitors.bind(this));
@@ -359,6 +370,30 @@ export class ProductResearchAgent extends BaseAgent {
       } catch (e: any) {
           this.log('error', `Failed to collect Competitor signals: ${e}`);
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
+      }
+
+      // 3. Ads Validation (Search Volume / CPC)
+      try {
+          if (this.adsAnalyzer && this.adsAnalyzer.getKeywordMetrics) {
+              const keywords = signals
+                  .filter(s => s.family === 'search')
+                  .map(s => s.data.keyword);
+              
+              if (keywords.length > 0) {
+                  const metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
+                  if (metrics) {
+                      signals.push({
+                          id: `sig_ads_${Date.now()}`,
+                          family: 'marketplace', // Using marketplace as proxy for ads data
+                          source: 'GoogleAds',
+                          timestamp: new Date().toISOString(),
+                          data: { metrics }
+                      });
+                  }
+              }
+          }
+      } catch (e: any) {
+          this.log('warn', `Failed to collect Ads signals: ${e}`);
       }
 
       // Check constraint: At least two families
