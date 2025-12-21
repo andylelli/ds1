@@ -175,6 +175,9 @@ These services contain the business logic and orchestrate the agents and adapter
 | **Config** | `ConfigService` | [src/infra/config/ConfigService.ts](src/infra/config/ConfigService.ts) |
 | **Activity Log** | `ActivityLogService` | [src/core/services/ActivityLogService.ts](src/core/services/ActivityLogService.ts) |
 | **Research Staging**| `ResearchStagingService`| [src/core/services/ResearchStagingService.ts](src/core/services/ResearchStagingService.ts) |
+| **Workflow Manager** | `WorkflowManager` | [src/core/workflow/WorkflowManager.ts](src/core/workflow/WorkflowManager.ts) |
+| **MCP Server** | `MCPServer` | [src/core/mcp/server.ts](src/core/mcp/server.ts) |
+| **Logger** | `LoggerService` | [src/infra/logging/LoggerService.ts](src/infra/logging/LoggerService.ts) |
 
 ## 5. API & Entry Points
 
