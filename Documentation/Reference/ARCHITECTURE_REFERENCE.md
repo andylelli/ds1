@@ -185,10 +185,11 @@ The system exposes an API for the frontend control panel.
 
 - **Main Entry**: [src/index.ts](src/index.ts) (Express server setup)
 - **Routes**:
-    - Activity: [src/api/activity-routes.ts](src/api/activity-routes.ts)
-    - Briefs: [src/api/brief-routes.ts](src/api/brief-routes.ts)
-    - Agents: [src/api/agent-routes.ts](src/api/agent-routes.ts)
-    - Admin: [src/api/admin-routes.ts](src/api/admin-routes.ts)
+    - **Activity**: [src/api/activity-routes.ts](src/api/activity-routes.ts) - Logs and system events.
+    - **Briefs**: [src/api/brief-routes.ts](src/api/brief-routes.ts) - Product opportunity briefs.
+    - **Staging**: [src/api/staging-routes.ts](src/api/staging-routes.ts) - Research staging area.
+    - **Agents**: Defined inline in [src/index.ts](src/index.ts) (`/api/agents`).
+    - **Config**: Defined inline in [src/index.ts](src/index.ts) (`/api/config`).
 
 ## 6. Configuration Files
 
