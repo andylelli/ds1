@@ -8,36 +8,43 @@ The system follows a Hexagonal Architecture (Ports & Adapters) pattern, orchestr
 
 ### Architecture Diagram
 
+While Mermaid cannot draw a literal hexagon container, this Left-to-Right flow represents the "Ports & Adapters" layers:
+
 ```mermaid
-graph TD
-    subgraph "Entry Points (Driving Adapters)"
-        API[API Routes] --> ServiceFactory
-        CLI[CLI Scripts] --> ServiceFactory
-        Events[Event Bus Triggers] --> Agents
+graph LR
+    subgraph Primary["Driving Adapters (Inputs)"]
+        direction TB
+        API[API Routes]
+        CLI[CLI Scripts]
+        Cron[Cron/Events]
     end
 
-    subgraph "Core Domain (Hexagon)"
-        subgraph "Application Layer"
-            Agents[AI Agents]
-            SimService[Simulation Service]
-        end
-        
-        subgraph "Domain Layer"
-            Ports[Ports Interfaces]
-            DomainServices[Domain Services]
-        end
-        
-        ServiceFactory --> Agents
-        Agents --> Ports
-        SimService --> Agents
+    subgraph Hexagon["The Core (Hexagon)"]
+        direction TB
+        Agents[AI Agents]
+        Services[Domain Services]
+        Ports{Port Interfaces}
     end
 
-    subgraph "Infrastructure (Driven Adapters)"
-        Postgres[PostgresAdapter] -.->|Implements| Ports
-        Shopify[ShopifyAdapter] -.->|Implements| Ports
-        OpenAI[OpenAIAdapter] -.->|Implements| Ports
-        GoogleAds[GoogleAdsAdapter] -.->|Implements| Ports
+    subgraph Secondary["Driven Adapters (Outputs)"]
+        direction TB
+        DB[(Database)]
+        Shopify[Shopify API]
+        LLM[LLM Provider]
+        Ads[Ad Networks]
     end
+
+    API --> Services
+    CLI --> Services
+    Cron --> Agents
+
+    Services --> Agents
+    Agents --> Ports
+
+    Ports -.->|Implemented By| DB
+    Ports -.->|Implemented By| Shopify
+    Ports -.->|Implemented By| LLM
+    Ports -.->|Implemented By| Ads
 ```
 
 - **Config**: `config/` (YAML files define which adapters to load)
