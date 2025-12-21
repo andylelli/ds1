@@ -50,11 +50,28 @@ graph LR
     EventBus -.->|Notify| Agents
 ```
 
-- **Config**: `config/` (YAML files define which adapters to load)
-- **Core**: `src/core/` (Domain logic, Ports interfaces, Services, Bootstrap)
-- **Agents**: `src/agents/` (AI Agents implementing core logic)
-- **Infrastructure**: `src/infra/` (Adapters implementing Ports)
-- **API/Entry**: `src/api/` & `src/index.ts` (Entry points)
+### Major Components
+
+#### 1. The Core (Domain & Application)
+The heart of the application, containing business logic and interfaces.
+- **AI Agents** (`src/agents/`): The autonomous workers (CEO, Analytics, Research, etc.).
+- **Domain Services** (`src/core/services/`): Orchestration logic (e.g., `SimulationService`, `ResearchStagingService`).
+- **Ports** (`src/core/domain/ports/`): Interfaces defining *what* the system needs without defining *how*.
+
+#### 2. Infrastructure (Driven Adapters)
+Implementations of Ports that connect the Core to the outside world.
+- **Persistence**: `PostgresAdapter` (Live) / `MockAdapter` (Sim).
+- **Event Bus**: `PostgresEventBus` (Async communication).
+- **External Integrations**: Adapters for Shopify, Google Ads, Google Trends, OpenAI.
+
+#### 3. Entry Points (Driving Adapters)
+Triggers that start system execution.
+- **API Layer** (`src/api/`): Express.js routes powering the frontend dashboard.
+- **CLI Scripts** (`src/run_simulation_cli.js`): Command-line tools.
+- **Configuration** (`config/`): YAML files controlling the environment (Live vs. Sim).
+
+#### 4. The "Glue" (Bootstrap)
+- **ServiceFactory** (`src/core/bootstrap/`): Handles Dependency Injection, reading config to instantiate the correct Adapters for each Agent.
 
 ## 2. Agent Mapping
 
