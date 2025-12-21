@@ -294,3 +294,48 @@ In Step 10, the agent generates specific "Kill Criteria" for the CEO to monitor.
 *   **Visual Analysis**: Integrating Vision LLMs to analyze product images from social media signals.
 *   **Sentiment Analysis**: Deeper NLP on customer reviews to identify "Customer Problem" more accurately.
 *   **Real-time Feedback**: Listening to `Marketing.CampaignResult` events to update `PriorLearnings` automatically.
+
+---
+
+## 9. Implementation Plan (Outstanding Integrations)
+
+This plan outlines the phased approach to moving the "Missing" and "Stub" integrations to "Active" status.
+
+### Phase 1: Competitor Intelligence (The "Eyes")
+**Objective**: Enable the agent to "see" market saturation and pricing reality.
+*   **Focus**: `LiveCompetitorAdapter`
+*   **Tasks**:
+    1.  **Competitor Scraper Implementation**:
+        *   *Action*: Implement `analyzeCompetitors(category)` using a SERP API (e.g., SerpApi or ValueSERP) to identify top-ranking stores.
+        *   *Output*: List of competitor URLs, price points, and "Best Seller" flags.
+    2.  **Meta Ad Library Integration**:
+        *   *Action*: Implement `getCompetitorAds(domain)` connecting to Meta Graph API.
+        *   *Output*: Count of active ads (Saturation Signal) and creative formats (Image vs. Video).
+    3.  **Saturation Logic**:
+        *   *Action*: Update `ProductResearchAgent.ts` (Section 8) to auto-reject themes with >10 active competitors running ads.
+
+### Phase 2: Search Validation (The "Numbers")
+**Objective**: Validate demand with hard data (CPC, Volume) to prevent "False Positives".
+*   **Focus**: `LiveAdsAdapter` & YouTube
+*   **Tasks**:
+    1.  **Google Ads Keyword Planner**:
+        *   *Action*: Finalize `LiveAdsAdapter` authentication.
+        *   *Action*: Implement `getKeywordMetrics(keywords)` to return Search Volume, CPC, and Competition Index.
+    2.  **YouTube Data API**:
+        *   *Action*: Create `LiveVideoAdapter` (or add to Trends).
+        *   *Action*: Fetch view counts and upload frequency for niche keywords to validate "Viral Potential".
+
+### Phase 3: Ecosystem & Compliance (The "Hands")
+**Objective**: Ensure products are sellable and compliant before briefing the CEO.
+*   **Focus**: Shopify & Compliance
+*   **Tasks**:
+    1.  **Shopify Policy Check**:
+        *   *Action*: Implement checks against Shopify's prohibited items list (e.g., weapons, supplements).
+    2.  **Supplier Feasibility**:
+        *   *Action*: Integrate a basic Supplier/AliExpress lookup to ensure at least one supplier exists with `Margin > Target`.
+
+### Phase 4: Advanced Intelligence (The "Brain Upgrade")
+**Objective**: Move from text-based analysis to multi-modal understanding.
+*   **Tasks**:
+    1.  **Visual Analysis**: Integrate Vision LLMs to analyze product images.
+    2.  **Sentiment Analysis**: Deep NLP on customer reviews.
