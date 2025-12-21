@@ -78,6 +78,14 @@ When updating `DECISION_LOG.md`, use the following structure for clarity:
 2.  Check `TECHNICAL_DEBT.md` to see if this feature touches fragile code.
 3.  Check `RAID_LOG.md` for dependencies (e.g., "Is the API key available?").
 
+### 4.4 Item Intake (Adding New Items)
+**When:** Anytime a new requirement, risk, or bug is identified.
+**Protocol:**
+*   **New Tasks**: Add to `THINGS_TO_DO.md` at the bottom of the list. Tag as `⚪ Not Started`.
+*   **New Risks**: Add to `RAID_LOG.md` immediately. Assign an initial Impact/Probability score.
+*   **New Bugs**: Add to `THINGS_TO_DO.md` with a `[BUG]` prefix or `RAID_LOG.md` if it blocks the release.
+*   **New Ideas**: Add to `PROJECT_STATUS.md` under "Proposed" or `THINGS_TO_DO.md` as `[IDEA]`.
+
 ## 5. Roles & Responsibilities
 
 | Role | Responsibility |
