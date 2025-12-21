@@ -242,26 +242,27 @@ The agent relies on the **Model Context Protocol (MCP)** to interface with exter
 | :--- | :--- | :--- | :--- |
 | **Trends** | `TrendAnalysisPort` | Identify rising keywords and consumer interests. | `google_trends`, `pinterest_trends` |
 | **Competitors** | `CompetitorAnalysisPort` | Analyze market saturation, pricing, and existing offers. | `amazon_scraper`, `tiktok_creative_center` |
+| **Video** | `VideoAnalysisPort` | Validate viral interest and content saturation. | `youtube_data_api` |
 | **Database** | `PersistencePort` | Retrieve past learnings and store new briefs. | `postgres`, `vector_db` |
 
 ### Current Integration Status (MV-PRA)
 *Status as of Dec 21, 2025*
 
-**Overall State:** "Brain Ready, Senses Numb"
-The agent logic (Brain) is fully implemented with the 11-step pipeline and schema. The external sensors (Adapters) are currently mocks or stubs.
+**Overall State:** "Brain Ready, Senses Awakening"
+The agent logic (Brain) is fully implemented. External sensors are coming online, with Search and Video fully active, while Ads platforms are in a restricted state pending approval.
 
 | Integration | Priority | Status | Implementation Notes |
 | :--- | :--- | :--- | :--- |
 | **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
 | **Google Ads (Keywords)** | Tier 1 | 🟡 Restricted | `LiveAdsAdapter` implemented. Requires 'Basic Access' for Keyword Planning API. |
 | **Meta Ad Library** | Tier 1 | � Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data. |
-| **YouTube Data** | Tier 1 | 🔴 Missing | No implementation. |
+| **YouTube Data** | Tier 1 | � Active | `LiveVideoAdapter` fully implemented and verified. Fetches views, likes, and tags. |
 | **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
 | **Competitor Scraper** | Tier 1 | 🟢 Active | Implemented via SerpApi. Filters out marketplaces. |
 
 **Immediate Next Steps:**
-1.  **Implement `LiveCompetitorAdapter`**: Basic scraping or API calls to fetch competitor pricing/offers.
-2.  **Implement `LiveAdsAdapter` (Read-Only)**: Connect to Meta Ad Library for "Evidence" collection.
+1.  **Implement `LiveShopAdapter`**: Connect to Shopify Admin API for policy checks and product creation.
+2.  **Wait for API Approvals**: Monitor Google Ads and Meta App Review status.
 
 ### Path to Full Maturity (Post-MVP)
 To evolve from MV-PRA to a fully autonomous "Hunter", the following integrations (Tier 2 & 3) are required:
@@ -309,31 +310,22 @@ In Step 10, the agent generates specific "Kill Criteria" for the CEO to monitor.
 
 This plan outlines the phased approach to moving the "Missing" and "Stub" integrations to "Active" status.
 
-### Phase 1: Competitor Intelligence (The "Eyes")
+### Phase 1: Competitor Intelligence (The "Eyes") - ✅ COMPLETE
 **Objective**: Enable the agent to "see" market saturation and pricing reality.
 *   **Focus**: `LiveCompetitorAdapter`
-*   **Tasks**:
-    1.  **Competitor Scraper Implementation**:
-        *   *Action*: Implement `analyzeCompetitors(category)` using a SERP API (e.g., SerpApi or ValueSERP) to identify top-ranking stores.
-        *   *Output*: List of competitor URLs, price points, and "Best Seller" flags.
-    2.  **Meta Ad Library Integration**:
-        *   *Action*: Implement `getCompetitorAds(domain)` connecting to Meta Graph API.
-        *   *Output*: Count of active ads (Saturation Signal) and creative formats (Image vs. Video).
-    3.  **Saturation Logic**:
-        *   *Action*: Update `ProductResearchAgent.ts` (Section 8) to auto-reject themes with >10 active competitors running ads.
+*   **Status**:
+    *   ✅ **Competitor Scraper**: Implemented via SerpApi.
+    *   ✅ **Meta Ad Library**: Implemented via Graph API (Restricted Mode).
+    *   ✅ **Saturation Logic**: Basic logic implemented.
 
-### Phase 2: Search Validation (The "Numbers")
+### Phase 2: Search Validation (The "Numbers") - ✅ COMPLETE
 **Objective**: Validate demand with hard data (CPC, Volume) to prevent "False Positives".
 *   **Focus**: `LiveAdsAdapter` & YouTube
-*   **Tasks**:
-    1.  **Google Ads Keyword Planner**:
-        *   *Action*: Finalize `LiveAdsAdapter` authentication.
-        *   *Action*: Implement `getKeywordMetrics(keywords)` to return Search Volume, CPC, and Competition Index.
-    2.  **YouTube Data API**:
-        *   *Action*: Create `LiveVideoAdapter` (or add to Trends).
-        *   *Action*: Fetch view counts and upload frequency for niche keywords to validate "Viral Potential".
+*   **Status**:
+    *   ✅ **Google Ads Keyword Planner**: Implemented (Restricted Mode).
+    *   ✅ **YouTube Data API**: Implemented and Verified (`LiveVideoAdapter`).
 
-### Phase 3: Ecosystem & Compliance (The "Hands")
+### Phase 3: Ecosystem & Compliance (The "Hands") - 🚧 IN PROGRESS
 **Objective**: Ensure products are sellable and compliant before briefing the CEO.
 *   **Focus**: Shopify & Compliance
 *   **Tasks**:
