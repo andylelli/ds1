@@ -12,42 +12,56 @@ High-level data flow showing the interaction between the Core Agents and the Ext
 
 ```mermaid
 graph LR
-    subgraph Inputs ["Inputs"]
-        Client[API / CLI / Config]
+    subgraph Entry ["3. Entry Points"]
+        direction TB
+        API[API Layer]
+        CLI[CLI Scripts]
+        Config[YAML Config]
     end
 
-    subgraph Core ["Core Domain"]
+    subgraph Glue ["4. The Glue"]
+        Factory[ServiceFactory]
+    end
+
+    subgraph Core ["1. The Core"]
         direction TB
-        Orchestrator[Orchestrator]
+        Services[Domain Services]
         Agents[AI Agents]
         Ports{Port Interfaces}
     end
 
-    subgraph Infra ["Infrastructure"]
+    subgraph Infra ["2. Infrastructure"]
         direction TB
-        Adapters[Adapters]
+        Persistence[Persistence Adapter]
         EventBus[Event Bus]
+        Integrations[External Integrations]
     end
 
-    subgraph External ["External Systems"]
+    subgraph World ["External World"]
         direction TB
         DB[(Database)]
-        Endpoints["External Endpoints<br/>(Shopify, Google, OpenAI)"]
+        APIs[3rd Party APIs]
     end
 
-    %% Data Flow
-    Client -->|Trigger| Orchestrator
-    Orchestrator -->|Manage| Agents
+    %% Configuration & Bootstrap
+    Config --> Factory
+    Factory -.->|Injects Adapters| Agents
+    
+    %% Execution Flow
+    API --> Services
+    CLI --> Services
+    Services -->|Orchestrates| Agents
     Agents -->|Call| Ports
     
-    Adapters -.->|Implement| Ports
-    EventBus -.->|Implement| Ports
+    %% Implementation
+    Persistence -.->|Implements| Ports
+    EventBus -.->|Implements| Ports
+    Integrations -.->|Implements| Ports
     
-    Adapters -->|CRUD| DB
-    Adapters -->|Fetch/Push| Endpoints
-    
+    %% External Connections
+    Persistence -->|R/W| DB
     EventBus -->|Store| DB
-    EventBus -.->|Notify| Agents
+    Integrations -->|Fetch/Push| APIs
 ```
 
 ### Major Components
