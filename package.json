@@ -26,6 +26,7 @@
     "express": "^5.2.1",
     "google-ads-api": "^21.0.1",
     "google-trends-api": "^4.9.2",
+    "googleapis": "^169.0.0",
     "js-yaml": "^4.1.1",
     "openai": "^6.9.1",
     "pg": "^8.16.3",

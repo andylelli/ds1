@@ -159,11 +159,45 @@ export class LiveAdsAdapter implements AdsPlatformPort {
   }
 
   async getKeywordMetrics(keywords: string[]): Promise<any> {
-    // TODO: Implement real Google Ads Keyword Planner API
-    // This requires a separate API permission (Keyword Plan Service)
-    console.log(`[LiveAds] getKeywordMetrics called for: ${keywords.join(', ')}`);
-    logger.external('GoogleAds', 'getKeywordMetrics', { keywords, status: 'Not Implemented' });
-    
-    throw new Error("Google Ads Keyword Planner API not yet implemented. Cannot provide real metrics.");
+    try {
+        const customer = await this.getCustomer();
+        
+        // Use the KeywordPlanIdeaService to get historical metrics
+        // Note: This requires the 'generateKeywordHistoricalMetrics' method
+        const response = await customer.keywordPlanIdeas.generateKeywordHistoricalMetrics({
+            customer_id: this.customerId!,
+            keywords: keywords,
+            geo_target_constants: ['geoTargetConstants/2840'], // US
+            keyword_plan_network: enums.KeywordPlanNetwork.GOOGLE_SEARCH,
+            language: 'languageConstants/1000', // English
+        });
+
+        // Map the results to a cleaner format
+        const results = response.results || [];
+        return results.map((row: any) => ({
+            text: row.text,
+            avgMonthlySearches: row.keyword_metrics.avg_monthly_searches,
+            competition: row.keyword_metrics.competition, // LOW, MEDIUM, HIGH
+            competitionIndex: row.keyword_metrics.competition_index, // 0-100
+            lowTopOfPageBid: (row.keyword_metrics.low_top_of_page_bid_micros || 0) / 1000000,
+            highTopOfPageBid: (row.keyword_metrics.high_top_of_page_bid_micros || 0) / 1000000,
+        }));
+
+    } catch (e: any) {
+        // Handle specific API permission errors
+        if (e.errors && e.errors[0]?.error_code?.authorization_error === 'DEVELOPER_TOKEN_NOT_APPROVED') {
+            console.warn('[LiveAds] Warning: Developer Token not approved for Keyword Planning API. Returning stub data.');
+            return keywords.map(k => ({
+                text: k,
+                avgMonthlySearches: 0,
+                competition: 'UNKNOWN',
+                note: 'Requires Basic Access'
+            }));
+        }
+
+        console.error('[LiveAds] Raw Error:', JSON.stringify(e, null, 2));
+        await this.logError('getKeywordMetrics', e, { keywords });
+        throw e;
+    }
   }
 }

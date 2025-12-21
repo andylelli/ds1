@@ -13,11 +13,12 @@ This document tracks the status and configuration of all external API integratio
 | **Google Trends** | `LiveTrendAdapter` | 🟡 Partial | Uses unofficial API. Good for interest over time. |
 | **SerpApi** | `LiveCompetitorAdapter` | 🟢 Active | Used for competitor discovery. Requires `SERPAPI_KEY`. |
 | **Meta Graph API** | `LiveCompetitorAdapter` | 🟡 Restricted | Used for Ad Spy. Requires `META_ACCESS_TOKEN` and 'Advanced Access' for public data. |
+| **YouTube Data API** | `LiveVideoAdapter` | 🟢 Active | Used for video trend validation. Requires `YOUTUBE_API_KEY`. |
 
 ## 3. Advertising
 | Provider | Service | Status | Notes |
 | :--- | :--- | :--- | :--- |
-| **Google Ads** | `LiveAdsAdapter` | 🟡 Partial | Implemented but requires customer ID configuration. |
+| **Google Ads** | `LiveAdsAdapter` | 🟡 Restricted | Implemented but requires 'Basic Access' for Keyword Planning API. Application pending (requires Product Overview, FAQ, Design Docs). |
 
 ## 4. E-Commerce
 | Provider | Service | Status | Notes |

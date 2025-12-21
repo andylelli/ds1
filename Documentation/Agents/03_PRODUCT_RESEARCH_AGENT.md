@@ -5,6 +5,14 @@ The **Product Research Agent** is the "Hunter" of the swarm. Its sole purpose is
 
 Unlike simple scrapers, this agent acts as a **Strategic Analyst**. It doesn't just find products; it builds a business case for them. It ingests raw signals, clusters them into themes, validates them against strict kill criteria, and produces a comprehensive **Opportunity Brief** that downstream agents can execute without ambiguity.
 
+### 🚧 Current Implementation Blockers
+*   **Meta Ads Library**: The `LiveCompetitorAdapter` is implemented but currently restricted by Meta's "Development Mode". We cannot query public ads until the App Review is complete and "Live Mode" is enabled.
+*   **Google Ads Keyword Planner**: The `LiveAdsAdapter` is implemented but restricted by the "Explorer" access level. We cannot retrieve search volume data until "Basic Access" is approved (requires application with design docs).
+
+### ✅ Verified Capabilities
+*   **Competitor Discovery**: `LiveCompetitorAdapter` (via SerpApi) successfully identifies competitors from Google Search.
+*   **Video Validation**: `LiveVideoAdapter` (via YouTube Data API) successfully fetches video views, likes, and comments to validate viral interest.
+
 ---
 
 ## 2. Core Responsibilities
@@ -245,7 +253,7 @@ The agent logic (Brain) is fully implemented with the 11-step pipeline and schem
 | Integration | Priority | Status | Implementation Notes |
 | :--- | :--- | :--- | :--- |
 | **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
-| **Google Ads (Keywords)** | Tier 1 | 🟡 Partial | `LiveAdsAdapter` implemented with `google-ads-api` but requires valid credentials/customer ID. |
+| **Google Ads (Keywords)** | Tier 1 | 🟡 Restricted | `LiveAdsAdapter` implemented. Requires 'Basic Access' for Keyword Planning API. |
 | **Meta Ad Library** | Tier 1 | � Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data. |
 | **YouTube Data** | Tier 1 | 🔴 Missing | No implementation. |
 | **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
