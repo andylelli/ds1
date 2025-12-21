@@ -248,17 +248,17 @@ The agent relies on the **Model Context Protocol (MCP)** to interface with exter
 ### Current Integration Status (MV-PRA)
 *Status as of Dec 21, 2025*
 
-**Overall State:** "Brain Ready, Senses Awakening"
-The agent logic (Brain) is fully implemented. External sensors are coming online, with Search and Video fully active, while Ads platforms are in a restricted state pending approval.
+**Overall State:** "Brain Ready, Senses Online"
+The agent logic (Brain) is fully implemented. External sensors are now online: Search, Video, and Shopify (read-only) are fully active; Ads platforms are in a restricted state pending approval.
 
-| Integration | Priority | Status | Implementation Notes |
-| :--- | :--- | :--- | :--- |
-| **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
-| **Google Ads (Keywords)** | Tier 1 | 🟡 Restricted | `LiveAdsAdapter` implemented. Requires 'Basic Access' for Keyword Planning API. |
-| **Meta Ad Library** | Tier 1 | � Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data. |
-| **YouTube Data** | Tier 1 | 🟢 Active | `LiveVideoAdapter` fully implemented and verified. Fetches views, likes, and tags. |
-| **Shopify Admin** | Tier 1 | 🟢 Active | `LiveShopAdapter` (read-only for research): Policy checks and API connection fully working for store `61bk0t-vt.myshopify.com`. |
-| **Competitor Scraper** | Tier 1 | 🟢 Active | Implemented via SerpApi. Filters out marketplaces. |
+| Integration            | Priority | Status      | Implementation Notes                                                                                  |
+| :---                   | :---     | :---        | :---                                                                                                |
+| **Google Trends**      | Tier 1   | 🟡 Partial  | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time.                |
+| **Google Ads (Keywords)** | Tier 1   | 🟡 Restricted | `LiveAdsAdapter` implemented. Requires 'Basic Access' for Keyword Planning API.                      |
+| **Meta Ad Library**    | Tier 1   | 🟡 Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data.                               |
+| **YouTube Data**       | Tier 1   | 🟢 Active   | `LiveVideoAdapter` fully implemented and verified. Fetches views, likes, and tags.                  |
+| **Shopify Admin**      | Tier 1   | 🟢 Active   | `LiveShopAdapter` (read-only for research): Policy checks and API connection fully working.          |
+| **Competitor Scraper** | Tier 1   | 🟢 Active   | Implemented via SerpApi. Filters out marketplaces.                                                  |
 
 **Immediate Next Steps:**
 1.  **Configure Shopify**: Add `SHOPIFY_SHOP_NAME` and `SHOPIFY_ACCESS_TOKEN` to `.env`.
