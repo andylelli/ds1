@@ -4,10 +4,44 @@ This document serves as the source of truth for the mapping between the YAML con
 
 ## 1. System Overview
 
-The system follows a Hexagonal Architecture (Ports & Adapters) pattern, orchestrated by a central `Container` or `ServiceFactory`.
+The system follows a Hexagonal Architecture (Ports & Adapters) pattern, orchestrated by a central `Container` or `ServiceFactory` (located in `src/core/bootstrap/`).
+
+### Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph "Entry Points (Driving Adapters)"
+        API[API Routes] --> ServiceFactory
+        CLI[CLI Scripts] --> ServiceFactory
+        Events[Event Bus Triggers] --> Agents
+    end
+
+    subgraph "Core Domain (Hexagon)"
+        subgraph "Application Layer"
+            Agents[AI Agents]
+            SimService[Simulation Service]
+        end
+        
+        subgraph "Domain Layer"
+            Ports[Ports Interfaces]
+            DomainServices[Domain Services]
+        end
+        
+        ServiceFactory --> Agents
+        Agents --> Ports
+        SimService --> Agents
+    end
+
+    subgraph "Infrastructure (Driven Adapters)"
+        Postgres[PostgresAdapter] -.->|Implements| Ports
+        Shopify[ShopifyAdapter] -.->|Implements| Ports
+        OpenAI[OpenAIAdapter] -.->|Implements| Ports
+        GoogleAds[GoogleAdsAdapter] -.->|Implements| Ports
+    end
+```
 
 - **Config**: `config/` (YAML files define which adapters to load)
-- **Core**: `src/core/` (Domain logic, Ports interfaces, Services)
+- **Core**: `src/core/` (Domain logic, Ports interfaces, Services, Bootstrap)
 - **Agents**: `src/agents/` (AI Agents implementing core logic)
 - **Infrastructure**: `src/infra/` (Adapters implementing Ports)
 - **API/Entry**: `src/api/` & `src/index.ts` (Entry points)
