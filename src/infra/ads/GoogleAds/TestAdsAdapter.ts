@@ -1,5 +1,5 @@
-import { AdsPlatformPort } from '../../core/domain/ports/AdsPlatformPort.js';
-import { Campaign } from '../../core/domain/types/Campaign.js';
+import { AdsPlatformPort } from '../../../core/domain/ports/AdsPlatformPort.js';
+import { Campaign } from '../../../core/domain/types/Campaign.js';
 
 export class TestAdsAdapter implements AdsPlatformPort {
   async createCampaign(campaign: Omit<Campaign, 'id'>): Promise<Campaign> {

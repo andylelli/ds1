@@ -17,9 +17,9 @@ import { EmailMcpWrapper } from '../../infra/mcp/wrappers/EmailMcpWrapper.js';
 import { AiMcpWrapper } from '../../infra/mcp/wrappers/AiMcpWrapper.js';
 
 // Ads
-import { LiveAdsAdapter } from '../../infra/ads/LiveAdsAdapter.js';
-import { MockAdsAdapter } from '../../infra/ads/MockAdsAdapter.js';
-import { TestAdsAdapter } from '../../infra/ads/TestAdsAdapter.js';
+import { LiveAdsAdapter } from '../../infra/ads/GoogleAds/LiveAdsAdapter.js';
+import { MockAdsAdapter } from '../../infra/ads/GoogleAds/MockAdsAdapter.js';
+import { TestAdsAdapter } from '../../infra/ads/GoogleAds/TestAdsAdapter.js';
 
 // Trends
 import { LiveTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/LiveTrendAdapter.js';

@@ -8,7 +8,7 @@ import { MockTrendAdapter } from './infra/trends/GoogleTrendsAPI/MockTrendAdapte
 import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
 import { MockFulfilmentAdapter } from './infra/fulfilment/MockFulfilmentAdapter.js';
 import { MockShopAdapter } from './infra/shop/MockShopAdapter.js';
-import { MockAdsAdapter } from './infra/ads/MockAdsAdapter.js';
+import { MockAdsAdapter } from './infra/ads/GoogleAds/MockAdsAdapter.js';
 
 async function testExecutionVertical() {
     console.log('--- Starting Execution Vertical Test ---');

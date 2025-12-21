@@ -2,7 +2,7 @@
 
 **Status:** Active (Live)
 **Owner:** Product Research Agent Team
-**Implementation:** `src/infra/ads/LiveAdsAdapter.ts` & `src/infra/ads/MockAdsAdapter.ts`
+**Implementation:** `src/infra/ads/GoogleAds/LiveAdsAdapter.ts` & `src/infra/ads/GoogleAds/MockAdsAdapter.ts`
 
 ---
 
@@ -18,12 +18,12 @@ To give the **Product Research Agent** and **Marketing Agent** access to the Goo
 ### The Adapters
 
 #### A. Live Adapter (`LiveAdsAdapter`)
-*   **Location:** `src/infra/ads/LiveAdsAdapter.ts`
+*   **Location:** `src/infra/ads/GoogleAds/LiveAdsAdapter.ts`
 *   **Library:** `google-ads-api`
 *   **Usage:** Used in `live` mode to interact with real Google Ads accounts.
 
 #### B. Mock Adapter (`MockAdsAdapter`)
-*   **Location:** `src/infra/ads/MockAdsAdapter.ts`
+*   **Location:** `src/infra/ads/GoogleAds/MockAdsAdapter.ts`
 *   **Usage:** Used in `simulation` mode.
 *   **Behavior:**
     *   **Campaigns:** Stored in-memory.

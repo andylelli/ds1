@@ -59,8 +59,8 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 ### Ads Platform (`AdsPlatformPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `simulated` | `MockAdsAdapter` | [src/infra/ads/MockAdsAdapter.ts](src/infra/ads/MockAdsAdapter.ts) |
-| `google` | `LiveAdsAdapter` | [src/infra/ads/LiveAdsAdapter.ts](src/infra/ads/LiveAdsAdapter.ts) |
+| `simulated` | `MockAdsAdapter` | [src/infra/ads/GoogleAds/MockAdsAdapter.ts](src/infra/ads/GoogleAds/MockAdsAdapter.ts) |
+| `google` | `LiveAdsAdapter` | [src/infra/ads/GoogleAds/LiveAdsAdapter.ts](src/infra/ads/GoogleAds/LiveAdsAdapter.ts) |
 
 ### AI Provider (`AiPort`)
 | Mode | Class Name | File Path |

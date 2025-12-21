@@ -6,7 +6,7 @@ import { PostgresEventBus } from './infra/events/PostgresEventBus.js';
 import { MockAdapter } from './infra/db/MockAdapter.js';
 import { ProductResearchAgent } from './agents/ProductResearchAgent.js';
 import { LiveTrendAdapter } from './infra/trends/GoogleTrendsAPI/LiveTrendAdapter.js';
-import { LiveAdsAdapter } from './infra/ads/LiveAdsAdapter.js';
+import { LiveAdsAdapter } from './infra/ads/GoogleAds/LiveAdsAdapter.js';
 import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
 import { Pool } from 'pg';
 
