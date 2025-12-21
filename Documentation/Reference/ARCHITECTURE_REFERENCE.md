@@ -190,6 +190,9 @@ The system exposes an API for the frontend control panel.
     - **Staging**: [src/api/staging-routes.ts](src/api/staging-routes.ts) - Research staging area.
     - **Agents**: Defined inline in [src/index.ts](src/index.ts) (`/api/agents`).
     - **Config**: Defined inline in [src/index.ts](src/index.ts) (`/api/config`).
+    - **Simulation**: Defined inline in [src/index.ts](src/index.ts) (`/api/simulation/*`) - Controls for the simulation loop.
+    - **Data Access**: Defined inline in [src/index.ts](src/index.ts) (`/api/products`, `/api/orders`, `/api/ads`, `/api/logs`, `/api/db/*`).
+    - **Docker Control**: Defined inline in [src/index.ts](src/index.ts) (`/api/docker/*`).
 
 ## 6. Configuration Files
 
