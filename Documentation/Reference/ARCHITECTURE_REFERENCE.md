@@ -89,18 +89,18 @@ Triggers that start system execution.
 
 ## 2. Agent Mapping
 
-Agents are defined in `config/agents.yaml` and instantiated in `src/wiring/ServiceFactory.ts` (or `Container.ts`).
+Agents are defined in `config/agents.yaml` and instantiated in `src/core/bootstrap/ServiceFactory.ts`.
 
 | Agent Role | YAML Key | Class Name | File Path |
 | :--- | :--- | :--- | :--- |
-| **CEO** | `ceo` | `CEOAgent` | [src/agents/CEOAgent.ts](src/agents/CEOAgent.ts) |
-| **Analytics** | `analytics` | `AnalyticsAgent` | [src/agents/AnalyticsAgent.ts](src/agents/AnalyticsAgent.ts) |
-| **Product Research** | `research` | `ProductResearchAgent` | [src/agents/ProductResearchAgent.ts](src/agents/ProductResearchAgent.ts) |
-| **Supplier** | `supplier` | `SupplierAgent` | [src/agents/SupplierAgent.ts](src/agents/SupplierAgent.ts) |
-| **Store Build** | `store` | `StoreBuildAgent` | [src/agents/StoreBuildAgent.ts](src/agents/StoreBuildAgent.ts) |
-| **Marketing** | `marketing` | `MarketingAgent` | [src/agents/MarketingAgent.ts](src/agents/MarketingAgent.ts) |
-| **Customer Service** | `customer_service` | `CustomerServiceAgent` | [src/agents/CustomerServiceAgent.ts](src/agents/CustomerServiceAgent.ts) |
-| **Operations** | `operations` | `OperationsAgent` | [src/agents/OperationsAgent.ts](src/agents/OperationsAgent.ts) |
+| **CEO** | `ceo_agent` | `CEOAgent` | [src/agents/CEOAgent.ts](src/agents/CEOAgent.ts) |
+| **Analytics** | `analytics_agent` | `AnalyticsAgent` | [src/agents/AnalyticsAgent.ts](src/agents/AnalyticsAgent.ts) |
+| **Product Research** | `product_research_agent` | `ProductResearchAgent` | [src/agents/ProductResearchAgent.ts](src/agents/ProductResearchAgent.ts) |
+| **Supplier** | `supplier_agent` | `SupplierAgent` | [src/agents/SupplierAgent.ts](src/agents/SupplierAgent.ts) |
+| **Store Build** | `store_build_agent` | `StoreBuildAgent` | [src/agents/StoreBuildAgent.ts](src/agents/StoreBuildAgent.ts) |
+| **Marketing** | `marketing_agent` | `MarketingAgent` | [src/agents/MarketingAgent.ts](src/agents/MarketingAgent.ts) |
+| **Customer Service** | `customer_service_agent` | `CustomerServiceAgent` | [src/agents/CustomerServiceAgent.ts](src/agents/CustomerServiceAgent.ts) |
+| **Operations** | `operations_agent` | `OperationsAgent` | [src/agents/OperationsAgent.ts](src/agents/OperationsAgent.ts) |
 
 > **Note**: The `SimulationService` currently orchestrates a subset of these agents (CEO, Research, Supplier, Store, Marketing, Analytics).
 
