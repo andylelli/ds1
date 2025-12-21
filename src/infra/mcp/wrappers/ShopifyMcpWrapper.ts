@@ -1,9 +1,9 @@
 import { McpToolProvider } from '../../../core/mcp/McpToolProvider.js';
-import { ShopPlatformPort } from '../../../core/domain/ports/ShopPlatformPort.js';
+import { ShopManagementPort } from '../../../core/domain/ports/ShopManagementPort.js';
 import { ToolDefinition } from '../../../core/domain/ports/AiPort.js';
 
 export class ShopifyMcpWrapper implements McpToolProvider {
-    constructor(private adapter: ShopPlatformPort) {}
+    constructor(private adapter: ShopManagementPort) {}
 
     getTools(): ToolDefinition[] {
         return [

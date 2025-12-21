@@ -1,12 +1,13 @@
 import '@shopify/shopify-api/adapters/node';
 import { shopifyApi, ApiVersion, Shopify } from '@shopify/shopify-api';
+import { restResources } from "@shopify/shopify-api/rest/admin/2024-10";
 
 export class ShopifyService {
   private client: Shopify | null = null;
   private session: any | null = null;
 
   constructor() {
-    this.initClient();
+    // Lazy initialization in getClient()
   }
 
   private initClient() {
@@ -14,7 +15,8 @@ export class ShopifyService {
     const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
 
     if (!shopName || !accessToken) {
-      console.warn("SHOPIFY_SHOP_NAME or SHOPIFY_ACCESS_TOKEN not set. Shopify integration will fail.");
+      // Only warn if we are actually trying to use it and it's missing
+      // console.warn("SHOPIFY_SHOP_NAME or SHOPIFY_ACCESS_TOKEN not set. Shopify integration will fail.");
       return;
     }
 
@@ -25,12 +27,16 @@ export class ShopifyService {
       hostName: shopName,
       apiVersion: ApiVersion.October24,
       isEmbeddedApp: false,
+      restResources,
     });
 
     this.session = { shop: shopName, accessToken };
   }
 
   public getClient() {
+    if (!this.client) {
+        this.initClient();
+    }
     return { client: this.client, session: this.session };
   }
 }

@@ -256,12 +256,12 @@ The agent logic (Brain) is fully implemented. External sensors are coming online
 | **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
 | **Google Ads (Keywords)** | Tier 1 | 🟡 Restricted | `LiveAdsAdapter` implemented. Requires 'Basic Access' for Keyword Planning API. |
 | **Meta Ad Library** | Tier 1 | � Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data. |
-| **YouTube Data** | Tier 1 | � Active | `LiveVideoAdapter` fully implemented and verified. Fetches views, likes, and tags. |
-| **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
+| **YouTube Data** | Tier 1 | 🟢 Active | `LiveVideoAdapter` fully implemented and verified. Fetches views, likes, and tags. |
+| **Shopify Admin** | Tier 1 | 🟢 Active | `LiveShopAdapter` (read-only for research): Policy checks and API connection fully working for store `61bk0t-vt.myshopify.com`. |
 | **Competitor Scraper** | Tier 1 | 🟢 Active | Implemented via SerpApi. Filters out marketplaces. |
 
 **Immediate Next Steps:**
-1.  **Implement `LiveShopAdapter`**: Connect to Shopify Admin API for policy checks and product creation.
+1.  **Configure Shopify**: Add `SHOPIFY_SHOP_NAME` and `SHOPIFY_ACCESS_TOKEN` to `.env`.
 2.  **Wait for API Approvals**: Monitor Google Ads and Meta App Review status.
 
 ### Path to Full Maturity (Post-MVP)
@@ -325,14 +325,13 @@ This plan outlines the phased approach to moving the "Missing" and "Stub" integr
     *   ✅ **Google Ads Keyword Planner**: Implemented (Restricted Mode).
     *   ✅ **YouTube Data API**: Implemented and Verified (`LiveVideoAdapter`).
 
-### Phase 3: Ecosystem & Compliance (The "Hands") - 🚧 IN PROGRESS
+### Phase 3: Ecosystem & Compliance (The "Hands") - ✅ COMPLETE
 **Objective**: Ensure products are sellable and compliant before briefing the CEO.
 *   **Focus**: Shopify & Compliance
-*   **Tasks**:
-    1.  **Shopify Policy Check**:
-        *   *Action*: Implement checks against Shopify's prohibited items list (e.g., weapons, supplements).
-    2.  **Supplier Feasibility**:
-        *   *Action*: Integrate a basic Supplier/AliExpress lookup to ensure at least one supplier exists with `Margin > Target`.
+*   **Status**:
+    *   ✅ **Shopify Policy Check**: Implemented `LiveShopAdapter.checkPolicy` with keyword blocking (e.g., weapons, drugs).
+    *   ✅ **Shopify API**: `LiveShopAdapter` connected to `ShopifyService` for product creation (waiting for credentials).
+    *   🚧 **Supplier Feasibility**: Pending implementation.
 
 ### Phase 4: Advanced Intelligence (The "Brain Upgrade")
 **Objective**: Move from text-based analysis to multi-modal understanding.

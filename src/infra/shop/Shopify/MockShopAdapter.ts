@@ -1,8 +1,12 @@
-import { ShopPlatformPort } from '../../core/domain/ports/ShopPlatformPort.js';
-import { Product } from '../../core/domain/types/Product.js';
+import { ShopManagementPort } from '../../../core/domain/ports/ShopManagementPort.js';
+import { Product } from '../../../core/domain/types/Product.js';
 
-export class MockShopAdapter implements ShopPlatformPort {
+export class MockShopAdapter implements ShopManagementPort {
   private products: Map<string, Product> = new Map();
+
+  async checkPolicy(productName: string, description: string): Promise<{ allowed: boolean; reason?: string }> {
+      return { allowed: true };
+  }
 
   async createProduct(productData: Omit<Product, 'id'>): Promise<Product> {
     const id = `shop_prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;

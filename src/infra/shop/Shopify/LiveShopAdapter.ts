@@ -1,6 +1,6 @@
-import { ShopManagementPort } from '../../core/domain/ports/ShopManagementPort.js';
-import { Product } from '../../core/domain/types/Product.js';
-import { ActivityLogService } from '../../core/services/ActivityLogService.js';
+import { ShopManagementPort } from '../../../core/domain/ports/ShopManagementPort.js';
+import { Product } from '../../../core/domain/types/Product.js';
+import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
 import { shopifyService } from './ShopifyService.js';
 

@@ -1,15 +1,15 @@
 import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
-import { ShopPlatformPort } from '../core/domain/ports/ShopPlatformPort.js';
+import { ShopManagementPort } from '../core/domain/ports/ShopManagementPort.js';
 import { openAIService } from '../infra/ai/OpenAIService.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { Product } from '../core/domain/types/Product.js';
 
 export class StoreBuildAgent extends BaseAgent {
-  private shop: ShopPlatformPort;
+  private shop: ShopManagementPort;
 
-  constructor(db: PersistencePort, eventBus: EventBusPort, shop: ShopPlatformPort) {
+  constructor(db: PersistencePort, eventBus: EventBusPort, shop: ShopManagementPort) {
     super('StoreBuilder', db, eventBus);
     this.shop = shop;
     this.registerTool('create_product_page', this.createProductPage.bind(this));

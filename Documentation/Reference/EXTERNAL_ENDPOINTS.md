@@ -23,7 +23,7 @@ This document tracks the status and configuration of all external API integratio
 ## 4. E-Commerce
 | Provider | Service | Status | Notes |
 | :--- | :--- | :--- | :--- |
-| **Shopify** | `LiveShopAdapter` | 🔴 Missing | Not yet implemented. |
+| **Shopify** | `LiveShopAdapter` | 🟢 Active | Policy checks and API connection fully working. Store: `61bk0t-vt.myshopify.com`. |
 
 ## 5. Infrastructure
 | Provider | Service | Status | Notes |

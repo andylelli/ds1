@@ -1,6 +1,6 @@
 import { PersistencePort } from '../domain/ports/PersistencePort.js';
 import { EventBusPort } from '../domain/ports/EventBusPort.js';
-import { ShopPlatformPort } from '../domain/ports/ShopPlatformPort.js';
+import { ShopManagementPort } from '../domain/ports/ShopManagementPort.js';
 import { AdsPlatformPort } from '../domain/ports/AdsPlatformPort.js';
 import { CEOAgent } from '../../agents/CEOAgent.js';
 import { ProductResearchAgent } from '../../agents/ProductResearchAgent.js';

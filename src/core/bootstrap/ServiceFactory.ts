@@ -5,9 +5,9 @@ import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
 import { ResearchStagingService } from '../services/ResearchStagingService.js';
 
 // Shop
-import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
-import { MockShopAdapter } from '../../infra/shop/MockShopAdapter.js';
-import { TestShopAdapter } from '../../infra/shop/TestShopAdapter.js';
+import { LiveShopAdapter } from '../../infra/shop/Shopify/LiveShopAdapter.js';
+import { MockShopAdapter } from '../../infra/shop/Shopify/MockShopAdapter.js';
+import { TestShopAdapter } from '../../infra/shop/Shopify/TestShopAdapter.js';
 import { ShopifyMcpWrapper } from '../../infra/mcp/wrappers/ShopifyMcpWrapper.js';
 import { AdsMcpWrapper } from '../../infra/mcp/wrappers/AdsMcpWrapper.js';
 import { TrendMcpWrapper } from '../../infra/mcp/wrappers/TrendMcpWrapper.js';
@@ -190,7 +190,9 @@ export class ServiceFactory {
       case 'CEOAgent':
         return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
       case 'ProductResearchAgent':
-        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads);
+        // Inject 'shop' adapter as 'shopCompliance' port
+        // Inject 'video' adapter if available (not yet in config, but good to prepare)
+        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads, deps.shop);
       case 'SupplierAgent':
         return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
       case 'StoreBuildAgent':

@@ -79,11 +79,15 @@ interface ValidationData {
 }
 
 import { AdsPlatformPort } from '../core/domain/ports/AdsPlatformPort.js';
+import { ShopCompliancePort } from '../core/domain/ports/ShopCompliancePort.js';
+import { VideoAnalysisPort } from '../core/domain/ports/VideoAnalysisPort.js';
 
 export class ProductResearchAgent extends BaseAgent {
   private trendAnalyzer: TrendAnalysisPort;
   private competitorAnalyzer: CompetitorAnalysisPort;
-  private adsAnalyzer?: AdsPlatformPort; // Optional for now to maintain backward compatibility
+  private adsAnalyzer?: AdsPlatformPort;
+  private shopCompliance?: ShopCompliancePort;
+  private videoAnalyzer?: VideoAnalysisPort;
   
   // Section 0: Dependencies
   private strategyProfile: StrategyProfile | null = null;
@@ -122,12 +126,16 @@ export class ProductResearchAgent extends BaseAgent {
       eventBus: EventBusPort, 
       trendAnalyzer: TrendAnalysisPort, 
       competitorAnalyzer: CompetitorAnalysisPort,
-      adsAnalyzer?: AdsPlatformPort
+      adsAnalyzer?: AdsPlatformPort,
+      shopCompliance?: ShopCompliancePort,
+      videoAnalyzer?: VideoAnalysisPort
   ) {
     super('ProductResearcher', db, eventBus);
     this.trendAnalyzer = trendAnalyzer;
     this.competitorAnalyzer = competitorAnalyzer;
     this.adsAnalyzer = adsAnalyzer;
+    this.shopCompliance = shopCompliance;
+    this.videoAnalyzer = videoAnalyzer;
     
     this.registerTool('find_winning_products', this.findWinningProducts.bind(this));
     this.registerTool('analyze_niche', this.analyzeNiche.bind(this));
