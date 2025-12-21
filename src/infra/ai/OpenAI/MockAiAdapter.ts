@@ -1,4 +1,4 @@
-import { AiPort, AiResponse, ToolDefinition } from '../../core/domain/ports/AiPort.js';
+import { AiPort, AiResponse, ToolDefinition } from '../../../core/domain/ports/AiPort.js';
 
 export class MockAiAdapter implements AiPort {
     async chat(systemPrompt: string, userMessage: string, tools?: ToolDefinition[]): Promise<AiResponse> {

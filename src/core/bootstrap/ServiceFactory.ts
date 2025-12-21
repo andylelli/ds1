@@ -38,8 +38,8 @@ import { LiveEmailAdapter } from '../../infra/email/LiveEmailAdapter.js';
 import { MockEmailAdapter } from '../../infra/email/MockEmailAdapter.js';
 
 // AI
-import { LiveAiAdapter } from '../../infra/ai/LiveAiAdapter.js';
-import { MockAiAdapter } from '../../infra/ai/MockAiAdapter.js';
+import { LiveAiAdapter } from '../../infra/ai/OpenAI/LiveAiAdapter.js';
+import { MockAiAdapter } from '../../infra/ai/OpenAI/MockAiAdapter.js';
 
 // Agents
 import { CEOAgent } from '../../agents/CEOAgent.js';

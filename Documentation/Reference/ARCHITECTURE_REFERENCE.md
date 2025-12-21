@@ -114,12 +114,14 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 | `mock` | `MockAdapter` | [src/infra/db/MockAdapter.ts](src/infra/db/MockAdapter.ts) |
 | `postgres` | `PostgresAdapter` | [src/infra/db/PostgresAdapter.ts](src/infra/db/PostgresAdapter.ts) |
 
+> **Note**: `PostgresAdapter` manages **two separate connection pools**: one for "Live" data and one for "Simulation" (Mock) data. This allows the system to run simulations against a real Postgres database (`dropship_sim`) without polluting the production data (`dropship`).
+
 ### Event Bus (`EventBusPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
 | `postgres` | `PostgresEventBus` | [src/infra/events/PostgresEventBus.ts](src/infra/events/PostgresEventBus.ts) |
 
-> **Note**: `PostgresEventBus` uses `PersistencePort.saveEvent()` to store events in the main database (Postgres or Mock), effectively treating the main DB as the "Event Store".
+> **Note**: `PostgresEventBus` uses `PersistencePort.saveEvent()` to store events in the main database (Postgres), effectively treating the main DB as the "Event Store".
 
 ### Trends Provider (`TrendAnalysisPort`)
 | Mode | Class Name | File Path |
@@ -142,8 +144,8 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 ### AI Provider (`AiPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `mock` | `MockAiAdapter` | [src/infra/ai/MockAiAdapter.ts](src/infra/ai/MockAiAdapter.ts) |
-| `live` | `LiveAiAdapter` | [src/infra/ai/LiveAiAdapter.ts](src/infra/ai/LiveAiAdapter.ts) |
+| `mock` | `MockAiAdapter` | [src/infra/ai/OpenAI/MockAiAdapter.ts](src/infra/ai/OpenAI/MockAiAdapter.ts) |
+| `live` | `LiveAiAdapter` | [src/infra/ai/OpenAI/LiveAiAdapter.ts](src/infra/ai/OpenAI/LiveAiAdapter.ts) |
 
 ### Competitor Analysis (`CompetitorAnalysisPort`)
 | Mode | Class Name | File Path |

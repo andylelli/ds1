@@ -1,6 +1,6 @@
-import { AiPort, AiResponse, ToolDefinition } from '../../core/domain/ports/AiPort.js';
+import { AiPort, AiResponse, ToolDefinition } from '../../../core/domain/ports/AiPort.js';
 import { openAIService } from './OpenAIService.js';
-import { ActivityLogService } from '../../core/services/ActivityLogService.js';
+import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
 
 const _SHOW_DEBUG_ENV = process.env.DEBUG_ENV === 'true';
