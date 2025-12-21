@@ -42,6 +42,7 @@ graph LR
         Shopify[Shopify Adapter]
         LLM[AI Adapter]
         Ads[Ads Adapter]
+        EventBus[Event Bus]
     end
 
     %% Relationships
@@ -58,6 +59,9 @@ graph LR
     Shopify -.->|Implements| Ports
     LLM -.->|Implements| Ports
     Ads -.->|Implements| Ports
+    EventBus -.->|Implements| Ports
+    
+    EventBus -->|Persists to| DB
 ```
 
 - **Config**: `config/` (YAML files define which adapters to load)
@@ -97,6 +101,9 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
 | `memory` | `InMemoryEventBus` | [src/infra/events/InMemoryEventBus.ts](src/infra/events/InMemoryEventBus.ts) |
+| `postgres` | `PostgresEventBus` | [src/infra/events/PostgresEventBus.ts](src/infra/events/PostgresEventBus.ts) |
+
+> **Note**: `PostgresEventBus` uses `PersistencePort.saveEvent()` to store events in the main database (Postgres or Mock), effectively treating the main DB as the "Event Store".
 
 ### Trends Provider (`TrendsPort`)
 | Mode | Class Name | File Path |
