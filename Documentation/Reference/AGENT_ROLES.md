@@ -24,12 +24,11 @@ The system relies on three core architectural pillars:
 *   **[Responsibility 2]:** Description of the task.
 
 #### 🛠️ Tools & Capabilities
-*   `tool.name()`: Description of what this tool allows the agent to do.
-*   `tool.name()`: Description of what this tool allows the agent to do.
+*   `tool_name`: Description of what this tool allows the agent to do.
 
 #### ⚡ Event Interactions
-*   **Listens For:** `EVENT_NAME`, `EVENT_NAME`
-*   **Emits:** `EVENT_NAME`, `EVENT_NAME`
+*   **Listens For:** `EVENT_NAME`
+*   **Emits:** `EVENT_NAME`
 
 ---
 
@@ -38,21 +37,22 @@ The system relies on three core architectural pillars:
 **Objective:** To oversee the entire business lifecycle, ensuring agents collaborate effectively to achieve profitability while managing risk.
 
 #### 📋 Key Responsibilities
-*   **Workflow Orchestration:** Triggers the core business workflows (Growth, Operations, Optimization) based on schedules or user commands. It ensures that hand-offs between agents (e.g., Research -> Sourcing) happen smoothly.
-*   **Approval Gatekeeper:** Reviews product research data (margin, competition) and makes the final "Go/No-Go" decision before resources are committed. It acts as the final check against "hallucinated" opportunities.
-*   **Crisis Management:** Acts as the escalation point for critical issues (e.g., angry customers, supplier failures, rapid budget drain) that require executive intervention or human alert.
-*   **Reporting Interface:** Serves as the primary conversational interface for the human user. It synthesizes logs from all other agents into coherent status updates, translating technical logs into business insights.
+*   **Workflow Orchestration:** Triggers the core business workflows (Growth, Operations, Optimization) based on schedules or user commands.
+*   **Approval Gatekeeper:** Reviews product research data and makes the final "Go/No-Go" decision.
+*   **Crisis Management:** Acts as the escalation point for critical issues.
+*   **Reporting Interface:** Serves as the primary conversational interface for the human user.
 
 #### 🛠️ Tools & Capabilities
-*   `ceo.chat(message)`: Uses **OpenAI** to analyze system-wide logs and answer human queries about business health.
-*   `ceo.approve_product(productId)`: Authorizes the Store Builder and Marketing agents to proceed with a launch.
-*   `ceo.reject_product(productId)`: Terminates a product candidate to prevent wasted ad spend.
-*   `ceo.pause_simulation()`: Emergency stop mechanism that halts all agent activities.
-*   `ceo.get_status_report()`: Compiles a high-level summary of active products, daily revenue, and pending alerts.
+*   `startProductResearch`: Instructs the Research Agent to find winning products in a specific category.
+*   `sourceProduct`: Instructs the Supplier Agent to find suppliers for a specific product.
+*   `buildStorePage`: Instructs the Store Agent to create a product page.
+*   `launchMarketingCampaign`: Instructs the Marketing Agent to launch an ad campaign.
+*   `approveProduct` / `rejectProduct`: Approves or rejects a product candidate.
+*   `approveSupplier` / `rejectSupplier`: Approves or rejects a supplier candidate.
 
 #### ⚡ Event Interactions
-*   **Listens For:** `USER_COMMAND`, `RESEARCH_COMPLETED`, `ESCALATION_TRIGGERED`, `DAILY_REPORT_REQUESTED`
-*   **Emits:** `WORKFLOW_STARTED`, `PRODUCT_APPROVED`, `PRODUCT_REJECTED`, `CAMPAIGN_PAUSED`, `REPORT_GENERATED`
+*   **Listens For:** `System.Error`, `Sales.OrderReceived`, `OpportunityResearch.BriefsPublished`
+*   **Emits:** `Product.Approved`, `Supplier.Approved`
 
 ---
 
@@ -61,150 +61,109 @@ The system relies on three core architectural pillars:
 **Objective:** To provide accurate, real-time financial visibility and actionable insights to drive profitability.
 
 #### 📋 Key Responsibilities
-*   **Data Aggregation:** Merges data from disparate sources (Meta Ads, Shopify, Bank) to create a "Single Source of Truth" for the business.
-*   **Performance Monitoring:** continuously calculates critical metrics like ROAS (Return on Ad Spend), CPA (Cost Per Acquisition), and Net Profit.
-*   **Optimization Triggers:** Identifies underperforming assets (ads, products) and signals the Marketing Agent to kill them, or identifies winners to scale.
-*   **Forecasting:** Uses historical data to predict inventory needs and cash flow requirements.
+*   **Data Aggregation:** Merges data from disparate sources to create a "Single Source of Truth".
+*   **Performance Monitoring:** Calculates critical metrics like ROAS and Net Profit.
+*   **Forecasting:** Uses historical data to predict inventory needs.
 
 #### 🛠️ Tools & Capabilities
-*   `analytics.generate_report(period)`: Creates a P&L statement for a specific timeframe (Daily/Weekly).
-*   `analytics.calculate_roas(spend, revenue)`: Computes the efficiency of ad spend.
-*   `analytics.predict_sales(product)`: Forecasts future demand to aid in inventory planning.
-*   `analytics.audit_data()`: Performs sanity checks to ensure ad platforms aren't reporting delayed or cached data.
+*   `generate_report`: Creates a P&L statement for a specific timeframe (Daily/Weekly).
+*   `predict_sales`: Forecasts future demand to aid in inventory planning.
 
 #### ⚡ Event Interactions
 *   **Listens For:** `OPTIMIZATION_TICK`, `ORDER_PAID`, `CAMPAIGN_LAUNCHED`
-*   **Emits:** `DATA_READY`, `REPORT_GENERATED`, `ALERT_LOW_MARGIN`
+*   **Emits:** `DATA_READY`, `REPORT_GENERATED`
 
 ---
 
 ### 📦 Operations Agent
 **Role:** The Logistics Manager
-**Objective:** To ensure every customer order is purchased from the supplier and delivered on time, minimizing errors and delays.
+**Objective:** To ensure every customer order is purchased from the supplier and delivered on time.
 
 #### 📋 Key Responsibilities
-*   **Order Fulfillment:** Detects paid orders in Shopify and instantly purchases the corresponding items from the supplier (AliExpress/CJ Dropshipping).
-*   **Inventory Management:** Monitors stock levels at the supplier side to prevent selling out-of-stock items.
-*   **Tracking Sync:** Retrieves tracking numbers from suppliers and updates the Shopify order status to notify customers.
-*   **Exception Handling:** Manages shipping issues like lost packages or delayed shipments by triggering reshipments or refunds.
+*   **Order Fulfillment:** Detects paid orders in Shopify and purchases items from the supplier.
+*   **Inventory Management:** Monitors stock levels.
+*   **Exception Handling:** Manages shipping issues like lost packages.
 
 #### 🛠️ Tools & Capabilities
-*   `ops.fulfill_order(order_id)`: Automates the purchase process with the supplier.
-*   `ops.check_inventory(sku)`: Verifies stock availability before or after a sale.
-*   `ops.handle_shipping_issue(order_id, issue_type)`: Resolves delivery exceptions (e.g., "Lost in Transit").
-*   `ops.sync_tracking(order_id)`: Updates the customer-facing order status with real-time carrier data.
+*   `fulfill_order`: Automates the purchase process with the supplier.
+*   `check_inventory`: Verifies stock availability.
+*   `handle_shipping_issue`: Resolves delivery exceptions.
 
 #### ⚡ Event Interactions
-*   **Listens For:** `ORDER_PAID`, `SUPPLIER_SHIPPED`, `SHIPPING_DELAY_DETECTED`
-*   **Emits:** `SUPPLIER_ORDER_PLACED`, `ORDER_FULFILLED`, `INVENTORY_LOW`
+*   **Listens For:** `ORDER_PAID`, `SUPPLIER_SHIPPED`
+*   **Emits:** `Sales.OrderShipped`
 
 ---
 
-### 📢 Marketing Agent
-**Role:** The Ad Manager & Copywriter
-**Objective:** To acquire customers at the lowest possible cost (CPA) by creating, testing, and scaling ad campaigns.
-
-#### 📋 Key Responsibilities
-*   **Campaign Creation:** Launches new ad campaigns on Meta (Facebook/Instagram) and TikTok, setting budgets, targeting, and creative assets.
-*   **Copywriting:** Generates persuasive ad copy and headlines tailored to specific customer personas.
-*   **Bid Management:** Adjusts daily budgets based on performance signals from the Analytics Agent (e.g., cutting spend on low-ROAS ads).
-*   **Creative Testing:** Rotates different image/video assets to find high-performing combinations.
-
-#### 🛠️ Tools & Capabilities
-*   `marketing.create_ad_campaign(platform, budget, product)`: Initializes a new campaign structure.
-*   `marketing.write_copy(product, angle)`: Uses **OpenAI** to generate persuasive ad copy and headlines (e.g., "Fear of Missing Out" angle vs. "Benefit-Driven").
-*   `marketing.update_budget(campaign_id, new_amount)`: Scales spend up or down.
-*   `marketing.pause_ad(ad_id)`: Stops spending on a specific ad creative.
-
-#### ⚡ Event Interactions
-*   **Listens For:** `PRODUCT_APPROVED`, `ALERT_LOW_MARGIN`, `BUDGET_INCREASED`
-*   **Emits:** `CAMPAIGN_LAUNCHED`, `AD_PAUSED`, `CREATIVE_REQUESTED`
-
----
-
-### 🕵️ Product Research Agent
+### 🔬 Product Research Agent
 **Role:** The Trend Hunter
-**Objective:** To identify high-potential products with strong market demand and low competition before they become saturated.
+**Objective:** To identify high-potential products with healthy margins and low competition.
 
 #### 📋 Key Responsibilities
-*   **Trend Analysis:** Scans social media (TikTok, Instagram Reels) and marketplaces (Amazon Movers & Shakers) to spot rising consumer interests.
-*   **Competitor Intelligence:** Analyzes existing stores selling similar products to determine their pricing, ad angles, and weaknesses.
-*   **Niche Validation:** Uses data (search volume, engagement rates) to score a niche's viability.
-*   **Selection:** Filters thousands of potential items down to a shortlist of "Winners" for the CEO to review.
+*   **Trend Analysis:** Scans Google Trends and social media for rising interests.
+*   **Competitor Analysis:** Evaluates existing sellers to find gaps in the market.
 
 #### 🛠️ Tools & Capabilities
-*   `research.find_winning_products(category)`: Returns a list of trending items based on current algorithms.
-*   `research.analyze_niche(niche)`: Provides a "Saturation Score" and "Demand Score" for a specific market segment.
-*   `research.analyze_competitors(product_name)`: Returns a list of rival stores and their estimated monthly revenue.
-*   `research.get_google_trends(keyword)`: Checks search volume history to avoid seasonal fads.
+*   `find_winning_products`: Searches for trending products.
+*   `analyze_niche`: Evaluates a specific market category.
+*   `analyze_competitors`: Checks competition levels.
 
-#### ⚡ Event Interactions
-*   **Listens For:** `WORKFLOW_STARTED`, `CREATIVE_REQUESTED` (for new angles)
-*   **Emits:** `RESEARCH_COMPLETED`, `TREND_DETECTED`
+---
+
+### 🏭 Supplier Agent
+**Role:** The Sourcing Specialist
+**Objective:** To find reliable suppliers with the best prices and shipping times.
+
+#### 📋 Key Responsibilities
+*   **Sourcing:** Finds suppliers on AliExpress/CJ Dropshipping.
+*   **Negotiation:** Tries to get better unit costs.
+*   **Stock Management:** Orders inventory to a warehouse (if applicable).
+
+#### 🛠️ Tools & Capabilities
+*   `find_suppliers`: Searches for suppliers for a given product.
+*   `negotiate_price`: Attempts to lower the cost per unit.
+*   `order_stock`: Places a bulk order.
+
+---
+
+### 🏗️ Store Build Agent
+**Role:** The Web Developer & CRO Specialist
+**Objective:** To create high-converting product pages on Shopify.
+
+#### 📋 Key Responsibilities
+*   **Page Creation:** Builds product pages with images, descriptions, and pricing.
+*   **SEO Optimization:** Optimizes titles and meta tags for search engines.
+
+#### 🛠️ Tools & Capabilities
+*   `create_product_page`: Generates a new product page on Shopify.
+*   `optimize_seo`: Updates page metadata for better ranking.
+
+---
+
+### 📣 Marketing Agent
+**Role:** The Media Buyer & Copywriter
+**Objective:** To drive qualified traffic to the store at the lowest possible cost.
+
+#### 📋 Key Responsibilities
+*   **Campaign Management:** Launches and manages ads on Facebook/TikTok/Google.
+*   **Copywriting:** Writes ad copy and creative descriptions.
+
+#### 🛠️ Tools & Capabilities
+*   `create_ad_campaign`: Launches a new ad campaign.
+*   `stop_campaign`: Pauses an underperforming campaign.
+*   `write_copy`: Generates marketing text.
 
 ---
 
 ### 🎧 Customer Service Agent
 **Role:** The Support Representative
-**Objective:** To resolve customer inquiries quickly and empathetically, maintaining a high Trustpilot score and preventing chargebacks.
+**Objective:** To keep customers happy and resolve issues quickly.
 
 #### 📋 Key Responsibilities
-*   **Ticket Triage:** Reads incoming emails/messages and categorizes them by intent (e.g., "Where is my order?", "Refund Request", "Product Question").
-*   **Sentiment Analysis:** Detects the customer's mood. If a customer is "Angry" or "Threatening Legal Action," it escalates the ticket immediately.
-*   **Auto-Response:** Uses **OpenAI** to draft and send personalized replies to common queries (WISMO - Where Is My Order) without human intervention.
-*   **FAQ Generation:** Proactively creates Help Center articles based on recurring questions about a new product.
+*   **Ticket Resolution:** Answers customer emails and support tickets.
+*   **FAQ Management:** Updates the FAQ based on common questions.
 
 #### 🛠️ Tools & Capabilities
-*   `support.check_emails()`: Fetches unread messages from the support inbox.
-*   `support.handle_ticket(ticket_id, message)`: Analyzes the content and drafts a reply or action plan.
-*   `support.send_reply(email, content)`: Dispatches the final response to the customer.
-*   `support.issue_refund(order_id)`: Triggers a refund in Shopify (requires strict rules/approval).
-
-#### ⚡ Event Interactions
-*   **Listens For:** `TICKET_CREATED`, `ORDER_FULFILLED` (to send proactive updates)
-*   **Emits:** `TICKET_TRIAGED`, `TICKET_SOLVED`, `ESCALATION_TRIGGERED`
-
----
-
-### 🏗️ Store Build Agent
-**Role:** The Developer & Designer
-**Objective:** To create high-converting Shopify product pages that look professional and trustworthy.
-
-#### 📋 Key Responsibilities
-*   **Product Page Creation:** Takes raw product data (name, images) and builds a complete Shopify listing.
-*   **Copy Generation:** Uses AI to write compelling product descriptions, benefit bullets, and "Why Buy From Us" sections.
-*   **SEO Optimization:** Generates meta titles, descriptions, and URL handles to improve organic search visibility.
-*   **Image Optimization:** (Planned) Compresses and renames images for faster load times and better SEO.
-
-#### 🛠️ Tools & Capabilities
-*   `store.create_product_page(product_data)`: Pushes a new product to the Shopify store via API.
-*   `store.generate_description(product_name)`: Calls **OpenAI** to write high-converting sales copy.
-*   `store.optimize_seo(product_id)`: Updates the search engine listing preview.
-*   `store.set_pricing(product_id, price, compare_at_price)`: Configures the visible price and "sale" price.
-
-#### ⚡ Event Interactions
-*   **Listens For:** `PRODUCT_APPROVED`
-*   **Emits:** `PRODUCT_PUBLISHED`
-
----
-
-### 🚚 Supplier Agent
-**Role:** The Sourcing Manager
-**Objective:** To secure the best possible unit cost (COGS) and shipping times for approved products.
-
-#### 📋 Key Responsibilities
-*   **Supplier Discovery:** Searches AliExpress, CJ Dropshipping, and other databases to find vendors for a specific product.
-*   **Vetting:** Evaluates suppliers based on their rating, years in business, and shipping speed (e.g., "Must offer 10-day shipping to USA").
-*   **Margin Calculation:** Computes the gross margin by comparing the supplier's cost + shipping against the target retail price.
-*   **Negotiation:** (Planned) Simulates messaging suppliers to ask for bulk discounts.
-
-#### 🛠️ Tools & Capabilities
-*   `supplier.find_suppliers(product_name)`: Returns a list of potential vendors with pricing and shipping info.
-*   `supplier.negotiate_price(supplier_id, target_price)`: Uses **OpenAI** to simulate messaging suppliers and attempt to lower the unit cost.
-*   `supplier.calculate_margin(retail_price, unit_cost, shipping_cost)`: Returns the profit margin percentage.
-
-#### ⚡ Event Interactions
-*   **Listens For:** `RESEARCH_COMPLETED`
-*   **Emits:** `SOURCING_COMPLETED`
-
----
+*   `handle_ticket`: Responds to a customer inquiry.
+*   `generate_faq`: Creates new FAQ entries.
+*   `check_emails`: Scans inbox for new messages.

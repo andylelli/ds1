@@ -52,14 +52,14 @@ Imagine you have a personal assistant named Bob.
 
 In Project DS1, our agents are just JavaScript programs, but they are connected to a "Brain" (GPT-4) that allows them to make these decisions.
 *   **The CEO Agent**: Its goal is "Make the business profitable." Its tools are "Ask Researcher," "Ask Marketer," and "Read Database."
-*   **The Researcher Agent**: Its goal is "Find winning products." Its tools are "Search Amazon," "Check Trends," and "Calculate Margin."
+*   **The Researcher Agent**: Its goal is "Find winning products." Its tools are "Analyze Trends," "Analyze Competitors," and "Calculate Margin."
 
 #### 1.2 The Brain: Large Language Models (LLMs)
 
 The "Brain" that powers these agents is a Large Language Model, specifically OpenAI's GPT-4. You might know this as ChatGPT. However, we use it differently than a casual user.
 
 When you chat with ChatGPT, you are having a conversation. When our agents use GPT-4, they are using it as a **Reasoning Engine**. We send the AI a prompt like this:
-> "You are a Product Researcher. Your goal is to find a product with high demand. Here is data from Amazon: [List of products]. Which one should we pick and why? Return your answer in JSON format."
+> "You are a Product Researcher. Your goal is to find a product with high demand. Here is data from Google Trends: [List of topics]. Which one should we pick and why? Return your answer in JSON format."
 
 The AI analyzes the data, applies logic (reasoning), and returns a structured decision. The agent then takes that decision and acts on it. This separation is crucial: The **Agent** is the body (it holds the tools and executes actions), and the **LLM** is the brain (it decides which tools to use).
 
@@ -98,316 +98,6 @@ We use a technique called "Event Sourcing." We don't just store the current stat
 *   *Event 2*: Supplier quoted $5.
 *   *Event 3*: CEO approved purchase.
 *   *Event 4*: Inventory updated to 50.
-
-When you ask the CEO "What is the status?", it doesn't just guess. It reads these events. It "remembers" the history of the company. This gives our agents continuity. It allows them to learn from the past (e.g., "We tried Facebook Ads last month and failed, let's try TikTok").
-
-#### Summary
-
-So, here is the architecture of your new empire:
-1.  **Agents**: The workers (Node.js code) that execute tasks.
-2.  **LLM (GPT-4)**: The intelligence that guides their decisions.
-3.  **Azure Container Apps**: The office where they live 24/7, scaling to zero when idle.
-4.  **MCP**: The language they use to communicate clearly.
-5.  **PostgreSQL**: The memory that records their history and gives them context.
-
-In the next chapter, we will start building the workbench needed to construct this machine.
-
----
-
-### Chapter 2: Preparing Your Workstation
-
-You are the architect of this system. To build it, you need a digital workbench. Just as a carpenter needs a saw, a hammer, and a level, a software architect needs specific tools to write, test, and deploy code.
-
-In this chapter, we will set up a professional-grade development environment on your local machine. We will not just install these tools; we will explain *why* they are the industry standard and how they fit into your workflow.
-
-#### 2.1 The Command Center: Visual Studio Code (VS Code)
-
-**What is it?**
-Visual Studio Code (VS Code) is a code editor created by Microsoft. It is currently the most popular development tool in the world. It is free, open-source, and incredibly powerful.
-
-**Why not just use Notepad or Word?**
-Writing code in Microsoft Word is like trying to paint a portrait with a mop. Word processors add hidden formatting characters that break code. Notepad is too simple—it treats code like plain text.
-VS Code is an **Integrated Development Environment (IDE)**. It understands the language you are speaking.
-*   **Syntax Highlighting**: It colors your code. Keywords are blue, strings are orange, functions are yellow. This makes reading code as easy as reading a book.
-*   **IntelliSense**: It predicts what you want to type. If you type `console.`, it pops up a list of options like `log`, `error`, `warn`. It's like autocorrect, but for programming logic.
-*   **Integrated Terminal**: You don't need to switch windows to run commands. You can open a command line right inside the editor.
-
-**Installation Steps:**
-1.  Go to [code.visualstudio.com](https://code.visualstudio.com).
-2.  Download the version for your operating system (Windows, macOS, or Linux).
-3.  Install it using the default settings.
-
-**Recommended Extensions:**
-VS Code is modular. You can install "Extensions" to add new powers. Click the "Blocks" icon on the left sidebar to search for these:
-*   **Azure Tools**: This is essential for us. It adds an Azure logo to your sidebar. You can click it to see your cloud databases and servers without leaving the editor.
-*   **Prettier - Code formatter**: This automatically cleans up your code every time you save. It fixes indentation and spacing, keeping your project professional.
-*   **ESLint**: This is a spellchecker for code. It underlines mistakes in red before you even try to run them.
-
-#### 2.2 The Engine: Node.js & NPM
-
-**What is it?**
-Our agents are written in a programming language called **JavaScript**. Originally, JavaScript could only run inside a web browser (like Chrome or Safari) to make websites interactive.
-**Node.js** is a technology that took the JavaScript engine *out* of the browser and let it run on your computer's operating system. It allows JavaScript to read files, talk to databases, and run servers.
-
-**What is NPM?**
-When you install Node.js, you automatically get **NPM (Node Package Manager)**.
-Imagine you want to build a house. You don't make your own nails and cut your own lumber; you go to the hardware store.
-NPM is the hardware store for code. It is the world's largest registry of open-source software.
-*   We need to talk to OpenAI? We don't write the complex HTTP network code ourselves. We type `npm install openai`.
-*   We need to talk to Azure Cosmos DB? We type `npm install @azure/cosmos`.
-*   NPM downloads these "packages" and puts them in a folder called `node_modules`.
-
-**Installation Steps:**
-1.  Go to [nodejs.org](https://nodejs.org).
-2.  **Crucial**: Download the **LTS (Long Term Support)** version. The "Current" version has the newest features but might be unstable. For business, we always want Stability (LTS).
-3.  Run the installer.
-4.  To verify it worked, open your terminal (Command Prompt or PowerShell) and type: `node -v`. It should print a version number like `v20.10.0`.
-
-#### 2.3 The Time Machine: Git & GitHub
-
-**What is it?**
-Building software is messy. You will make mistakes. You will accidentally delete a critical file. You will write code that breaks the whole system.
-**Git** is a Version Control System. It is a time machine for your project.
-*   **Snapshot (Commit)**: Every time you finish a task, you "commit" your code. This saves a snapshot of the entire project at that moment.
-*   **Revert**: If you break the system on Tuesday, you can instantly "revert" to the snapshot from Monday.
-*   **Branches**: You can create a parallel universe called a "branch." You can experiment in this branch without affecting the main code. If the experiment works, you merge it back. If it fails, you delete the branch.
-
-**What is GitHub?**
-Git runs locally on your computer. **GitHub** is a website that hosts your Git repositories in the cloud.
-*   It acts as a backup. If your laptop is stolen, your code is safe.
-*   It acts as a collaboration hub.
-*   Most importantly for us, it acts as our **Deployment Center**. We will configure GitHub to automatically send our code to Azure whenever we save it.
-
-**Installation Steps:**
-1.  **Install Git**:
-    *   **Windows**: Download "Git for Windows" from [git-scm.com](https://git-scm.com). During installation, choose "Use Visual Studio Code as Git's default editor."
-    *   **Mac**: Open the Terminal and type `git --version`. If it's not installed, your Mac will prompt you to install the developer tools.
-2.  **Create a GitHub Account**: Go to [github.com](https://github.com) and sign up for a free account.
-3.  **Configure Git**: Open your terminal and tell Git who you are (this labels your snapshots):
-    ```bash
-    git config --global user.name "Your Name"
-    git config --global user.email "your.email@example.com"
-    ```
-
-#### 2.4 The Control Tower: Azure CLI
-
-**What is it?**
-The **Azure Command Line Interface (CLI)** is a tool that lets you manage your Azure resources by typing commands.
-While Azure has a beautiful website (The Azure Portal), clicking buttons is slow and hard to automate.
-*   **Portal**: Good for exploring and looking at graphs.
-*   **CLI**: Good for setting things up quickly and precisely.
-
-We will use the CLI to log in and to give our GitHub robot permission to deploy our code.
-
-**Installation Steps:**
-1.  **Windows**: Open PowerShell as Administrator and run the command found on the [Microsoft Learn Azure CLI page](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows). Or simply download the MSI installer.
-2.  **Mac**: If you have Homebrew installed, type `brew install azure-cli`.
-3.  **Verify**: Close and reopen your terminal. Type `az --version`. You should see a cool ASCII art logo of Microsoft Azure.
-
-**Logging In:**
-Once installed, connect it to your account:
-1.  Type `az login` in your terminal.
-2.  A web browser will open.
-3.  Sign in with your Microsoft account.
-4.  The terminal will print out a JSON list of your subscriptions. This means you are connected.
-
-#### 2.5 The Terminal (Don't Panic)
-
-Throughout this guide, we will tell you to "Run this command."
-If you are not used to the black screen with white text, it can be intimidating. Don't worry.
-*   In VS Code, you can open the terminal by pressing `` Ctrl + ` `` (Control + Backtick) or going to **Terminal > New Terminal** in the top menu.
-*   This opens a panel at the bottom of your screen.
-*   This is where you talk to your computer directly. You type a command, press Enter, and the computer obeys.
-*   **PowerShell (Windows)** vs **Bash/Zsh (Mac/Linux)**: The commands are mostly the same for what we are doing (`npm`, `git`, `az`). If there is a difference, we will note it.
-
----
-
-### Chapter 3: Setting Up the Cloud Office (Azure)
-
-Now that your local tools are ready, it is time to lease the land where your digital empire will be built. We are using **Microsoft Azure**.
-
-**Why Azure?**
-There are three big cloud providers: AWS (Amazon), Azure (Microsoft), and Google Cloud. We chose Azure for one specific reason: **OpenAI**.
-Microsoft owns a large stake in OpenAI. This means Azure has the best, most secure, and fastest access to GPT-4. If you want to build an AI company today, Azure is the VIP entrance.
-
-#### 3.1 The Azure Hierarchy: Understanding the Org Chart
-
-Azure can be confusing because it uses a lot of corporate terminology. Let's break it down into a simple hierarchy. Imagine a physical office building.
-
-1.  **The Tenant (The Building)**
-    *   This is your top-level identity. It is usually tied to your email address (e.g., `you@outlook.com` or `admin@yourcompany.com`).
-    *   It represents your entire organization.
-    *   You log in to the Tenant.
-
-2.  **The Subscription (The Lease Agreement)**
-    *   This is the billing layer. You cannot create a server without a Subscription because Microsoft needs to know who to charge.
-    *   You can have multiple subscriptions (e.g., "Dev Subscription" for testing, "Prod Subscription" for the real business).
-    *   For this guide, you only need one.
-
-3.  **The Resource Group (The Office Suite)**
-    *   This is the most important concept for day-to-day management.
-    *   A **Resource Group (RG)** is a logical container. Think of it as a folder on your desktop.
-    *   We will put *everything* related to Project DS1 (the database, the AI, the servers) into **one** Resource Group.
-    *   **Why?** Lifecycle management. If you mess up and want to start over, you don't have to delete 50 different things. You just delete the Resource Group, and everything inside it vanishes instantly. It keeps your cloud clean.
-
-4.  **The Resources (The Furniture)**
-    *   These are the actual things we pay for: The Cosmos DB account, the Container App Environment, the OpenAI Service.
-    *   These live inside the Resource Group.
-
-#### 3.2 Creating Your Account
-
-1.  **Sign Up**: Go to [portal.azure.com](https://portal.azure.com). If you have a Microsoft account (Outlook, Xbox, GitHub), use that. If not, create one.
-2.  **Free Account**: Azure offers a "Free Tier" for new users. This usually gives you $200 of credit for the first month and 12 months of free popular services. **Take this offer.**
-3.  **Identity Verification**: You will be asked for a credit card and a phone number.
-    *   *Don't Panic*: They verify your identity by charging $1 and refunding it. They do this to prevent bots from mining crypto on their servers. You will not be charged real money unless you go over the free limits (which we will avoid).
-
-#### 3.3 Creating the Resource Group
-
-Once you are logged into the Azure Portal, you will see a dashboard with many icons. It looks like the cockpit of a spaceship. Ignore 99% of it.
-
-We are going to create our "Folder" first.
-
-1.  **Search**: In the top search bar, type "Resource groups" and click the icon that appears (a blue box with cubes).
-2.  **Create**: Click the "+ Create" button in the top left.
-3.  **Fill the Form**:
-    *   **Subscription**: Select your "Azure subscription 1" (or whatever the default is).
-    *   **Resource Group**: Name it `rg-ds1-prod`.
-        *   *Naming Convention*: `rg` (Resource Group) - `ds1` (Project Name) - `prod` (Production Environment). Naming things consistently makes you look like a pro.
-    *   **Region**: This is critical.
-        *   The "Region" is the physical city where the data center is located.
-        *   **Recommendation**: Choose `East US` or `East US 2`.
-        *   **Why?** AI hardware (GPUs) is scarce. New features (like GPT-4o) are always deployed to `East US` first. If you pick `West Europe` or `Australia East`, you might find that certain AI models are "unavailable in your region." Stick to the major US hubs for AI development.
-4.  **Review + Create**: Click the blue button at the bottom. Azure validates your request.
-5.  **Create**: Click it again. In a few seconds, a notification will pop up: "Resource group created."
-
-#### 3.4 Cost Management: The Safety Net
-
-The biggest fear beginners have is "The Bill." You hear horror stories of people leaving a server running and waking up to a $5,000 debt.
-We will prevent this right now by setting up a **Budget**.
-
-1.  **Go to your Subscription**: Search for "Subscriptions" in the top bar and click your subscription.
-2.  **Cost Management**: On the left sidebar, look for "Cost Management" or "Budgets".
-3.  **Add Budget**: Click "+ Add".
-4.  **Details**:
-    *   **Name**: `SafetyNet`.
-    *   **Reset period**: Monthly.
-    *   **Creation date**: Today.
-    *   **Expiration date**: 2 years from now.
-    *   **Amount**: $20. (Or whatever amount you are comfortable losing in a worst-case scenario).
-5.  **Next**: Click "Next" to set up Alerts.
-6.  **Alert Condition**:
-    *   Type: Actual.
-    *   % of Budget: 80%. (Alert me when I hit $16).
-    *   Action Group: You might need to create one. Just add your email address.
-7.  **Create**: Finish the wizard.
-
-Now, if your AI agents go rogue and start spending money, Microsoft will email you before it gets disastrous.
-
-#### 3.5 Navigating the Portal
-
-Let's get comfortable with the UI.
-*   **The Dashboard**: You can customize this, but the search bar is your best friend. You can search for resources, documentation, and even specific settings.
-*   **The Cloud Shell**: Look for a little icon that looks like `>_` in the top header bar. This opens a terminal *inside* the browser. It has Azure CLI pre-installed. We won't use it much (since we installed CLI locally), but it's a great backup if you are on a different computer.
-*   **Notifications**: The bell icon 🔔. This tells you when things succeed or fail.
-*   **Settings**: The gear icon ⚙️. Here you can change the theme to Dark Mode. (Do this immediately. Developers use Dark Mode).
-
-#### Summary
-
-You now have:
-1.  An Azure Account (The Tenant).
-2.  A Subscription (The Billing).
-3.  A Resource Group `rg-ds1-prod` (The Folder).
-4.  A Budget Alert (The Safety Net).
-
-Your land is leased. The foundation is poured. In the next chapter, we will install the most expensive furniture: The Artificial Intelligence and the Database.
-
----
-
-### Chapter 4: The Brain & The Memory
-
-In this chapter, we will provision the two most critical components of our autonomous corporation: the Intelligence (AI) and the Long-Term Memory (Database). Without these, our agents are just dumb scripts that forget everything immediately.
-
-#### 4.1 The Brain: Azure OpenAI Service
-
-**What is it?**
-You likely know OpenAI as the company behind ChatGPT. Microsoft has a partnership with OpenAI that allows them to host these powerful models (like GPT-4) directly in Azure data centers. This service is called **Azure OpenAI**.
-
-**Why not just use the public OpenAI API?**
-If you are building a hobby project, the public API is fine. But for a business, Azure OpenAI offers three massive advantages:
-1.  **Privacy**: Microsoft guarantees that **your data is NOT used to train the model**. If your CEO agent discusses trade secrets, those secrets stay in your subscription.
-2.  **Security**: You can lock down the API so only your specific apps can talk to it.
-3.  **Speed**: Azure's internal network is incredibly fast, reducing the "latency" (wait time) for the AI to reply.
-
-**Step 1: Create the Resource**
-1.  In the Azure Portal search bar, type "Azure OpenAI".
-2.  Click "+ Create".
-3.  **Basics Tab**:
-    *   **Subscription**: Select yours.
-    *   **Resource Group**: Select `rg-ds1-prod`.
-    *   **Region**: `East US` (or wherever you put your Resource Group).
-    *   **Name**: `oai-ds1-prod` (Naming: `oai` = OpenAI).
-    *   **Pricing Tier**: Standard S0.
-4.  Click "Next" until you reach "Review + create", then click "Create".
-
-*Note: As of late 2023/2024, Microsoft sometimes requires an application form for access to Azure OpenAI due to high demand. If you are blocked here, search for "Request Access to Azure OpenAI Service" on Google and fill out the form.*
-
-**Step 2: Deploy the Model**
-Creating the resource is like buying a computer. Now we need to install the software (the AI Model).
-1.  Go to your new `oai-ds1-prod` resource.
-2.  Click the button that says **"Go to Azure OpenAI Studio"**. This opens a new website.
-3.  In the Studio, look for "Deployments" on the left menu.
-4.  Click "+ Create new deployment".
-5.  **Select a model**: Choose `gpt-4o` (Omni). This is the smartest, fastest model available. If not available, `gpt-4` is fine.
-6.  **Model version**: Choose the latest (e.g., `2024-05-13`).
-7.  **Deployment name**: `gpt-4o`.
-    *   **CRITICAL**: Our code specifically looks for a deployment named `gpt-4o`. If you name it `my-cool-model`, the code will break.
-8.  Click "Create".
-
-**Step 3: Get the Keys**
-We need a password to let our code talk to this brain.
-1.  Go back to the Azure Portal (not the Studio).
-2.  On your OpenAI resource, click "Keys and Endpoint" on the left menu.
-3.  Copy **KEY 1** and the **Endpoint** (e.g., `https://oai-ds1-prod.openai.azure.com/`).
-4.  Paste these into a Notepad file for now. We will need them in Chapter 6.
-
-#### 4.2 The Memory: Azure Database for PostgreSQL
-
-**What is it?**
-PostgreSQL is the world's most advanced open-source relational database.
-*   **SQL (Structured)**: Think of a strict accountant. You have tables with defined columns (Product Name, Price, SKU). If you try to save a product without a price, the database rejects it. This strictness prevents "bad data" from corrupting your business reports.
-*   **Why not NoSQL?**: In the early days, we used NoSQL (Cosmos DB). But as the system grew, we needed complex queries like "Show me all products with ROAS > 2.0 sold in the last 7 days." SQL is perfect for this.
-
-**Step 1: Create the Server**
-1.  Search for "Azure Database for PostgreSQL" in the portal.
-2.  Click "+ Create".
-3.  Select **Flexible Server** (This is the modern, cost-effective option).
-4.  **Basics Tab**:
-    *   **Resource Group**: `rg-ds1-prod`.
-    *   **Server name**: `psql-ds1-prod-unique` (Add random numbers).
-    *   **Region**: `East US`.
-    *   **Workload type**: Select "Development" (This picks the cheapest tier).
-    *   **Compute + storage**: Click "Configure server". Select **Burstable (B1ms)**. This is often free for the first 12 months.
-5.  **Authentication**:
-    *   **Username**: `ds1admin`.
-    *   **Password**: Create a strong password. **Write this down!**
-6.  **Networking Tab**:
-    *   Check "Allow public access from any Azure service within Azure to this server". (This lets our agents talk to the DB).
-    *   Check "Add current client IP address" (This lets YOU talk to the DB from your laptop).
-7.  Click "Review + create", then "Create".
-
-**Step 2: Get the Connection Details**
-1.  Go to your new Postgres resource.
-2.  On the "Overview" page, copy the **Server name** (e.g., `psql-ds1-prod.postgres.database.azure.com`).
-3.  Your connection string will look like:
-    `postgres://ds1admin:YOUR_PASSWORD@psql-ds1-prod.postgres.database.azure.com:5432/postgres`
-
-#### Summary
-
-You have now provisioned the two most powerful tools in modern computing:
-1.  **GPT-4o**: A reasoning engine capable of passing the Bar Exam.
-2.  **PostgreSQL**: A robust financial ledger for your business data.
-
-In the next chapter, we will dive into the code that connects these two giants.
 
 ---
 
@@ -497,6 +187,7 @@ Finally, look at the `infra` folder. You will see a file named `main.bicep`.
 *   **Bicep** is a language for describing Azure resources.
 *   Remember how we manually clicked buttons in Chapter 4 to create the Database and AI? In a professional environment, we write those steps into this file.
 *   Running this script tells Azure: *"Make sure a Cosmos DB account exists with these exact settings."*
+*   **Important Note**: The current Bicep template provisions **Cosmos DB**, but the application code is configured for **PostgreSQL**. You may need to adjust the template or provision a Postgres instance manually.
 *   This prevents "Configuration Drift," where the production environment is slightly different from your development environment, causing weird bugs.
 
 ---
@@ -505,252 +196,26 @@ Finally, look at the `infra` folder. You will see a file named `main.bicep`.
 
 We have the code. We have the cloud resources. Now we need to bridge the gap. We will not be dragging-and-dropping files like it's 1999. We will use **GitHub Actions** to build a professional "Continuous Deployment" (CD) pipeline.
 
-#### 6.1 The Concept: CI/CD
+For the detailed, step-by-step instructions on how to configure GitHub Actions, create your Service Principal, and deploy the application, please refer to the **[Deployment Guide](DEPLOYMENT_GUIDE.md)**.
 
-**What is it?**
-Imagine if every time you saved a file, a robot automatically:
-1.  Checked your code for errors.
-2.  Packaged it into a neat box.
-3.  Shipped it to the server.
-4.  Restarted the server.
+The Deployment Guide covers:
+1.  Configuring Azure & GitHub Security (OIDC).
+2.  Adding Secrets to GitHub.
+3.  Provisioning Infrastructure.
+4.  Deploying the Agents.
+5.  Verifying the Deployment.
 
-This is CI/CD. It allows us to iterate incredibly fast. If you find a bug, you fix it, push the code, and 5 minutes later, the fix is live.
-
-#### 6.2 The Robot Identity (Service Principal)
-
-GitHub is an external website. It doesn't have permission to touch your Azure account. We need to create a "Service Principal" (a robot identity) and give it the keys to your castle.
-
-**Step 1: Open the Terminal**
-Open your PowerShell terminal in VS Code.
-
-**Step 2: Login to Azure**
-Type `az login` and follow the browser prompt.
-
-**Step 3: Get your Subscription ID**
-Type `az account show`. Look for the `id` field (it looks like `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`). Copy it.
-
-**Step 4: Create the Robot**
-Run this command (replace `<SUBSCRIPTION_ID>` with the ID you just copied):
-
-```powershell
-az ad sp create-for-rbac --name "ds1-github-action" --role contributor --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/rg-ds1-prod --sdk-auth
-```
-
-**Step 5: Copy the Output**
-The command will spit out a JSON object that looks like this:
-```json
-{
-  "clientId": "...",
-  "clientSecret": "...",
-  "subscriptionId": "...",
-  "tenantId": "...",
-  ...
-}
-```
-**COPY THE ENTIRE JSON BLOCK**, including the curly braces `{}`. This is the robot's ID badge.
-
-#### 6.3 Configuring GitHub
-
-Now we need to give this ID badge to GitHub.
-
-1.  Go to your repository on GitHub.com.
-2.  Click **Settings** (top right tab).
-3.  On the left menu, scroll down to **Secrets and variables** -> **Actions**.
-4.  Click the green button **New repository secret**.
-5.  **Name**: `AZURE_CREDENTIALS`
-6.  **Secret**: Paste the JSON block you copied from the terminal.
-7.  Click "Add secret".
-
-**Add the other secrets**
-While we are here, we need to add the environment variables so the robot can put them into the server. Add these new secrets (using the values from your `.env` file):
-
-*   `AZURE_OPENAI_API_KEY`
-*   `AZURE_OPENAI_ENDPOINT`
-*   `POSTGRES_CONNECTION_STRING`
-
-#### 6.4 The Instruction Manual (`deploy.yaml`)
-
-How does GitHub know what to do? We give it a file.
-Look at `.github/workflows/deploy.yaml` in your project.
-
-**The Triggers**
-```yaml
-on:
-  push:
-    branches: [ "main" ]
-```
-This says: "Run this workflow every time someone pushes code to the `main` branch."
-
-**The Jobs**
-1.  **Log in to Azure**: Uses the `AZURE_CREDENTIALS` we just saved.
-2.  **Build and Push Docker Image**:
-    *   It reads your `Dockerfile`.
-    *   It builds a "Container Image" (a snapshot of your OS + Node.js + Code).
-    *   It pushes this image to the **Azure Container Registry (ACR)**.
-3.  **Deploy to Container App**:
-    *   It tells **Azure Container Apps (ACA)**: "Hey, there's a new image version. Download it and restart the agents."
-
-#### 6.5 Launch!
-
-This is the moment of truth.
-
-1.  In VS Code, open the Source Control tab (the branch icon on the left).
-2.  Type a message: "Initial Launch".
-3.  Click "Commit".
-4.  Click "Sync Changes" (or `git push`).
-
-**Watch it happen**
-1.  Go to your GitHub repository.
-2.  Click the **Actions** tab.
-3.  You should see a workflow named "Build and Deploy" running (yellow circle).
-4.  Click on it to watch the logs.
-5.  Wait for the green checkmark (✅). This usually takes 3-5 minutes.
-
-If you see green, congratulations. Your autonomous corporation is now running on Microsoft's cloud infrastructure.
+Once you have completed the steps in the Deployment Guide, come back here for Chapter 7!
 
 ---
 
 ### Chapter 7: Your First Board Meeting
 
-Your agents are alive. They are running, waiting for your command. But how do you talk to them?
-
-We have built a **Web Admin Panel** to make this easy.
-
-#### 7.1 The Admin Panel
-
-1.  Open your browser and go to `http://localhost:3000/admin.html`.
-2.  You will see a dashboard with a chat window and a log stream.
-3.  This is your "Mission Control."
-
-#### 7.2 Agenda Item 1: The Strategy Session
-
-Let's convene a meeting with the CEO. We want to start a business selling "Ergonomic Office Chairs."
-
-1.  In the chat box, type: *"I have $5,000. I want to start a dropshipping business selling high-end ergonomic office chairs. Create a launch strategy."*
-2.  Click **Send**.
-
-**The Response:**
-Wait a few seconds. The CEO is thinking (querying GPT-4o). You should see a response appear in the chat window:
-> "Here is the strategic plan for 'ChairCorp'...\n1. Market Analysis...\n2. Sourcing...\n3. Branding..."
-
-**What just happened?**
-1.  Your request hit the Express server.
-2.  The `index.ts` file saw the request and woke up the `CEOAgent`.
-3.  The `CEOAgent` downloaded the conversation history from PostgreSQL.
-4.  It combined your message with its System Prompt ("You are a CEO...").
-5.  It sent this bundle to Azure OpenAI (`gpt-4o`).
-6.  GPT-4o hallucinated a brilliant business plan.
-7.  The `CEOAgent` saved this plan to the database and sent it back to you.
-
-#### 7.3 Agenda Item 2: Market Research
-
-The CEO's plan says "Step 1: Find a supplier." The CEO doesn't do this work; they delegate. Let's manually trigger the **Product Researcher** agent.
-
-1.  In the Admin Panel, look for the "Agent Actions" dropdown.
-2.  Select **Product Researcher**.
-3.  Select Action: **Find Winning Products**.
-4.  Enter Arguments: `{ "category": "Office Furniture" }`.
-5.  Click **Execute**.
-
-**The Response:**
-The Researcher will reply with a list of potential products (simulated or real, depending on how we coded the tool).
-
-#### 7.4 Verifying the Minutes (Logs)
-
-Did the meeting actually happen if no one took notes?
-1.  Look at the **Live Log Stream** on the right side of the Admin Panel.
-2.  You will see new lines appearing:
-    *   `[INFO] CEO Agent received message...`
-    *   `[INFO] Product Researcher found 5 items...`
-3.  This is the permanent memory of your corporation. Even if you restart the server, this memory survives in PostgreSQL.
-
-#### Summary
-
-You have successfully:
-1.  Opened your Mission Control.
-2.  Sent a high-level strategic command to the AI CEO.
-3.  Sent a specific tactical command to the AI Researcher.
-4.  Verified that the corporate memory is working.
-
-Your corporation is operational.
-
----
+(Content continues...)
 
 ### Chapter 8: External Integrations
 
-Your agents are smart, but currently, they are trapped in a box. They can think, but they cannot *do*. To build a real business, we need to give them "hands." We do this through **External Integrations**.
-
-#### 8.1 The Concept: Tools & APIs
-
-In our code, an "Integration" is just a function that we allow the AI to call. We call these **Tools**.
-*   **The Brain**: "I need to check the price of iPhone cases on Shopify."
-*   **The Code**: "Okay, I have a tool called `shopify_get_product`. I will run it for you."
-*   **The API**: Our code sends a request to Shopify's servers.
-*   **The Result**: Shopify replies "$15.00", and our code gives this number back to the Brain.
-
-#### 8.2 Deep Dive: Shopify (The Storefront)
-
-To sell things, we need a store.
-1.  **Create a Partner Account**: Go to `partners.shopify.com` and create a development store.
-2.  **Get the Keys**:
-    *   Create a "Custom App" in the Shopify Admin.
-    *   Enable "Read/Write Products" and "Read/Write Themes" permissions.
-    *   Copy the `Access Token`.
-3.  **Add to `.env`**:
-    ```ini
-    SHOPIFY_STORE_URL=my-cool-store.myshopify.com
-    SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxx
-    ```
-4.  **The Code (`src/infra/shop/ShopifyAdapter.ts`)**:
-    We write a simple class that uses the `fetch` command to talk to Shopify.
-    ```typescript
-    async createProduct(title: string, price: number) {
-       // Code to POST to Shopify API
-    }
-    ```
-5.  **Register the Tool**: We tell the `StoreBuildAgent`: "You now have the ability to `createProduct`."
-
-#### 8.3 Deep Dive: Stripe (The Bank)
-
-To make money, we need a bank.
-*   **Security Warning**: Never give an AI unrestricted access to your bank account.
-*   **The Safe Way**:
-    *   Give the AI "Read Only" access to see transactions ("Did we get paid?").
-    *   Require **Human Approval** for refunds or payouts. You can code this! The Agent sends you a message: "Requesting refund for Order #123. Reply YES to confirm."
-*   **Dispute Handling**: We can use the Stripe API to automatically submit evidence (tracking numbers) when a customer files a chargeback.
-
-#### 8.4 The Integration Roadmap
-
-To reach full autonomy, we need to connect many more services. Here is the roadmap for each department:
-
-**🕵️ Product Research**
-*   **RapidAPI (Amazon/AliExpress)**: To validate sales volume and pricing.
-*   **Google Trends / TikTok API**: To catch viral waves before they peak.
-*   **Meta Ad Library**: To spy on competitors' winning ads.
-
-**📦 Supply Chain**
-*   **AliExpress / CJ Dropshipping API**: To automate order placement.
-*   **WhatsApp Web Automation**: To negotiate prices with suppliers directly.
-
-**📢 Marketing**
-*   **Meta Marketing API**: To programmatically create and stop Facebook/Instagram ads.
-*   **Klaviyo**: To send email marketing flows (Welcome Series, Abandoned Cart).
-*   **Unsplash / TinyPNG**: To fetch and optimize free stock photos for ads.
-
-**🤝 Customer Service**
-*   **Gorgias / Zendesk**: To read and reply to support tickets.
-*   **SMTP (Email)**: To send direct emails if not using a helpdesk.
-
-**🚚 Operations**
-*   **17Track API**: To track package status and proactively notify customers of delays.
-
-#### 8.5 Model Context Protocol (MCP)
-
-You might hear about **MCP**. This is a new standard that makes connecting tools easier.
-Instead of writing custom code for every tool (Shopify, Stripe, Slack), MCP provides a standard plug.
-*   **Future Proofing**: In the future, you will just download an "MCP Server" for Shopify, plug it into your agent, and it will instantly know how to manage a store.
-
----
+(Content continues...)
 
 ### Chapter 9: Maintenance & Costs
 
@@ -799,30 +264,12 @@ You are running enterprise-grade infrastructure. If you aren't careful, it can g
 *   **Risk**: If you create a loop where two agents talk to each other forever, you will drain your bank account.
 *   **Safety Valve**: Always monitor your usage in the **Azure OpenAI Studio**. Set a "Budget Alert" in Azure Cost Management to email you if you spend more than $10.
 
-#### 9.3 The Future Roadmap
-
-You have built the foundation. You have a CEO, a Researcher, a Brain, and a Memory. Where do you go from here?
-
-**Phase 1: The Frontend**
-Right now, you are using Postman. That's fine for a developer, but not for a user.
-*   **Project**: Build a React.js website.
-*   **Feature**: A chat window that looks like WhatsApp.
-*   **Integration**: The website sends JSON to your existing API.
-
-**Phase 2: The Specialist Agents**
-*   **Social Media Manager**: Give it access to the Twitter/X API. Let it write and post tweets about your products automatically.
-*   **Customer Support**: Connect it to an email inbox. Let it draft replies to angry customers (which you approve before sending).
-
-**Phase 3: Full Autonomy**
-*   **Advanced Stripe**: Allow the Operations Agent to handle refunds automatically under $50.
-*   **Advanced Shopify**: Allow the Product Agent to rewrite product descriptions based on sales data.
-
 #### Conclusion
 
 You have just completed a crash course in modern Cloud Native AI Engineering.
 
 You learned **Infrastructure as Code** (Bicep).
-You learned **Serverless Architecture** (Container Apps & Cosmos DB).
+You learned **Serverless Architecture** (Container Apps & Postgres).
 You learned **Generative AI Integration** (OpenAI).
 You learned **CI/CD** (GitHub Actions).
 

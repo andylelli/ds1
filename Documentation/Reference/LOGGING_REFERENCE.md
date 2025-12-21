@@ -35,10 +35,11 @@ To ensure the Control Panel remains fast and the Database doesn't bloat with deb
     - **Content**: *Everything*. Full stack traces, raw API payloads, debug messages.
     - **Retention**: Archived daily/weekly.
 
-**The Router Logic (`LoggerService`)**:
-- `logger.info(event)` -> Writes to **DB** AND **File**.
-- `logger.debug(details)` -> Writes to **File ONLY**.
-- `logger.error(error)` -> Writes **Summary to DB** AND **Full Stack to File**.
+**The Router Logic (Separation of Concerns)**:
+- **`ActivityLogService`**: Must be called explicitly to write business events to the **DB** (for the UI).
+- **`LoggerService`**: Must be called to write technical details to **Files** (for debugging).
+
+*Note: In the future, we may merge these into a single facade, but currently they are separate services.*
 
 ### 1.3 Log Format Standards
 - **Error Log Format**:

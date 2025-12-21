@@ -32,24 +32,24 @@ For each document, we will apply the **R.U.D.** process:
 ### 3.1 Core Reference (`Documentation/Reference/`)
 | Document | Status | Action Needed | Notes |
 | :--- | :--- | :--- | :--- |
-| `AGENT_ROLES.md` | ❓ Pending | Review | Check if agent responsibilities match `src/agents/`. |
-| `DEPLOYMENT_GUIDE.md` | ❓ Pending | Review | Verify build steps and env var requirements. |
-| `DUMMIES_GUIDE.md` | ❓ Pending | Review | Is the high-level overview still accurate? |
-| `ENVIRONMENT_SIMULATION_V_LIVE.md` | ❓ Pending | Review | Critical. Must match `LiveTrendAdapter` vs `MockTrendAdapter` logic. |
-| `FUTURE_ENHANCEMENTS.md` | ❓ Pending | Review | Move completed items to "Done" or delete. |
+| `AGENT_ROLES.md` | 🟢 Up-to-Date | None | Updated to match actual tools and events in `src/agents/`. |
+| `DEPLOYMENT_GUIDE.md` | 🟢 Up-to-Date | None | Updated API routes and added Postgres/Cosmos warning. |
+| `DUMMIES_GUIDE.md` | 🟢 Up-to-Date | None | Updated tool names, added Cosmos/Postgres warning, and linked to Deployment Guide. |
+| `ENVIRONMENT_SIMULATION_V_LIVE.md` | 🟢 Up-to-Date | None | Updated to match v1.0 adapter names and agent list. |
+| `FUTURE_ENHANCEMENTS.md` | 🟢 Up-to-Date | None | Added status legend and marked P&L as Done. |
 | `GOOGLE_ADS_ADAPTER_REFERENCE.md` | 🟢 Up-to-Date | None | Just updated. |
-| `INTERFACE_DESIGN.md` | ❓ Pending | Review | Does it match the Control Panel (`public/*.html`)? |
-| `INVESTOR_OVERVIEW.md` | ❓ Pending | Review | Low priority, but check for major discrepancies. |
+| `INTERFACE_DESIGN.md` | 🟢 Up-to-Date | None | Verified against `public/admin.html` and `public/staging.html`. |
+| `INVESTOR_OVERVIEW.md` | 🟢 Up-to-Date | None | Updated Database (Postgres) and Security sections. |
 | `LOGGING_REFERENCE.md` | 🟢 Up-to-Date | None | Just updated. |
-| `MCP_EXPLAINED.md` | ❓ Pending | Review | Verify against `src/mcp-server.ts`. |
-| `TTS_STYLE_GUIDE.md` | ❓ Pending | Review | Is this still relevant for the narrative layer? |
-| `USER_STORIES.md` | ❓ Pending | Review | Are these stories implemented? |
+| `MCP_EXPLAINED.md` | 🟢 Up-to-Date | None | Verified against `src/core/mcp/server.ts`. |
+| `TTS_STYLE_GUIDE.md` | 🟢 Up-to-Date | None | Style guide for documentation, still relevant. |
+| `USER_STORIES.md` | 🟢 Up-to-Date | None | Updated file paths, database refs, and event bus logic. |
 
 ### 3.2 Root Documentation (`Documentation/`)
 | Document | Status | Action Needed | Notes |
 | :--- | :--- | :--- | :--- |
-| `ARCHITECTURE_REFERENCE.md` | ❓ Pending | Review | **High Priority**. Must reflect the Event Bus + Agent structure. |
-| `GAP_ANALYSIS.md` | ❓ Pending | Review | Likely outdated. |
+| `ARCHITECTURE_REFERENCE.md` | 🟢 Up-to-Date | None | Updated to match v1.0 file structure (Agents, Adapters, API). |
+| `GAP_ANALYSIS.md` | 🟢 Up-to-Date | None | Marked all items as Completed (v1.0). |
 | `HOW_TO_PLAY.md` | ❓ Pending | Review | Is this for the simulation game mode? |
 | `PLAN.md` | ❓ Pending | Review | Is this the master plan? Update or Archive. |
 

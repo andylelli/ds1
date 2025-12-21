@@ -56,7 +56,7 @@ You will need these 3 values for the next step:
 2.  Click **Settings** (top right tab).
 3.  On the left menu, click **Secrets and variables** > **Actions**.
 4.  Click **New repository secret**.
-5.  Add the following 3 secrets:
+5.  Add the following secrets:
 
 | Name | Value |
 |------|-------|
@@ -65,13 +65,16 @@ You will need these 3 values for the next step:
 | `AZURE_SUBSCRIPTION_ID` | Your Azure Subscription ID. |
 | `SHOPIFY_SHOP_NAME` | Your Shopify store domain (e.g., `mystore.myshopify.com`). |
 | `SHOPIFY_ACCESS_TOKEN` | Your Admin API Access Token (see below). |
+| `DATABASE_URL` | Connection string for your PostgreSQL database. |
+
+> **Note**: The application requires a PostgreSQL database. If you are using the provided Bicep templates (which provision Cosmos DB), you may need to manually provision a Postgres instance and provide the connection string here.
 
 ### 🛍️ How to get your Shopify Access Token
 1.  Log in to your **Shopify Admin**.
 2.  Go to **Settings** > **Apps and sales channels** > **Develop apps**.
 3.  Click **Create an app** and name it "DropShip Agent".
 4.  Click **Configure Admin API scopes**.
-5.  Search for and check: `write_products`, `read_products`.
+5.  Search for and check: `write_products`, `read_products`, `read_orders`, `write_orders`.
 6.  Click **Save**.
 7.  Click **Install app** (top right).
 8.  Under **Admin API access token**, click **Reveal token once**. Copy this value.
@@ -90,9 +93,9 @@ Now we will create the "Hardware" (Cloud Resources) for your agents.
 ☕ **Wait about 5-10 minutes.**
 This will create:
 *   Azure OpenAI (GPT-4o)
-*   Cosmos DB (Database)
 *   Container Registry (Docker storage)
 *   Container Apps Environment (Hosting)
+*   **Note**: The default template provisions Cosmos DB. Ensure you have a PostgreSQL instance available for the application.
 
 ---
 
@@ -126,7 +129,7 @@ You can use Postman, curl, or any API tool.
 **🆕 NEW: Chat with the CEO (Status & History)**
 Ask the CEO about the organization's status. The CEO reads the database logs to give you an accurate answer.
 ```bash
-POST https://<YOUR_APP_URL>/api/chat
+POST https://<YOUR_APP_URL>/api/ceo/chat
 Content-Type: application/json
 
 {
@@ -134,49 +137,12 @@ Content-Type: application/json
 }
 ```
 
-**Example: Ask the CEO to plan a business**
+**Example: Start Research**
 ```bash
-POST https://<YOUR_APP_URL>/api/agent/ceo/plan
+POST https://<YOUR_APP_URL>/api/research
 Content-Type: application/json
 
 {
-  "goal": "Start a dropshipping business for eco-friendly yoga mats"
+  "category": "Eco-friendly yoga mats"
 }
 ```
-
-**Example: Ask Research Agent to find products**
-```bash
-POST https://<YOUR_APP_URL>/api/agent/research/call
-Content-Type: application/json
-
-{
-  "name": "find_winning_products",
-  "arguments": { "category": "Yoga" }
-}
-```
-
----
-
-## 6️⃣ Step 6: Operations & Maintenance
-
-### 🛑 Save Money (Stop the App)
-If you aren't using the agents, pause them to stop billing for compute.
-1.  Run **Manage App** workflow.
-2.  Select Action: **stop**.
-
-### 📈 Scale Up
-If you have too much traffic:
-1.  Run **Manage App** workflow.
-2.  Select Action: **scale**.
-3.  Set Replicas: **5**.
-
-### 🗑️ Destroy Everything
-To delete all resources and stop all costs permanently:
-1.  Run **Destroy Infrastructure** workflow.
-
----
-
-## ❓ Troubleshooting
-
-*   **"Login failed" in GitHub Actions**: Check your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID` secrets. Ensure the Federated Credential was created correctly.
-*   **"Quota exceeded" for OpenAI**: You might need to request a quota increase in Azure Portal or switch regions in `infra/main.bicep` (default is `eastus`).
