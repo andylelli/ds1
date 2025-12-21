@@ -246,10 +246,10 @@ The agent logic (Brain) is fully implemented with the 11-step pipeline and schem
 | :--- | :--- | :--- | :--- |
 | **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
 | **Google Ads (Keywords)** | Tier 1 | 🟡 Partial | `LiveAdsAdapter` implemented with `google-ads-api` but requires valid credentials/customer ID. |
-| **Meta Ad Library** | Tier 1 | 🔴 Missing | `LiveCompetitorAdapter` is a stub. Required for saturation checks. |
+| **Meta Ad Library** | Tier 1 | � Restricted | Implemented via Graph API. Requires 'Advanced Access' for public data. |
 | **YouTube Data** | Tier 1 | 🔴 Missing | No implementation. |
 | **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
-| **Competitor Scraper** | Tier 1 | ⚪ Stub | `LiveCompetitorAdapter` exists but throws "Not Implemented". |
+| **Competitor Scraper** | Tier 1 | 🟢 Active | Implemented via SerpApi. Filters out marketplaces. |
 
 **Immediate Next Steps:**
 1.  **Implement `LiveCompetitorAdapter`**: Basic scraping or API calls to fetch competitor pricing/offers.

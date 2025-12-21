@@ -20,6 +20,7 @@
     "@azure/identity": "^4.13.0",
     "@google-cloud/bigquery": "^8.1.1",
     "@shopify/shopify-api": "^12.1.2",
+    "axios": "^1.13.2",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",

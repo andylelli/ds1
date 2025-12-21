@@ -1,4 +1,4 @@
-import { CompetitorAnalysisPort } from '../../core/domain/ports/CompetitorAnalysisPort.js';
+import { CompetitorAnalysisPort } from '../../../core/domain/ports/CompetitorAnalysisPort.js';
 
 export class MockCompetitorAdapter implements CompetitorAnalysisPort {
   async analyzeCompetitors(category: string): Promise<any> {

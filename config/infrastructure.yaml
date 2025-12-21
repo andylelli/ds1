@@ -8,3 +8,8 @@ database:
 
 server:
   port: 3000
+
+research:
+  serpapi_key: "${SERPAPI_KEY}"
+  meta_access_token: "${META_ACCESS_TOKEN}"
+

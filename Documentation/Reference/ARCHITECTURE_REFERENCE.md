@@ -150,8 +150,8 @@ Adapters are selected based on `config/bootstrap.yaml` (or `bootstrap.live.yaml`
 ### Competitor Analysis (`CompetitorAnalysisPort`)
 | Mode | Class Name | File Path |
 | :--- | :--- | :--- |
-| `mock` | `MockCompetitorAdapter` | [src/infra/research/MockCompetitorAdapter.ts](src/infra/research/MockCompetitorAdapter.ts) |
-| `live` | `LiveCompetitorAdapter` | [src/infra/research/LiveCompetitorAdapter.ts](src/infra/research/LiveCompetitorAdapter.ts) |
+| `mock` | `MockCompetitorAdapter` | [src/infra/research/Meta/MockCompetitorAdapter.ts](src/infra/research/Meta/MockCompetitorAdapter.ts) |
+| `live` | `LiveCompetitorAdapter` | [src/infra/research/Meta/LiveCompetitorAdapter.ts](src/infra/research/Meta/LiveCompetitorAdapter.ts) |
 
 ### Fulfilment (`FulfilmentPort`)
 | Mode | Class Name | File Path |

@@ -26,8 +26,8 @@ import { LiveTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/LiveTrendAd
 import { MockTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
 
 // Research / Competitor
-import { LiveCompetitorAdapter } from '../../infra/research/LiveCompetitorAdapter.js';
-import { MockCompetitorAdapter } from '../../infra/research/MockCompetitorAdapter.js';
+import { LiveCompetitorAdapter } from '../../infra/research/Meta/LiveCompetitorAdapter.js';
+import { MockCompetitorAdapter } from '../../infra/research/Meta/MockCompetitorAdapter.js';
 
 // Fulfilment
 import { LiveFulfilmentAdapter } from '../../infra/fulfilment/LiveFulfilmentAdapter.js';
