@@ -190,7 +190,7 @@ export class ServiceFactory {
       case 'CEOAgent':
         return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
       case 'ProductResearchAgent':
-        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
+        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads);
       case 'SupplierAgent':
         return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
       case 'StoreBuildAgent':

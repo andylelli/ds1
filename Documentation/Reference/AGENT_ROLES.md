@@ -97,11 +97,13 @@ The system relies on three core architectural pillars:
 
 ### 🔬 Product Research Agent
 **Role:** The Trend Hunter
-**Objective:** To identify high-potential products with healthy margins and low competition.
+**Objective:** To identify high-potential products with healthy margins and low competition, and produce detailed Opportunity Briefs.
 
 #### 📋 Key Responsibilities
 *   **Trend Analysis:** Scans Google Trends and social media for rising interests.
+*   **Keyword Validation:** Uses Google Ads data (Search Volume, CPC) to validate demand.
 *   **Competitor Analysis:** Evaluates existing sellers to find gaps in the market.
+*   **Brief Generation:** Synthesizes data into comprehensive Opportunity Briefs for the CEO.
 
 #### 🛠️ Tools & Capabilities
 *   `find_winning_products`: Searches for trending products.
