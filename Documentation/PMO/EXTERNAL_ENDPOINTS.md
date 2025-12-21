@@ -10,11 +10,11 @@ This document catalogs all external third-party APIs and services that the DS1 s
 |----------|----------|----------------|-----------------|--------|
 | AI/LLM | All Agents | `AiPort` | OpenAI, Azure OpenAI | ✅ Implemented |
 | E-Commerce | Store Build Agent | `ShopPlatformPort` | Shopify | ✅ Implemented |
-| Advertising | Marketing Agent | `AdsPlatformPort` | Meta, TikTok, Google, Pinterest | 🔶 Partial |
-| Trends | Product Research Agent | `TrendAnalysisPort` | Google Trends, TikTok Creative Center | 🔶 Partial |
-| Competitor Intel | Product Research Agent | `CompetitorAnalysisPort` | Meta Ad Library, AdSpy, BigSpy | ❌ Mock Only |
-| Fulfilment | Supplier Agent, Operations Agent | `FulfilmentPort` | AliExpress, CJ Dropshipping, AutoDS | ❌ Mock Only |
-| Email/Helpdesk | Customer Service Agent | `EmailPort` | SendGrid, Mailgun, Gorgias, Zendesk | ❌ Mock Only |
+| Advertising | Marketing Agent | `AdsPlatformPort` | Meta, TikTok, Google, Pinterest | ✅ Implemented (Google) |
+| Trends | Product Research Agent | `TrendAnalysisPort` | Google Trends, TikTok Creative Center | ✅ Implemented (Google) |
+| Competitor Intel | Product Research Agent | `CompetitorAnalysisPort` | Meta Ad Library, AdSpy, BigSpy | 🚧 Stubbed (Live Adapter exists but throws Error) |
+| Fulfilment | Supplier Agent, Operations Agent | `FulfilmentPort` | AliExpress, CJ Dropshipping, AutoDS | 🚧 Stubbed (Live Adapter exists but throws Error) |
+| Email/Helpdesk | Customer Service Agent | `EmailPort` | SendGrid, Mailgun, Gorgias, Zendesk | 🚧 Stubbed (Live Adapter exists but throws Error) |
 | Payments | Operations Agent | - | Stripe, PayPal | ❌ Not Started |
 | Shipping | Operations Agent | - | ShipStation, EasyPost, AfterShip | ❌ Not Started |
 | Tax/Compliance | Operations Agent | - | TaxJar, Avalara | ❌ Not Started |
@@ -98,6 +98,124 @@ interface ShopPlatformPort {
 ## 3. Advertising Platforms
 
 ### Purpose
+Run paid campaigns to drive traffic.
+
+### Agents Using This
+- **Marketing Agent** - Create campaigns, optimize bids
+
+### Port Interface
+```typescript
+interface AdsPlatformPort {
+  createCampaign(campaign: Campaign): Promise<string>;
+  getCampaignStats(campaignId: string): Promise<CampaignStats>;
+  updateBid(campaignId: string, newBid: number): Promise<void>;
+}
+```
+
+### Candidate Providers
+
+| Provider | Pricing | Pros | Cons |
+|----------|---------|------|------|
+| **Google Ads** | CPC | High intent, massive scale | Complex API |
+| **Meta Ads** | CPM/CPC | Great for visual products | Account bans common |
+| **TikTok Ads** | CPM | Viral potential | Creative heavy |
+
+### Current Implementation
+- **Adapter**: `LiveAdsAdapter` → `GoogleAdsApi`
+- **Config Key**: `adsMode`
+- **Env Vars**: `GOOGLE_ADS_CLIENT_ID`, `GOOGLE_ADS_CLIENT_SECRET`, `GOOGLE_ADS_DEVELOPER_TOKEN`
+
+---
+
+## 4. Trend Analysis
+
+### Purpose
+Identify rising products before they saturate.
+
+### Agents Using This
+- **Product Research Agent** - Validate ideas
+
+### Port Interface
+```typescript
+interface TrendAnalysisPort {
+  analyzeTrend(keyword: string): Promise<TrendData>;
+  findRelatedQueries(keyword: string): Promise<string[]>;
+}
+```
+
+### Current Implementation
+- **Adapter**: `LiveTrendAdapter` → `google-trends-api`
+- **Config Key**: `trendsMode`
+- **Env Vars**: None (Unofficial API)
+
+---
+
+## 5. Competitor Intelligence
+
+### Purpose
+Spy on other stores to see what's selling.
+
+### Agents Using This
+- **Product Research Agent** - Find winning ads
+
+### Port Interface
+```typescript
+interface CompetitorAnalysisPort {
+  analyzeCompetitors(category: string): Promise<any>;
+  getCompetitorAds(url: string): Promise<any[]>;
+}
+```
+
+### Current Implementation
+- **Adapter**: `LiveCompetitorAdapter` (Stubbed)
+- **Status**: 🚧 Exists but throws "Not Implemented" error.
+
+---
+
+## 6. Fulfillment & Logistics
+
+### Purpose
+Source products and ship them to customers.
+
+### Agents Using This
+- **Supplier Agent** - Find suppliers, negotiate prices
+- **Operations Agent** - Fulfill orders
+
+### Port Interface
+```typescript
+interface FulfilmentPort {
+  searchSuppliers(query: string): Promise<Supplier[]>;
+  fulfillOrder(orderId: string, address: Address): Promise<TrackingInfo>;
+}
+```
+
+### Current Implementation
+- **Adapter**: `LiveFulfilmentAdapter` (Stubbed)
+- **Status**: 🚧 Exists but throws "Not Implemented" error.
+
+---
+
+## 7. Customer Service (Email)
+
+### Purpose
+Handle customer inquiries and tickets.
+
+### Agents Using This
+- **Customer Service Agent** - Read/Reply to emails
+
+### Port Interface
+```typescript
+interface EmailPort {
+  sendEmail(to: string, subject: string, body: string): Promise<boolean>;
+  receiveEmails(filter?: any): Promise<Email[]>;
+}
+```
+
+### Current Implementation
+- **Adapter**: `LiveEmailAdapter` (Stubbed)
+- **Status**: 🚧 Exists but throws "Not Implemented" error.
+
+---
 Create, manage, and optimize paid advertising campaigns across social media.
 
 ### Agents Using This
@@ -451,3 +569,4 @@ SIMULATOR_DATABASE_URL=postgresql://...
 | Date | Author | Change Description |
 | :--- | :--- | :--- |
 | 2025-12-21 | GitHub Copilot | Standardized format per PMO Maintenance Plan. |
+| 2025-12-21 | GitHub Copilot | Updated status of Ads, Trends, Competitor, Fulfillment, and Email ports based on code audit. |
