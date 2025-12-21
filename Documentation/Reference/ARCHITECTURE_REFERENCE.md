@@ -8,60 +8,46 @@ The system follows a Hexagonal Architecture (Ports & Adapters) pattern, orchestr
 
 ### Architecture Diagram
 
-This diagram maps the project folder structure to the Hexagonal Architecture flow:
+High-level data flow showing the interaction between the Core Agents and the External World via Adapters:
 
 ```mermaid
 graph LR
-    subgraph ConfigLayer ["Config (config/)"]
-        YAML[YAML Configs]
+    subgraph Inputs ["Inputs"]
+        Client[API / CLI / Config]
     end
 
-    subgraph EntryLayer ["API/Entry (src/api/)"]
+    subgraph Core ["Core Domain"]
         direction TB
-        API[API Routes]
-        CLI[CLI Scripts]
+        Orchestrator[Orchestrator]
+        Agents[AI Agents]
+        Ports{Port Interfaces}
     end
 
-    subgraph Hexagon ["The Core & Agents"]
+    subgraph Infra ["Infrastructure"]
         direction TB
-        
-        subgraph Core ["Core (src/core/)"]
-            Bootstrap[Bootstrap/Factory]
-            Services[Domain Services]
-            Ports{Port Interfaces}
-        end
-
-        subgraph AgentLayer ["Agents (src/agents/)"]
-            AgentLogic[AI Agents]
-        end
-    end
-
-    subgraph InfraLayer ["Infrastructure (src/infra/)"]
-        direction TB
-        DB[(Database Adapter)]
-        Shopify[Shopify Adapter]
-        LLM[AI Adapter]
-        Ads[Ads Adapter]
+        Adapters[Adapters]
         EventBus[Event Bus]
     end
 
-    %% Relationships
-    YAML --> Bootstrap
-    API --> Services
-    CLI --> Services
+    subgraph External ["External Systems"]
+        direction TB
+        DB[(Database)]
+        Endpoints[External Endpoints\n(Shopify, Google, OpenAI)]
+    end
+
+    %% Data Flow
+    Client -->|Trigger| Orchestrator
+    Orchestrator -->|Manage| Agents
+    Agents -->|Call| Ports
     
-    Bootstrap -->|Instantiates| AgentLogic
-    Services -->|Orchestrates| AgentLogic
+    Adapters -.->|Implement| Ports
+    EventBus -.->|Implement| Ports
     
-    AgentLogic -->|Uses| Ports
+    Adapters -->|CRUD| DB
+    Adapters -->|Fetch/Push| Endpoints
     
-    DB -.->|Implements| Ports
-    Shopify -.->|Implements| Ports
-    LLM -.->|Implements| Ports
-    Ads -.->|Implements| Ports
-    EventBus -.->|Implements| Ports
-    
-    EventBus -->|Persists to| DB
+    EventBus -->|Store| DB
+    EventBus -.->|Notify| Agents
 ```
 
 - **Config**: `config/` (YAML files define which adapters to load)
