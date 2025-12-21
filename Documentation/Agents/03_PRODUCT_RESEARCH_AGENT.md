@@ -237,7 +237,7 @@ The agent relies on the **Model Context Protocol (MCP)** to interface with exter
 | **Database** | `PersistencePort` | Retrieve past learnings and store new briefs. | `postgres`, `vector_db` |
 
 ### Current Integration Status (MV-PRA)
-*Status as of Dec 18, 2025*
+*Status as of Dec 21, 2025*
 
 **Overall State:** "Brain Ready, Senses Numb"
 The agent logic (Brain) is fully implemented with the 11-step pipeline and schema. The external sensors (Adapters) are currently mocks or stubs.
@@ -245,7 +245,7 @@ The agent logic (Brain) is fully implemented with the 11-step pipeline and schem
 | Integration | Priority | Status | Implementation Notes |
 | :--- | :--- | :--- | :--- |
 | **Google Trends** | Tier 1 | 🟡 Partial | `LiveTrendAdapter` uses `google-trends-api` (unofficial). Covers interest over time. |
-| **Google Ads (Keywords)** | Tier 1 | 🔴 Missing | No implementation. Required for search volume validation. |
+| **Google Ads (Keywords)** | Tier 1 | 🟡 Partial | `LiveAdsAdapter` implemented with `google-ads-api` but requires valid credentials/customer ID. |
 | **Meta Ad Library** | Tier 1 | 🔴 Missing | `LiveCompetitorAdapter` is a stub. Required for saturation checks. |
 | **YouTube Data** | Tier 1 | 🔴 Missing | No implementation. |
 | **Shopify Admin** | Tier 1 | 🔴 Missing | No implementation. |
