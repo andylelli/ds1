@@ -197,5 +197,9 @@ The system exposes an API for the frontend control panel.
 ## 6. Configuration Files
 
 - **Agents**: [config/agents.yaml](config/agents.yaml) - Defines agent prompts and capabilities.
-- **Bootstrap**: [config/bootstrap.yaml](config/bootstrap.yaml) - Selects which adapters to use (sim vs live).
+- **Bootstrap**: [config/bootstrap.yaml](config/bootstrap.yaml) - Base configuration for adapter selection.
+    - `bootstrap.live.yaml`: Overrides for Live mode.
+    - `bootstrap.sim.yaml`: Overrides for Simulation mode.
 - **Infrastructure**: [config/infrastructure.yaml](config/infrastructure.yaml) - API keys and connection strings.
+- **Workflows**: [config/workflows.yaml](config/workflows.yaml) - Defines event subscriptions and agent reactions.
+- **MCP**: [config/mcp.yaml](config/mcp.yaml) - Configuration for Model Context Protocol servers and tools.
