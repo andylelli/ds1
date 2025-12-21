@@ -4,7 +4,7 @@ export * from './config/ConfigService.js';
 export * from './db/PostgresAdapter.js';
 
 // AI
-export * from './ai/OpenAIService.js';
+export * from './ai/OpenAI/OpenAIService.js';
 
 // Event Bus
 export * from './events/PostgresEventBus.js';

@@ -23,7 +23,7 @@ if (showDebugEnv) {
 }
 import express from 'express';
 import crypto from 'crypto';
-import { openAIService } from './infra/ai/OpenAIService.js';
+import { openAIService } from './infra/ai/OpenAI/OpenAIService.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';

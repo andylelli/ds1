@@ -1,5 +1,5 @@
 import { TrendAnalysisPort } from '../../../core/domain/ports/TrendAnalysisPort.js';
-import { openAIService } from '../../ai/OpenAIService.js';
+import { openAIService } from '../../ai/OpenAI/OpenAIService.js';
 import { ResearchStagingService } from '../../../core/services/ResearchStagingService.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { logger } from '../../logging/LoggerService.js';
