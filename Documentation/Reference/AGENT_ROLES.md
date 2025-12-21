@@ -147,11 +147,11 @@ The system relies on three core architectural pillars:
 **Objective:** To drive qualified traffic to the store at the lowest possible cost.
 
 #### 📋 Key Responsibilities
-*   **Campaign Management:** Launches and manages ads on Facebook/TikTok/Google.
+*   **Campaign Management:** Launches and manages Google Search campaigns (via `LiveAdsAdapter`).
 *   **Copywriting:** Writes ad copy and creative descriptions.
 
 #### 🛠️ Tools & Capabilities
-*   `create_ad_campaign`: Launches a new ad campaign.
+*   `create_ad_campaign`: Launches a new Google Ads campaign.
 *   `stop_campaign`: Pauses an underperforming campaign.
 *   `write_copy`: Generates marketing text.
 

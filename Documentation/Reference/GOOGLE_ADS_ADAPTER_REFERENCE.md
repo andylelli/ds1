@@ -2,33 +2,41 @@
 
 **Status:** Active (Live)
 **Owner:** Product Research Agent Team
-**Implementation:** `src/infra/ads/LiveAdsAdapter.ts`
+**Implementation:** `src/infra/ads/LiveAdsAdapter.ts` & `src/infra/ads/MockAdsAdapter.ts`
 
 ---
 
 ## 1. Objective
 To give the **Product Research Agent** and **Marketing Agent** access to the Google Ads platform for:
 1.  **Campaign Management**: Creating, listing, and stopping campaigns.
-2.  **Keyword Intelligence**: Accessing search volume and CPC data (Planned).
+2.  **Keyword Intelligence**: Accessing search volume and CPC data.
 
 ---
 
 ## 2. Architecture & Integration
 
-### The Adapter
-*   **Class:** `LiveAdsAdapter`
-*   **Implements:** `AdsPlatformPort`
+### The Adapters
+
+#### A. Live Adapter (`LiveAdsAdapter`)
 *   **Location:** `src/infra/ads/LiveAdsAdapter.ts`
-*   **Library:** `google-ads-api` (Official Node.js client wrapper)
+*   **Library:** `google-ads-api`
+*   **Usage:** Used in `live` mode to interact with real Google Ads accounts.
+
+#### B. Mock Adapter (`MockAdsAdapter`)
+*   **Location:** `src/infra/ads/MockAdsAdapter.ts`
+*   **Usage:** Used in `simulation` mode.
+*   **Behavior:**
+    *   **Campaigns:** Stored in-memory.
+    *   **Metrics:** Returns randomized search volume (0-10k) and CPC ($0-$2) data to simulate market research.
 
 ### Capabilities
 
-| Method | Status | Description |
-| :--- | :--- | :--- |
-| `createCampaign` | 🟢 Active | Creates a **PAUSED** Search campaign with a specified budget. |
-| `listCampaigns` | 🟢 Active | Lists all non-removed campaigns with their status and budget. |
-| `stopCampaign` | 🟢 Active | Pauses a running campaign. |
-| `getKeywordMetrics` | 🟡 Planned | Currently throws "Not Implemented". Will use `KeywordPlanIdeaService`. |
+| Method | Live Status | Mock Status | Description |
+| :--- | :--- | :--- | :--- |
+| `createCampaign` | 🟢 Active | 🟢 Active | Creates a Search campaign (Paused in Live, Active in Mock). |
+| `listCampaigns` | 🟢 Active | 🟢 Active | Lists campaigns. |
+| `stopCampaign` | 🟢 Active | 🟢 Active | Pauses/Stops a campaign. |
+| `getKeywordMetrics` | 🟡 Planned | 🟢 Active | Returns keyword data (Real API vs Randomized). |
 
 ---
 
