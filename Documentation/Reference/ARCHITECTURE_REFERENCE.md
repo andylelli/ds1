@@ -8,43 +8,56 @@ The system follows a Hexagonal Architecture (Ports & Adapters) pattern, orchestr
 
 ### Architecture Diagram
 
-While Mermaid cannot draw a literal hexagon container, this Left-to-Right flow represents the "Ports & Adapters" layers:
+This diagram maps the project folder structure to the Hexagonal Architecture flow:
 
 ```mermaid
 graph LR
-    subgraph Primary["Driving Adapters (Inputs)"]
+    subgraph ConfigLayer ["Config (config/)"]
+        YAML[YAML Configs]
+    end
+
+    subgraph EntryLayer ["API/Entry (src/api/)"]
         direction TB
         API[API Routes]
         CLI[CLI Scripts]
-        Cron[Cron/Events]
     end
 
-    subgraph Hexagon["The Core (Hexagon)"]
+    subgraph Hexagon ["The Core & Agents"]
         direction TB
-        Agents[AI Agents]
-        Services[Domain Services]
-        Ports{Port Interfaces}
+        
+        subgraph Core ["Core (src/core/)"]
+            Bootstrap[Bootstrap/Factory]
+            Services[Domain Services]
+            Ports{Port Interfaces}
+        end
+
+        subgraph AgentLayer ["Agents (src/agents/)"]
+            AgentLogic[AI Agents]
+        end
     end
 
-    subgraph Secondary["Driven Adapters (Outputs)"]
+    subgraph InfraLayer ["Infrastructure (src/infra/)"]
         direction TB
-        DB[(Database)]
-        Shopify[Shopify API]
-        LLM[LLM Provider]
-        Ads[Ad Networks]
+        DB[(Database Adapter)]
+        Shopify[Shopify Adapter]
+        LLM[AI Adapter]
+        Ads[Ads Adapter]
     end
 
+    %% Relationships
+    YAML --> Bootstrap
     API --> Services
     CLI --> Services
-    Cron --> Agents
-
-    Services --> Agents
-    Agents --> Ports
-
-    Ports -.->|Implemented By| DB
-    Ports -.->|Implemented By| Shopify
-    Ports -.->|Implemented By| LLM
-    Ports -.->|Implemented By| Ads
+    
+    Bootstrap -->|Instantiates| AgentLogic
+    Services -->|Orchestrates| AgentLogic
+    
+    AgentLogic -->|Uses| Ports
+    
+    DB -.->|Implements| Ports
+    Shopify -.->|Implements| Ports
+    LLM -.->|Implements| Ports
+    Ads -.->|Implements| Ports
 ```
 
 - **Config**: `config/` (YAML files define which adapters to load)
