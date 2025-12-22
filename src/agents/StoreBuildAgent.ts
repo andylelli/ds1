@@ -2,7 +2,7 @@ import { BaseAgent } from './BaseAgent.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { ShopManagementPort } from '../core/domain/ports/ShopManagementPort.js';
-import { openAIService } from '../infra/ai/OpenAIService.js';
+import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
 import { configService } from '../infra/config/ConfigService.js';
 import { Product } from '../core/domain/types/Product.js';
 

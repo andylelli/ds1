@@ -3,7 +3,7 @@ import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { TrendAnalysisPort } from '../core/domain/ports/TrendAnalysisPort.js';
 import { CompetitorAnalysisPort } from '../core/domain/ports/CompetitorAnalysisPort.js';
-import { openAIService } from '../infra/ai/OpenAIService.js';
+import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
 import { ActivityLogEntry } from '../core/domain/types/ActivityLogEntry.js';
 import { OpportunityBrief, ProductConcept, Seasonality, OpportunityDefinition, CustomerProblem, ProblemFrequency, ProblemUrgency, DemandEvidence, SignalType, TrendDirection, ConfidenceLevel, CompetitionAnalysis, CompetitionDensity, CompetitionQuality, SaturationRisk, PricingAndEconomics, MarginFeasibility, PriceSensitivity, OfferConcept, Complexity, DifferentiationStrategy, RiskAssessment, RiskLevel, TimeAndCycle, TrendPhase, ExecutionSpeedFit, ValidationPlan, TestType, KillCriteria, AssumptionsAndCertainty, EvidenceReferences } from '../core/domain/types/OpportunityBrief.js';
 

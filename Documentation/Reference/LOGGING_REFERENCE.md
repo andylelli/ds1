@@ -93,13 +93,17 @@ The `src/core/mcp/server.ts` (or relevant MCP handler) logs all protocol message
 - **Destination**: `logs/{mode}/activity.log` (Category: MCP)
 
 ### 2.4 External Service Wrappers
-External service wrappers (`OpenAIService`, `ShopifyAdapter`, `TrendAdapter`) log to `logs/{mode}/external.log`.
+External service wrappers (`OpenAIService`, `ShopifyAdapter`, `TrendAdapter`, `LiveCompetitorAdapter`) log to `logs/{mode}/external.log`.
 
 - **Captures**:
-    - Endpoint URL
-    - Payload size / Token count
-    - Response time
-    - Success/Failure status
+  - Endpoint URL
+  - Payload size / Token count
+  - Response time
+  - Success/Failure status
+  - For **SERPApi** and **Meta Ad Library** (via `LiveCompetitorAdapter`):
+    - Category, query, competitor count, saturation score, brand, ad count, and error details (if any)
+  - For **Shopify** (via `LiveShopAdapter`):
+    - Product creation, listing, and retrieval actions, including product name, category, price, count, and error details (if any)
 
 ## 9. Planned Updates
 
@@ -198,6 +202,7 @@ Below are examples of what the **External Log** entries will look like when full
 |---|---|---|---|
 | Google Trends | Tier 1 | 🟡 Partial | LiveTrendAdapter uses google-trends-api (unofficial). Covers interest over time. Real-time trends disabled. |
 | Google Ads (Keywords) | Tier 1 | 🟢 Active | LiveAdsAdapter connected via google-ads-api. Can create/list campaigns. |
-| Meta Ad Library | Tier 1 | 🔴 Missing | LiveCompetitorAdapter is a stub. Required for saturation checks. |
+| Meta Ad Library | Tier 1 | 🟡 Partial | LiveCompetitorAdapter now logs all Meta Ad Library API calls (success and error) to external.log. |
+| SERPApi (Competitor Scraper) | Tier 1 | 🟢 Active | LiveCompetitorAdapter now logs all SERPApi calls (success and error) to external.log. |
+| Shopify | Tier 1 | 🟢 Active | LiveShopAdapter now logs all product create/list/get actions (success and error) to external.log. |
 | YouTube Data | Tier 1 | 🔴 Missing | No implementation. |
-| Competitor Scraper | Tier 1 | ⚪ Stub | LiveCompetitorAdapter exists but throws "Not Implemented". |

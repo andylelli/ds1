@@ -1,3 +1,4 @@
+import { logger } from '../logging/LoggerService.js';
 import { ShopManagementPort } from '../../core/domain/ports/ShopManagementPort.js';
 import { Product } from '../../core/domain/types/Product.js';
 import { ActivityLogService } from '../../core/services/ActivityLogService.js';
@@ -55,6 +56,7 @@ export class LiveShopAdapter implements ShopManagementPort {
 
   async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
     console.log(`[LiveShop] 🔴 Creating product in LIVE STORE: ${product.name}`);
+    logger.external('Shopify', 'createProduct', { name: product.name, category: product.category, price: product.price });
     try {
         const { client, session } = shopifyService.getClient();
         if (!client || !session) {
@@ -85,65 +87,72 @@ export class LiveShopAdapter implements ShopManagementPort {
         };
 
     } catch (e: any) {
-        await this.logError('create_product', e, { product });
-        throw e;
+      logger.external('Shopify', 'createProduct', { name: product.name, error: e.message });
+      await this.logError('create_product', e, { product });
+      throw e;
     }
   }
 
   async listProducts(): Promise<Product[]> {
     try {
-        const { client, session } = shopifyService.getClient();
-        if (!client || !session) {
-            throw new Error("Shopify Client not initialized.");
-        }
+      const { client, session } = shopifyService.getClient();
+      if (!client || !session) {
+        throw new Error("Shopify Client not initialized.");
+      }
 
-        const response = await client.rest.Product.all({
-            session: session,
-            limit: 10
-        });
+      const response = await client.rest.Product.all({
+        session: session,
+        limit: 10
+      });
 
-        return response.data.map((p: any) => ({
-            id: p.id.toString(),
-            name: p.title,
-            description: p.body_html,
-            price: parseFloat(p.variants?.[0]?.price || '0'),
-            category: p.product_type,
-            status: 'active' // Default
-        }));
+      const products = response.data.map((p: any) => ({
+        id: p.id.toString(),
+        name: p.title,
+        description: p.body_html,
+        price: parseFloat(p.variants?.[0]?.price || '0'),
+        category: p.product_type,
+        status: 'active' // Default
+      }));
+      logger.external('Shopify', 'listProducts', { count: products.length });
+      return products;
 
     } catch (e: any) {
-        await this.logError('list_products', e);
-        throw e;
+      logger.external('Shopify', 'listProducts', { error: e.message });
+      await this.logError('list_products', e);
+      throw e;
     }
   }
 
   async getProduct(id: string): Promise<Product | null> {
     try {
-        const { client, session } = shopifyService.getClient();
-        if (!client || !session) {
-            throw new Error("Shopify Client not initialized.");
-        }
+      const { client, session } = shopifyService.getClient();
+      if (!client || !session) {
+        throw new Error("Shopify Client not initialized.");
+      }
 
-        // Shopify IDs are numbers, but our system uses strings
-        const response = await client.rest.Product.find({
-            session: session,
-            id: parseInt(id)
-        });
+      // Shopify IDs are numbers, but our system uses strings
+      const response = await client.rest.Product.find({
+        session: session,
+        id: parseInt(id)
+      });
 
-        if (!response) return null;
+      if (!response) return null;
 
-        return {
-            id: response.id?.toString() || '',
-            name: response.title || '',
-            description: response.body_html || '',
-            price: parseFloat(response.variants?.[0]?.price || '0'),
-            category: response.product_type || '',
-            status: 'active'
-        };
+      const product = {
+        id: response.id?.toString() || '',
+        name: response.title || '',
+        description: response.body_html || '',
+        price: parseFloat(response.variants?.[0]?.price || '0'),
+        category: response.product_type || '',
+        status: 'active'
+      };
+      logger.external('Shopify', 'getProduct', { id: product.id, name: product.name });
+      return product;
 
     } catch (e: any) {
-        await this.logError('get_product', e, { id });
-        throw e;
+      logger.external('Shopify', 'getProduct', { id, error: e.message });
+      await this.logError('get_product', e, { id });
+      throw e;
     }
   }
 }
