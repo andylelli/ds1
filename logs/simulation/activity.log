@@ -132,3 +132,471 @@
 [2025-12-22T17:55:51.290Z] [INFO] Container initialized. 
 [2025-12-22T17:55:51.336Z] [DEBUG] [REQ] GET / {"body":{}}
 [2025-12-22T17:55:51.341Z] [INFO] [API] GET / 302 5ms {"method":"GET","url":"/","status":302,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:13:36.401Z] [INFO] Initializing Container... 
+[2025-12-22T18:13:36.410Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T18:13:36.411Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T18:13:36.410Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T18:13:36.412Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T18:13:36.413Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T18:13:36.413Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T18:13:36.414Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T18:13:36.415Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T18:13:36.416Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T18:13:36.417Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T18:13:36.417Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T18:13:36.419Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T18:13:36.420Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T18:13:36.420Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T18:13:36.420Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T18:13:36.421Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T18:13:36.422Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T18:13:36.422Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T18:13:36.422Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T18:13:36.422Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T18:13:36.423Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T18:13:36.423Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T18:13:36.424Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T18:13:36.424Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T18:13:36.425Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T18:13:36.425Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T18:13:36.425Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T18:13:36.426Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T18:13:36.426Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T18:13:36.425Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T18:13:36.426Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T18:13:36.426Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T18:13:36.427Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T18:13:36.427Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T18:13:36.427Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T18:13:36.428Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T18:13:36.428Z] [INFO] Container initialized. 
+[2025-12-22T18:13:36.428Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T18:13:38.222Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T18:13:38.245Z] [INFO] [API] GET / 302 22ms {"method":"GET","url":"/","status":302,"duration":22,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:13:49.079Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-22T18:13:49.091Z] [INFO] [API] GET /api/briefs 200 12ms {"method":"GET","url":"/api/briefs","status":200,"duration":12,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:36.589Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-22T18:14:36.591Z] [INFO] [API] POST /api/simulation/loop/stop 200 3ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:36.614Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-22T18:14:36.698Z] [INFO] [API] POST /api/simulation/clear 200 84ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":84,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:45.290Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-22T18:14:45.296Z] [INFO] [API] GET /api/briefs 200 5ms {"method":"GET","url":"/api/briefs","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:45.953Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-22T18:14:45.959Z] [INFO] [API] GET /api/staging/sessions 200 6ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:57.926Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"Find car products"}}
+[2025-12-22T18:14:57.982Z] [INFO] Received Research Request: 0cfada28-2a0f-4b93-846b-8e2a2f7706eb {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:14:57.984Z] [INFO] [Section 1] Processing Request: 0cfada28-2a0f-4b93-846b-8e2a2f7706eb {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:14:57.990Z] [INFO] [API] POST /api/simulation/start 200 64ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":64,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:57.995Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-22T18:14:57.998Z] [INFO] [API] POST /api/simulation/loop/start 200 3ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:14:59.525Z] [INFO] [Section 1] Brief Created: brief_0cfada28-2a0f-4b93-846b-8e2a2f7706eb_1766427299518 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:14:59.536Z] [INFO] [Section 2] Ingesting Prior Learnings for Find car products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:14:59.579Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:14:59.590Z] [INFO] [Section 3] Collecting Signals for Find car products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:00.507Z] [INFO] 🤖 AI Search Strategy: "Find car products" ➔ [car accessories, automotive gadgets, vehicle maintenance tools] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.494Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.507Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.516Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.527Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.534Z] [INFO] [Section 5] Themes Gated: 8 passed, 1 rejected {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.543Z] [INFO] [Section 6] Scoring 8 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.550Z] [INFO] [Section 6] Shortlist Ranked: Top 8 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.560Z] [INFO] [Section 7] Checking Time Fitness for 8 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.560Z] [INFO] Theme Honda Custom Fit Accessories rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.560Z] [INFO] Theme Smart Dash Cam rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.560Z] [INFO] Theme Oil Filter Wrench rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.569Z] [INFO] [Section 7] Time Filtered: 5 passed {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.579Z] [INFO] [Section 8] Performing Deep Validation on top 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.585Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.594Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.599Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.609Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.632Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.633Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.633Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.643Z] [INFO] Created new staging session: research_e29b9705 {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.647Z] [INFO] Created new staging session: research_0e9ff62c {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.669Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:14.675Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.678Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T18:15:14.695Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:15:44.443Z] [DEBUG] [REQ] GET /api/agents?t=1766427344440 {"body":{}}
+[2025-12-22T18:15:44.448Z] [INFO] [API] GET /api/agents?t=1766427344440 200 5ms {"method":"GET","url":"/api/agents?t=1766427344440","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:15:47.450Z] [DEBUG] [REQ] GET /api/agents?t=1766427347445 {"body":{}}
+[2025-12-22T18:15:47.456Z] [INFO] [API] GET /api/agents?t=1766427347445 200 6ms {"method":"GET","url":"/api/agents?t=1766427347445","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:15:50.449Z] [DEBUG] [REQ] GET /api/agents?t=1766427350445 {"body":{}}
+[2025-12-22T18:15:50.455Z] [INFO] [API] GET /api/agents?t=1766427350445 200 6ms {"method":"GET","url":"/api/agents?t=1766427350445","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:15:53.458Z] [DEBUG] [REQ] GET /api/agents?t=1766427353456 {"body":{}}
+[2025-12-22T18:15:53.464Z] [INFO] [API] GET /api/agents?t=1766427353456 200 5ms {"method":"GET","url":"/api/agents?t=1766427353456","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:15:56.453Z] [DEBUG] [REQ] GET /api/agents?t=1766427356449 {"body":{}}
+[2025-12-22T18:15:56.459Z] [INFO] [API] GET /api/agents?t=1766427356449 200 6ms {"method":"GET","url":"/api/agents?t=1766427356449","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:15:58.059Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:15:58.067Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:15:59.447Z] [DEBUG] [REQ] GET /api/agents?t=1766427359444 {"body":{}}
+[2025-12-22T18:15:59.452Z] [INFO] [API] GET /api/agents?t=1766427359444 200 5ms {"method":"GET","url":"/api/agents?t=1766427359444","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:02.450Z] [DEBUG] [REQ] GET /api/agents?t=1766427362445 {"body":{}}
+[2025-12-22T18:16:02.456Z] [INFO] [API] GET /api/agents?t=1766427362445 200 6ms {"method":"GET","url":"/api/agents?t=1766427362445","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:05.459Z] [DEBUG] [REQ] GET /api/agents?t=1766427365455 {"body":{}}
+[2025-12-22T18:16:05.464Z] [INFO] [API] GET /api/agents?t=1766427365455 200 5ms {"method":"GET","url":"/api/agents?t=1766427365455","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:08.450Z] [DEBUG] [REQ] GET /api/agents?t=1766427368446 {"body":{}}
+[2025-12-22T18:16:08.456Z] [INFO] [API] GET /api/agents?t=1766427368446 200 6ms {"method":"GET","url":"/api/agents?t=1766427368446","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:11.456Z] [DEBUG] [REQ] GET /api/agents?t=1766427371451 {"body":{}}
+[2025-12-22T18:16:11.462Z] [INFO] [API] GET /api/agents?t=1766427371451 200 6ms {"method":"GET","url":"/api/agents?t=1766427371451","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:14.447Z] [DEBUG] [REQ] GET /api/agents?t=1766427374444 {"body":{}}
+[2025-12-22T18:16:14.453Z] [INFO] [API] GET /api/agents?t=1766427374444 200 6ms {"method":"GET","url":"/api/agents?t=1766427374444","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:16.452Z] [DEBUG] [REQ] GET /api/agents?t=1766427376450 {"body":{}}
+[2025-12-22T18:16:16.456Z] [INFO] [API] GET /api/agents?t=1766427376450 200 4ms {"method":"GET","url":"/api/agents?t=1766427376450","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:17.356Z] [DEBUG] [REQ] GET /api/agents?t=1766427377353 {"body":{}}
+[2025-12-22T18:16:17.360Z] [INFO] [API] GET /api/agents?t=1766427377353 200 4ms {"method":"GET","url":"/api/agents?t=1766427377353","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:18.111Z] [DEBUG] [REQ] GET /api/agents?t=1766427378108 {"body":{}}
+[2025-12-22T18:16:18.115Z] [INFO] [API] GET /api/agents?t=1766427378108 200 4ms {"method":"GET","url":"/api/agents?t=1766427378108","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:18.278Z] [DEBUG] [REQ] GET /api/agents?t=1766427378277 {"body":{}}
+[2025-12-22T18:16:18.283Z] [INFO] [API] GET /api/agents?t=1766427378277 200 5ms {"method":"GET","url":"/api/agents?t=1766427378277","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:18.451Z] [DEBUG] [REQ] GET /api/agents?t=1766427378450 {"body":{}}
+[2025-12-22T18:16:18.457Z] [INFO] [API] GET /api/agents?t=1766427378450 200 6ms {"method":"GET","url":"/api/agents?t=1766427378450","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:18.636Z] [DEBUG] [REQ] GET /api/agents?t=1766427378634 {"body":{}}
+[2025-12-22T18:16:18.640Z] [INFO] [API] GET /api/agents?t=1766427378634 200 4ms {"method":"GET","url":"/api/agents?t=1766427378634","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:21.649Z] [DEBUG] [REQ] GET /api/agents?t=1766427381645 {"body":{}}
+[2025-12-22T18:16:21.654Z] [INFO] [API] GET /api/agents?t=1766427381645 200 5ms {"method":"GET","url":"/api/agents?t=1766427381645","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:24.643Z] [DEBUG] [REQ] GET /api/agents?t=1766427384640 {"body":{}}
+[2025-12-22T18:16:24.648Z] [INFO] [API] GET /api/agents?t=1766427384640 200 5ms {"method":"GET","url":"/api/agents?t=1766427384640","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:27.641Z] [DEBUG] [REQ] GET /api/agents?t=1766427387639 {"body":{}}
+[2025-12-22T18:16:27.645Z] [INFO] [API] GET /api/agents?t=1766427387639 200 4ms {"method":"GET","url":"/api/agents?t=1766427387639","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:30.900Z] [DEBUG] [REQ] GET /api/agents?t=1766427390895 {"body":{}}
+[2025-12-22T18:16:30.905Z] [INFO] [API] GET /api/agents?t=1766427390895 200 5ms {"method":"GET","url":"/api/agents?t=1766427390895","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:33.884Z] [DEBUG] [REQ] GET /api/agents?t=1766427393880 {"body":{}}
+[2025-12-22T18:16:33.889Z] [INFO] [API] GET /api/agents?t=1766427393880 200 5ms {"method":"GET","url":"/api/agents?t=1766427393880","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:36.898Z] [DEBUG] [REQ] GET /api/agents?t=1766427396893 {"body":{}}
+[2025-12-22T18:16:36.904Z] [INFO] [API] GET /api/agents?t=1766427396893 200 6ms {"method":"GET","url":"/api/agents?t=1766427396893","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:39.884Z] [DEBUG] [REQ] GET /api/agents?t=1766427399881 {"body":{}}
+[2025-12-22T18:16:39.889Z] [INFO] [API] GET /api/agents?t=1766427399881 200 5ms {"method":"GET","url":"/api/agents?t=1766427399881","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:42.895Z] [DEBUG] [REQ] GET /api/agents?t=1766427402893 {"body":{}}
+[2025-12-22T18:16:42.901Z] [INFO] [API] GET /api/agents?t=1766427402893 200 6ms {"method":"GET","url":"/api/agents?t=1766427402893","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:45.892Z] [DEBUG] [REQ] GET /api/agents?t=1766427405890 {"body":{}}
+[2025-12-22T18:16:45.898Z] [INFO] [API] GET /api/agents?t=1766427405890 200 6ms {"method":"GET","url":"/api/agents?t=1766427405890","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:48.895Z] [DEBUG] [REQ] GET /api/agents?t=1766427408892 {"body":{}}
+[2025-12-22T18:16:48.901Z] [INFO] [API] GET /api/agents?t=1766427408892 200 5ms {"method":"GET","url":"/api/agents?t=1766427408892","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:51.892Z] [DEBUG] [REQ] GET /api/agents?t=1766427411891 {"body":{}}
+[2025-12-22T18:16:51.895Z] [INFO] [API] GET /api/agents?t=1766427411891 200 3ms {"method":"GET","url":"/api/agents?t=1766427411891","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:54.886Z] [DEBUG] [REQ] GET /api/agents?t=1766427414883 {"body":{}}
+[2025-12-22T18:16:54.891Z] [INFO] [API] GET /api/agents?t=1766427414883 200 5ms {"method":"GET","url":"/api/agents?t=1766427414883","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:57.897Z] [DEBUG] [REQ] GET /api/agents?t=1766427417894 {"body":{}}
+[2025-12-22T18:16:57.902Z] [INFO] [API] GET /api/agents?t=1766427417894 200 5ms {"method":"GET","url":"/api/agents?t=1766427417894","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:16:58.167Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:16:58.174Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:17:00.885Z] [DEBUG] [REQ] GET /api/agents?t=1766427420883 {"body":{}}
+[2025-12-22T18:17:00.890Z] [INFO] [API] GET /api/agents?t=1766427420883 200 5ms {"method":"GET","url":"/api/agents?t=1766427420883","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:03.894Z] [DEBUG] [REQ] GET /api/agents?t=1766427423890 {"body":{}}
+[2025-12-22T18:17:03.897Z] [INFO] [API] GET /api/agents?t=1766427423890 200 3ms {"method":"GET","url":"/api/agents?t=1766427423890","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:06.893Z] [DEBUG] [REQ] GET /api/agents?t=1766427426890 {"body":{}}
+[2025-12-22T18:17:06.899Z] [INFO] [API] GET /api/agents?t=1766427426890 200 6ms {"method":"GET","url":"/api/agents?t=1766427426890","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:09.887Z] [DEBUG] [REQ] GET /api/agents?t=1766427429884 {"body":{}}
+[2025-12-22T18:17:09.892Z] [INFO] [API] GET /api/agents?t=1766427429884 200 5ms {"method":"GET","url":"/api/agents?t=1766427429884","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:12.882Z] [DEBUG] [REQ] GET /api/agents?t=1766427432880 {"body":{}}
+[2025-12-22T18:17:12.885Z] [INFO] [API] GET /api/agents?t=1766427432880 200 3ms {"method":"GET","url":"/api/agents?t=1766427432880","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:15.891Z] [DEBUG] [REQ] GET /api/agents?t=1766427435889 {"body":{}}
+[2025-12-22T18:17:15.896Z] [INFO] [API] GET /api/agents?t=1766427435889 200 5ms {"method":"GET","url":"/api/agents?t=1766427435889","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:18.887Z] [DEBUG] [REQ] GET /api/agents?t=1766427438885 {"body":{}}
+[2025-12-22T18:17:18.892Z] [INFO] [API] GET /api/agents?t=1766427438885 200 5ms {"method":"GET","url":"/api/agents?t=1766427438885","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:21.898Z] [DEBUG] [REQ] GET /api/agents?t=1766427441894 {"body":{}}
+[2025-12-22T18:17:21.903Z] [INFO] [API] GET /api/agents?t=1766427441894 200 5ms {"method":"GET","url":"/api/agents?t=1766427441894","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:24.886Z] [INFO] [API] GET /api/agents?t=1766427444880 200 4ms {"method":"GET","url":"/api/agents?t=1766427444880","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:24.882Z] [DEBUG] [REQ] GET /api/agents?t=1766427444880 {"body":{}}
+[2025-12-22T18:17:27.895Z] [DEBUG] [REQ] GET /api/agents?t=1766427447890 {"body":{}}
+[2025-12-22T18:17:27.904Z] [INFO] [API] GET /api/agents?t=1766427447890 200 9ms {"method":"GET","url":"/api/agents?t=1766427447890","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:56.924Z] [DEBUG] [REQ] GET /api/agents?t=1766427476896 {"body":{}}
+[2025-12-22T18:17:56.928Z] [INFO] [API] GET /api/agents?t=1766427476896 200 4ms {"method":"GET","url":"/api/agents?t=1766427476896","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:17:58.260Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:17:58.266Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:18:56.919Z] [DEBUG] [REQ] GET /api/agents?t=1766427536898 {"body":{}}
+[2025-12-22T18:18:56.926Z] [INFO] [API] GET /api/agents?t=1766427536898 200 8ms {"method":"GET","url":"/api/agents?t=1766427536898","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:18:58.348Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:18:58.357Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:19:56.910Z] [DEBUG] [REQ] GET /api/agents?t=1766427596893 {"body":{}}
+[2025-12-22T18:19:56.925Z] [INFO] [API] GET /api/agents?t=1766427596893 200 15ms {"method":"GET","url":"/api/agents?t=1766427596893","status":200,"duration":15,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:19:58.430Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:19:58.435Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:20:56.906Z] [DEBUG] [REQ] GET /api/agents?t=1766427656888 {"body":{}}
+[2025-12-22T18:20:56.912Z] [INFO] [API] GET /api/agents?t=1766427656888 200 6ms {"method":"GET","url":"/api/agents?t=1766427656888","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:20:58.529Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:20:58.534Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:21:56.921Z] [DEBUG] [REQ] GET /api/agents?t=1766427716891 {"body":{}}
+[2025-12-22T18:21:56.925Z] [INFO] [API] GET /api/agents?t=1766427716891 200 4ms {"method":"GET","url":"/api/agents?t=1766427716891","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:21:58.574Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:21:58.579Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:22:56.908Z] [DEBUG] [REQ] GET /api/agents?t=1766427776885 {"body":{}}
+[2025-12-22T18:22:56.917Z] [INFO] [API] GET /api/agents?t=1766427776885 200 9ms {"method":"GET","url":"/api/agents?t=1766427776885","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:22:58.674Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:22:58.680Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:23:44.366Z] [DEBUG] [REQ] GET /api/agents?t=1766427824345 {"body":{}}
+[2025-12-22T18:23:44.374Z] [INFO] [API] GET /api/agents?t=1766427824345 200 8ms {"method":"GET","url":"/api/agents?t=1766427824345","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:23:45.658Z] [DEBUG] [REQ] GET /api/agents?t=1766427825649 {"body":{}}
+[2025-12-22T18:23:45.663Z] [INFO] [API] GET /api/agents?t=1766427825649 200 5ms {"method":"GET","url":"/api/agents?t=1766427825649","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:23:48.648Z] [DEBUG] [REQ] GET /api/agents?t=1766427828649 {"body":{}}
+[2025-12-22T18:23:48.653Z] [INFO] [API] GET /api/agents?t=1766427828649 200 5ms {"method":"GET","url":"/api/agents?t=1766427828649","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:23:51.116Z] [INFO] [API] GET /.well-known/appspecific/com.chrome.devtools.json 404 5ms {"method":"GET","url":"/.well-known/appspecific/com.chrome.devtools.json","status":404,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:23:51.111Z] [DEBUG] [REQ] GET /.well-known/appspecific/com.chrome.devtools.json {"body":{}}
+[2025-12-22T18:23:51.640Z] [DEBUG] [REQ] GET /api/agents?t=1766427831640 {"body":{}}
+[2025-12-22T18:23:51.645Z] [INFO] [API] GET /api/agents?t=1766427831640 200 5ms {"method":"GET","url":"/api/agents?t=1766427831640","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:23:54.634Z] [DEBUG] [REQ] GET /api/agents?t=1766427834634 {"body":{}}
+[2025-12-22T18:23:54.639Z] [INFO] [API] GET /api/agents?t=1766427834634 200 4ms {"method":"GET","url":"/api/agents?t=1766427834634","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:23:57.643Z] [DEBUG] [REQ] GET /api/agents?t=1766427837644 {"body":{}}
+[2025-12-22T18:23:57.648Z] [INFO] [API] GET /api/agents?t=1766427837644 200 5ms {"method":"GET","url":"/api/agents?t=1766427837644","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:23:58.767Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:23:58.772Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:24:00.649Z] [DEBUG] [REQ] GET /api/agents?t=1766427840646 {"body":{}}
+[2025-12-22T18:24:00.655Z] [INFO] [API] GET /api/agents?t=1766427840646 200 6ms {"method":"GET","url":"/api/agents?t=1766427840646","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:03.655Z] [DEBUG] [REQ] GET /api/agents?t=1766427843650 {"body":{}}
+[2025-12-22T18:24:03.659Z] [INFO] [API] GET /api/agents?t=1766427843650 200 4ms {"method":"GET","url":"/api/agents?t=1766427843650","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:06.650Z] [DEBUG] [REQ] GET /api/agents?t=1766427846647 {"body":{}}
+[2025-12-22T18:24:06.655Z] [INFO] [API] GET /api/agents?t=1766427846647 200 5ms {"method":"GET","url":"/api/agents?t=1766427846647","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:09.641Z] [DEBUG] [REQ] GET /api/agents?t=1766427849639 {"body":{}}
+[2025-12-22T18:24:09.644Z] [INFO] [API] GET /api/agents?t=1766427849639 200 3ms {"method":"GET","url":"/api/agents?t=1766427849639","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:12.648Z] [DEBUG] [REQ] GET /api/agents?t=1766427852646 {"body":{}}
+[2025-12-22T18:24:12.651Z] [INFO] [API] GET /api/agents?t=1766427852646 200 3ms {"method":"GET","url":"/api/agents?t=1766427852646","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:15.655Z] [DEBUG] [REQ] GET /api/agents?t=1766427855650 {"body":{}}
+[2025-12-22T18:24:15.660Z] [INFO] [API] GET /api/agents?t=1766427855650 200 5ms {"method":"GET","url":"/api/agents?t=1766427855650","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:18.646Z] [DEBUG] [REQ] GET /api/agents?t=1766427858644 {"body":{}}
+[2025-12-22T18:24:18.650Z] [INFO] [API] GET /api/agents?t=1766427858644 200 4ms {"method":"GET","url":"/api/agents?t=1766427858644","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:21.646Z] [DEBUG] [REQ] GET /api/agents?t=1766427861646 {"body":{}}
+[2025-12-22T18:24:21.648Z] [INFO] [API] GET /api/agents?t=1766427861646 200 2ms {"method":"GET","url":"/api/agents?t=1766427861646","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:24.972Z] [DEBUG] [REQ] GET /api/agents?t=1766427864894 {"body":{}}
+[2025-12-22T18:24:24.996Z] [INFO] [API] GET /api/agents?t=1766427864894 200 24ms {"method":"GET","url":"/api/agents?t=1766427864894","status":200,"duration":24,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:27.896Z] [DEBUG] [REQ] GET /api/agents?t=1766427867886 {"body":{}}
+[2025-12-22T18:24:27.897Z] [INFO] [API] GET /api/agents?t=1766427867886 200 2ms {"method":"GET","url":"/api/agents?t=1766427867886","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:30.894Z] [DEBUG] [REQ] GET /api/agents?t=1766427870887 {"body":{}}
+[2025-12-22T18:24:30.899Z] [INFO] [API] GET /api/agents?t=1766427870887 200 5ms {"method":"GET","url":"/api/agents?t=1766427870887","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:33.884Z] [DEBUG] [REQ] GET /api/agents?t=1766427873880 {"body":{}}
+[2025-12-22T18:24:33.890Z] [INFO] [API] GET /api/agents?t=1766427873880 200 6ms {"method":"GET","url":"/api/agents?t=1766427873880","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:36.892Z] [DEBUG] [REQ] GET /api/agents?t=1766427876888 {"body":{}}
+[2025-12-22T18:24:36.897Z] [INFO] [API] GET /api/agents?t=1766427876888 200 5ms {"method":"GET","url":"/api/agents?t=1766427876888","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:39.890Z] [DEBUG] [REQ] GET /api/agents?t=1766427879886 {"body":{}}
+[2025-12-22T18:24:39.896Z] [INFO] [API] GET /api/agents?t=1766427879886 200 6ms {"method":"GET","url":"/api/agents?t=1766427879886","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:42.889Z] [DEBUG] [REQ] GET /api/agents?t=1766427882885 {"body":{}}
+[2025-12-22T18:24:42.895Z] [INFO] [API] GET /api/agents?t=1766427882885 200 6ms {"method":"GET","url":"/api/agents?t=1766427882885","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:45.889Z] [DEBUG] [REQ] GET /api/agents?t=1766427885885 {"body":{}}
+[2025-12-22T18:24:45.896Z] [INFO] [API] GET /api/agents?t=1766427885885 200 7ms {"method":"GET","url":"/api/agents?t=1766427885885","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:48.889Z] [DEBUG] [REQ] GET /api/agents?t=1766427888885 {"body":{}}
+[2025-12-22T18:24:48.894Z] [INFO] [API] GET /api/agents?t=1766427888885 200 5ms {"method":"GET","url":"/api/agents?t=1766427888885","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:51.892Z] [DEBUG] [REQ] GET /api/agents?t=1766427891888 {"body":{}}
+[2025-12-22T18:24:51.897Z] [INFO] [API] GET /api/agents?t=1766427891888 200 5ms {"method":"GET","url":"/api/agents?t=1766427891888","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:54.890Z] [DEBUG] [REQ] GET /api/agents?t=1766427894886 {"body":{}}
+[2025-12-22T18:24:54.895Z] [INFO] [API] GET /api/agents?t=1766427894886 200 5ms {"method":"GET","url":"/api/agents?t=1766427894886","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:57.886Z] [DEBUG] [REQ] GET /api/agents?t=1766427897883 {"body":{}}
+[2025-12-22T18:24:57.891Z] [INFO] [API] GET /api/agents?t=1766427897883 200 5ms {"method":"GET","url":"/api/agents?t=1766427897883","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:24:58.872Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:24:58.877Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:25:00.898Z] [DEBUG] [REQ] GET /api/agents?t=1766427900891 {"body":{}}
+[2025-12-22T18:25:00.903Z] [INFO] [API] GET /api/agents?t=1766427900891 200 5ms {"method":"GET","url":"/api/agents?t=1766427900891","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:02.139Z] [INFO] Initializing Container... 
+[2025-12-22T18:25:02.141Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T18:25:02.141Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T18:25:02.141Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T18:25:02.142Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T18:25:02.142Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T18:25:02.142Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T18:25:02.143Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T18:25:02.142Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T18:25:02.144Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T18:25:02.144Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T18:25:02.144Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T18:25:02.143Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T18:25:02.144Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T18:25:02.144Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T18:25:02.145Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T18:25:02.144Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T18:25:02.145Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T18:25:02.146Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T18:25:02.146Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T18:25:02.145Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T18:25:02.146Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T18:25:02.146Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T18:25:02.146Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T18:25:02.147Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T18:25:02.147Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T18:25:02.146Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T18:25:02.147Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T18:25:02.147Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T18:25:02.147Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T18:25:02.147Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T18:25:02.147Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T18:25:02.147Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T18:25:02.148Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T18:25:02.148Z] [INFO] Container initialized. 
+[2025-12-22T18:25:02.148Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T18:25:03.893Z] [DEBUG] [REQ] GET /api/agents?t=1766427903887 {"body":{}}
+[2025-12-22T18:25:03.899Z] [INFO] [API] GET /api/agents?t=1766427903887 200 6ms {"method":"GET","url":"/api/agents?t=1766427903887","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:06.902Z] [DEBUG] [REQ] GET /api/agents?t=1766427906894 {"body":{}}
+[2025-12-22T18:25:06.908Z] [INFO] [API] GET /api/agents?t=1766427906894 200 6ms {"method":"GET","url":"/api/agents?t=1766427906894","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:09.886Z] [DEBUG] [REQ] GET /api/agents?t=1766427909881 {"body":{}}
+[2025-12-22T18:25:09.891Z] [INFO] [API] GET /api/agents?t=1766427909881 200 5ms {"method":"GET","url":"/api/agents?t=1766427909881","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:12.899Z] [DEBUG] [REQ] GET /api/agents?t=1766427912893 {"body":{}}
+[2025-12-22T18:25:12.906Z] [INFO] [API] GET /api/agents?t=1766427912893 200 7ms {"method":"GET","url":"/api/agents?t=1766427912893","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:15.903Z] [DEBUG] [REQ] GET /api/agents?t=1766427915894 {"body":{}}
+[2025-12-22T18:25:15.908Z] [INFO] [API] GET /api/agents?t=1766427915894 200 6ms {"method":"GET","url":"/api/agents?t=1766427915894","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:18.892Z] [DEBUG] [REQ] GET /api/agents?t=1766427918886 {"body":{}}
+[2025-12-22T18:25:18.896Z] [INFO] [API] GET /api/agents?t=1766427918886 200 4ms {"method":"GET","url":"/api/agents?t=1766427918886","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:21.891Z] [DEBUG] [REQ] GET /api/agents?t=1766427921886 {"body":{}}
+[2025-12-22T18:25:21.896Z] [INFO] [API] GET /api/agents?t=1766427921886 200 5ms {"method":"GET","url":"/api/agents?t=1766427921886","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:56.894Z] [DEBUG] [REQ] GET /api/agents?t=1766427956884 {"body":{}}
+[2025-12-22T18:25:56.901Z] [INFO] [API] GET /api/agents?t=1766427956884 200 7ms {"method":"GET","url":"/api/agents?t=1766427956884","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:25:58.962Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:25:58.969Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:26:56.906Z] [DEBUG] [REQ] GET /api/agents?t=1766428016891 {"body":{}}
+[2025-12-22T18:26:56.912Z] [INFO] [API] GET /api/agents?t=1766428016891 200 6ms {"method":"GET","url":"/api/agents?t=1766428016891","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:26:59.027Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:26:59.031Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:27:56.918Z] [DEBUG] [REQ] GET /api/agents?t=1766428076893 {"body":{}}
+[2025-12-22T18:27:56.927Z] [INFO] [API] GET /api/agents?t=1766428076893 200 9ms {"method":"GET","url":"/api/agents?t=1766428076893","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:27:59.106Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:27:59.115Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:28:56.908Z] [DEBUG] [REQ] GET /api/agents?t=1766428136881 {"body":{}}
+[2025-12-22T18:28:56.914Z] [INFO] [API] GET /api/agents?t=1766428136881 200 6ms {"method":"GET","url":"/api/agents?t=1766428136881","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:28:59.180Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:28:59.187Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:29:56.932Z] [DEBUG] [REQ] GET /api/agents?t=1766428196891 {"body":{}}
+[2025-12-22T18:29:56.937Z] [INFO] [API] GET /api/agents?t=1766428196891 200 5ms {"method":"GET","url":"/api/agents?t=1766428196891","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:29:59.277Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:29:59.285Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:30:56.891Z] [DEBUG] [REQ] GET /api/agents?t=1766428256892 {"body":{}}
+[2025-12-22T18:30:56.897Z] [INFO] [API] GET /api/agents?t=1766428256892 200 6ms {"method":"GET","url":"/api/agents?t=1766428256892","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:30:59.370Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:30:59.376Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:31:56.921Z] [DEBUG] [REQ] GET /api/agents?t=1766428316910 {"body":{}}
+[2025-12-22T18:31:56.931Z] [INFO] [API] GET /api/agents?t=1766428316910 200 10ms {"method":"GET","url":"/api/agents?t=1766428316910","status":200,"duration":10,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:31:59.447Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:31:59.453Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:32:56.898Z] [DEBUG] [REQ] GET /api/agents?t=1766428376884 {"body":{}}
+[2025-12-22T18:32:56.905Z] [INFO] [API] GET /api/agents?t=1766428376884 200 7ms {"method":"GET","url":"/api/agents?t=1766428376884","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:32:59.543Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:32:59.549Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:33:56.930Z] [DEBUG] [REQ] GET /api/agents?t=1766428436888 {"body":{}}
+[2025-12-22T18:33:56.935Z] [INFO] [API] GET /api/agents?t=1766428436888 200 5ms {"method":"GET","url":"/api/agents?t=1766428436888","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:33:59.658Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:33:59.667Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:34:56.913Z] [DEBUG] [REQ] GET /api/agents?t=1766428496895 {"body":{}}
+[2025-12-22T18:34:56.922Z] [INFO] [API] GET /api/agents?t=1766428496895 200 9ms {"method":"GET","url":"/api/agents?t=1766428496895","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:34:59.755Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:34:59.762Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:35:56.924Z] [DEBUG] [REQ] GET /api/agents?t=1766428556891 {"body":{}}
+[2025-12-22T18:35:56.933Z] [INFO] [API] GET /api/agents?t=1766428556891 200 9ms {"method":"GET","url":"/api/agents?t=1766428556891","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:35:59.840Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:35:59.845Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:36:56.919Z] [DEBUG] [REQ] GET /api/agents?t=1766428616900 {"body":{}}
+[2025-12-22T18:36:56.927Z] [INFO] [API] GET /api/agents?t=1766428616900 200 8ms {"method":"GET","url":"/api/agents?t=1766428616900","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:36:59.924Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:36:59.930Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:37:56.925Z] [DEBUG] [REQ] GET /api/agents?t=1766428676891 {"body":{}}
+[2025-12-22T18:37:56.930Z] [INFO] [API] GET /api/agents?t=1766428676891 200 5ms {"method":"GET","url":"/api/agents?t=1766428676891","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:37:59.994Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:38:00.001Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:38:56.918Z] [DEBUG] [REQ] GET /api/agents?t=1766428736923 {"body":{}}
+[2025-12-22T18:38:56.923Z] [INFO] [API] GET /api/agents?t=1766428736923 200 5ms {"method":"GET","url":"/api/agents?t=1766428736923","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:39:00.082Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:39:00.087Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:39:56.897Z] [DEBUG] [REQ] GET /api/agents?t=1766428796886 {"body":{}}
+[2025-12-22T18:39:56.905Z] [INFO] [API] GET /api/agents?t=1766428796886 200 8ms {"method":"GET","url":"/api/agents?t=1766428796886","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:40:00.157Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:40:00.163Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:40:56.908Z] [DEBUG] [REQ] GET /api/agents?t=1766428856907 {"body":{}}
+[2025-12-22T18:40:56.917Z] [INFO] [API] GET /api/agents?t=1766428856907 200 9ms {"method":"GET","url":"/api/agents?t=1766428856907","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:41:00.264Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:41:00.268Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:41:56.919Z] [DEBUG] [REQ] GET /api/agents?t=1766428916893 {"body":{}}
+[2025-12-22T18:41:56.926Z] [INFO] [API] GET /api/agents?t=1766428916893 200 7ms {"method":"GET","url":"/api/agents?t=1766428916893","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:42:00.361Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:42:00.366Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:42:56.924Z] [DEBUG] [REQ] GET /api/agents?t=1766428976896 {"body":{}}
+[2025-12-22T18:42:56.929Z] [INFO] [API] GET /api/agents?t=1766428976896 200 5ms {"method":"GET","url":"/api/agents?t=1766428976896","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:43:00.462Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:43:00.468Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:44:18.142Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T18:44:18.139Z] [INFO] Initializing Container... 
+[2025-12-22T18:44:18.142Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T18:44:18.142Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T18:44:18.143Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T18:44:18.143Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T18:44:18.143Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T18:44:18.142Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T18:44:18.144Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T18:44:18.143Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T18:44:18.144Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T18:44:18.143Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T18:44:18.145Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T18:44:18.145Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T18:44:18.145Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T18:44:18.145Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T18:44:18.145Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T18:44:18.146Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T18:44:18.146Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T18:44:18.146Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T18:44:18.146Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T18:44:18.146Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T18:44:18.146Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T18:44:18.145Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T18:44:18.146Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T18:44:18.146Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T18:44:18.144Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T18:44:18.146Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T18:44:18.146Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T18:44:18.147Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T18:44:18.147Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T18:44:18.147Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T18:44:18.147Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T18:44:18.147Z] [INFO] Container initialized. 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T18:44:18.147Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T18:44:18.147Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T18:44:20.269Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T18:44:20.275Z] [INFO] [API] GET / 302 6ms {"method":"GET","url":"/","status":302,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:44:51.672Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-22T18:44:51.674Z] [INFO] [API] POST /api/simulation/loop/stop 200 2ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:44:51.677Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-22T18:44:51.744Z] [INFO] [API] POST /api/simulation/clear 200 67ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":67,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:44:56.904Z] [DEBUG] [REQ] GET /api/agents?t=1766429096897 {"body":{}}
+[2025-12-22T18:44:56.911Z] [INFO] [API] GET /api/agents?t=1766429096897 200 6ms {"method":"GET","url":"/api/agents?t=1766429096897","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:44:59.822Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find cycling products"}}
+[2025-12-22T18:44:59.884Z] [INFO] Received Research Request: 602645dc-ad4c-4282-84b9-3317880b10de {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:44:59.885Z] [INFO] [Section 1] Processing Request: 602645dc-ad4c-4282-84b9-3317880b10de {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:44:59.889Z] [INFO] [API] POST /api/simulation/start 200 67ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":67,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:44:59.891Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-22T18:44:59.893Z] [INFO] [API] POST /api/simulation/loop/start 200 2ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T18:45:01.292Z] [INFO] [Section 1] Brief Created: brief_602645dc-ad4c-4282-84b9-3317880b10de_1766429101284 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:45:01.304Z] [INFO] [Section 2] Ingesting Prior Learnings for find cycling products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:45:01.349Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:45:01.362Z] [DEBUG] [collectSignals] Calling trendAnalyzer.findProducts {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T18:45:01.362Z] [INFO] [Section 3] Collecting Signals for find cycling products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:45:01.768Z] [INFO] 🤖 AI Search Strategy: "find cycling products" ➔ [bike accessories, cycling gear, mountain biking equipment] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T18:45:06.239Z] [DEBUG] [collectSignals] trendAnalyzer.findProducts result for "bike accessories": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T18:45:56.905Z] [DEBUG] [REQ] GET /api/agents?t=1766429156894 {"body":{}}
+[2025-12-22T18:45:56.910Z] [INFO] [API] GET /api/agents?t=1766429156894 200 5ms {"method":"GET","url":"/api/agents?t=1766429156894","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:45:59.992Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:46:00.000Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:46:56.902Z] [DEBUG] [REQ] GET /api/agents?t=1766429216895 {"body":{}}
+[2025-12-22T18:46:56.906Z] [INFO] [API] GET /api/agents?t=1766429216895 200 4ms {"method":"GET","url":"/api/agents?t=1766429216895","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:47:00.070Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:47:00.074Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T18:47:56.896Z] [DEBUG] [REQ] GET /api/agents?t=1766429276891 {"body":{}}
+[2025-12-22T18:47:56.899Z] [INFO] [API] GET /api/agents?t=1766429276891 200 3ms {"method":"GET","url":"/api/agents?t=1766429276891","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
+[2025-12-22T18:48:00.184Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T18:48:00.189Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}

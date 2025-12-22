@@ -31,14 +31,20 @@ async function testFullResearch() {
     const db = new MockAdapter();
     const eventBus = new PostgresEventBus(db);
     
-    const trendAnalyzer = new LiveTrendAdapter(mockPool, false);
-    const adsAdapter = new LiveAdsAdapter(mockPool);
-    const competitorAnalyzer = new MockCompetitorAdapter();
 
-    // 2. Agent
-    // Note: We need to ensure the agent uses the adsAdapter for validation if we want to test that.
-    // Currently ProductResearchAgent might not be wired to use AdsAdapter for validation yet.
-    const researcher = new ProductResearchAgent(db, eventBus, trendAnalyzer, competitorAnalyzer, adsAdapter);
+    const competitorAnalyzer = new (await import('./infra/research/Meta/LiveCompetitorAdapter.js')).LiveCompetitorAdapter();
+    const shopCompliance = new (await import('./infra/shop/Shopify/LiveShopAdapter.js')).LiveShopAdapter();
+    const videoAnalyzer = new (await import('./infra/research/YouTube/LiveVideoAdapter.js')).LiveVideoAdapter();
+
+    const researcher = new ProductResearchAgent(
+        db,
+        eventBus,
+        trendAnalyzer,
+        competitorAnalyzer,
+        adsAdapter,
+        shopCompliance,
+        videoAnalyzer
+    );
 
     // 3. Observer
     eventBus.subscribe('OpportunityResearch.BriefCreated', 'Observer', async (event) => {
@@ -63,9 +69,13 @@ async function testFullResearch() {
 
     // 4. Trigger
     console.log('--- Triggering OpportunityResearch.Requested ---');
+    // Use a popular category and add a description to maximize API call success
     await eventBus.publish('OpportunityResearch.Requested', {
-        request_id: 'full-test-1',
-        criteria: { category: 'Smart Home' }
+        request_id: 'full-test-2',
+        criteria: {
+            category: 'Fitness',
+            description: 'Find trending fitness products, analyze competitors, check shop compliance, and get related YouTube videos.'
+        }
     });
 
     // Keep alive

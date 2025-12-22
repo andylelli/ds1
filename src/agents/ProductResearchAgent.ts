@@ -4,6 +4,7 @@ import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 import { TrendAnalysisPort } from '../core/domain/ports/TrendAnalysisPort.js';
 import { CompetitorAnalysisPort } from '../core/domain/ports/CompetitorAnalysisPort.js';
 import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
+import { logger } from '../infra/logging/LoggerService.js';
 import { ActivityLogEntry } from '../core/domain/types/ActivityLogEntry.js';
 import { OpportunityBrief, ProductConcept, Seasonality, OpportunityDefinition, CustomerProblem, ProblemFrequency, ProblemUrgency, DemandEvidence, SignalType, TrendDirection, ConfidenceLevel, CompetitionAnalysis, CompetitionDensity, CompetitionQuality, SaturationRisk, PricingAndEconomics, MarginFeasibility, PriceSensitivity, OfferConcept, Complexity, DifferentiationStrategy, RiskAssessment, RiskLevel, TimeAndCycle, TrendPhase, ExecutionSpeedFit, ValidationPlan, TestType, KillCriteria, AssumptionsAndCertainty, EvidenceReferences } from '../core/domain/types/OpportunityBrief.js';
 
@@ -327,13 +328,17 @@ export class ProductResearchAgent extends BaseAgent {
 
       // 1. Search Intent (Google Trends / BigQuery)
       try {
-          // Use the AI strategy generation from before to get keywords
+          this.log('debug', '[collectSignals] Calling trendAnalyzer.findProducts');
           const keywords = await this.generateSearchStrategies(brief.raw_criteria.category);
-          
           for (const keyword of keywords) {
-              // Use TrendAnalyzer (which wraps BigQuery/Trends)
-              const products = await this.trendAnalyzer.findProducts(keyword);
-              
+              let products;
+              try {
+                  products = await this.trendAnalyzer.findProducts(keyword);
+                  this.log('debug', `[collectSignals] trendAnalyzer.findProducts result for "${keyword}":`, products);
+                  logger.external('GoogleTrends', 'findProducts', { keyword, productsCount: products?.length || 0, products });
+              } catch (err) {
+                  logger.external('GoogleTrends', 'findProducts', { keyword, error: err?.message });
+              }
               if (products && products.length > 0) {
                   signals.push({
                       id: `sig_search_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -345,26 +350,27 @@ export class ProductResearchAgent extends BaseAgent {
               }
           }
       } catch (e: any) {
-          this.log('error', `Failed to collect Search signals: ${e}`);
+          this.log('error', `[collectSignals] Failed to collect Search signals: ${e}`);
+          logger.external('GoogleTrends', 'findProducts', { error: e?.message });
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Search signals: ${e.message}`, { error: e.stack });
       }
 
       // 2. Competitor Analysis (Marketplace Movement)
       try {
-          // Use CompetitorAnalyzer
-          // Assuming analyzeCompetitors returns a list of competitors or products
-          // The interface might vary, let's assume it takes a category
-          // Note: The port interface is `analyzeCompetitors(product_name: string): Promise<any>`
-          // We don't have a specific product name yet, just a category.
-          // We can use the products found in step 1 to seed this.
-          
+          this.log('debug', '[collectSignals] Calling competitorAnalyzer.analyzeCompetitors');
           const seedProducts = signals
               .filter(s => s.family === 'search')
               .flatMap(s => s.data.products)
-              .slice(0, 3); // Take top 3 to save tokens/time
-
+              .slice(0, 3);
           for (const prod of seedProducts) {
-              const compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
+              let compData;
+              try {
+                  compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
+                  this.log('debug', `[collectSignals] competitorAnalyzer.analyzeCompetitors result for "${prod.name}":`, compData);
+                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { product: prod.name, result: compData });
+              } catch (err) {
+                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { product: prod.name, error: err?.message });
+              }
               if (compData) {
                   signals.push({
                       id: `sig_comp_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -376,23 +382,32 @@ export class ProductResearchAgent extends BaseAgent {
               }
           }
       } catch (e: any) {
-          this.log('error', `Failed to collect Competitor signals: ${e}`);
+          this.log('error', `[collectSignals] Failed to collect Competitor signals: ${e}`);
+          logger.external('CompetitorAnalysis', 'analyzeCompetitors', { error: e?.message });
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
       }
 
+
       // 3. Ads Validation (Search Volume / CPC)
       try {
+          this.log('debug', '[collectSignals] Calling adsAnalyzer.getKeywordMetrics');
           if (this.adsAnalyzer && this.adsAnalyzer.getKeywordMetrics) {
               const keywords = signals
                   .filter(s => s.family === 'search')
                   .map(s => s.data.keyword);
-              
               if (keywords.length > 0) {
-                  const metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
+                  let metrics;
+                  try {
+                      metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
+                      this.log('debug', `[collectSignals] adsAnalyzer.getKeywordMetrics result:`, metrics);
+                      logger.external('GoogleAds', 'getKeywordMetrics', { keywords, metrics });
+                  } catch (err) {
+                      logger.external('GoogleAds', 'getKeywordMetrics', { keywords, error: err?.message });
+                  }
                   if (metrics) {
                       signals.push({
                           id: `sig_ads_${Date.now()}`,
-                          family: 'marketplace', // Using marketplace as proxy for ads data
+                          family: 'marketplace',
                           source: 'GoogleAds',
                           timestamp: new Date().toISOString(),
                           data: { metrics }
@@ -401,7 +416,62 @@ export class ProductResearchAgent extends BaseAgent {
               }
           }
       } catch (e: any) {
-          this.log('warn', `Failed to collect Ads signals: ${e}`);
+          this.log('warn', `[collectSignals] Failed to collect Ads signals: ${e}`);
+          logger.external('GoogleAds', 'getKeywordMetrics', { error: e?.message });
+      }
+
+      // 4. Shop Compliance (Shopify)
+      try {
+          this.log('debug', '[collectSignals] Calling shopCompliance.checkPolicy');
+          if (this.shopCompliance && this.shopCompliance.checkPolicy) {
+              let shopResult;
+              try {
+                  shopResult = await this.shopCompliance.checkPolicy(brief.raw_criteria.category, '');
+                  this.log('debug', `[collectSignals] shopCompliance.checkPolicy result:`, shopResult);
+                  logger.external('Shopify', 'checkPolicy', { category: brief.raw_criteria.category, result: shopResult });
+              } catch (err) {
+                  logger.external('Shopify', 'checkPolicy', { category: brief.raw_criteria.category, error: err?.message });
+              }
+              if (shopResult) {
+                  signals.push({
+                      id: `sig_shop_${Date.now()}`,
+                      family: 'marketplace',
+                      source: 'Shopify',
+                      timestamp: new Date().toISOString(),
+                      data: { shopResult }
+                  });
+              }
+          }
+      } catch (e: any) {
+          this.log('warn', `[collectSignals] Failed to collect Shop Compliance signals: ${e}`);
+          logger.external('Shopify', 'checkPolicy', { error: e?.message });
+      }
+
+      // 5. Video Analysis (YouTube)
+      try {
+          this.log('debug', '[collectSignals] Calling videoAnalyzer.searchVideos');
+          if (this.videoAnalyzer && this.videoAnalyzer.searchVideos) {
+              let videoResults;
+              try {
+                  videoResults = await this.videoAnalyzer.searchVideos(brief.raw_criteria.category, 5);
+                  this.log('debug', `[collectSignals] videoAnalyzer.searchVideos result:`, videoResults);
+                  logger.external('YouTube', 'searchVideos', { category: brief.raw_criteria.category, resultCount: videoResults?.length || 0, result: videoResults });
+              } catch (err) {
+                  logger.external('YouTube', 'searchVideos', { category: brief.raw_criteria.category, error: err?.message });
+              }
+              if (videoResults) {
+                  signals.push({
+                      id: `sig_video_${Date.now()}`,
+                      family: 'social',
+                      source: 'YouTube',
+                      timestamp: new Date().toISOString(),
+                      data: { videoResults }
+                  });
+              }
+          }
+      } catch (e: any) {
+          this.log('warn', `[collectSignals] Failed to collect Video signals: ${e}`);
+          logger.external('YouTube', 'searchVideos', { error: e?.message });
       }
 
       // Check constraint: At least two families
