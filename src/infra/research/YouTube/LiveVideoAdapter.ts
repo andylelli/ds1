@@ -1,3 +1,4 @@
+import { logger } from '../../logging/LoggerService.js';
 import { google, youtube_v3 } from 'googleapis';
 import { VideoAnalysisPort, VideoResult, VideoDetails } from '../../../core/domain/ports/VideoAnalysisPort';
 
@@ -25,9 +26,12 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
                 order: 'viewCount' // Get most popular videos to validate demand
             });
 
-            if (!response.data.items) return [];
+            if (!response.data.items) {
+                logger.external('YouTube', 'searchVideos', { query, maxResults, resultCount: 0 });
+                return [];
+            }
 
-            return response.data.items.map(item => ({
+            const results = response.data.items.map(item => ({
                 id: item.id?.videoId || '',
                 title: item.snippet?.title || '',
                 description: item.snippet?.description || '',
@@ -35,7 +39,10 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
                 publishedAt: item.snippet?.publishedAt || '',
                 thumbnailUrl: item.snippet?.thumbnails?.high?.url || ''
             }));
+            logger.external('YouTube', 'searchVideos', { query, maxResults, resultCount: results.length });
+            return results;
         } catch (error) {
+            logger.external('YouTube', 'searchVideos', { query, maxResults, error: error.message });
             console.error("Error searching YouTube videos:", error);
             return [];
         }
@@ -50,9 +57,12 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
                 id: videoIds
             });
 
-            if (!response.data.items) return [];
+            if (!response.data.items) {
+                logger.external('YouTube', 'getVideoDetails', { videoIds, resultCount: 0 });
+                return [];
+            }
 
-            return response.data.items.map(item => ({
+            const details = response.data.items.map(item => ({
                 id: item.id || '',
                 title: item.snippet?.title || '',
                 description: item.snippet?.description || '',
@@ -64,7 +74,10 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
                 commentCount: parseInt(item.statistics?.commentCount || '0'),
                 tags: item.snippet?.tags || []
             }));
+            logger.external('YouTube', 'getVideoDetails', { videoIds, resultCount: details.length });
+            return details;
         } catch (error) {
+            logger.external('YouTube', 'getVideoDetails', { videoIds, error: error.message });
             console.error("Error getting YouTube video details:", error);
             return [];
         }
