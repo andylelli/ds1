@@ -1,163 +1,167 @@
-[2025-12-22T19:29:52.403Z] [INFO] Initializing Container... 
-[2025-12-22T19:29:52.405Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-22T19:29:52.405Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-22T19:29:52.405Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-22T19:29:52.405Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-22T19:29:52.406Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-22T19:29:52.406Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-22T19:29:52.406Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-22T19:29:52.406Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-22T19:29:52.407Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-22T19:29:52.407Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-22T19:29:52.407Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-22T19:29:52.407Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-22T19:29:52.407Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-22T19:29:52.407Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-22T19:29:52.408Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-22T19:29:52.408Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-22T19:29:52.408Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-22T19:29:52.408Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-22T19:29:52.409Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-22T19:29:52.408Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-22T19:29:52.409Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-22T19:29:52.409Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-22T19:29:52.409Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-22T19:29:52.409Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-22T19:29:52.409Z] [INFO] Container initialized. 
-[2025-12-22T19:29:52.510Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-22T19:29:52.514Z] [INFO] [API] GET / 302 4ms {"method":"GET","url":"/","status":302,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T19:29:56.885Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-22T19:29:56.887Z] [INFO] [API] POST /api/simulation/loop/stop 200 2ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T19:29:56.891Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-22T19:29:56.907Z] [DEBUG] [REQ] GET /api/agents?t=1766431796882 {"body":{}}
-[2025-12-22T19:29:56.911Z] [INFO] [API] GET /api/agents?t=1766431796882 200 4ms {"method":"GET","url":"/api/agents?t=1766431796882","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:29:56.991Z] [INFO] [API] POST /api/simulation/clear 200 100ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":100,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T19:30:12.565Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find clothing"}}
-[2025-12-22T19:30:12.607Z] [INFO] Received Research Request: 0929a142-5d9e-42b2-a1c8-7f2e3088f174 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:12.607Z] [INFO] [Section 1] Processing Request: 0929a142-5d9e-42b2-a1c8-7f2e3088f174 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:12.609Z] [INFO] [API] POST /api/simulation/start 200 44ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":44,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T19:30:12.612Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-22T19:30:12.616Z] [INFO] [API] POST /api/simulation/loop/start 200 4ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T19:30:13.933Z] [INFO] [Section 1] Brief Created: brief_0929a142-5d9e-42b2-a1c8-7f2e3088f174_1766431813926 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:13.943Z] [INFO] [Section 2] Ingesting Prior Learnings for find clothing... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:13.967Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:13.974Z] [INFO] [Section 3] Collecting Signals for find clothing... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:13.974Z] [DEBUG] [collectSignals] Calling trendAnalyzer.findProducts {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:14.248Z] [INFO] 🤖 AI Search Strategy: "find clothing" ➔ [athleisure wear, sustainable fashion, vintage clothing] {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:19.029Z] [DEBUG] [collectSignals] trendAnalyzer.findProducts result for "athleisure wear": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:23.755Z] [DEBUG] [collectSignals] trendAnalyzer.findProducts result for "sustainable fashion": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.505Z] [DEBUG] [collectSignals] trendAnalyzer.findProducts result for "vintage clothing": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.505Z] [DEBUG] [collectSignals] Calling competitorAnalyzer.analyzeCompetitors {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.506Z] [DEBUG] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Women's High-Waisted Leggings": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.505Z] [DEBUG] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Men's Performance Joggers": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.506Z] [DEBUG] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Unisex Athleisure Hoodie": {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.506Z] [DEBUG] [collectSignals] Calling adsAnalyzer.getKeywordMetrics {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.507Z] [DEBUG] [collectSignals] adsAnalyzer.getKeywordMetrics result: {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.507Z] [DEBUG] [collectSignals] Calling shopCompliance.checkPolicy {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.507Z] [DEBUG] [collectSignals] shopCompliance.checkPolicy result: {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.507Z] [DEBUG] [collectSignals] Calling videoAnalyzer.searchVideos {"agent":"ProductResearcher","type":"debug"}
-[2025-12-22T19:30:28.541Z] [INFO] [Section 3] Signals Collected: 8 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.551Z] [INFO] [Section 4] Generating Themes from 8 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.558Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.570Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.573Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.579Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.584Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.590Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.594Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.601Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.605Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.613Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.617Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.624Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.641Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:28.641Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.641Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:28.645Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.647Z] [INFO] Created new staging session: research_c1cebec5 {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:28.648Z] [INFO] Created new staging session: research_fb5f1614 {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:28.664Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T19:30:28.699Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:28.701Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T19:30:56.906Z] [DEBUG] [REQ] GET /api/agents?t=1766431856889 {"body":{}}
-[2025-12-22T19:30:56.909Z] [INFO] [API] GET /api/agents?t=1766431856889 200 3ms {"method":"GET","url":"/api/agents?t=1766431856889","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:31:12.728Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:31:12.747Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:31:56.912Z] [DEBUG] [REQ] GET /api/agents?t=1766431916895 {"body":{}}
-[2025-12-22T19:31:56.916Z] [INFO] [API] GET /api/agents?t=1766431916895 200 4ms {"method":"GET","url":"/api/agents?t=1766431916895","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:32:12.811Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:32:12.830Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:32:56.939Z] [DEBUG] [REQ] GET /api/agents?t=1766431976899 {"body":{}}
-[2025-12-22T19:32:56.944Z] [INFO] [API] GET /api/agents?t=1766431976899 200 5ms {"method":"GET","url":"/api/agents?t=1766431976899","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:33:12.896Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:33:12.913Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:33:56.908Z] [DEBUG] [REQ] GET /api/agents?t=1766432036896 {"body":{}}
-[2025-12-22T19:33:56.910Z] [INFO] [API] GET /api/agents?t=1766432036896 200 2ms {"method":"GET","url":"/api/agents?t=1766432036896","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:34:12.964Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:34:12.983Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:34:56.330Z] [DEBUG] [REQ] GET /api/agents?t=1766432096328 {"body":{}}
-[2025-12-22T19:34:56.332Z] [INFO] [API] GET /api/agents?t=1766432096328 200 2ms {"method":"GET","url":"/api/agents?t=1766432096328","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"}
-[2025-12-22T19:35:13.031Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:35:13.089Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:36:13.106Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:36:13.124Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:37:13.201Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:37:13.224Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:38:13.314Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:38:13.364Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:39:13.362Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:39:13.389Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:40:13.498Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:40:13.527Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:41:13.547Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:41:13.575Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:42:13.618Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:42:13.647Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:43:13.695Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:43:13.729Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:44:13.758Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:44:13.779Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:45:13.837Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:45:13.858Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:46:13.946Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:46:13.969Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:47:14.049Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:47:14.066Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:48:14.115Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:48:14.132Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:49:14.179Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:49:14.197Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:50:14.259Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:50:14.277Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:51:14.327Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:51:14.345Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:52:14.393Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:52:14.414Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:53:14.452Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:53:14.471Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:54:14.518Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:54:14.536Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:55:14.590Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:55:14.609Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:56:14.682Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:56:14.704Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T19:57:14.749Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T19:57:14.767Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:28:03.419Z] [INFO] Initializing Container... 
+[2025-12-22T20:28:03.421Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T20:28:03.422Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T20:28:03.421Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T20:28:03.422Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T20:28:03.423Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T20:28:03.424Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T20:28:03.423Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T20:28:03.425Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T20:28:03.426Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T20:28:03.425Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T20:28:03.425Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T20:28:03.426Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T20:28:03.426Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T20:28:03.428Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-22T20:28:03.429Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T20:28:03.429Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T20:28:03.426Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T20:28:03.429Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-22T20:28:03.430Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T20:28:03.430Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T20:28:03.431Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T20:28:03.431Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T20:28:03.431Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T20:28:03.431Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T20:28:03.432Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T20:28:03.432Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T20:28:03.432Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T20:28:03.432Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T20:28:03.432Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T20:28:03.432Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T20:28:03.433Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T20:28:03.433Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T20:28:03.433Z] [INFO] Container initialized. 
+[2025-12-22T20:28:05.700Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T20:28:05.709Z] [INFO] [API] GET / 302 9ms {"method":"GET","url":"/","status":302,"duration":9,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:19.234Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-22T20:28:19.235Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:19.239Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-22T20:28:19.271Z] [INFO] [API] POST /api/simulation/clear 200 32ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":32,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:26.565Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find fishing products"}}
+[2025-12-22T20:28:26.601Z] [INFO] [info] Received Research Request: b9782e55-1147-475d-b3dc-71ffab7fc824 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:26.602Z] [INFO] [info] [Section 1] Processing Request: b9782e55-1147-475d-b3dc-71ffab7fc824 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:26.602Z] [INFO] [System] Pipeline Start: Starting Research Pipeline for Request: b9782e55-1147-475d-b3dc-71ffab7fc824 {"request_id":"b9782e55-1147-475d-b3dc-71ffab7fc824","criteria":{"category":"find fishing products"}}
+[2025-12-22T20:28:26.603Z] [INFO] [API] POST /api/simulation/start 200 38ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":38,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:26.605Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-22T20:28:26.606Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:26.624Z] [INFO] [Initialization] Step 0: Dependencies: Loading dependencies... 
+[2025-12-22T20:28:26.628Z] [INFO] [Initialization] Step 0: Dependencies: Dependencies loaded. 
+[2025-12-22T20:28:26.631Z] [INFO] [Research] Step 1: Brief: Creating research brief... 
+[2025-12-22T20:28:28.163Z] [INFO] [info] [Section 1] Brief Created: brief_b9782e55-1147-475d-b3dc-71ffab7fc824_1766435308155 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:28.163Z] [INFO] [Research] Step 1: Brief: Research brief created. {"request_id":"b9782e55-1147-475d-b3dc-71ffab7fc824","seasonal_window":{"start":"2025-03-01","peak":"2025-06-01","decay":"2025-09-01"},"target_personas":["avid anglers","recreational fishers"],"category_constraints":["must be eco-friendly"],"emerging_definition":{"min_growth":20,"time_window":"30d"},"execution_speed":"normal","alignment_score":1,"raw_criteria":{"category":"find fishing products"}}
+[2025-12-22T20:28:28.170Z] [INFO] [Research] Step 2: Learnings: Ingesting prior learnings... 
+[2025-12-22T20:28:28.175Z] [INFO] [info] [Section 2] Ingesting Prior Learnings for find fishing products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:28.196Z] [INFO] [info] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:28.196Z] [INFO] [Research] Step 2: Learnings: Prior learnings ingested. {"count":0}
+[2025-12-22T20:28:28.200Z] [INFO] [Discovery] Step 3: Signals: Collecting signals... 
+[2025-12-22T20:28:28.203Z] [INFO] [info] [Section 3] Collecting Signals for find fishing products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:28.204Z] [DEBUG] [debug] [collectSignals] Calling trendAnalyzer.findProducts {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:28.475Z] [INFO] [info] 🤖 AI Search Strategy: "find fishing products" ➔ [fishing gear, fishing accessories, fishing tackle] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:28.476Z] [INFO] [LiveTrend] Finding products in fishing gear using Google Trends + AI 
+[2025-12-22T20:28:28.488Z] [DEBUG] [LiveTrend] Cache miss for queries_fishing gear, fetching... 
+[2025-12-22T20:28:32.786Z] [DEBUG] [debug] [collectSignals] trendAnalyzer.findProducts result for "fishing gear": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:32.786Z] [INFO] [LiveTrend] Finding products in fishing accessories using Google Trends + AI 
+[2025-12-22T20:28:32.790Z] [DEBUG] [LiveTrend] Cache miss for queries_fishing accessories, fetching... 
+[2025-12-22T20:28:37.363Z] [DEBUG] [debug] [collectSignals] trendAnalyzer.findProducts result for "fishing accessories": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:37.363Z] [INFO] [LiveTrend] Finding products in fishing tackle using Google Trends + AI 
+[2025-12-22T20:28:37.368Z] [DEBUG] [LiveTrend] Cache miss for queries_fishing tackle, fetching... 
+[2025-12-22T20:28:40.842Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-22T20:28:40.846Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:41.538Z] [DEBUG] [debug] [collectSignals] trendAnalyzer.findProducts result for "fishing tackle": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.539Z] [DEBUG] [debug] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Lightweight Fly Fishing Rod": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.539Z] [DEBUG] [debug] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Insulated Ice Fishing Shelter": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.538Z] [DEBUG] [debug] [collectSignals] Calling competitorAnalyzer.analyzeCompetitors {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.539Z] [DEBUG] [debug] [collectSignals] competitorAnalyzer.analyzeCompetitors result for "Durable Bass Fishing Lures Kit": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.539Z] [DEBUG] [debug] [collectSignals] Calling videoAnalyzer.searchVideos {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:41.974Z] [DEBUG] [debug] [collectSignals] videoAnalyzer.searchVideos result for "Lightweight Fly Fishing Rod": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.276Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-22T20:28:42.283Z] [INFO] [API] GET /api/staging/sessions 200 7ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:42.290Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
+[2025-12-22T20:28:42.291Z] [DEBUG] [debug] [collectSignals] videoAnalyzer.searchVideos result for "Insulated Ice Fishing Shelter": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.298Z] [INFO] [API] GET /api/staging/items 200 8ms {"method":"GET","url":"/api/staging/items","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:42.619Z] [DEBUG] [debug] [collectSignals] videoAnalyzer.searchVideos result for "Durable Bass Fishing Lures Kit": {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.619Z] [DEBUG] [debug] [collectSignals] Calling adsAnalyzer.getKeywordMetrics {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.621Z] [DEBUG] [debug] [collectSignals] Calling shopCompliance.checkPolicy {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.621Z] [DEBUG] [debug] [collectSignals] adsAnalyzer.getKeywordMetrics result: {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.621Z] [DEBUG] [debug] [collectSignals] shopCompliance.checkPolicy result: {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.621Z] [DEBUG] [debug] [collectSignals] Calling videoAnalyzer.searchVideos {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:42.992Z] [DEBUG] [debug] [collectSignals] videoAnalyzer.searchVideos result: {"agent":"ProductResearcher","type":"debug"}
+[2025-12-22T20:28:43.014Z] [INFO] [info] [Section 3] Signals Collected: 12 items from search, competitor, social, marketplace {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.014Z] [INFO] [Discovery] Step 3: Signals: Collected 12 signals. {"count":12}
+[2025-12-22T20:28:43.019Z] [INFO] [Analysis] Step 4: Themes: Generating themes... 
+[2025-12-22T20:28:43.023Z] [INFO] [info] [Section 4] Generating Themes from 12 signals... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.028Z] [INFO] [info] [Section 4] Themes Generated: 10 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.029Z] [INFO] [Analysis] Step 4: Themes: Generated 10 themes. {"count":10}
+[2025-12-22T20:28:43.032Z] [INFO] [Filtering] Step 5: Gating: Gating themes... 
+[2025-12-22T20:28:43.035Z] [INFO] [info] [Section 5] Gating 10 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.039Z] [INFO] [info] [Section 5] Themes Gated: 10 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.039Z] [INFO] [Filtering] Step 5: Gating: Gated down to 10 themes. {"count":10}
+[2025-12-22T20:28:43.043Z] [INFO] [Ranking] Step 6: Scoring: Scoring and ranking themes... 
+[2025-12-22T20:28:43.045Z] [INFO] [info] [Section 6] Scoring 10 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.049Z] [INFO] [info] [Section 6] Shortlist Ranked: Top 10 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.050Z] [INFO] [Ranking] Step 6: Scoring: Ranked 10 themes. {"top":"Boat Fishing Rod Holders"}
+[2025-12-22T20:28:43.054Z] [INFO] [Filtering] Step 7: Time Fitness: Checking time fitness... 
+[2025-12-22T20:28:43.056Z] [INFO] [info] [Section 7] Checking Time Fitness for 10 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.056Z] [INFO] [info] Theme Insulated Ice Fishing Shelter rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.056Z] [INFO] [info] Theme Live Fishing Bait Kit rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.056Z] [INFO] [info] Theme Durable Bass Fishing Lures Kit rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.060Z] [INFO] [info] [Section 7] Time Filtered: 7 passed {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.060Z] [INFO] [Filtering] Step 7: Time Fitness: 7 themes passed time fitness. {"count":7}
+[2025-12-22T20:28:43.064Z] [INFO] [Validation] Step 8: Deep Validation: Performing deep validation... 
+[2025-12-22T20:28:43.067Z] [INFO] [info] [Section 8] Performing Deep Validation on top 7 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.070Z] [INFO] [info] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.070Z] [INFO] [Validation] Step 8: Deep Validation: Validated 5 themes. {"count":5}
+[2025-12-22T20:28:43.074Z] [INFO] [Concepting] Step 9: Productization: Creating offer concepts... 
+[2025-12-22T20:28:43.076Z] [INFO] [info] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.080Z] [INFO] [info] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.080Z] [INFO] [Concepting] Step 9: Productization: Created 5 concepts. {"count":5}
+[2025-12-22T20:28:43.084Z] [INFO] [Output] Step 10: Briefs: Creating opportunity briefs... 
+[2025-12-22T20:28:43.086Z] [INFO] [info] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.099Z] [INFO] [info] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.099Z] [INFO] [info] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.099Z] [INFO] [info] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.099Z] [INFO] [Output] Step 10: Briefs: Created 3 briefs. {"count":3}
+[2025-12-22T20:28:43.103Z] [INFO] [Output] Step 11: Handoff: Initiating handoff... 
+[2025-12-22T20:28:43.103Z] [INFO] [info] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.104Z] [INFO] [info] Created new staging session: research_e7a30c59 {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.106Z] [INFO] [info] Created new staging session: research_905b76d2 {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.123Z] [INFO] [Output] Step 11: Handoff: Handoff complete. 
+[2025-12-22T20:28:43.123Z] [INFO] [info] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T20:28:43.125Z] [INFO] [info] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.126Z] [INFO] [System] Pipeline Complete: Pipeline Complete. Generated 3 briefs. {"briefs":["opp_1766435323086_746","opp_1766435323086_759","opp_1766435323086_212"]}
+[2025-12-22T20:28:43.128Z] [INFO] [info] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T20:28:43.964Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-22T20:28:43.968Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:45.295Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-22T20:28:45.298Z] [INFO] [API] GET /api/staging/sessions 200 3ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:28:45.302Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
+[2025-12-22T20:28:45.306Z] [INFO] [API] GET /api/staging/items 200 4ms {"method":"GET","url":"/api/staging/items","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T20:29:26.737Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:29:26.756Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:30:26.814Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:30:26.835Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:31:26.891Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:31:26.910Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:32:26.982Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:32:27.004Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:33:27.073Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:33:27.090Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:34:27.154Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:34:27.174Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:35:27.253Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:35:27.271Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T20:36:27.302Z] [INFO] [info] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T20:36:27.321Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}

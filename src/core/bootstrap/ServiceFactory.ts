@@ -134,7 +134,8 @@ export class ServiceFactory {
       case 'CompetitorAdapter': {
         const live = isServiceLive('competitor');
         console.log(`[ServiceFactory] Creating CompetitorAdapter. Live mode: ${live}`);
-        return live ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return live ? new LiveCompetitorAdapter(pool) : new MockCompetitorAdapter();
       }
       case 'VideoAdapter': {
         const live = isServiceLive('video');
@@ -145,7 +146,8 @@ export class ServiceFactory {
       }
       case 'LiveVideoAdapter': {
         console.log(`[ServiceFactory] Creating LiveVideoAdapter.`);
-        return new LiveVideoAdapter();
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return new LiveVideoAdapter(pool);
       }
       case 'FulfilmentAdapter': {
         const live = isServiceLive('fulfilment');
@@ -204,8 +206,8 @@ export class ServiceFactory {
         return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
       case 'ProductResearchAgent':
         // Inject 'shop' adapter as 'shopCompliance' port
-        // Inject 'video' adapter if available (not yet in config, but good to prepare)
-        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads, deps.shop);
+        // Inject 'video' adapter for YouTube analysis
+        return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads, deps.shop, deps.video);
       case 'SupplierAgent':
         return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
       case 'StoreBuildAgent':

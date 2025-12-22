@@ -55,7 +55,7 @@ export class LiveShopAdapter implements ShopManagementPort {
   }
 
   async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
-    console.log(`[LiveShop] 🔴 Creating product in LIVE STORE: ${product.name}`);
+    logger.info(`[LiveShop] 🔴 Creating product in LIVE STORE: ${product.name}`);
     try {
       const { client, session } = shopifyService.getClient();
       logger.external('Shopify', 'createProduct', { 

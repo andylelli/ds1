@@ -150,6 +150,13 @@ export class ProductResearchAgent extends BaseAgent {
   }
 
   private async logStep(action: string, category: string, status: 'started' | 'completed' | 'failed' | 'warning', message: string, details?: any) {
+    // Log to file system for visibility
+    const logMsg = `[${category}] ${action}: ${message}`;
+    if (status === 'failed') logger.error(logMsg, details);
+    else if (status === 'warning') logger.warn(logMsg, details);
+    else logger.info(logMsg, details);
+
+    // Log to database for Control Panel
     await this.db.saveActivity({
       agent: this.name,
       action,
@@ -385,6 +392,44 @@ export class ProductResearchAgent extends BaseAgent {
           this.log('error', `[collectSignals] Failed to collect Competitor signals: ${e}`);
           logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', error: e?.message });
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
+      }
+
+      // 3. Video Analysis (YouTube)
+      if (this.videoAnalyzer) {
+          try {
+              this.log('debug', '[collectSignals] Calling videoAnalyzer.searchVideos');
+              const seedProducts = signals
+                  .filter(s => s.family === 'search')
+                  .flatMap(s => s.data.products)
+                  .slice(0, 3);
+              
+              for (const prod of seedProducts) {
+                  let videoData;
+                  try {
+                      videoData = await this.videoAnalyzer.searchVideos(prod.name, 5);
+                      this.log('debug', `[collectSignals] videoAnalyzer.searchVideos result for "${prod.name}":`, videoData);
+                      logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, resultCount: videoData.length });
+                  } catch (err) {
+                      logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, error: err?.message });
+                  }
+
+                  if (videoData && videoData.length > 0) {
+                      signals.push({
+                          id: `sig_video_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                          family: 'social',
+                          source: 'YouTube',
+                          timestamp: new Date().toISOString(),
+                          data: { product: prod.name, videos: videoData }
+                      });
+                  }
+              }
+          } catch (e: any) {
+              this.log('error', `[collectSignals] Failed to collect Video signals: ${e}`);
+              logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', error: e?.message });
+              await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Video signals: ${e.message}`, { error: e.stack });
+          }
+      } else {
+          this.log('warn', '[collectSignals] Video Analyzer not available. Skipping YouTube analysis.');
       }
 
 

@@ -1,19 +1,35 @@
 import { CompetitorAnalysisPort } from '../../../core/domain/ports/CompetitorAnalysisPort.js';
 import axios from 'axios';
 import { logger } from '../../logging/LoggerService.js';
+import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
+import { Pool } from 'pg';
 
 export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
   private serpApiKey: string | undefined;
   private metaAccessToken: string | undefined;
+  private activityLog: ActivityLogService | null = null;
 
-  constructor() {
+  constructor(pool?: Pool) {
     this.serpApiKey = process.env.SERPAPI_KEY;
     this.metaAccessToken = process.env.META_ACCESS_TOKEN;
+    if (pool) {
+        this.activityLog = new ActivityLogService(pool);
+    }
   }
 
   async analyzeCompetitors(category: string): Promise<any> {
     if (!this.serpApiKey) {
       console.warn('[LiveCompetitorAdapter] SERPAPI_KEY not set. Returning stub data.');
+      if (this.activityLog) {
+          await this.activityLog.log({
+              agent: 'ProductResearcher',
+              action: 'analyze_competitors',
+              category: 'research',
+              status: 'warning',
+              message: 'SERPAPI_KEY missing. Returning stub data.',
+              details: { category }
+          });
+      }
       return { 
           competitors: [], 
           saturation_score: 0, 
@@ -59,6 +75,16 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
               topCompetitors: competitors.slice(0, 3).map((c: any) => c.name)
           }
       });
+      if (this.activityLog) {
+        await this.activityLog.log({
+            agent: 'CompetitorAdapter',
+            action: 'analyze_competitors',
+            category: 'research',
+            status: 'completed',
+            message: `Found ${competitors.length} competitors for ${category}`,
+            details: { query, saturationScore, topCompetitors: competitors.slice(0, 3).map((c: any) => c.name) }
+        });
+      }
       return {
         competitors,
         saturation_score: saturationScore,
@@ -68,6 +94,16 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
     } catch (error: any) {
       logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', query, error: error.message });
       console.error('[LiveCompetitorAdapter] SERP Search failed:', error.message);
+      if (this.activityLog) {
+        await this.activityLog.log({
+            agent: 'CompetitorAdapter',
+            action: 'analyze_competitors',
+            category: 'research',
+            status: 'failed',
+            message: `SERP Search failed for ${category}`,
+            details: { error: error.message }
+        });
+      }
       return { error: error.message, competitors: [] };
     }
   }
@@ -121,11 +157,31 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
               ads: response.data.data 
           }
       });
+      if (this.activityLog) {
+        await this.activityLog.log({
+            agent: 'CompetitorAdapter',
+            action: 'get_competitor_ads',
+            category: 'research',
+            status: 'completed',
+            message: `Found ${response.data.data?.length || 0} ads for ${brand}`,
+            details: { brand, adsCount: response.data.data?.length || 0 }
+        });
+      }
       return response.data.data || [];
     } catch (error: any) {
       const errorData = error.response?.data?.error || {};
       logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', brand, error: errorData.message || error.message });
       console.error('[LiveCompetitorAdapter] Meta Ads check failed:', errorData.message || error.message);
+      if (this.activityLog) {
+        await this.activityLog.log({
+            agent: 'CompetitorAdapter',
+            action: 'get_competitor_ads',
+            category: 'research',
+            status: 'failed',
+            message: `Meta Ads check failed for ${brand}`,
+            details: { error: errorData.message || error.message }
+        });
+      }
       if (errorData.code === 1) {
           console.warn('[LiveCompetitorAdapter] Hint: "Unknown error" (Code 1) often means the App is in Development Mode and lacks "Advanced Access" to query public ads. Switch App to Live Mode or verify Business Manager.');
       }

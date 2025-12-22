@@ -19,7 +19,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
     this.stagingEnabled = stagingEnabled;
   }
   async analyzeTrend(category: string): Promise<any> {
-    console.log(`[LiveTrend] Analyzing trend for ${category} using Google Trends`);
+    logger.info(`[LiveTrend] Analyzing trend for ${category} using Google Trends`);
     await this.activityLog.log({
       agent: 'ProductResearcher',
       action: 'analyze_trend',
@@ -77,7 +77,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
   }
 
   async checkSaturation(productName: string): Promise<any> {
-    console.log(`[LiveTrend] Checking saturation for ${productName}`);
+    logger.info(`[LiveTrend] Checking saturation for ${productName}`);
     await this.activityLog.log({
       agent: 'ProductResearcher',
       action: 'check_saturation',
@@ -128,7 +128,7 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
   }
 
   async findProducts(category: string): Promise<any[]> {
-    console.log(`[LiveTrend] Finding products in ${category} using Google Trends + AI`);
+    logger.info(`[LiveTrend] Finding products in ${category} using Google Trends + AI`);
     
     await this.activityLog.log({
       agent: 'ProductResearcher',
@@ -494,11 +494,11 @@ Return ONLY valid JSON:
   private async cachedRequest<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
-      console.log(`[LiveTrend] Cache hit for ${key}`);
+      logger.debug(`[LiveTrend] Cache hit for ${key}`);
       return cached.data;
     }
     
-    console.log(`[LiveTrend] Cache miss for ${key}, fetching...`);
+    logger.debug(`[LiveTrend] Cache miss for ${key}, fetching...`);
     const data = await fetcher();
     this.cache.set(key, { data, timestamp: Date.now() });
     return data;
@@ -507,7 +507,7 @@ Return ONLY valid JSON:
   // === AI Fallback Methods ===
 
   private async analyzeTrendWithAI(category: string): Promise<any> {
-    console.log(`[LiveTrend] Using AI-only for trend analysis`);
+    logger.warn(`[LiveTrend] Using AI-only for trend analysis`);
     const client = openAIService.getClient();
     const response = await client.chat.completions.create({
       model: openAIService.deploymentName,
@@ -521,7 +521,7 @@ Return ONLY valid JSON:
   }
 
   private async checkSaturationWithAI(productName: string): Promise<any> {
-    console.log(`[LiveTrend] Using AI-only for saturation check`);
+    logger.warn(`[LiveTrend] Using AI-only for saturation check`);
     const client = openAIService.getClient();
     const response = await client.chat.completions.create({
       model: openAIService.deploymentName,
@@ -535,7 +535,7 @@ Return ONLY valid JSON:
   }
 
   private async fallbackToAIOnly(category: string): Promise<any[]> {
-    console.log(`[LiveTrend] Using AI-only for product discovery`);
+    logger.warn(`[LiveTrend] Using AI-only for product discovery`);
     try {
       const client = openAIService.getClient();
       const messages = [

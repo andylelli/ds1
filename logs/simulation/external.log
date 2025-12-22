@@ -1,14 +1,379 @@
-[2025-12-22T19:30:15.444Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"athleisure wear","duration":1190,"success":true,"error":""}
-[2025-12-22T19:30:18.990Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":586,"duration":3545}
-[2025-12-22T19:30:19.029Z] [INFO] [GoogleTrends] findProducts {"endpoint":"GoogleTrendsAPI","keyword":"athleisure wear","productsCount":3,"products":[{"id":"product_001","name":"Men's Performance Joggers","description":"With 'athleisure wear mens' rising by 97, these joggers blend comfort and style perfect for men seeking versatile athleisure wear.","potential":"High","margin":"60%","confidence":9,"trendEvidence":"Based on rising query: 'athleisure wear mens' (97)","images":["https://via.placeholder.com/600x600.png?text=Men's%20Performance%20Joggers"],"source":"google_trends"},{"id":"product_002","name":"Women's High-Waisted Leggings","description":"These leggings are popular among women for both athletic and casual wear, aligning with the 79 rise in 'women's athleisure wear' searches.","potential":"High","margin":"65%","confidence":8,"trendEvidence":"Based on rising query: 'women's athleisure wear' (79)","images":["https://via.placeholder.com/600x600.png?text=Women's%20High-Waisted%20Leggings"],"source":"google_trends"},{"id":"product_003","name":"Unisex Athleisure Hoodie","description":"Hoodies that serve a dual purpose for workouts and casual use are trending, supported by the 100 rise in 'athleisure clothing' searches.","potential":"High","margin":"70%","confidence":8,"trendEvidence":"Based on rising query: 'athleisure clothing' (100)","images":["https://via.placeholder.com/600x600.png?text=Unisex%20Athleisure%20Hoodie"],"source":"google_trends"}]}
-[2025-12-22T19:30:21.132Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"sustainable fashion","duration":2097,"success":true,"error":""}
-[2025-12-22T19:30:23.716Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":601,"duration":2584}
-[2025-12-22T19:30:23.755Z] [INFO] [GoogleTrends] findProducts {"endpoint":"GoogleTrendsAPI","keyword":"sustainable fashion","productsCount":3,"products":[{"id":"001","name":"Organic Cotton T-Shirts","description":"Organic cotton t-shirts are a sustainable fashion staple, reflecting the growing interest in sustainable clothing brands and ethical fashion.","potential":"High","margin":"60%","confidence":9,"trendEvidence":"Based on rising query: sustainable clothing (57) and ethical fashion (17)","images":["https://via.placeholder.com/600x600.png?text=Organic%20Cotton%20T-Shirts"],"source":"google_trends"},{"id":"002","name":"Recycled Fabric Sneakers","description":"Sneakers made from recycled materials are in demand due to increasing awareness of fast fashion and the search for sustainable brands.","potential":"High","margin":"55%","confidence":8,"trendEvidence":"Based on rising query: fast fashion (49) and sustainable brands (93)","images":["https://via.placeholder.com/600x600.png?text=Recycled%20Fabric%20Sneakers"],"source":"google_trends"},{"id":"003","name":"Eco-Friendly Denim Jeans","description":"Denim jeans made using eco-friendly processes are trending due to the increasing interest in sustainable fashion brands and sustainable clothing.","potential":"Medium","margin":"50%","confidence":7,"trendEvidence":"Based on rising query: sustainable clothing brands (24) and sustainable fashion brands (100)","images":["https://via.placeholder.com/600x600.png?text=Eco-Friendly%20Denim%20Jeans"],"source":"google_trends"}]}
-[2025-12-22T19:30:25.881Z] [INFO] [GoogleTrends] relatedQueries {"keyword":"vintage clothing","duration":2121,"success":true,"error":""}
-[2025-12-22T19:30:28.465Z] [INFO] [OpenAI] chat.completions.create {"model":"gpt-4o","tokens":671,"duration":2584}
-[2025-12-22T19:30:28.505Z] [INFO] [GoogleTrends] findProducts {"endpoint":"GoogleTrendsAPI","keyword":"vintage clothing","productsCount":3,"products":[{"id":"1","name":"Vintage Band T-Shirts","description":"Vintage band t-shirts are popular due to the strong interest in 'vintage men's clothing' and 'vintage clothes'. As the trend for vintage styles and clothing stores rises, unique items like band t-shirts are highly sought after.","potential":"High","margin":"60%","confidence":9,"trendEvidence":"Based on rising queries: vintage mens clothing (42), vintage clothes (46), vintage style (32)","images":["https://via.placeholder.com/600x600.png?text=Vintage%20Band%20T-Shirts"],"source":"google_trends"},{"id":"2","name":"Retro Denim Jackets","description":"Retro denim jackets are on-trend because of the growing interest in 'vintage clothing stores' and 'mens clothing'. This aligns well with the vintage style trend noted in the data.","potential":"High","margin":"70%","confidence":8,"trendEvidence":"Based on rising queries: vintage clothing stores (98), vintage mens clothing (42), mens clothing (41)","images":["https://via.placeholder.com/600x600.png?text=Retro%20Denim%20Jackets"],"source":"google_trends"},{"id":"3","name":"1950s Vintage Dresses","description":"1950s vintage dresses are trending due to a spike in search for 'vintage clothing stores' and 'vintage clothing'. Dresses from specific eras are often highly desirable due to their unique designs and nostalgic value.","potential":"Medium","margin":"65%","confidence":7,"trendEvidence":"Based on rising queries: vintage clothing store (53), vintage clothes (46)","images":["https://via.placeholder.com/600x600.png?text=1950s%20Vintage%20Dresses"],"source":"google_trends"}]}
-[2025-12-22T19:30:28.506Z] [INFO] [CompetitorAnalysis] analyzeCompetitors {"endpoint":"Facebook/Meta","product":"Women's High-Waisted Leggings","result":{"competitionLevel":"High","topCompetitors":[{"name":"Competitor A","url":"http://comp-a.com","marketShare":"15%"},{"name":"Competitor B","url":"http://comp-b.com","marketShare":"10%"}]}}
-[2025-12-22T19:30:28.506Z] [INFO] [CompetitorAnalysis] analyzeCompetitors {"endpoint":"Facebook/Meta","product":"Men's Performance Joggers","result":{"competitionLevel":"High","topCompetitors":[{"name":"Competitor A","url":"http://comp-a.com","marketShare":"15%"},{"name":"Competitor B","url":"http://comp-b.com","marketShare":"10%"}]}}
-[2025-12-22T19:30:28.506Z] [INFO] [CompetitorAnalysis] analyzeCompetitors {"endpoint":"Facebook/Meta","product":"Unisex Athleisure Hoodie","result":{"competitionLevel":"High","topCompetitors":[{"name":"Competitor A","url":"http://comp-a.com","marketShare":"15%"},{"name":"Competitor B","url":"http://comp-b.com","marketShare":"10%"}]}}
-[2025-12-22T19:30:28.507Z] [INFO] [GoogleAds] getKeywordMetrics {"endpoint":"GoogleAdsAPI","keywords":["athleisure wear","sustainable fashion","vintage clothing"],"metrics":[{"keyword":"athleisure wear","avgMonthlySearches":3327,"competition":"MEDIUM","cpc":"0.11"},{"keyword":"sustainable fashion","avgMonthlySearches":813,"competition":"MEDIUM","cpc":"1.74"},{"keyword":"vintage clothing","avgMonthlySearches":3862,"competition":"MEDIUM","cpc":"0.24"}]}
-[2025-12-22T19:30:28.507Z] [INFO] [Shopify] checkPolicy {"endpoint":"ShopifyAPI","category":"find clothing","result":{"allowed":true}}
+[2025-12-22T20:28:30.714Z] [INFO] [GoogleTrends] relatedQueries 
+{
+  "summary": "Related queries for: fishing gear",
+  "status": "success",
+  "duration": 2225,
+  "data": {
+    "keyword": "fishing gear",
+    "success": true,
+    "error": ""
+  }
+}
+[2025-12-22T20:28:32.737Z] [INFO] [OpenAI] chat.completions.create 
+{
+  "model": "gpt-4o",
+  "tokens": 582,
+  "duration": 2022
+}
+[2025-12-22T20:28:32.786Z] [INFO] [GoogleTrends] findProducts 
+{
+  "endpoint": "GoogleTrendsAPI",
+  "keyword": "fishing gear",
+  "productsCount": 3,
+  "products": [
+    {
+      "id": "1",
+      "name": "Lightweight Fly Fishing Rod",
+      "description": "The fly fishing trend is peaking, and a specialized lightweight rod is essential for enthusiasts looking for an optimized experience.",
+      "potential": "High",
+      "margin": "60%",
+      "confidence": 9,
+      "trendEvidence": "Based on rising query: 'fly fishing gear'",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Lightweight%20Fly%20Fishing%20Rod"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "2",
+      "name": "Insulated Ice Fishing Shelter",
+      "description": "Interest in ice fishing gear is rising as the season approaches, making this insulated shelter a high-demand item for comfort and convenience.",
+      "potential": "High",
+      "margin": "70%",
+      "confidence": 8,
+      "trendEvidence": "Based on rising query: 'ice fishing gear'",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Insulated%20Ice%20Fishing%20Shelter"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "3",
+      "name": "Durable Bass Fishing Lures Kit",
+      "description": "Bass fishing remains popular, and a comprehensive lures kit provides a tailored solution for serious anglers.",
+      "potential": "Medium",
+      "margin": "55%",
+      "confidence": 7,
+      "trendEvidence": "Based on rising query: 'bass fishing gear'",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Durable%20Bass%20Fishing%20Lures%20Kit"
+      ],
+      "source": "google_trends"
+    }
+  ]
+}
+[2025-12-22T20:28:34.763Z] [INFO] [GoogleTrends] relatedQueries 
+{
+  "summary": "Related queries for: fishing accessories",
+  "status": "success",
+  "duration": 1973,
+  "data": {
+    "keyword": "fishing accessories",
+    "success": true,
+    "error": ""
+  }
+}
+[2025-12-22T20:28:37.327Z] [INFO] [OpenAI] chat.completions.create 
+{
+  "model": "gpt-4o",
+  "tokens": 561,
+  "duration": 2563
+}
+[2025-12-22T20:28:37.363Z] [INFO] [GoogleTrends] findProducts 
+{
+  "endpoint": "GoogleTrendsAPI",
+  "keyword": "fishing accessories",
+  "productsCount": 3,
+  "products": [
+    {
+      "id": "p1",
+      "name": "LED Ice Fishing Glow Sticks",
+      "description": "Ice fishing accessories are trending with a high rise in searches indicating a growing interest, particularly in specialized equipment for ice fishing.",
+      "potential": "High",
+      "margin": "65%",
+      "confidence": 8,
+      "trendEvidence": "Based on rising query: ice fishing accessories",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=LED%20Ice%20Fishing%20Glow%20Sticks"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "p2",
+      "name": "Midweight Fly Fishing Waders",
+      "description": "Fly fishing accessories are currently trending, showing a sustained interest in fly fishing equipment, including waders suitable for varying conditions.",
+      "potential": "High",
+      "margin": "60%",
+      "confidence": 7,
+      "trendEvidence": "Based on rising query: fly fishing accessories",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Midweight%20Fly%20Fishing%20Waders"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "p3",
+      "name": "Boat Fishing Rod Holders",
+      "description": "The significant rise in searches for fishing accessories for boats indicates high potential demand for items enhancing boat fishing experience, including rod holders.",
+      "potential": "Medium",
+      "margin": "60%",
+      "confidence": 8,
+      "trendEvidence": "Based on rising query: fishing accessories for boat",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Boat%20Fishing%20Rod%20Holders"
+      ],
+      "source": "google_trends"
+    }
+  ]
+}
+[2025-12-22T20:28:39.291Z] [INFO] [GoogleTrends] relatedQueries 
+{
+  "summary": "Related queries for: fishing tackle",
+  "status": "success",
+  "duration": 1923,
+  "data": {
+    "keyword": "fishing tackle",
+    "success": true,
+    "error": ""
+  }
+}
+[2025-12-22T20:28:41.502Z] [INFO] [OpenAI] chat.completions.create 
+{
+  "model": "gpt-4o",
+  "tokens": 606,
+  "duration": 2211
+}
+[2025-12-22T20:28:41.538Z] [INFO] [GoogleTrends] findProducts 
+{
+  "endpoint": "GoogleTrendsAPI",
+  "keyword": "fishing tackle",
+  "productsCount": 3,
+  "products": [
+    {
+      "id": "prod_001",
+      "name": "Live Fishing Bait Kit",
+      "description": "This product is highly relevant now due to the increasing interest in 'fishing bait' and the general rise in fishing-related searches.",
+      "potential": "High",
+      "margin": "60%",
+      "confidence": 8,
+      "trendEvidence": "Based on rising query: fishing bait (100)",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Live%20Fishing%20Bait%20Kit"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "prod_002",
+      "name": "Multi-Compartment Tackle Box",
+      "description": "There is a growing demand for organization tools in fishing, evidenced by multiple rising queries related to tackle boxes.",
+      "potential": "High",
+      "margin": "55%",
+      "confidence": 9,
+      "trendEvidence": "Based on rising query: fishing tackle box (71), tackle box (69)",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Multi-Compartment%20Tackle%20Box"
+      ],
+      "source": "google_trends"
+    },
+    {
+      "id": "prod_003",
+      "name": "Bass Fishing Lure Set",
+      "description": "Specialized fishing equipment for bass fishing is trending, indicated by searches for 'bass fishing tackle'.",
+      "potential": "Medium",
+      "margin": "65%",
+      "confidence": 7,
+      "trendEvidence": "Based on rising query: bass fishing tackle (49)",
+      "images": [
+        "https://via.placeholder.com/600x600.png?text=Bass%20Fishing%20Lure%20Set"
+      ],
+      "source": "google_trends"
+    }
+  ]
+}
+[2025-12-22T20:28:41.539Z] [INFO] [CompetitorAnalysis] analyzeCompetitors 
+{
+  "endpoint": "Facebook/Meta",
+  "product": "Lightweight Fly Fishing Rod",
+  "result": {
+    "competitionLevel": "High",
+    "topCompetitors": [
+      {
+        "name": "Competitor A",
+        "url": "http://comp-a.com",
+        "marketShare": "15%"
+      },
+      {
+        "name": "Competitor B",
+        "url": "http://comp-b.com",
+        "marketShare": "10%"
+      }
+    ]
+  }
+}
+[2025-12-22T20:28:41.539Z] [INFO] [CompetitorAnalysis] analyzeCompetitors 
+{
+  "endpoint": "Facebook/Meta",
+  "product": "Insulated Ice Fishing Shelter",
+  "result": {
+    "competitionLevel": "High",
+    "topCompetitors": [
+      {
+        "name": "Competitor A",
+        "url": "http://comp-a.com",
+        "marketShare": "15%"
+      },
+      {
+        "name": "Competitor B",
+        "url": "http://comp-b.com",
+        "marketShare": "10%"
+      }
+    ]
+  }
+}
+[2025-12-22T20:28:41.539Z] [INFO] [CompetitorAnalysis] analyzeCompetitors 
+{
+  "endpoint": "Facebook/Meta",
+  "product": "Durable Bass Fishing Lures Kit",
+  "result": {
+    "competitionLevel": "High",
+    "topCompetitors": [
+      {
+        "name": "Competitor A",
+        "url": "http://comp-a.com",
+        "marketShare": "15%"
+      },
+      {
+        "name": "Competitor B",
+        "url": "http://comp-b.com",
+        "marketShare": "10%"
+      }
+    ]
+  }
+}
+[2025-12-22T20:28:41.966Z] [INFO] [YouTube] searchVideos 
+{
+  "query": "Lightweight Fly Fishing Rod",
+  "maxResults": 5,
+  "resultCount": 5
+}
+[2025-12-22T20:28:41.974Z] [INFO] [YouTube] searchVideos 
+{
+  "endpoint": "YouTubeAPI",
+  "product": "Lightweight Fly Fishing Rod",
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.288Z] [INFO] [YouTube] searchVideos 
+{
+  "query": "Insulated Ice Fishing Shelter",
+  "maxResults": 5,
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.291Z] [INFO] [YouTube] searchVideos 
+{
+  "endpoint": "YouTubeAPI",
+  "product": "Insulated Ice Fishing Shelter",
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.611Z] [INFO] [YouTube] searchVideos 
+{
+  "query": "Durable Bass Fishing Lures Kit",
+  "maxResults": 5,
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.619Z] [INFO] [YouTube] searchVideos 
+{
+  "endpoint": "YouTubeAPI",
+  "product": "Durable Bass Fishing Lures Kit",
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.621Z] [INFO] [GoogleAds] getKeywordMetrics 
+{
+  "endpoint": "GoogleAdsAPI",
+  "keywords": [
+    "fishing gear",
+    "fishing accessories",
+    "fishing tackle"
+  ],
+  "metrics": [
+    {
+      "keyword": "fishing gear",
+      "avgMonthlySearches": 2239,
+      "competition": "MEDIUM",
+      "cpc": "1.90"
+    },
+    {
+      "keyword": "fishing accessories",
+      "avgMonthlySearches": 9523,
+      "competition": "MEDIUM",
+      "cpc": "0.56"
+    },
+    {
+      "keyword": "fishing tackle",
+      "avgMonthlySearches": 4402,
+      "competition": "MEDIUM",
+      "cpc": "0.56"
+    }
+  ]
+}
+[2025-12-22T20:28:42.621Z] [INFO] [Shopify] checkPolicy 
+{
+  "endpoint": "ShopifyAPI",
+  "category": "find fishing products",
+  "result": {
+    "allowed": true
+  }
+}
+[2025-12-22T20:28:42.981Z] [INFO] [YouTube] searchVideos 
+{
+  "query": "find fishing products",
+  "maxResults": 5,
+  "resultCount": 5
+}
+[2025-12-22T20:28:42.992Z] [INFO] [YouTube] searchVideos 
+{
+  "endpoint": "YouTubeAPI",
+  "category": "find fishing products",
+  "resultCount": 5,
+  "result": [
+    {
+      "id": "GMnuaQME18I",
+      "title": "⭐ Product Link in Comments!⭐Strong Double Sided Power Magnet⁠ #viral",
+      "description": "Product Link is pinned in the comments! Find more - @MaviGadgets ⁠ Download our mobile app - https://mavigadget.app ...",
+      "channelTitle": "MaviGadget",
+      "publishedAt": "2023-07-12T09:47:44Z",
+      "thumbnailUrl": "https://i.ytimg.com/vi/GMnuaQME18I/hqdefault.jpg"
+    },
+    {
+      "id": "NjVyXoukpv4",
+      "title": "🌎Never miss a fishing opportunity again with the PocketRod🎣 #fishing #fishingvideo #shorts",
+      "description": "",
+      "channelTitle": "PenPocketRod",
+      "publishedAt": "2024-09-27T14:35:58Z",
+      "thumbnailUrl": "https://i.ytimg.com/vi/NjVyXoukpv4/hqdefault.jpg"
+    },
+    {
+      "id": "2oEi31GVukw",
+      "title": "Product Link in Bio ( 136 ) 🚀 Magnetic Mini Fish Tank Cleaner",
+      "description": "Product Link: https://mavigadget.com/products/magnetic-mini-fish-tank-cleaner/?ref=4973 Find more: @MaviGadgets Follow ...",
+      "channelTitle": "MaviGadget",
+      "publishedAt": "2023-08-29T18:23:15Z",
+      "thumbnailUrl": "https://i.ytimg.com/vi/2oEi31GVukw/hqdefault.jpg"
+    },
+    {
+      "id": "1O55nCaG2QM",
+      "title": "The Biggest Magnet Fishing Jackpot EVER - You Won&#39;t Believe What I Found!!!",
+      "description": "The Biggest Magnet Fishing Jackpot EVER - You Won't Believe What I Found!!! Today I went magnet fishing and I hit the jackpot!",
+      "channelTitle": "The Fisher",
+      "publishedAt": "2020-05-24T12:56:55Z",
+      "thumbnailUrl": "https://i.ytimg.com/vi/1O55nCaG2QM/hqdefault.jpg"
+    },
+    {
+      "id": "-Hh2ZRCbNiA",
+      "title": "Making survival fishing line and hook with natural materials",
+      "description": "",
+      "channelTitle": "Woodsbound Outdoors",
+      "publishedAt": "2024-10-14T23:50:23Z",
+      "thumbnailUrl": "https://i.ytimg.com/vi/-Hh2ZRCbNiA/hqdefault.jpg"
+    }
+  ]
+}

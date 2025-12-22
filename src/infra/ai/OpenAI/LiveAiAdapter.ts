@@ -80,6 +80,20 @@ export class LiveAiAdapter implements AiPort {
                     }
                 });
 
+                if (this.activityLog) {
+                    await this.activityLog.log({
+                        agent: 'System',
+                        action: 'ai_chat',
+                        category: 'system',
+                        status: 'completed',
+                        message: `AI Chat completed (${choice.message.content?.length || 0} chars)`,
+                        details: { 
+                            model: openAIService.deploymentName,
+                            toolCalls: choice.message.tool_calls?.length || 0
+                        }
+                    }).catch(e => console.error('Failed to log AI success to DB:', e));
+                }
+
                 // success -> reset failure count
                 LiveAiAdapter._failureCount = 0;
 
@@ -96,6 +110,12 @@ export class LiveAiAdapter implements AiPort {
                 lastErr = err;
                 console.error(`[LiveAiAdapter] attempt ${attempt} failed:`, err?.message || err);
                 if (_SHOW_DEBUG_ENV) console.error(err);
+
+                logger.external('OpenAI', 'chat', { 
+                    summary: 'Chat request failed',
+                    status: 'failed',
+                    data: { error: err.message, attempt }
+                });
 
                 logger.external('OpenAI', 'chat', { 
                     summary: 'Chat request failed',
