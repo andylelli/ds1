@@ -185,3 +185,48 @@ interface Theme {
 *   **Sentiment Analysis**: Deeper NLP on customer reviews to identify "Customer Problem" more accurately.
 *   **Real-time Feedback**: Listening to `Marketing.CampaignResult` events to update `PriorLearnings` automatically.
 *   **Full AI Logic**: Replace heuristics in Steps 4, 6, 7, 8, 9 with LLM-based reasoning once the pipeline is fully stabilized.
+
+---
+
+## 8. 11 Steps Update Plan
+
+This section tracks the specific engineering plan to upgrade "Stubbed" or "Heuristic" steps into "Real Solutions".
+
+### 🎯 Upgrade Focus: Step 2 (Prior Learning Ingestion)
+
+**Objective**: Transform the agent from "Amnesiac" to "Experienced". The agent must query historical product performance to adjust its risk calculations for new opportunities.
+
+#### Current State (Stubbed)
+*   **Code**: `src/agents/ProductResearchAgent.ts` calls `this.db.getPriorLearnings()`.
+*   **Behavior**: Returns `[]` (Empty Array).
+*   **Impact**: The agent treats every "Electronics" product as a fresh idea, ignoring that we failed 3 times previously due to high returns.
+
+#### Target State (Real Solution)
+*   **Behavior**: The agent queries the `products` table for items with matching categories.
+*   **Logic**:
+    1.  Fetch past products in target category (e.g., "Pet Supplies").
+    2.  Calculate `WinRate` (Profitable Launches / Total Attempts).
+    3.  Generate a `RiskModifier`:
+        *   If WinRate < 20%: Apply `-15` score penalty.
+        *   If WinRate > 60%: Apply `+10` score boost.
+    4.  Inject these learnings into the `Context` object for use in Step 6 (Scoring).
+
+#### Implementation Phases
+
+**Phase 1: Database Schema & Seeding**
+*   [ ] **Schema Check**: Ensure `products` table has `outcome` (launched/killed), `profit_margin`, and `return_rate` columns.
+*   [ ] **Seed Data**: Insert 5-10 "Historical" products with mixed outcomes (some winners, some losers) into `sandbox_db.json` or Postgres.
+
+**Phase 2: Adapter Implementation**
+*   [ ] **Update Interface**: Ensure `PersistencePort` has `getPriorLearnings(category: string): Promise<HistoricalProduct[]>`.
+*   [ ] **Implement Logic**: In `PostgresPersistenceAdapter` (or `MockDbAdapter` for now), write the query to aggregate stats by category.
+
+**Phase 3: Agent Logic Integration**
+*   [ ] **Modify Step 2**: Update `ProductResearchAgent.ts` to process the returned `HistoricalProduct[]`.
+*   [ ] **Create Risk Calculator**: Implement a helper function `calculateRiskAdjustment(history)` that returns a score modifier.
+*   [ ] **Update Step 6 (Scoring)**: Ensure the `scoreAndRankThemes` function actually *uses* this modifier in the final calculation.
+
+**Phase 4: Verification**
+*   [ ] **Test Case**: Create `test-learning-logic.ts`.
+    *   Run Agent for "Electronics" (Seeded with failures) -> Expect Lower Scores.
+    *   Run Agent for "Home Decor" (Seeded with wins) -> Expect Higher Scores.
