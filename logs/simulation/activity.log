@@ -1070,3 +1070,113 @@
 [2025-12-22T17:13:49.181Z] [INFO] [API] GET /api/staging/items 200 4ms {"method":"GET","url":"/api/staging/items","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
 [2025-12-22T17:14:14.520Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
 [2025-12-22T17:14:14.521Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:24.883Z] [INFO] Initializing Container... 
+[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T17:29:24.887Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T17:29:24.887Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T17:29:24.889Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T17:29:24.889Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T17:29:24.889Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T17:29:24.890Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T17:29:24.889Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T17:29:24.890Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T17:29:24.890Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T17:29:24.891Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T17:29:24.891Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T17:29:24.891Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T17:29:24.891Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T17:29:24.892Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T17:29:24.892Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T17:29:24.892Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T17:29:24.892Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T17:29:24.893Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T17:29:24.893Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T17:29:24.893Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T17:29:24.894Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T17:29:24.894Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T17:29:24.894Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T17:29:24.894Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T17:29:24.894Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T17:29:24.894Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T17:29:24.895Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T17:29:24.895Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T17:29:24.895Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T17:29:24.895Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T17:29:24.895Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T17:29:24.895Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T17:29:24.895Z] [INFO] Container initialized. 
+[2025-12-22T17:29:29.202Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T17:29:29.210Z] [INFO] [API] GET / 302 8ms {"method":"GET","url":"/","status":302,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:34.343Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-22T17:29:34.344Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:34.350Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-22T17:29:34.409Z] [INFO] [API] POST /api/simulation/clear 200 59ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":59,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:43.941Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find bathroom products"}}
+[2025-12-22T17:29:43.979Z] [INFO] [Section 1] Processing Request: 2f2ce8bf-f933-4279-bab4-8daced0c0b8f {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:43.978Z] [INFO] Received Research Request: 2f2ce8bf-f933-4279-bab4-8daced0c0b8f {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:43.981Z] [INFO] [API] POST /api/simulation/start 200 40ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":40,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:43.982Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-22T17:29:43.983Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:29:45.169Z] [INFO] [Section 1] Brief Created: brief_2f2ce8bf-f933-4279-bab4-8daced0c0b8f_1766424585158 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:45.178Z] [INFO] [Section 2] Ingesting Prior Learnings for find bathroom products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:45.206Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:45.215Z] [INFO] [Section 3] Collecting Signals for find bathroom products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:45.499Z] [INFO] 🤖 AI Search Strategy: "find bathroom products" ➔ [bathroom organizers, shower accessories, bathroom decor] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.935Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.955Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.958Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.980Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.983Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.988Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.992Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:58.999Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.004Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.009Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.014Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.020Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.025Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.031Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.049Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.049Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.049Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.056Z] [INFO] Created new staging session: research_4e2d75ff {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.076Z] [INFO] Created new staging session: research_2868eeae {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.082Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.088Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:29:59.097Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T17:29:59.105Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:30:15.606Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
+[2025-12-22T17:30:15.613Z] [INFO] [API] GET /api/briefs 200 7ms {"method":"GET","url":"/api/briefs","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:30:17.325Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-22T17:30:17.332Z] [INFO] [API] GET /api/staging/sessions 200 7ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:30:17.336Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
+[2025-12-22T17:30:17.342Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:30:44.069Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:30:44.087Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:31:17.304Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"120"}}
+[2025-12-22T17:31:17.324Z] [INFO] [API] POST /api/simulation/approve 200 20ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":20,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:31:17.845Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
+[2025-12-22T17:31:17.850Z] [INFO] [API] GET /api/staging/sessions 200 5ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:31:17.852Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
+[2025-12-22T17:31:17.857Z] [INFO] [API] GET /api/staging/items 200 5ms {"method":"GET","url":"/api/staging/items","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:31:44.169Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:31:44.191Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:32:44.256Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:32:44.279Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:33:44.309Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:33:44.351Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:34:44.398Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:34:44.420Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:35:44.484Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:35:44.503Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:36:44.533Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:36:44.551Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}

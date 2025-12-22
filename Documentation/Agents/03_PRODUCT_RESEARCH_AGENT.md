@@ -26,70 +26,60 @@ Unlike simple scrapers, this agent acts as a **Strategic Analyst**. It doesn't j
 
 ## 3. Internal Logic Flow (The 11-Step Pipeline)
 
-The agent executes a rigorous pipeline to ensure only high-quality, validated opportunities reach the CEO.
+The Product Research Agent executes a rigorous, multi-phase pipeline to ensure only high-quality, validated opportunities reach the CEO. The process is as follows:
 
-```mermaid
-flowchart TD
-    %% Nodes
-    Start((Start))
-    End((End))
-    Reject[Log Rejection]
+### 11-Step Product Research Pipeline
 
-    %% Steps
-    S1[1. Request Intake]
-    S2[2. Load Prior Learnings]
-    S3[3. Multi-Signal Discovery]
-    S4[4. Theme Generation]
-    S6[6. Score & Rank]
-    S8[8. Deep Validation]
-    S9[9. Create Offer Concepts]
-    S10[10. Build Opportunity Brief]
-    S11[11. Publish Events]
+**Phase 1: Context & Discovery**
+1. **Request Intake & Normalization**: Converts a vague human request into a structured strategic directive using OpenAI and the StrategyProfile.
+2. **Prior Learning Ingestion**: Loads historical context and risk adjustments from the database to avoid repeating past mistakes.
+3. **Multi-Signal Discovery**: Gathers raw market data from multiple sources (Google Trends, Competitor Analysis, Ads, Video, Shop) to form a triangulated view.
+4. **Theme Generation**: Clusters signals into coherent product opportunities, assigning certainty levels (Observed/Inferred).
 
-    %% Decisions
-    S5{5. Strategic Gating}
-    S7{7. Time Fitness}
+**Phase 2: Filtering & Ranking**
+5. **Strategic Gating**: Immediately discards ideas that violate business rules, fulfillment risks, or strategy profile constraints.
+6. **Scoring & Ranking**: Calculates a weighted score for each theme based on trend growth, signal diversity, and risk adjustments.
+7. **Time & Cycle Fitness**: Ensures the opportunity is actionable now by estimating trend phase and opportunity window.
 
-    %% Flow
-    Start -->|Event: Requested| S1
+**Phase 3: Validation & Packaging**
+8. **Deep Validation**: Stress-tests top candidates for qualitative data, competition quality, and price band.
+9. **Productization (Offer Concepts)**: Transforms validated themes into sellable concepts with clear hypotheses and differentiation strategies.
+10. **Opportunity Brief Creation**: Maps all data into a strict OpportunityBrief schema and saves to the database.
+11. **Handoff via Events**: Publishes events to trigger downstream agents (Supplier, Marketing, etc.).
 
-    subgraph Discovery [Phase 1: Context & Discovery]
-        direction TB
-        S1 --> S2
-        S2 --> S3
-        S3 -->|Signals| S4
-    end
+Each step is observable via logs and events, and adapters for trends, competitors, ads, shop, and video are invoked as needed based on the research brief and available integrations.
 
-    subgraph Filtering [Phase 2: Filtering & Ranking]
-        direction TB
-        S4 -->|Themes| S5
-        S5 -->|Fail| Reject
-        S5 -->|Pass| S6
-        S6 --> S7
-        S7 -->|Fail| Reject
-    end
+## Update Plan
 
-    subgraph Packaging [Phase 3: Validation & Packaging]
-        direction TB
-        S7 -->|Pass| S8
-        S8 -->|Validated| S9
-        S9 --> S10
-    end
+### Phase 1: Foundation & Core Integrations
+- Implement the 11-step pipeline with OpenAI, Google Trends, and basic internal logic.
+- Integrate PersistencePort for storing and retrieving briefs and learnings.
+- Ensure logging and event publishing for all major steps.
 
-    S10 --> S11
-    S11 --> End
+### Phase 2: External Data Adapters
+- Integrate LiveCompetitorAdapter (SERPApi, Meta Ad Library) for competitor discovery and ad intelligence.
+- Integrate LiveAdsAdapter (Google Ads) for keyword metrics and demand validation.
+- Integrate LiveVideoAdapter (YouTube Data API) for video validation of trends and virality.
+- Integrate LiveShopAdapter (Shopify) for compliance checks and store feasibility.
+- Ensure all adapters log external API calls (success and error) to external.log.
 
-    %% Styling
-    classDef step fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:black;
-    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:black;
-    classDef success fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:black;
-    classDef fail fill:#ffebee,stroke:#c62828,stroke-width:2px,color:black;
+### Phase 3: Compliance, Supplier, and Ecosystem
+- Implement advanced compliance checks (e.g., Shopify policy, fulfillment risks).
+- Integrate supplier feasibility checks (AliExpress, Alibaba, etc.).
+- Expand event-driven handoff to Supplier and Marketing agents.
+- Add support for additional trend and competitor sources (Pinterest, TikTok, Amazon, etc.).
 
-    class S1,S2,S3,S4,S6,S8,S9,S10,S11 step;
-    class S5,S7 decision;
-    class Start,End,S11 success;
-    class Reject fail;
-```
+### Phase 4: Advanced Intelligence & Automation
+- Integrate Vision LLMs for visual analysis of product images and social media content.
+- Add deep sentiment analysis on customer reviews and social signals.
+- Implement real-time feedback loops from downstream agents (e.g., Marketing campaign results).
+- Automate risk adjustment and learning ingestion based on live business outcomes.
+
+### Phase 5: Observability, Testing, and Scaling
+- Expand logging, monitoring, and alerting for all pipeline steps and adapters.
+- Add comprehensive test coverage for all integrations and business logic.
+- Optimize for performance and scalability (batch processing, parallelization).
+- Document all interfaces, events, and data contracts for maintainability.
 
 ### Detailed Step Execution
 
