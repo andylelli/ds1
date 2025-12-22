@@ -121,21 +121,13 @@ External service wrappers (`OpenAIService`, `ShopifyAdapter`, `TrendAdapter`, `L
 ### 9.1 Phased Approach for Full Payload Logging
 To improve observability without overwhelming storage or performance, we will implement full request/response logging in phases.
 
-#### Phase 1: Standardized Detailed Logging (Immediate Priority)
-- **Goal**: Ensure all external adapters comply with the strict logging standards defined in Section 2.4.
-- **Implementation**:
-    - **Pretty Printing**: Update `LoggerService` or adapters to ensure all JSON output in `external.log` is pretty-printed (indentation 2) for readability.
-    - **Significant Actions**: Audit `LiveShopAdapter`, `LiveCompetitorAdapter`, `TrendAdapter`, and `OpenAIService` to ensure every significant business action (e.g., Product Created, Competitor Found) is logged.
-    - **Data Structures**: Ensure key data structures (product details, ad metrics, saturation scores) are included in the logs.
-    - **Summaries**: Add brief human-readable summaries to request logs.
-
-#### Phase 2: On-Demand Full Debug Logging
+#### Phase 1: On-Demand Full Debug Logging
 - **Goal**: Enable full raw payload logging (headers, full bodies) only when specifically requested.
 - **Implementation**:
     - Add `debug_payloads: boolean` to `config.json`.
     - If true, write full raw JSON bodies to `logs/{mode}/external_payloads.log` (separate file).
 
-#### Phase 3: Sampling Strategy
+#### Phase 2: Sampling Strategy
 - **Goal**: Log a percentage of requests to monitor health without full volume.
 - **Implementation**:
     - Log 100% of errors.
