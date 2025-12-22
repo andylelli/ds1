@@ -12,6 +12,7 @@ if (_SHOW_DEBUG_ENV) {
 }
 import { AzureOpenAI } from "openai";
 import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
+import { PROMPT_THEME_CLUSTERING } from "../../../core/prompts.js";
 
 export class OpenAIService {
   private client: AzureOpenAI | null = null;
@@ -19,6 +20,30 @@ export class OpenAIService {
 
   constructor() {
     this.deploymentName = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+  }
+
+  public async generateThemes(signals: any[]): Promise<any[]> {
+    const client = this.getClient();
+    // Limit signals to avoid token limits if necessary, or just pass them all
+    // For now, we assume the list isn't massive.
+    const prompt = PROMPT_THEME_CLUSTERING + "\n\nSIGNALS:\n" + JSON.stringify(signals, null, 2);
+
+    try {
+      const completion = await client.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: this.deploymentName,
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+      });
+
+      const content = completion.choices[0].message.content;
+      if (!content) return [];
+      const result = JSON.parse(content);
+      return result.themes || [];
+    } catch (error) {
+      console.error("Error generating themes:", error);
+      return [];
+    }
   }
 
   public getClient(): AzureOpenAI {

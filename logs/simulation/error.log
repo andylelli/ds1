@@ -1,0 +1,2 @@
+[2025-12-22T21:09:42.124Z] [ERROR] [ProductResearcher] Failed to save log to DB: "this.db.saveLog is not a function"
+[2025-12-22T21:10:11.293Z] [ERROR] [ProductResearcher] Failed to save log to DB: "this.db.saveLog is not a function"

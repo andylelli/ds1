@@ -57,8 +57,8 @@ These steps exist and process data, but the decision logic is currently simplifi
 
 4.  **Theme Generation**:
     *   **Purpose**: Clusters disparate signals into coherent product opportunities.
-    *   **Implementation**: Groups signals by simple string matching (product name).
-    *   **Status**: ⚠️ **Heuristic** (Basic grouping, not LLM clustering).
+    *   **Implementation**: Uses **OpenAI** to semantically cluster signals into themes with rationale and confidence scores.
+    *   **Status**: ✅ **Real AI** (LLM Clustering).
 
 5.  **Strategic Gating**:
     *   **Purpose**: The "Kill Switch". Immediately discards ideas that violate business rules.
@@ -250,20 +250,20 @@ This section tracks the specific engineering plan to upgrade "Stubbed" or "Heuri
 #### Implementation Phases
 
 **Phase 1: Prompt Engineering**
-*   [ ] **Design Prompt**: Create `PROMPT_THEME_CLUSTERING` in `src/core/prompts.ts`.
+*   [x] **Design Prompt**: Create `PROMPT_THEME_CLUSTERING` in `src/core/prompts.ts`.
     *   Input: List of JSON Signals.
     *   Output: JSON Array of Themes `{ name, signal_ids, rationale, confidence }`.
 
 **Phase 2: Service Integration**
-*   [ ] **Update Agent**: Inject `OpenAIService` into `ProductResearchAgent` (already present for Step 1).
-*   [ ] **Replace Logic**: In `generateThemes()`, replace the loop with `await this.openai.generateThemes(signals)`.
+*   [x] **Update Agent**: Inject `OpenAIService` into `ProductResearchAgent` (already present for Step 1).
+*   [x] **Replace Logic**: In `generateThemes()`, replace the loop with `await this.openai.generateThemes(signals)`.
 
 **Phase 3: Data Structure Update**
-*   [ ] **Update Interface**: Modify `Theme` interface to include `rationale: string` and `confidence: number`.
-*   [ ] **Handle Hallucinations**: Add validation to ensure returned `signal_ids` actually exist in the input list.
+*   [x] **Update Interface**: Modify `Theme` interface to include `rationale: string` and `confidence: number`.
+*   [x] **Handle Hallucinations**: Add validation to ensure returned `signal_ids` actually exist in the input list.
 
 **Phase 4: Verification**
-*   [ ] **Test Case**: Create `test-clustering.ts`.
+*   [x] **Test Case**: Create `test-clustering.ts`.
     *   Input: Signals for "Matcha Whisk", "Green Tea Powder", "Ceramic Bowl".
     *   Expectation: Agent groups them into "Matcha Ceremony Set" theme, not 3 separate items.
 

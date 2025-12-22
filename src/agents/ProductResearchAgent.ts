@@ -68,6 +68,8 @@ interface Theme {
     certainty: 'Observed' | 'Inferred' | 'Assumed';
     score?: number; // For later sections
     validation?: ValidationData; // Section 8
+    rationale?: string;
+    confidence?: number;
 }
 
 // --- Section 8 Interfaces ---
@@ -536,93 +538,28 @@ export class ProductResearchAgent extends BaseAgent {
   private async generateThemes(signals: Signal[]): Promise<Theme[]> {
       this.log('info', `[Section 4] Generating Themes from ${signals.length} signals...`);
       
-      // In a real system, we would use an LLM to cluster these signals into themes.
-      // For now, we will group by product name/keyword from the signals.
-      
-      const themesMap = new Map<string, Theme>();
-
-      for (const signal of signals) {
-          // Handle Search Signals with specific products
-          if (signal.family === 'search' && signal.data.products && Array.isArray(signal.data.products) && signal.data.products.length > 0) {
-              for (const product of signal.data.products) {
-                  if (!product.name) continue; // Skip if name is missing (e.g. summary object)
-                  
-                  const themeName = product.name;
-                  const description = product.description || `High search interest in ${themeName}`;
-                  const key = themeName.toLowerCase();
-
-                  if (!themesMap.has(key)) {
-                      themesMap.set(key, {
-                          id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-                          name: themeName,
-                          description: description,
-                          supporting_signals: [],
-                          certainty: 'Inferred'
-                      });
-                  }
-                  const theme = themesMap.get(key)!;
-                  if (!theme.supporting_signals.includes(signal.id)) {
-                      theme.supporting_signals.push(signal.id);
-                  }
-                  
-                  // Check certainty
-                  const signalFamilies = signals
-                      .filter(s => theme.supporting_signals.includes(s.id))
-                      .map(s => s.family);
-                  
-                  if (new Set(signalFamilies).size > 1) {
-                      theme.certainty = 'Observed';
-                  }
-              }
-              continue;
-          }
-
-          let themeName = '';
-          let description = '';
+      try {
+          // Use OpenAI to cluster signals into semantic themes
+          const rawThemes = await openAIService.generateThemes(signals);
           
-          if (signal.family === 'search') {
-              themeName = signal.data.keyword || 'Unknown';
-              description = `High search interest in ${themeName}`;
-          } else if (signal.family === 'competitor') {
-              themeName = signal.data.product || 'Unknown';
-              description = `Competitor activity in ${themeName}`;
-          } else if (signal.family === 'social') {
-              // Handle social signals (including mocks)
-              themeName = signal.data.hashtag ? signal.data.hashtag.replace('#', '') : 'Trending Topic';
-              description = `Viral social trend: ${themeName}`;
-          } else {
-              continue;
-          }
+          const validSignalIds = new Set(signals.map(s => s.id));
 
-          // Normalize theme name (simple lowercase for clustering)
-          const key = themeName.toLowerCase();
+          const themes: Theme[] = rawThemes.map((t: any) => ({
+              id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+              name: t.name,
+              description: t.description,
+              supporting_signals: (t.signal_ids || []).filter((id: string) => validSignalIds.has(id)),
+              certainty: (t.confidence && t.confidence > 0.8) ? 'Observed' : 'Inferred',
+              rationale: t.rationale,
+              confidence: t.confidence
+          }));
 
-          if (!themesMap.has(key)) {
-              themesMap.set(key, {
-                  id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-                  name: themeName,
-                  description: description,
-                  supporting_signals: [],
-                  certainty: 'Inferred' // Default
-              });
-          }
-
-          const theme = themesMap.get(key)!;
-          theme.supporting_signals.push(signal.id);
-          
-          // Upgrade certainty if we have multiple signal families
-          const signalFamilies = signals
-              .filter(s => theme.supporting_signals.includes(s.id))
-              .map(s => s.family);
-          
-          if (new Set(signalFamilies).size > 1) {
-              theme.certainty = 'Observed';
-          }
+          this.generatedThemes = themes;
+          return themes;
+      } catch (error) {
+          this.log('error', `Failed to generate themes via AI: ${error}`);
+          return [];
       }
-
-      const themes = Array.from(themesMap.values());
-      this.generatedThemes = themes;
-      return themes;
   }
 
   /**
