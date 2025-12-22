@@ -1,1212 +1,134 @@
-[2025-12-20T16:54:06.548Z] [INFO] Initializing Container... 
-[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T16:54:06.549Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T16:54:06.549Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T16:54:06.550Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T16:54:06.550Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T16:54:06.550Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T16:54:06.550Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T16:54:06.550Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T16:54:06.550Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T16:54:06.550Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T16:54:06.551Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T16:54:06.551Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T16:54:06.552Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T16:54:06.552Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T16:54:06.552Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T16:54:06.552Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T16:54:06.552Z] [INFO] Container initialized. 
-[2025-12-20T16:54:06.698Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T16:54:06.703Z] [INFO] [API] GET / 302 5ms {"method":"GET","url":"/","status":302,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:54:21.951Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-20T16:54:21.952Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:54:21.956Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-20T16:54:21.980Z] [INFO] [API] POST /api/simulation/clear 200 24ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":24,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:54:35.192Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find golf products"}}
-[2025-12-20T16:54:35.227Z] [INFO] Received Research Request: 3e9c3c85-dcd0-4029-add6-5a072cae3b0c {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:35.229Z] [INFO] [Section 1] Processing Request: 3e9c3c85-dcd0-4029-add6-5a072cae3b0c {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:35.231Z] [INFO] [API] POST /api/simulation/start 200 39ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":39,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:54:35.233Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-20T16:54:35.236Z] [INFO] [API] POST /api/simulation/loop/start 200 3ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:54:36.579Z] [INFO] [Section 1] Brief Created: brief_3e9c3c85-dcd0-4029-add6-5a072cae3b0c_1766249676572 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:36.589Z] [INFO] [Section 2] Ingesting Prior Learnings for find golf products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:36.612Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:36.619Z] [INFO] [Section 3] Collecting Signals for find golf products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:36.899Z] [INFO] 🤖 AI Search Strategy: "find golf products" ➔ [golf accessories, golf training aids, golf apparel] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.640Z] [INFO] [Section 3] Signals Collected: 6 items from search, competitor {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.657Z] [INFO] [Section 4] Generating Themes from 6 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.661Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.667Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.671Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.677Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.683Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.689Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.689Z] [INFO] Theme Golf Bag Organizer rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.689Z] [INFO] Theme Golf Cart Enclosure rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.689Z] [INFO] Theme Nike Women's Golf Polo rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.694Z] [INFO] [Section 7] Time Filtered: 6 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.700Z] [INFO] [Section 8] Performing Deep Validation on top 6 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.704Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.708Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.712Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.718Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.732Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.732Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.732Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.738Z] [INFO] Created new staging session: research_a1a456ad {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.739Z] [INFO] Created new staging session: research_3033f890 {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.752Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:48.757Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.762Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-20T16:54:48.771Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T16:54:58.789Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:54:58.794Z] [INFO] [API] GET /api/briefs 200 5ms {"method":"GET","url":"/api/briefs","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:55:05.991Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T16:55:05.996Z] [INFO] [API] GET /api/staging/sessions 200 5ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:55:05.999Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T16:55:06.006Z] [INFO] [API] GET /api/staging/items 200 7ms {"method":"GET","url":"/api/staging/items","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:55:35.323Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:55:35.342Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:56:35.415Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:56:35.432Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:57:03.767Z] [DEBUG] [REQ] GET /api/agents?t=1766249823766 {"body":{}}
-[2025-12-20T16:57:03.769Z] [INFO] [API] GET /api/agents?t=1766249823766 200 2ms {"method":"GET","url":"/api/agents?t=1766249823766","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:06.779Z] [DEBUG] [REQ] GET /api/agents?t=1766249826778 {"body":{}}
-[2025-12-20T16:57:06.781Z] [INFO] [API] GET /api/agents?t=1766249826778 200 2ms {"method":"GET","url":"/api/agents?t=1766249826778","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:09.784Z] [DEBUG] [REQ] GET /api/agents?t=1766249829783 {"body":{}}
-[2025-12-20T16:57:09.786Z] [INFO] [API] GET /api/agents?t=1766249829783 200 2ms {"method":"GET","url":"/api/agents?t=1766249829783","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:12.770Z] [DEBUG] [REQ] GET /api/agents?t=1766249832769 {"body":{}}
-[2025-12-20T16:57:12.774Z] [INFO] [API] GET /api/agents?t=1766249832769 200 4ms {"method":"GET","url":"/api/agents?t=1766249832769","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:15.781Z] [DEBUG] [REQ] GET /api/agents?t=1766249835778 {"body":{}}
-[2025-12-20T16:57:15.786Z] [INFO] [API] GET /api/agents?t=1766249835778 200 5ms {"method":"GET","url":"/api/agents?t=1766249835778","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:18.770Z] [DEBUG] [REQ] GET /api/agents?t=1766249838768 {"body":{}}
-[2025-12-20T16:57:18.775Z] [INFO] [API] GET /api/agents?t=1766249838768 200 5ms {"method":"GET","url":"/api/agents?t=1766249838768","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:21.778Z] [DEBUG] [REQ] GET /api/agents?t=1766249841777 {"body":{}}
-[2025-12-20T16:57:21.782Z] [INFO] [API] GET /api/agents?t=1766249841777 200 4ms {"method":"GET","url":"/api/agents?t=1766249841777","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:24.779Z] [DEBUG] [REQ] GET /api/agents?t=1766249844775 {"body":{}}
-[2025-12-20T16:57:24.782Z] [INFO] [API] GET /api/agents?t=1766249844775 200 3ms {"method":"GET","url":"/api/agents?t=1766249844775","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:27.773Z] [DEBUG] [REQ] GET /api/agents?t=1766249847772 {"body":{}}
-[2025-12-20T16:57:27.776Z] [INFO] [API] GET /api/agents?t=1766249847772 200 3ms {"method":"GET","url":"/api/agents?t=1766249847772","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:30.783Z] [DEBUG] [REQ] GET /api/agents?t=1766249850779 {"body":{}}
-[2025-12-20T16:57:30.786Z] [INFO] [API] GET /api/agents?t=1766249850779 200 3ms {"method":"GET","url":"/api/agents?t=1766249850779","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:33.780Z] [DEBUG] [REQ] GET /api/agents?t=1766249853779 {"body":{}}
-[2025-12-20T16:57:33.784Z] [INFO] [API] GET /api/agents?t=1766249853779 200 4ms {"method":"GET","url":"/api/agents?t=1766249853779","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:35.532Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:57:35.552Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:57:36.781Z] [DEBUG] [REQ] GET /api/agents?t=1766249856778 {"body":{}}
-[2025-12-20T16:57:36.784Z] [INFO] [API] GET /api/agents?t=1766249856778 200 3ms {"method":"GET","url":"/api/agents?t=1766249856778","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:39.775Z] [DEBUG] [REQ] GET /api/agents?t=1766249859774 {"body":{}}
-[2025-12-20T16:57:39.780Z] [INFO] [API] GET /api/agents?t=1766249859774 200 5ms {"method":"GET","url":"/api/agents?t=1766249859774","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:42.780Z] [DEBUG] [REQ] GET /api/agents?t=1766249862776 {"body":{}}
-[2025-12-20T16:57:42.785Z] [INFO] [API] GET /api/agents?t=1766249862776 200 5ms {"method":"GET","url":"/api/agents?t=1766249862776","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:45.772Z] [DEBUG] [REQ] GET /api/agents?t=1766249865770 {"body":{}}
-[2025-12-20T16:57:45.777Z] [INFO] [API] GET /api/agents?t=1766249865770 200 5ms {"method":"GET","url":"/api/agents?t=1766249865770","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:48.084Z] [DEBUG] [REQ] GET /api/products {"body":{}}
-[2025-12-20T16:57:48.110Z] [INFO] [API] GET /api/products 200 26ms {"method":"GET","url":"/api/products","status":200,"duration":26,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:57:49.447Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T16:57:49.451Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T16:58:35.633Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:58:35.652Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T16:59:35.725Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T16:59:35.741Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:00:35.802Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:00:35.817Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:01:35.884Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:01:35.899Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:02:35.973Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:02:36.004Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:03:36.030Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:03:36.050Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:04:36.059Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:04:36.077Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:05:36.179Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:05:36.198Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:06:36.238Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:06:36.252Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:07:36.356Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:07:36.373Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:08:36.425Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:08:36.446Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:09:36.520Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:09:36.537Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:10:36.621Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:10:36.638Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:11:36.691Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:11:36.707Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:12:36.804Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:12:36.822Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:13:36.889Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:13:36.905Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:14:36.991Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:14:37.011Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:15:37.080Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:15:37.097Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:16:37.169Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:16:37.189Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:17:37.231Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:17:37.249Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:18:37.315Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:18:37.335Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:19:37.405Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:19:37.432Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:20:37.476Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:20:37.497Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:21:37.573Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:21:37.592Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:22:37.639Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:22:37.655Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:23:37.734Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:23:37.752Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:24:37.802Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:24:37.827Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:25:37.883Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:25:37.919Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:26:37.974Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:26:37.991Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:27:38.059Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:27:38.077Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:28:38.162Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:28:38.181Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:29:38.245Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:29:38.261Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:30:38.324Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:30:38.343Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:31:38.405Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:31:38.425Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:32:38.507Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:32:38.529Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:33:38.594Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:33:38.613Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:34:38.679Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:34:38.695Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:35:38.803Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:35:38.847Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:36:38.901Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:36:38.935Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:37:38.954Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:37:38.977Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:38:39.028Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:38:39.048Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:39:39.103Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:39:39.123Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:40:39.177Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:40:39.196Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:41:39.247Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:41:39.262Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:42:39.364Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:42:39.382Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:43:39.434Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:43:39.451Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:44:39.500Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:44:39.521Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:45:39.588Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:45:39.611Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:46:39.677Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:46:39.695Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:47:39.719Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:47:39.734Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:48:39.801Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:48:39.818Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:49:39.924Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:49:39.940Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:50:39.975Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:50:39.999Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:51:40.068Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:51:40.088Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:52:40.145Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:52:40.161Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:53:40.242Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:53:40.257Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:54:40.317Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:54:40.338Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:55:40.412Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:55:40.428Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:56:40.543Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:56:40.562Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:57:40.629Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:57:40.648Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:58:40.706Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:58:40.720Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T17:59:40.791Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T17:59:40.813Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:00:40.888Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:00:40.906Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:01:41.017Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:01:41.032Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:02:41.081Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:02:41.100Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:03:41.165Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:03:41.182Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:04:41.239Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:04:41.281Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:05:41.320Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:05:41.339Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:06:41.382Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:06:41.397Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:07:41.510Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:07:41.528Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:08:41.631Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:08:41.647Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:09:41.690Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:09:41.707Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:10:41.782Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:10:41.803Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:11:41.870Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:11:41.888Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:12:41.971Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:12:41.994Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:13:42.040Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:13:42.055Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:14:42.120Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:14:42.164Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:15:42.220Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:15:42.238Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:16:42.311Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:16:42.327Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:17:42.424Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:17:42.446Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:18:42.490Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:18:42.507Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:19:42.572Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:19:42.590Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:20:42.662Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:20:42.683Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:21:42.732Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:21:42.747Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:22:42.839Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:22:42.860Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:23:42.897Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:23:42.916Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:24:42.942Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:24:42.959Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:25:43.002Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:25:43.027Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:26:43.060Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:26:43.080Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:27:43.135Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:27:43.156Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:28:43.190Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:28:43.224Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:29:43.288Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:29:43.309Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:30:43.395Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:30:43.415Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:31:43.476Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:31:43.508Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:32:43.573Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:32:43.595Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:33:43.678Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:33:43.705Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:34:43.774Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:34:43.794Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:35:43.862Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:35:43.881Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:36:43.952Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:36:43.973Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:37:44.024Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:37:44.044Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:38:44.086Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:38:44.106Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:39:44.171Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:39:44.193Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:40:44.262Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:40:44.290Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:41:44.337Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:41:44.357Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:42:44.424Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:42:44.443Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:43:44.527Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:43:44.546Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:44:44.630Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:44:44.647Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:45:44.679Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:45:44.703Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:46:44.762Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:46:44.783Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:47:44.810Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:47:44.827Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:48:44.893Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:48:44.912Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:49:44.974Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:49:44.993Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:50:45.068Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:50:45.088Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:51:45.133Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:51:45.151Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:52:45.189Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:52:45.211Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:53:45.262Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:53:45.279Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:54:45.334Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:54:45.359Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:55:45.432Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:55:45.448Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:56:45.535Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:56:45.554Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:57:45.644Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:57:45.660Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:58:45.764Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:58:45.782Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T18:59:45.851Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T18:59:45.868Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:00:45.912Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:00:45.931Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:01:46.012Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:01:46.032Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:02:46.107Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:02:46.130Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:03:46.181Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:03:46.201Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:04:46.330Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:04:46.351Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:05:46.428Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:05:46.449Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:06:46.479Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:06:46.497Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:07:46.570Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:07:46.588Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:08:46.616Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:08:46.633Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:09:46.668Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:09:46.687Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:10:46.782Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:10:46.801Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:11:46.891Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:11:46.912Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:12:46.988Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:12:47.006Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:13:47.068Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:13:47.084Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:14:47.193Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:14:47.211Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:15:47.286Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:15:47.303Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:16:47.378Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:16:47.401Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:17:47.481Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:17:47.495Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:18:47.600Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:18:47.617Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:19:47.698Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:19:47.715Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:20:47.816Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:20:47.831Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:21:47.890Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:21:47.906Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:22:47.978Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:22:47.996Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:23:48.071Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:23:48.086Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:24:48.180Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:24:48.198Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:25:48.286Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:25:48.304Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:26:48.362Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:26:48.380Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:27:48.454Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:27:48.471Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:28:48.537Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:28:48.555Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:29:48.614Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:29:48.631Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:30:48.654Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:30:48.668Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:31:48.734Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:31:48.753Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:32:48.827Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:32:48.851Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:33:48.907Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:33:48.928Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:34:48.970Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:34:48.991Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:35:49.058Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:35:49.077Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:36:49.169Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:36:49.187Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:37:49.252Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:37:49.272Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:38:49.378Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:38:49.396Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:39:49.473Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:39:49.492Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:40:49.564Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:40:49.581Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:41:49.650Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:41:49.669Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:42:49.734Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:42:49.752Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:43:49.791Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:43:49.807Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:44:49.883Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:44:49.902Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:45:49.971Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:45:49.988Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:46:50.082Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:46:50.099Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:47:50.182Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:47:50.201Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:48:50.281Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:48:50.301Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:49:50.359Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:49:50.376Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:50:50.418Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:50:50.436Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:51:50.522Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:51:50.539Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:52:50.584Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:52:50.599Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:53:50.674Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:53:50.695Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:54:50.736Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:54:50.753Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:55:50.836Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:55:50.854Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:56:50.900Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:56:50.920Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:57:50.982Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:57:50.998Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:58:51.069Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:58:51.083Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T19:59:51.147Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T19:59:51.167Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:00:51.220Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:00:51.236Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:01:51.328Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:01:51.347Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:02:51.430Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:02:51.465Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:03:51.444Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:03:51.463Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:04:51.552Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:04:51.570Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:05:51.649Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:05:51.668Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:06:51.719Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:06:51.733Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:07:51.801Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:07:51.819Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:08:51.901Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:08:51.925Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:09:51.981Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:09:51.998Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:10:52.044Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:10:52.059Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:11:52.125Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:11:52.143Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:12:52.265Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:12:52.284Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:13:52.346Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:13:52.365Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:14:52.417Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:14:52.435Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:15:52.457Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:15:52.476Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:16:52.542Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:16:52.562Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:17:52.635Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:17:52.653Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:18:52.725Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:18:52.747Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:19:52.862Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:19:52.881Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:20:52.931Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:20:52.950Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:21:53.019Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:21:53.040Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:22:53.095Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:22:53.115Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:23:47.012Z] [INFO] Received Research Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:47.013Z] [INFO] [Section 1] Processing Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:48.427Z] [INFO] [Section 1] Brief Created: brief_full-test-1_1766262228425 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:48.432Z] [INFO] [Section 2] Ingesting Prior Learnings for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:48.444Z] [INFO] [Section 3] Collecting Signals for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:48.436Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:48.890Z] [INFO] 🤖 AI Search Strategy: "Smart Home" ➔ [smart home devices, home automation systems, smart security cameras] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:23:53.178Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:23:53.197Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:24:01.406Z] [INFO] [Section 4] Generating Themes from 6 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.401Z] [INFO] [Section 3] Signals Collected: 6 items from search, competitor {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.416Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.408Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.429Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.435Z] [INFO] Theme Solar Powered Security Camera rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.434Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.419Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.440Z] [INFO] [Section 7] Time Filtered: 8 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.446Z] [INFO] [Section 8] Performing Deep Validation on top 8 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.426Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.459Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.453Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.465Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.472Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.461Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.489Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:01.476Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:49.876Z] [INFO] Received Research Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:49.878Z] [INFO] [Section 1] Processing Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:51.214Z] [INFO] [Section 2] Ingesting Prior Learnings for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:51.206Z] [INFO] [Section 1] Brief Created: brief_full-test-1_1766262291203 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:51.220Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:51.227Z] [INFO] [Section 3] Collecting Signals for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:51.861Z] [INFO] 🤖 AI Search Strategy: "Smart Home" ➔ [smart home devices, home automation systems, smart home security] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:24:53.242Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:24:53.261Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:25:02.056Z] [INFO] [Section 3] Signals Collected: 6 items from search, competitor {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.062Z] [INFO] [Section 4] Generating Themes from 6 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.070Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.074Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.082Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.086Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.079Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.065Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.088Z] [INFO] Theme Google Nest Hub Max rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.089Z] [INFO] Theme Smart Thermostat Pro rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.091Z] [INFO] Theme Wireless Security Camera rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.095Z] [INFO] [Section 7] Time Filtered: 6 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.099Z] [INFO] [Section 8] Performing Deep Validation on top 6 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.107Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.116Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.124Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.111Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.131Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.102Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:02.146Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:25:53.324Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:25:53.342Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:26:17.678Z] [INFO] Received Research Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:17.680Z] [INFO] [Section 1] Processing Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:18.848Z] [INFO] [Section 1] Brief Created: brief_full-test-1_1766262378844 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:18.857Z] [INFO] [Section 2] Ingesting Prior Learnings for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:18.864Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:18.870Z] [INFO] [Section 3] Collecting Signals for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:19.343Z] [INFO] 🤖 AI Search Strategy: "Smart Home" ➔ [smart home devices, home automation systems, smart security cameras] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.198Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.190Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.209Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.203Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.214Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.231Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.220Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.233Z] [INFO] Theme Echo Show 5 rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.235Z] [INFO] Theme Samsung SmartThings Hub rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.237Z] [INFO] Theme 4K Resolution Smart Security Cameras rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.239Z] [INFO] Theme Outdoor Solar-Powered Security Cameras rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.241Z] [INFO] Theme Apple HomeKit rejected: Window (10d) < Execution (30d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.225Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.245Z] [INFO] [Section 7] Time Filtered: 4 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.255Z] [INFO] [Section 8] Validated Candidates Ready: 4 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.251Z] [INFO] [Section 8] Performing Deep Validation on top 4 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.268Z] [INFO] [Section 9] Offer Concepts Created: 4 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.262Z] [INFO] [Section 9] Creating Offer Concepts for 4 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.276Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.287Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.293Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:27.311Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:26:53.405Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:26:53.422Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:27:09.234Z] [INFO] Received Research Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:09.237Z] [INFO] [Section 1] Processing Request: full-test-1 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:10.434Z] [INFO] [Section 1] Brief Created: brief_full-test-1_1766262430430 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:10.442Z] [INFO] [Section 2] Ingesting Prior Learnings for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:10.471Z] [INFO] [Section 3] Collecting Signals for Smart Home... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:10.455Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:11.053Z] [INFO] 🤖 AI Search Strategy: "Smart Home" ➔ [smart home devices, home automation systems, smart home security] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.158Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.148Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.171Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.162Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.176Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.187Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.194Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.183Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.200Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.207Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.221Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.233Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.213Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.245Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.252Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.225Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:19.273Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:27:53.493Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:27:53.512Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:28:58.816Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-20T20:28:58.815Z] [INFO] Initializing Container... 
-[2025-12-20T20:28:58.817Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-20T20:28:58.816Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-20T20:28:58.817Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-20T20:28:58.817Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-20T20:28:58.817Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-20T20:28:58.817Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-20T20:28:58.817Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-20T20:28:58.817Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-20T20:28:58.818Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-20T20:28:58.817Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-20T20:28:58.817Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-20T20:28:58.818Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-20T20:28:58.818Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-20T20:28:58.818Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-20T20:28:58.818Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-20T20:28:58.818Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-20T20:28:58.819Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-20T20:28:58.819Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-20T20:28:58.819Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-20T20:28:58.819Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-20T20:28:58.820Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-20T20:28:58.820Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-20T20:28:58.819Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-20T20:28:58.819Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-20T20:28:58.819Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-20T20:28:58.820Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-20T20:28:58.820Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-20T20:28:58.820Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-20T20:28:58.820Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-20T20:28:58.820Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-20T20:28:58.820Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-20T20:28:58.820Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-20T20:28:58.820Z] [INFO] Container initialized. 
-[2025-12-20T20:28:58.820Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-20T20:28:58.941Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-20T20:28:58.945Z] [INFO] [API] GET / 302 4ms {"method":"GET","url":"/","status":302,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:29:20.341Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-20T20:29:20.342Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:29:20.347Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-20T20:29:20.424Z] [INFO] [API] POST /api/simulation/clear 200 77ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":77,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:29:54.817Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find computer items"}}
-[2025-12-20T20:29:54.849Z] [INFO] Received Research Request: db159f14-046b-4cff-99a7-1e0a3f3f27ca {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:54.849Z] [INFO] [Section 1] Processing Request: db159f14-046b-4cff-99a7-1e0a3f3f27ca {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:54.852Z] [INFO] [API] POST /api/simulation/start 200 35ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":35,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:29:54.855Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-20T20:29:54.856Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:29:56.021Z] [INFO] [Section 1] Brief Created: brief_db159f14-046b-4cff-99a7-1e0a3f3f27ca_1766262596017 {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:56.030Z] [INFO] [Section 2] Ingesting Prior Learnings for find computer items... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:56.061Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:56.071Z] [INFO] [Section 3] Collecting Signals for find computer items... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:29:56.323Z] [INFO] 🤖 AI Search Strategy: "find computer items" ➔ [gaming keyboards, wireless mice, ergonomic laptop stands] {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.153Z] [INFO] [Section 3] Signals Collected: 6 items from search, competitor {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.169Z] [INFO] [Section 4] Generating Themes from 6 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.173Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.190Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.193Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.198Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.202Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.208Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.212Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.217Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.221Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.227Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.230Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.236Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.250Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.250Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.250Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.258Z] [INFO] Created new staging session: research_0310ace2 {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.274Z] [INFO] Created new staging session: research_dc506619 {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.275Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:07.280Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.293Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-20T20:30:07.294Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-20T20:30:11.486Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T20:30:11.493Z] [INFO] [API] GET /api/briefs 200 7ms {"method":"GET","url":"/api/briefs","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:30:20.090Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:30:20.094Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:30:20.097Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:30:20.105Z] [INFO] [API] GET /api/staging/items 200 8ms {"method":"GET","url":"/api/staging/items","status":200,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:30:54.936Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:30:54.955Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:31:33.672Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"90"}}
-[2025-12-20T20:31:33.698Z] [INFO] [API] POST /api/simulation/approve 200 26ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":26,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:31:34.213Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:31:34.216Z] [INFO] [API] GET /api/staging/sessions 200 3ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:31:34.219Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:31:34.225Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:31:48.749Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T20:31:48.755Z] [INFO] [API] GET /api/briefs 200 6ms {"method":"GET","url":"/api/briefs","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:31:55.070Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:31:55.087Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:32:08.999Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:32:09.004Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:09.006Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:32:09.012Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:11.239Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"89"}}
-[2025-12-20T20:32:11.256Z] [INFO] [API] POST /api/simulation/approve 200 17ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":17,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:11.760Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:32:11.763Z] [INFO] [API] GET /api/staging/sessions 200 3ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:11.765Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:32:11.772Z] [INFO] [API] GET /api/staging/items 200 7ms {"method":"GET","url":"/api/staging/items","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:12.304Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"88"}}
-[2025-12-20T20:32:12.325Z] [INFO] [API] POST /api/simulation/approve 200 21ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":21,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:12.829Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:32:12.833Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:12.835Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:32:12.841Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:41.084Z] [DEBUG] [REQ] GET /api/agents?t=1766262761085 {"body":{}}
-[2025-12-20T20:32:41.085Z] [INFO] [API] GET /api/agents?t=1766262761085 200 1ms {"method":"GET","url":"/api/agents?t=1766262761085","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:44.087Z] [DEBUG] [REQ] GET /api/agents?t=1766262764085 {"body":{}}
-[2025-12-20T20:32:44.090Z] [INFO] [API] GET /api/agents?t=1766262764085 200 3ms {"method":"GET","url":"/api/agents?t=1766262764085","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:47.093Z] [DEBUG] [REQ] GET /api/agents?t=1766262767091 {"body":{}}
-[2025-12-20T20:32:47.097Z] [INFO] [API] GET /api/agents?t=1766262767091 200 4ms {"method":"GET","url":"/api/agents?t=1766262767091","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:50.086Z] [DEBUG] [REQ] GET /api/agents?t=1766262770085 {"body":{}}
-[2025-12-20T20:32:50.091Z] [INFO] [API] GET /api/agents?t=1766262770085 200 5ms {"method":"GET","url":"/api/agents?t=1766262770085","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:53.088Z] [DEBUG] [REQ] GET /api/agents?t=1766262773086 {"body":{}}
-[2025-12-20T20:32:53.093Z] [INFO] [API] GET /api/agents?t=1766262773086 200 5ms {"method":"GET","url":"/api/agents?t=1766262773086","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:55.157Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:32:55.176Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:32:56.097Z] [DEBUG] [REQ] GET /api/agents?t=1766262776095 {"body":{}}
-[2025-12-20T20:32:56.102Z] [INFO] [API] GET /api/agents?t=1766262776095 200 5ms {"method":"GET","url":"/api/agents?t=1766262776095","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:32:59.098Z] [DEBUG] [REQ] GET /api/agents?t=1766262779097 {"body":{}}
-[2025-12-20T20:32:59.100Z] [INFO] [API] GET /api/agents?t=1766262779097 200 2ms {"method":"GET","url":"/api/agents?t=1766262779097","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:02.100Z] [DEBUG] [REQ] GET /api/agents?t=1766262782100 {"body":{}}
-[2025-12-20T20:33:02.103Z] [INFO] [API] GET /api/agents?t=1766262782100 200 3ms {"method":"GET","url":"/api/agents?t=1766262782100","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:05.098Z] [DEBUG] [REQ] GET /api/agents?t=1766262785099 {"body":{}}
-[2025-12-20T20:33:05.102Z] [INFO] [API] GET /api/agents?t=1766262785099 200 4ms {"method":"GET","url":"/api/agents?t=1766262785099","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:08.100Z] [DEBUG] [REQ] GET /api/agents?t=1766262788100 {"body":{}}
-[2025-12-20T20:33:08.106Z] [INFO] [API] GET /api/agents?t=1766262788100 200 6ms {"method":"GET","url":"/api/agents?t=1766262788100","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:11.115Z] [DEBUG] [REQ] GET /api/agents?t=1766262791115 {"body":{}}
-[2025-12-20T20:33:11.120Z] [INFO] [API] GET /api/agents?t=1766262791115 200 5ms {"method":"GET","url":"/api/agents?t=1766262791115","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:14.099Z] [DEBUG] [REQ] GET /api/agents?t=1766262794100 {"body":{}}
-[2025-12-20T20:33:14.102Z] [INFO] [API] GET /api/agents?t=1766262794100 200 3ms {"method":"GET","url":"/api/agents?t=1766262794100","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:17.101Z] [DEBUG] [REQ] GET /api/agents?t=1766262797101 {"body":{}}
-[2025-12-20T20:33:17.105Z] [INFO] [API] GET /api/agents?t=1766262797101 200 4ms {"method":"GET","url":"/api/agents?t=1766262797101","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:20.098Z] [DEBUG] [REQ] GET /api/agents?t=1766262800099 {"body":{}}
-[2025-12-20T20:33:20.103Z] [INFO] [API] GET /api/agents?t=1766262800099 200 5ms {"method":"GET","url":"/api/agents?t=1766262800099","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:23.100Z] [DEBUG] [REQ] GET /api/agents?t=1766262803100 {"body":{}}
-[2025-12-20T20:33:23.104Z] [INFO] [API] GET /api/agents?t=1766262803100 200 4ms {"method":"GET","url":"/api/agents?t=1766262803100","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:26.090Z] [DEBUG] [REQ] GET /api/agents?t=1766262806093 {"body":{}}
-[2025-12-20T20:33:26.094Z] [INFO] [API] GET /api/agents?t=1766262806093 200 4ms {"method":"GET","url":"/api/agents?t=1766262806093","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:28.327Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-20T20:33:28.331Z] [INFO] [API] GET /api/briefs 200 4ms {"method":"GET","url":"/api/briefs","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:31.914Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-20T20:33:31.917Z] [INFO] [API] GET /api/staging/sessions 200 3ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":3,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:31.920Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-20T20:33:31.926Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-20T20:33:55.233Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:33:55.257Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:34:55.317Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:34:55.336Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:35:55.412Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:35:55.435Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-20T20:36:55.515Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-20T20:36:55.533Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:49:25.517Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:49:25.542Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:50:25.604Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:50:25.624Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:51:25.675Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:51:25.712Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:52:25.761Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:52:25.804Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:53:25.851Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:53:25.898Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:54:25.939Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:54:25.982Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:55:25.991Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:55:26.035Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:56:26.078Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:56:26.113Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:57:26.176Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:57:26.208Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:58:26.290Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:58:26.326Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T01:59:26.384Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T01:59:26.421Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:00:26.488Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:00:26.527Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:01:26.574Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:01:26.609Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:02:26.641Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:02:26.681Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:03:26.724Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:03:26.760Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:04:26.812Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:04:26.854Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:05:26.906Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:05:26.940Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:06:27.033Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:06:27.065Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:07:27.153Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:07:27.183Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:08:27.251Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:08:27.283Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T02:09:27.306Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T02:09:27.341Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:36:21.484Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:36:21.504Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:37:21.592Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:37:21.635Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:38:21.674Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:38:21.705Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:39:21.762Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:39:21.794Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:40:21.844Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:40:21.884Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:41:21.927Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:41:21.962Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:42:22.025Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:42:22.062Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:43:22.114Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:43:22.144Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:44:22.246Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:44:22.277Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:45:22.337Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:45:22.370Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:46:22.420Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:46:22.462Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:47:22.502Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:47:22.554Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:48:22.584Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:48:22.615Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:49:22.669Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:49:22.701Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:50:22.738Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:50:22.771Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:51:22.839Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:51:22.876Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:52:22.907Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:52:22.940Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:53:22.994Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:53:23.035Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:54:23.081Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:54:23.117Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T06:55:23.158Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T06:55:23.190Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:09:13.271Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:09:13.303Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:10:13.387Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:10:13.391Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:11:13.494Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:11:13.499Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:12:13.566Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:12:13.571Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:13:13.643Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:13:13.647Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:14:13.700Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:14:13.707Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:15:13.816Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:15:13.819Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:16:13.896Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:16:13.900Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:17:13.998Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:17:14.027Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:18:14.098Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:18:14.102Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:19:14.192Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:19:14.198Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:20:14.278Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:20:14.285Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:21:14.363Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:21:14.402Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:22:14.439Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:22:14.443Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:23:14.515Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:23:14.549Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:24:14.605Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:24:14.635Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:25:14.709Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:25:14.741Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-21T09:26:14.785Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-21T09:26:14.815Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:05:26.499Z] [INFO] Initializing Container... 
-[2025-12-22T17:05:26.501Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-22T17:05:26.501Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-22T17:05:26.501Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-22T17:05:26.501Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-22T17:05:26.501Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-22T17:05:26.501Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-22T17:05:26.501Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-22T17:05:26.502Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-22T17:05:26.502Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-22T17:05:26.502Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-22T17:05:26.502Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-22T17:05:26.502Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-22T17:05:26.502Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-22T17:05:26.502Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-22T17:05:26.502Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-22T17:05:26.502Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-22T17:05:26.502Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-22T17:05:26.502Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-22T17:05:26.502Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-22T17:05:26.502Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-22T17:05:26.503Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-22T17:05:26.503Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-22T17:05:26.503Z] [INFO] Container initialized. 
-[2025-12-22T17:05:31.068Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-22T17:05:31.072Z] [INFO] [API] GET / 302 4ms {"method":"GET","url":"/","status":302,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:15.404Z] [DEBUG] [REQ] GET /api/agents?t=1766423175403 {"body":{}}
-[2025-12-22T17:06:15.406Z] [INFO] [API] GET /api/agents?t=1766423175403 200 2ms {"method":"GET","url":"/api/agents?t=1766423175403","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:20.796Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-22T17:06:20.798Z] [INFO] [API] POST /api/simulation/loop/stop 200 2ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:20.805Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-22T17:06:20.867Z] [INFO] [API] POST /api/simulation/clear 200 62ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":62,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:32.992Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"Find pet products"}}
-[2025-12-22T17:06:33.051Z] [INFO] Received Research Request: 7e901ebf-f384-425c-8a98-8e7168d8b430 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:33.052Z] [INFO] [Section 1] Processing Request: 7e901ebf-f384-425c-8a98-8e7168d8b430 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:33.054Z] [INFO] [API] POST /api/simulation/start 200 62ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":62,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:33.055Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-22T17:06:33.056Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:06:34.637Z] [INFO] [Section 1] Brief Created: brief_7e901ebf-f384-425c-8a98-8e7168d8b430_1766423194631 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:34.647Z] [INFO] [Section 2] Ingesting Prior Learnings for Find pet products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:34.694Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:34.702Z] [INFO] [Section 3] Collecting Signals for Find pet products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:35.008Z] [INFO] 🤖 AI Search Strategy: "Find pet products" ➔ [pet grooming tools, interactive pet toys, pet travel accessories] {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.053Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.073Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.077Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.097Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.099Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.105Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.110Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.116Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.119Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.125Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.129Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.135Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.138Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.143Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.162Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.162Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.161Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.169Z] [INFO] Created new staging session: research_05732c88 {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.191Z] [INFO] Created new staging session: research_99bcd8be {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.192Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.202Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:06:45.213Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T17:06:45.222Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:07:33.161Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:07:33.195Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:08:33.241Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:08:33.260Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:09:33.307Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:09:33.327Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:10:33.407Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:10:33.428Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:11:33.492Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:11:33.514Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:12:33.623Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:12:33.643Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:12:38.860Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-22T17:12:38.867Z] [INFO] [API] GET /api/briefs 200 7ms {"method":"GET","url":"/api/briefs","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:12:45.038Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:12:45.044Z] [INFO] [API] GET /api/staging/sessions 200 6ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:12:45.047Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:12:45.056Z] [INFO] [API] GET /api/staging/items 200 9ms {"method":"GET","url":"/api/staging/items","status":200,"duration":9,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:10.673Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"105"}}
-[2025-12-22T17:13:10.696Z] [INFO] [API] POST /api/simulation/approve 200 23ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":23,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:11.204Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:13:11.208Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:11.211Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:13:11.217Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:11.691Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"104"}}
-[2025-12-22T17:13:11.705Z] [INFO] [API] POST /api/simulation/approve 200 14ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":14,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:12.210Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:13:12.214Z] [INFO] [API] GET /api/staging/sessions 200 4ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:12.216Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:13:12.220Z] [INFO] [API] GET /api/staging/items 200 4ms {"method":"GET","url":"/api/staging/items","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:12.979Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"103"}}
-[2025-12-22T17:13:12.993Z] [INFO] [API] POST /api/simulation/approve 200 14ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":14,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:13.508Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:13:13.513Z] [INFO] [API] GET /api/staging/sessions 200 5ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:13.516Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:13:13.523Z] [INFO] [API] GET /api/staging/items 200 7ms {"method":"GET","url":"/api/staging/items","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:33.701Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:13:33.727Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:13:49.168Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:13:49.174Z] [INFO] [API] GET /api/staging/sessions 200 6ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:13:49.177Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:13:49.181Z] [INFO] [API] GET /api/staging/items 200 4ms {"method":"GET","url":"/api/staging/items","status":200,"duration":4,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:14:14.520Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-22T17:14:14.521Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:24.883Z] [INFO] Initializing Container... 
-[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
-[2025-12-22T17:29:24.887Z] [INFO] Registered MCP tools for ShopifyAdapter 
-[2025-12-22T17:29:24.887Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
-[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for AdsAdapter 
-[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
-[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
-[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for TrendAdapter 
-[2025-12-22T17:29:24.888Z] [INFO] Registered MCP tools for CompetitorAdapter 
-[2025-12-22T17:29:24.888Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
-[2025-12-22T17:29:24.889Z] [INFO] Registered MCP tools for FulfilmentAdapter 
-[2025-12-22T17:29:24.889Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
-[2025-12-22T17:29:24.889Z] [INFO] Registered MCP tools for EmailAdapter 
-[2025-12-22T17:29:24.890Z] [INFO] Registered MCP tools for AiAdapter 
-[2025-12-22T17:29:24.889Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
-[2025-12-22T17:29:24.890Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
-[2025-12-22T17:29:24.890Z] [INFO] [Container] System Mode from config: simulation 
-[2025-12-22T17:29:24.891Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
-[2025-12-22T17:29:24.891Z] [INFO] Registered agent: ceo_agent [mock] 
-[2025-12-22T17:29:24.891Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
-[2025-12-22T17:29:24.891Z] [INFO] Registered agent: product_research_agent [live] 
-[2025-12-22T17:29:24.892Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
-[2025-12-22T17:29:24.892Z] [INFO] Registered agent: supplier_agent [mock] 
-[2025-12-22T17:29:24.892Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
-[2025-12-22T17:29:24.892Z] [INFO] Registered agent: store_build_agent [mock] 
-[2025-12-22T17:29:24.893Z] [INFO] Registered agent: marketing_agent [mock] 
-[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
-[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
-[2025-12-22T17:29:24.893Z] [INFO] Registered agent: customer_service_agent [mock] 
-[2025-12-22T17:29:24.893Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
-[2025-12-22T17:29:24.893Z] [INFO] Registered agent: operations_agent [mock] 
-[2025-12-22T17:29:24.894Z] [INFO] Registered agent: analytics_agent [mock] 
-[2025-12-22T17:29:24.894Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
-[2025-12-22T17:29:24.894Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
-[2025-12-22T17:29:24.894Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
-[2025-12-22T17:29:24.894Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
-[2025-12-22T17:29:24.894Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
-[2025-12-22T17:29:24.895Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
-[2025-12-22T17:29:24.895Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
-[2025-12-22T17:29:24.895Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
-[2025-12-22T17:29:24.895Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
-[2025-12-22T17:29:24.895Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
-[2025-12-22T17:29:24.895Z] [INFO] Workflow Manager initialized and subscriptions registered. 
-[2025-12-22T17:29:24.895Z] [INFO] Container initialized. 
-[2025-12-22T17:29:29.202Z] [DEBUG] [REQ] GET / {"body":{}}
-[2025-12-22T17:29:29.210Z] [INFO] [API] GET / 302 8ms {"method":"GET","url":"/","status":302,"duration":8,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:34.343Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
-[2025-12-22T17:29:34.344Z] [INFO] [API] POST /api/simulation/loop/stop 200 1ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:34.350Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
-[2025-12-22T17:29:34.409Z] [INFO] [API] POST /api/simulation/clear 200 59ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":59,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:43.941Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"find bathroom products"}}
-[2025-12-22T17:29:43.979Z] [INFO] [Section 1] Processing Request: 2f2ce8bf-f933-4279-bab4-8daced0c0b8f {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:43.978Z] [INFO] Received Research Request: 2f2ce8bf-f933-4279-bab4-8daced0c0b8f {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:43.981Z] [INFO] [API] POST /api/simulation/start 200 40ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":40,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:43.982Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
-[2025-12-22T17:29:43.983Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:29:45.169Z] [INFO] [Section 1] Brief Created: brief_2f2ce8bf-f933-4279-bab4-8daced0c0b8f_1766424585158 {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:45.178Z] [INFO] [Section 2] Ingesting Prior Learnings for find bathroom products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:45.206Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:45.215Z] [INFO] [Section 3] Collecting Signals for find bathroom products... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:45.499Z] [INFO] 🤖 AI Search Strategy: "find bathroom products" ➔ [bathroom organizers, shower accessories, bathroom decor] {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.935Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.955Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.958Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.980Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.983Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.988Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.992Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:58.999Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.004Z] [INFO] [Section 7] Time Filtered: 9 passed {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.009Z] [INFO] [Section 8] Performing Deep Validation on top 9 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.014Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.020Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.025Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.031Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.049Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.049Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.049Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.056Z] [INFO] Created new staging session: research_4e2d75ff {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.076Z] [INFO] Created new staging session: research_2868eeae {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.082Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.088Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:29:59.097Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
-[2025-12-22T17:29:59.105Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
-[2025-12-22T17:30:15.606Z] [DEBUG] [REQ] GET /api/briefs {"body":{}}
-[2025-12-22T17:30:15.613Z] [INFO] [API] GET /api/briefs 200 7ms {"method":"GET","url":"/api/briefs","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:30:17.325Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:30:17.332Z] [INFO] [API] GET /api/staging/sessions 200 7ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":7,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:30:17.336Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:30:17.342Z] [INFO] [API] GET /api/staging/items 200 6ms {"method":"GET","url":"/api/staging/items","status":200,"duration":6,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:30:44.069Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:30:44.087Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:31:17.304Z] [DEBUG] [REQ] POST /api/simulation/approve {"body":{"itemId":"120"}}
-[2025-12-22T17:31:17.324Z] [INFO] [API] POST /api/simulation/approve 200 20ms {"method":"POST","url":"/api/simulation/approve","status":200,"duration":20,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:31:17.845Z] [DEBUG] [REQ] GET /api/staging/sessions {"body":{}}
-[2025-12-22T17:31:17.850Z] [INFO] [API] GET /api/staging/sessions 200 5ms {"method":"GET","url":"/api/staging/sessions","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:31:17.852Z] [DEBUG] [REQ] GET /api/staging/items {"body":{}}
-[2025-12-22T17:31:17.857Z] [INFO] [API] GET /api/staging/items 200 5ms {"method":"GET","url":"/api/staging/items","status":200,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-[2025-12-22T17:31:44.169Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:31:44.191Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:32:44.256Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:32:44.279Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:33:44.309Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:33:44.351Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:34:44.398Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:34:44.420Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:35:44.484Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:35:44.503Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:36:44.533Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:36:44.551Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:37:44.638Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:37:44.652Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:38:44.755Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:38:44.777Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:39:44.827Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:39:44.844Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:40:44.893Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:40:44.911Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:41:44.958Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:41:44.978Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:42:45.001Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:42:45.020Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:43:45.083Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:43:45.104Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:44:45.152Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:44:45.171Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:45:45.218Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:45:45.238Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:46:45.299Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:46:45.321Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:47:45.373Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:47:45.387Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:48:45.470Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:48:45.491Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:49:45.544Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:49:45.564Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:50:45.659Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:50:45.680Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
-[2025-12-22T17:51:45.701Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
-[2025-12-22T17:51:45.716Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:53:45.903Z] [INFO] Generating report for daily {"agent":"Analytics","type":"info"}
+[2025-12-22T17:53:45.924Z] [INFO] Report Generated: Revenue $0, Profit $0 {"agent":"Analytics","type":"info"}
+[2025-12-22T17:54:07.322Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T17:54:07.332Z] [INFO] [API] GET / 302 9ms {"method":"GET","url":"/","status":302,"duration":9,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:54:11.481Z] [INFO] Initializing Container... 
+[2025-12-22T17:54:11.482Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T17:54:11.483Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T17:54:11.482Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T17:54:11.482Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T17:54:11.483Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T17:54:11.483Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T17:54:11.483Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T17:54:11.484Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T17:54:11.484Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T17:54:11.484Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T17:54:11.484Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T17:54:11.484Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T17:54:11.484Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T17:54:11.483Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T17:54:11.484Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T17:54:11.485Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T17:54:11.483Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T17:54:11.485Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T17:54:11.485Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T17:54:11.485Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T17:54:11.485Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T17:54:11.485Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T17:54:11.485Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T17:54:11.485Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T17:54:11.485Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T17:54:11.486Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T17:54:11.486Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T17:54:11.485Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T17:54:11.486Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T17:54:11.486Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T17:54:11.486Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T17:54:11.486Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T17:54:11.486Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T17:54:11.486Z] [INFO] Container initialized. 
+[2025-12-22T17:54:11.486Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T17:54:12.840Z] [DEBUG] [REQ] POST /api/simulation/loop/stop {"body":{}}
+[2025-12-22T17:54:12.842Z] [INFO] [API] POST /api/simulation/loop/stop 200 2ms {"method":"POST","url":"/api/simulation/loop/stop","status":200,"duration":2,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:54:12.845Z] [DEBUG] [REQ] POST /api/simulation/clear {"body":{}}
+[2025-12-22T17:54:12.909Z] [INFO] [API] POST /api/simulation/clear 200 64ms {"method":"POST","url":"/api/simulation/clear","status":200,"duration":64,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:54:20.602Z] [DEBUG] [REQ] POST /api/simulation/start {"body":{"category":"Find me DIY products"}}
+[2025-12-22T17:54:20.636Z] [INFO] Received Research Request: c339e259-8fb6-4f01-abfb-a8702719d41d {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:20.636Z] [INFO] [Section 1] Processing Request: c339e259-8fb6-4f01-abfb-a8702719d41d {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:20.638Z] [INFO] [API] POST /api/simulation/start 200 36ms {"method":"POST","url":"/api/simulation/start","status":200,"duration":36,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:54:20.640Z] [DEBUG] [REQ] POST /api/simulation/loop/start {"body":{"interval":5000}}
+[2025-12-22T17:54:20.641Z] [INFO] [API] POST /api/simulation/loop/start 200 1ms {"method":"POST","url":"/api/simulation/loop/start","status":200,"duration":1,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+[2025-12-22T17:54:21.950Z] [INFO] [Section 1] Brief Created: brief_c339e259-8fb6-4f01-abfb-a8702719d41d_1766426061942 {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:21.959Z] [INFO] [Section 2] Ingesting Prior Learnings for Find me DIY products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:21.995Z] [INFO] [Section 2] Prior Learnings Attached: 0 items {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:22.001Z] [INFO] [Section 3] Collecting Signals for Find me DIY products... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:22.333Z] [INFO] 🤖 AI Search Strategy: "Find me DIY products" ➔ [DIY home decor, DIY craft kits, DIY garden projects] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.111Z] [INFO] [Section 3] Signals Collected: 7 items from search, competitor, marketplace {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.127Z] [INFO] [Section 4] Generating Themes from 7 signals... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.130Z] [INFO] [Section 4] Themes Generated: 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.156Z] [INFO] [Section 5] Gating 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.159Z] [INFO] [Section 5] Themes Gated: 9 passed, 0 rejected {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.165Z] [INFO] [Section 6] Scoring 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.169Z] [INFO] [Section 6] Shortlist Ranked: Top 9 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.175Z] [INFO] [Section 7] Checking Time Fitness for 9 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.175Z] [INFO] Theme DIY Geometric Light Fixtures rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.175Z] [INFO] Theme DIY Macrame Wall Hanging Kit rejected: Window (10d) < Execution (14d) [Phase: late] {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.179Z] [INFO] [Section 7] Time Filtered: 7 passed {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.185Z] [INFO] [Section 8] Performing Deep Validation on top 7 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.189Z] [INFO] [Section 8] Validated Candidates Ready: 5 themes {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.194Z] [INFO] [Section 9] Creating Offer Concepts for 5 themes... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.198Z] [INFO] [Section 9] Offer Concepts Created: 5 concepts {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.204Z] [INFO] [Section 10] Creating Opportunity Briefs for top concepts... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.219Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.219Z] [INFO] [Section 10] Briefs Published: 3 briefs {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.219Z] [INFO] CEO received 3 briefs. Staging for review... {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.225Z] [INFO] Created new staging session: research_5195a76b {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.238Z] [INFO] Created new staging session: research_2d593154 {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.240Z] [INFO] [Section 11] Initiating Handoff for 3 opportunities... {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:54:36.250Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.258Z] [INFO] Staged 3 items for manual review. {"agent":"CEO","type":"info"}
+[2025-12-22T17:54:36.259Z] [INFO] [Section 11] Handoff Complete. Research Cycle Finished. {"agent":"ProductResearcher","type":"info"}
+[2025-12-22T17:55:51.286Z] [INFO] Initializing Container... 
+[2025-12-22T17:55:51.288Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-22T17:55:51.288Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-22T17:55:51.288Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-22T17:55:51.288Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-22T17:55:51.288Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-22T17:55:51.288Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-22T17:55:51.288Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-22T17:55:51.288Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-22T17:55:51.289Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-22T17:55:51.289Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-22T17:55:51.289Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-22T17:55:51.289Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-22T17:55:51.289Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-22T17:55:51.289Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-22T17:55:51.289Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"mock","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-22T17:55:51.289Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-22T17:55:51.289Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-22T17:55:51.289Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-22T17:55:51.289Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-22T17:55:51.289Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-22T17:55:51.290Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-22T17:55:51.290Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-22T17:55:51.290Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-22T17:55:51.290Z] [INFO] Container initialized. 
+[2025-12-22T17:55:51.336Z] [DEBUG] [REQ] GET / {"body":{}}
+[2025-12-22T17:55:51.341Z] [INFO] [API] GET / 302 5ms {"method":"GET","url":"/","status":302,"duration":5,"userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}

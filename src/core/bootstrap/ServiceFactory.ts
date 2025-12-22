@@ -106,53 +106,58 @@ export class ServiceFactory {
     };
 
     switch (className) {
-      case 'ShopifyAdapter':
-        if (isServiceLive('shop')) {
-            const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-            return new LiveShopAdapter(pool);
-        }
-        return new MockShopAdapter();
-      
-      case 'AdsAdapter':
-        const isLive = isServiceLive('ads');
-        console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${isLive}`);
-        if (isLive) {
-            const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-            return new LiveAdsAdapter(pool);
-        }
-        return new MockAdsAdapter();
-      
-      case 'TrendAdapter':
-        if (isServiceLive('trends')) {
-            if (!deps || !deps.db) {
-                throw new Error("LiveTrendAdapter requires a database connection (deps.db).");
-            }
-            // Assuming deps.db is PostgresAdapter which has getPool()
-            return new LiveTrendAdapter(deps.db.getPool());
+      case 'ShopifyAdapter': {
+        const live = isServiceLive('shop');
+        console.log(`[ServiceFactory] Creating ShopAdapter. Live mode: ${live}`);
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return live ? new LiveShopAdapter(pool) : new MockShopAdapter();
+      }
+      case 'AdsAdapter': {
+        const live = isServiceLive('ads');
+        console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${live}`);
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return live ? new LiveAdsAdapter(pool) : new MockAdsAdapter();
+      }
+      case 'TrendAdapter': {
+        const live = isServiceLive('trends');
+        console.log(`[ServiceFactory] Creating TrendAdapter. Live mode: ${live}`);
+        if (live) {
+          if (!deps || !deps.db) {
+            throw new Error("LiveTrendAdapter requires a database connection (deps.db).");
+          }
+          return new LiveTrendAdapter(deps.db.getPool());
         }
         return new MockTrendAdapter();
-      
-      case 'CompetitorAdapter':
-        return isServiceLive('competitor') ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
-      
-      case 'FulfilmentAdapter':
-        if (isServiceLive('fulfilment')) {
-            const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-            return new LiveFulfilmentAdapter(pool);
-        }
-        return new MockFulfilmentAdapter();
-      
-      case 'EmailAdapter':
-        return isServiceLive('email') ? new LiveEmailAdapter() : new MockEmailAdapter();
-        
-      case 'AiAdapter':
-        if (isServiceLive('ai')) {
-            // Pass DB pool if available for logging
-            const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-            return new LiveAiAdapter(pool);
-        }
-        return new MockAiAdapter();
-
+      }
+      case 'CompetitorAdapter': {
+        const live = isServiceLive('competitor');
+        console.log(`[ServiceFactory] Creating CompetitorAdapter. Live mode: ${live}`);
+        return live ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
+      }
+      case 'VideoAdapter': {
+        const live = isServiceLive('video');
+        console.log(`[ServiceFactory] Creating VideoAdapter. Live mode: ${live}`);
+        // You would add actual LiveVideoAdapter/MockVideoAdapter instantiation here
+        // For now, just log and return undefined or a mock if implemented
+        return undefined;
+      }
+      case 'FulfilmentAdapter': {
+        const live = isServiceLive('fulfilment');
+        console.log(`[ServiceFactory] Creating FulfilmentAdapter. Live mode: ${live}`);
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return live ? new LiveFulfilmentAdapter(pool) : new MockFulfilmentAdapter();
+      }
+      case 'EmailAdapter': {
+        const live = isServiceLive('email');
+        console.log(`[ServiceFactory] Creating EmailAdapter. Live mode: ${live}`);
+        return live ? new LiveEmailAdapter() : new MockEmailAdapter();
+      }
+      case 'AiAdapter': {
+        const live = isServiceLive('ai');
+        console.log(`[ServiceFactory] Creating AiAdapter. Live mode: ${live}`);
+        const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+        return live ? new LiveAiAdapter(pool) : new MockAiAdapter();
+      }
       default:
         throw new Error(`Unknown adapter class: ${className}`);
     }
