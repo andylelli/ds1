@@ -230,3 +230,111 @@ This section tracks the specific engineering plan to upgrade "Stubbed" or "Heuri
 *   [ ] **Test Case**: Create `test-learning-logic.ts`.
     *   Run Agent for "Electronics" (Seeded with failures) -> Expect Lower Scores.
     *   Run Agent for "Home Decor" (Seeded with wins) -> Expect Higher Scores.
+
+### 🎯 Upgrade Focus: Step 4 (Theme Generation)
+
+**Objective**: Move from basic keyword matching to **Semantic Clustering**. The agent should identify underlying consumer needs that connect seemingly unrelated products (e.g., "Ice Roller" + "Weighted Blanket" = "Anxiety Relief Theme").
+
+#### Current State (Heuristic)
+*   **Code**: `src/agents/ProductResearchAgent.ts` -> `generateThemes()`.
+*   **Behavior**: Groups signals that share the exact same `source_id` or very similar keywords.
+*   **Impact**: Misses "Blue Ocean" opportunities where multiple weak signals point to a strong latent trend.
+
+#### Target State (Real Solution)
+*   **Behavior**: Sends all collected signals to an LLM to identify patterns.
+*   **Logic**:
+    1.  Serialize all `Signal` objects (Trends, Competitors, Videos) into a prompt.
+    2.  Ask LLM to "Cluster these signals into 3-5 coherent Product Themes".
+    3.  For each theme, generate a `Rationale` explaining *why* these signals fit together.
+
+#### Implementation Phases
+
+**Phase 1: Prompt Engineering**
+*   [ ] **Design Prompt**: Create `PROMPT_THEME_CLUSTERING` in `src/core/prompts.ts`.
+    *   Input: List of JSON Signals.
+    *   Output: JSON Array of Themes `{ name, signal_ids, rationale, confidence }`.
+
+**Phase 2: Service Integration**
+*   [ ] **Update Agent**: Inject `OpenAIService` into `ProductResearchAgent` (already present for Step 1).
+*   [ ] **Replace Logic**: In `generateThemes()`, replace the loop with `await this.openai.generateThemes(signals)`.
+
+**Phase 3: Data Structure Update**
+*   [ ] **Update Interface**: Modify `Theme` interface to include `rationale: string` and `confidence: number`.
+*   [ ] **Handle Hallucinations**: Add validation to ensure returned `signal_ids` actually exist in the input list.
+
+**Phase 4: Verification**
+*   [ ] **Test Case**: Create `test-clustering.ts`.
+    *   Input: Signals for "Matcha Whisk", "Green Tea Powder", "Ceramic Bowl".
+    *   Expectation: Agent groups them into "Matcha Ceremony Set" theme, not 3 separate items.
+
+### 🎯 Upgrade Focus: Step 6 (Scoring & Ranking)
+
+**Objective**: Replace random variance with a deterministic, multi-factor scoring model that accurately reflects market potential and business risk.
+
+#### Current State (Heuristic)
+*   **Code**: `scoreAndRankThemes()` uses `Math.random()` to simulate "Market Demand".
+*   **Impact**: Good ideas might be ranked lower than bad ones purely by chance.
+
+#### Target State (Real Solution)
+*   **Behavior**: Calculates a `viability_score` (0-100) using a weighted formula.
+*   **Formula**: `Score = (DemandStrength * 0.4) + (TrendVelocity * 0.3) - (CompetitionDensity * 0.2) + (RiskAdjustment * 0.1)`
+*   **Inputs**:
+    *   *DemandStrength*: Aggregate search volume / social engagement.
+    *   *TrendVelocity*: Growth rate over last 30 days (slope).
+    *   *CompetitionDensity*: Number of ads / listings found.
+    *   *RiskAdjustment*: Value from Step 2 (History).
+
+#### Implementation Phases
+
+**Phase 1: Metric Normalization**
+*   [ ] **Create Helpers**: Implement `normalizeSignalData(signals)` to convert raw numbers (e.g., "10k views", "500 searches") into a 0-100 index.
+*   [ ] **Define Weights**: Create a `ScoringConfig` object in `StrategyProfile` to allow tuning weights without code changes.
+
+**Phase 2: Logic Implementation**
+*   [ ] **Update Agent**: Rewrite `scoreAndRankThemes()` to implement the formula.
+*   [ ] **Integrate Step 2**: Ensure `context.risk_modifiers` are correctly applied.
+
+**Phase 3: Verification**
+*   [ ] **Test Case**: Create `test-scoring.ts`.
+    *   Scenario A: High Search Vol, Low Competition -> Expect Score > 80.
+    *   Scenario B: High Search Vol, High Competition -> Expect Score ~60.
+    *   Scenario C: Low Search Vol -> Expect Score < 40.
+
+### 🎯 Upgrade Focus: Step 7 (Time & Cycle Fitness)
+
+**Objective**: Prevent "Too Late" launches. The agent must mathematically determine if a trend is rising, peaking, or dying, and compare the remaining window against our execution speed.
+
+#### Current State (Mocked)
+*   **Code**: `checkTimeFitness()` randomly assigns `TrendPhase.Early`, `Mid`, or `Late`.
+*   **Impact**: We might approve a "Christmas Tree" product on December 20th.
+
+#### Target State (Real Solution)
+*   **Behavior**: Analyzes the time-series data from Google Trends (`LiveTrendAdapter`).
+*   **Logic**:
+    1.  **Slope Analysis**: Calculate the linear regression slope of the last 90 days of interest.
+        *   Positive Slope = `Growth`.
+        *   Flat/Negative Slope = `Mature` or `Decline`.
+    2.  **Seasonality Check**: Ask LLM (or check metadata) if the product is seasonal.
+    3.  **Window Calculation**:
+        *   `DaysToPeak` = Estimated days until trend max.
+        *   `ExecutionTime` = 30 Days (Fixed constant for now).
+        *   Rule: If `DaysToPeak` < `ExecutionTime`, REJECT.
+
+#### Implementation Phases
+
+**Phase 1: Math Utilities**
+*   [ ] **Create Helper**: `src/utils/math.ts` -> `calculateLinearRegression(points)`.
+*   [ ] **Trend Analyzer**: Create `analyzeTrendShape(points)` that returns `Rising`, `Peaking`, `Falling`.
+
+**Phase 2: Seasonality Intelligence**
+*   [ ] **Update Prompt**: Add `seasonality_check` to the Step 1 or Step 4 LLM prompt to tag themes with "Winter", "Summer", "Evergreen".
+*   [ ] **Logic Update**: In `checkTimeFitness()`, reject "Winter" products if current date > Nov 15.
+
+**Phase 3: Integration**
+*   [ ] **Update Agent**: Replace random assignment with `analyzeTrendShape(theme.signals.trends)`.
+
+**Phase 4: Verification**
+*   [ ] **Test Case**: `test-trend-cycle.ts`.
+    *   Input: Trend data for "Pumpkin Spice" (Peaks Oct).
+    *   Run in August -> `Approved` (Rising).
+    *   Run in November -> `Rejected` (Falling/Late).
