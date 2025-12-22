@@ -3,6 +3,7 @@ import { Product } from '../../../core/domain/types/Product.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
 import { shopifyService } from './ShopifyService.js';
+import { logger } from '../../logging/LoggerService.js';
 
 export class LiveShopAdapter implements ShopManagementPort {
   private activityLog: ActivityLogService | null = null;
@@ -56,94 +57,150 @@ export class LiveShopAdapter implements ShopManagementPort {
   async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
     console.log(`[LiveShop] 🔴 Creating product in LIVE STORE: ${product.name}`);
     try {
-        const { client, session } = shopifyService.getClient();
-        if (!client || !session) {
-            throw new Error("Shopify Client not initialized. Check SHOPIFY_SHOP_NAME and SHOPIFY_ACCESS_TOKEN.");
+      const { client, session } = shopifyService.getClient();
+      logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', product });
+      if (!client || !session) {
+        logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', error: 'Client not initialized' });
+        if (this.activityLog) {
+          await this.activityLog.log({
+            agent: 'StoreBuildAgent',
+            action: 'create_product',
+            category: 'operations',
+            status: 'failed',
+            message: 'Shopify client not initialized',
+            details: { product }
+          });
         }
-
-        const response = await client.rest.Product.save({
-            session: session,
-            data: {
-                title: product.name,
-                body_html: product.description,
-                vendor: "DropShip Agent",
-                product_type: product.category,
-                variants: [{
-                    price: product.price.toString(),
-                    // sku: product.sku // Product type definition might not have sku
-                }]
-            }
+        throw new Error("Shopify Client not initialized. Check SHOPIFY_SHOP_NAME and SHOPIFY_ACCESS_TOKEN.");
+      }
+      const response = await client.rest.Product.save({
+        session: session,
+        data: {
+          title: product.name,
+          body_html: product.description,
+          vendor: "DropShip Agent",
+          product_type: product.category,
+          variants: [{
+            price: product.price.toString(),
+          }]
+        }
+      });
+      logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', response });
+      if (this.activityLog) {
+        await this.activityLog.log({
+          agent: 'StoreBuildAgent',
+          action: 'create_product',
+          category: 'operations',
+          status: 'completed',
+          message: 'Product created',
+          details: { product, response }
         });
-
-        // Map response back to Product
-        // Note: response is a RestResource, we need to extract data
-        // The type definition for Product might need adjustment to match Shopify's ID format (number vs string)
-        
-        return {
-            ...product,
-            id: response.id?.toString() || 'unknown'
-        };
-
+      }
+      return {
+        ...product,
+        id: response.id?.toString() || 'unknown'
+      };
     } catch (e: any) {
-        await this.logError('create_product', e, { product });
-        throw e;
+      logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', error: e.message, product });
+      await this.logError('create_product', e, { product });
+      throw e;
     }
   }
 
   async listProducts(): Promise<Product[]> {
     try {
-        const { client, session } = shopifyService.getClient();
-        if (!client || !session) {
-            throw new Error("Shopify Client not initialized.");
+      const { client, session } = shopifyService.getClient();
+      logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI' });
+      if (!client || !session) {
+        logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI', error: 'Client not initialized' });
+        if (this.activityLog) {
+          await this.activityLog.log({
+            agent: 'StoreBuildAgent',
+            action: 'list_products',
+            category: 'operations',
+            status: 'failed',
+            message: 'Shopify client not initialized',
+            details: {}
+          });
         }
-
-        const response = await client.rest.Product.all({
-            session: session,
-            limit: 10
+        throw new Error("Shopify Client not initialized.");
+      }
+      const response = await client.rest.Product.all({
+        session: session,
+        limit: 10
+      });
+      logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI', response });
+      if (this.activityLog) {
+        await this.activityLog.log({
+          agent: 'StoreBuildAgent',
+          action: 'list_products',
+          category: 'operations',
+          status: 'completed',
+          message: 'Products listed',
+          details: { response }
         });
-
-        return response.data.map((p: any) => ({
-            id: p.id.toString(),
-            name: p.title,
-            description: p.body_html,
-            price: parseFloat(p.variants?.[0]?.price || '0'),
-            category: p.product_type,
-            status: 'active' // Default
-        }));
-
+      }
+      return response.data.map((p: any) => ({
+        id: p.id.toString(),
+        name: p.title,
+        description: p.body_html,
+        price: parseFloat(p.variants?.[0]?.price || '0'),
+        category: p.product_type,
+        status: 'active'
+      }));
     } catch (e: any) {
-        await this.logError('list_products', e);
-        throw e;
+      logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI', error: e.message });
+      await this.logError('list_products', e);
+      throw e;
     }
   }
 
   async getProduct(id: string): Promise<Product | null> {
     try {
-        const { client, session } = shopifyService.getClient();
-        if (!client || !session) {
-            throw new Error("Shopify Client not initialized.");
+      const { client, session } = shopifyService.getClient();
+      logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', id });
+      if (!client || !session) {
+        logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', error: 'Client not initialized', id });
+        if (this.activityLog) {
+          await this.activityLog.log({
+            agent: 'StoreBuildAgent',
+            action: 'get_product',
+            category: 'operations',
+            status: 'failed',
+            message: 'Shopify client not initialized',
+            details: { id }
+          });
         }
-
-        // Shopify IDs are numbers, but our system uses strings
-        const response = await client.rest.Product.find({
-            session: session,
-            id: parseInt(id)
+        throw new Error("Shopify Client not initialized.");
+      }
+      const response = await client.rest.Product.find({
+        session: session,
+        id: parseInt(id)
+      });
+      logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', response });
+      if (this.activityLog) {
+        await this.activityLog.log({
+          agent: 'StoreBuildAgent',
+          action: 'get_product',
+          category: 'operations',
+          status: 'completed',
+          message: 'Product fetched',
+          details: { id, response }
         });
-
-        if (!response) return null;
-
-        return {
-            id: response.id?.toString() || '',
-            name: response.title || '',
-            description: response.body_html || '',
-            price: parseFloat(response.variants?.[0]?.price || '0'),
-            category: response.product_type || '',
-            status: 'active'
-        };
-
+      }
+      if (!response) return null;
+      return {
+        id: response.id?.toString() || '',
+        name: response.title || '',
+        description: response.body_html || '',
+        price: parseFloat(response.variants?.[0]?.price || '0'),
+        category: response.product_type || '',
+        status: 'active'
+      };
     } catch (e: any) {
-        await this.logError('get_product', e, { id });
-        throw e;
+      logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', error: e.message, id });
+      await this.logError('get_product', e, { id });
+      throw e;
     }
   }
 }

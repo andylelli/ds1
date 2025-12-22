@@ -72,87 +72,87 @@ export class LiveAdsAdapter implements AdsPlatformPort {
     }
 
     try {
-        const customer = await this.getCustomer();
-        
-        // 1. Create Budget
-        const budgetRes = await customer.campaignBudgets.create({
-            amount_micros: campaign.budget * 1000000, // Convert to micros
-            delivery_method: enums.BudgetDeliveryMethod.STANDARD,
-            explicitly_shared: false,
-        });
-        const budgetResourceName = budgetRes.results[0].resource_name;
-
-        // 2. Create Campaign
-        const campaignRes = await customer.campaigns.create({
-            name: `${campaign.product} - ${new Date().toISOString()}`,
-            campaign_budget: budgetResourceName,
-            advertising_channel_type: enums.AdvertisingChannelType.SEARCH,
-            status: enums.CampaignStatus.PAUSED, // Always create paused for safety
-            network_settings: {
-                target_google_search: true,
-                target_search_network: true,
-                target_content_network: false,
-                target_partner_search_network: false,
-            },
-            start_date: new Date().toISOString().split('T')[0].replace(/-/g, ''),
-        });
-
-        const campaignId = campaignRes.results[0].resource_name;
-        logger.external('GoogleAds', 'createCampaign', { campaignId, budget: campaign.budget });
-
-        return {
-            ...campaign,
-            id: campaignId,
-            status: 'paused', // Created as paused
-            timestamp: new Date().toISOString(),
-            _db: 'live'
-        };
-
+      logger.external('GoogleAds', 'createCampaign', { endpoint: 'GoogleAdsAPI', campaign });
+      const customer = await this.getCustomer();
+      // 1. Create Budget
+      const budgetRes = await customer.campaignBudgets.create({
+        amount_micros: campaign.budget * 1000000,
+        delivery_method: enums.BudgetDeliveryMethod.STANDARD,
+        explicitly_shared: false,
+      });
+      const budgetResourceName = budgetRes.results[0].resource_name;
+      // 2. Create Campaign
+      const campaignRes = await customer.campaigns.create({
+        name: `${campaign.product} - ${new Date().toISOString()}`,
+        campaign_budget: budgetResourceName,
+        advertising_channel_type: enums.AdvertisingChannelType.SEARCH,
+        status: enums.CampaignStatus.PAUSED,
+        network_settings: {
+          target_google_search: true,
+          target_search_network: true,
+          target_content_network: false,
+          target_partner_search_network: false,
+        },
+        start_date: new Date().toISOString().split('T')[0].replace(/-/g, ''),
+      });
+      const campaignId = campaignRes.results[0].resource_name;
+      logger.external('GoogleAds', 'createCampaign', { endpoint: 'GoogleAdsAPI', campaignId, budget: campaign.budget });
+      return {
+        ...campaign,
+        id: campaignId,
+        status: 'paused',
+        timestamp: new Date().toISOString(),
+        _db: 'live'
+      };
     } catch (e: any) {
-        await this.logError('create_campaign', e, { campaign });
-        throw e;
+      logger.external('GoogleAds', 'createCampaign', { endpoint: 'GoogleAdsAPI', error: e.message, campaign });
+      await this.logError('create_campaign', e, { campaign });
+      throw e;
     }
   }
 
   async listCampaigns(): Promise<Campaign[]> {
     try {
-        const customer = await this.getCustomer();
-        const campaigns = await customer.query(`
-            SELECT 
-                campaign.id, 
-                campaign.name, 
-                campaign.status, 
-                campaign_budget.amount_micros 
-            FROM campaign 
-            WHERE campaign.status != 'REMOVED'
-            LIMIT 50
-        `);
-
-        return campaigns.map((row: any) => ({
-            id: row.campaign.resource_name,
-            platform: 'Google',
-            product: row.campaign.name, // Assuming name contains product info
-            budget: (row.campaign_budget.amount_micros || 0) / 1000000,
-            status: row.campaign.status === enums.CampaignStatus.ENABLED ? 'active' : 'paused',
-            timestamp: new Date().toISOString(),
-            _db: 'live'
-        }));
-
+      logger.external('GoogleAds', 'listCampaigns', { endpoint: 'GoogleAdsAPI' });
+      const customer = await this.getCustomer();
+      const campaigns = await customer.query(`
+        SELECT 
+          campaign.id, 
+          campaign.name, 
+          campaign.status, 
+          campaign_budget.amount_micros 
+        FROM campaign 
+        WHERE campaign.status != 'REMOVED'
+        LIMIT 50
+      `);
+      logger.external('GoogleAds', 'listCampaigns', { endpoint: 'GoogleAdsAPI', campaignsCount: campaigns.length });
+      return campaigns.map((row: any) => ({
+        id: row.campaign.resource_name,
+        platform: 'Google',
+        product: row.campaign.name,
+        budget: (row.campaign_budget.amount_micros || 0) / 1000000,
+        status: row.campaign.status === enums.CampaignStatus.ENABLED ? 'active' : 'paused',
+        timestamp: new Date().toISOString(),
+        _db: 'live'
+      }));
     } catch (e: any) {
-        await this.logError('list_campaigns', e);
-        throw e;
+      logger.external('GoogleAds', 'listCampaigns', { endpoint: 'GoogleAdsAPI', error: e.message });
+      await this.logError('list_campaigns', e);
+      throw e;
     }
   }
 
   async stopCampaign(id: string): Promise<void> {
       try {
+        logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', id });
         const customer = await this.getCustomer();
         await customer.campaigns.update({
             resource_name: id,
             status: enums.CampaignStatus.PAUSED
         });
-        logger.external('GoogleAds', 'stopCampaign', { id });
+        logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', id, status: 'paused' });
       } catch (e: any) {
+          logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', error: e.message, id });
           await this.logError('stop_campaign', e, { id });
           throw e;
       }
@@ -160,44 +160,40 @@ export class LiveAdsAdapter implements AdsPlatformPort {
 
   async getKeywordMetrics(keywords: string[]): Promise<any> {
     try {
-        const customer = await this.getCustomer();
-        
-        // Use the KeywordPlanIdeaService to get historical metrics
-        // Note: This requires the 'generateKeywordHistoricalMetrics' method
-        const response = await customer.keywordPlanIdeas.generateKeywordHistoricalMetrics({
-            customer_id: this.customerId!,
-            keywords: keywords,
-            geo_target_constants: ['geoTargetConstants/2840'], // US
-            keyword_plan_network: enums.KeywordPlanNetwork.GOOGLE_SEARCH,
-            language: 'languageConstants/1000', // English
-        });
-
-        // Map the results to a cleaner format
-        const results = response.results || [];
-        return results.map((row: any) => ({
-            text: row.text,
-            avgMonthlySearches: row.keyword_metrics.avg_monthly_searches,
-            competition: row.keyword_metrics.competition, // LOW, MEDIUM, HIGH
-            competitionIndex: row.keyword_metrics.competition_index, // 0-100
-            lowTopOfPageBid: (row.keyword_metrics.low_top_of_page_bid_micros || 0) / 1000000,
-            highTopOfPageBid: (row.keyword_metrics.high_top_of_page_bid_micros || 0) / 1000000,
-        }));
-
+      logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords });
+      const customer = await this.getCustomer();
+      const response = await customer.keywordPlanIdeas.generateKeywordHistoricalMetrics({
+        customer_id: this.customerId!,
+        keywords: keywords,
+        geo_target_constants: ['geoTargetConstants/2840'],
+        keyword_plan_network: enums.KeywordPlanNetwork.GOOGLE_SEARCH,
+        language: 'languageConstants/1000',
+      });
+      const results = response.results || [];
+      logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, resultsCount: results.length });
+      return results.map((row: any) => ({
+        text: row.text,
+        avgMonthlySearches: row.keyword_metrics.avg_monthly_searches,
+        competition: row.keyword_metrics.competition,
+        competitionIndex: row.keyword_metrics.competition_index,
+        lowTopOfPageBid: (row.keyword_metrics.low_top_of_page_bid_micros || 0) / 1000000,
+        highTopOfPageBid: (row.keyword_metrics.high_top_of_page_bid_micros || 0) / 1000000,
+      }));
     } catch (e: any) {
-        // Handle specific API permission errors
-        if (e.errors && e.errors[0]?.error_code?.authorization_error === 'DEVELOPER_TOKEN_NOT_APPROVED') {
-            console.warn('[LiveAds] Warning: Developer Token not approved for Keyword Planning API. Returning stub data.');
-            return keywords.map(k => ({
-                text: k,
-                avgMonthlySearches: 0,
-                competition: 'UNKNOWN',
-                note: 'Requires Basic Access'
-            }));
-        }
-
-        console.error('[LiveAds] Raw Error:', JSON.stringify(e, null, 2));
-        await this.logError('getKeywordMetrics', e, { keywords });
-        throw e;
+      if (e.errors && e.errors[0]?.error_code?.authorization_error === 'DEVELOPER_TOKEN_NOT_APPROVED') {
+        logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', error: 'DEVELOPER_TOKEN_NOT_APPROVED', keywords });
+        console.warn('[LiveAds] Warning: Developer Token not approved for Keyword Planning API. Returning stub data.');
+        return keywords.map(k => ({
+          text: k,
+          avgMonthlySearches: 0,
+          competition: 'UNKNOWN',
+          note: 'Requires Basic Access'
+        }));
+      }
+      logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', error: e.message, keywords });
+      console.error('[LiveAds] Raw Error:', JSON.stringify(e, null, 2));
+      await this.logError('getKeywordMetrics', e, { keywords });
+      throw e;
     }
   }
 }

@@ -26,6 +26,7 @@ bootstrap:
     fulfilment: mock
     shop: mock
     ads: mock
+    youtube: live
     email: mock
     operations: mock
     analytics: mock

@@ -61,6 +61,7 @@ To ensure the Control Panel remains fast and the Database doesn't bloat with deb
   Response: { ... }
   Cost: $0.03
   ```
+  *Note: All JSON data in logs should be pretty-printed for readability. Every significant action and key data structure must be captured.*
 
 ## 2. Implementation Layers
 
@@ -100,10 +101,20 @@ External service wrappers (`OpenAIService`, `ShopifyAdapter`, `TrendAdapter`, `L
   - Payload size / Token count
   - Response time
   - Success/Failure status
-  - For **SERPApi** and **Meta Ad Library** (via `LiveCompetitorAdapter`):
-    - Category, query, competitor count, saturation score, brand, ad count, and error details (if any)
-  - For **Shopify** (via `LiveShopAdapter`):
-    - Product creation, listing, and retrieval actions, including product name, category, price, count, and error details (if any)
+  - **Significant Actions**: Every significant action must be logged.
+  - **Data Structures**: Key data structures involved in the request/response.
+  - **Formatting**: Any JSON data must be pretty-printed for readability.
+
+- **Specific Adapter Details**:
+  - **SERPApi and Meta Ad Library (via `LiveCompetitorAdapter`)**:
+    - Category, query, competitor count, saturation score, brand, ad count.
+    - Error details (if any).
+  - **Shopify (via `LiveShopAdapter`)**:
+    - Product creation, listing, and retrieval actions.
+    - Details: Product name, category, price, count.
+    - Brief summary of the request.
+    - Status: Whether the call was successful or errored.
+    - Error details (if any).
 
 ## 9. Planned Updates
 

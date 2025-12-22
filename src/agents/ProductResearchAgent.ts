@@ -335,9 +335,9 @@ export class ProductResearchAgent extends BaseAgent {
               try {
                   products = await this.trendAnalyzer.findProducts(keyword);
                   this.log('debug', `[collectSignals] trendAnalyzer.findProducts result for "${keyword}":`, products);
-                  logger.external('GoogleTrends', 'findProducts', { keyword, productsCount: products?.length || 0, products });
+                  logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, productsCount: products?.length || 0, products });
               } catch (err) {
-                  logger.external('GoogleTrends', 'findProducts', { keyword, error: err?.message });
+                  logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, error: err?.message });
               }
               if (products && products.length > 0) {
                   signals.push({
@@ -351,7 +351,7 @@ export class ProductResearchAgent extends BaseAgent {
           }
       } catch (e: any) {
           this.log('error', `[collectSignals] Failed to collect Search signals: ${e}`);
-          logger.external('GoogleTrends', 'findProducts', { error: e?.message });
+          logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', error: e?.message });
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Search signals: ${e.message}`, { error: e.stack });
       }
 
@@ -367,9 +367,9 @@ export class ProductResearchAgent extends BaseAgent {
               try {
                   compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
                   this.log('debug', `[collectSignals] competitorAnalyzer.analyzeCompetitors result for "${prod.name}":`, compData);
-                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { product: prod.name, result: compData });
+                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, result: compData });
               } catch (err) {
-                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { product: prod.name, error: err?.message });
+                  logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, error: err?.message });
               }
               if (compData) {
                   signals.push({
@@ -383,7 +383,7 @@ export class ProductResearchAgent extends BaseAgent {
           }
       } catch (e: any) {
           this.log('error', `[collectSignals] Failed to collect Competitor signals: ${e}`);
-          logger.external('CompetitorAnalysis', 'analyzeCompetitors', { error: e?.message });
+          logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', error: e?.message });
           await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
       }
 
@@ -400,9 +400,9 @@ export class ProductResearchAgent extends BaseAgent {
                   try {
                       metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
                       this.log('debug', `[collectSignals] adsAnalyzer.getKeywordMetrics result:`, metrics);
-                      logger.external('GoogleAds', 'getKeywordMetrics', { keywords, metrics });
+                      logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, metrics });
                   } catch (err) {
-                      logger.external('GoogleAds', 'getKeywordMetrics', { keywords, error: err?.message });
+                      logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, error: err?.message });
                   }
                   if (metrics) {
                       signals.push({
@@ -417,7 +417,7 @@ export class ProductResearchAgent extends BaseAgent {
           }
       } catch (e: any) {
           this.log('warn', `[collectSignals] Failed to collect Ads signals: ${e}`);
-          logger.external('GoogleAds', 'getKeywordMetrics', { error: e?.message });
+          logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', error: e?.message });
       }
 
       // 4. Shop Compliance (Shopify)
@@ -428,9 +428,9 @@ export class ProductResearchAgent extends BaseAgent {
               try {
                   shopResult = await this.shopCompliance.checkPolicy(brief.raw_criteria.category, '');
                   this.log('debug', `[collectSignals] shopCompliance.checkPolicy result:`, shopResult);
-                  logger.external('Shopify', 'checkPolicy', { category: brief.raw_criteria.category, result: shopResult });
+                  logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, result: shopResult });
               } catch (err) {
-                  logger.external('Shopify', 'checkPolicy', { category: brief.raw_criteria.category, error: err?.message });
+                  logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, error: err?.message });
               }
               if (shopResult) {
                   signals.push({
@@ -444,7 +444,7 @@ export class ProductResearchAgent extends BaseAgent {
           }
       } catch (e: any) {
           this.log('warn', `[collectSignals] Failed to collect Shop Compliance signals: ${e}`);
-          logger.external('Shopify', 'checkPolicy', { error: e?.message });
+          logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', error: e?.message });
       }
 
       // 5. Video Analysis (YouTube)
@@ -455,9 +455,9 @@ export class ProductResearchAgent extends BaseAgent {
               try {
                   videoResults = await this.videoAnalyzer.searchVideos(brief.raw_criteria.category, 5);
                   this.log('debug', `[collectSignals] videoAnalyzer.searchVideos result:`, videoResults);
-                  logger.external('YouTube', 'searchVideos', { category: brief.raw_criteria.category, resultCount: videoResults?.length || 0, result: videoResults });
+                  logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, resultCount: videoResults?.length || 0, result: videoResults });
               } catch (err) {
-                  logger.external('YouTube', 'searchVideos', { category: brief.raw_criteria.category, error: err?.message });
+                  logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, error: err?.message });
               }
               if (videoResults) {
                   signals.push({
@@ -471,7 +471,7 @@ export class ProductResearchAgent extends BaseAgent {
           }
       } catch (e: any) {
           this.log('warn', `[collectSignals] Failed to collect Video signals: ${e}`);
-          logger.external('YouTube', 'searchVideos', { error: e?.message });
+          logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', error: e?.message });
       }
 
       // Check constraint: At least two families

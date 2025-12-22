@@ -15,6 +15,7 @@ import { CompetitorMcpWrapper } from '../../infra/mcp/wrappers/CompetitorMcpWrap
 import { FulfilmentMcpWrapper } from '../../infra/mcp/wrappers/FulfilmentMcpWrapper.js';
 import { EmailMcpWrapper } from '../../infra/mcp/wrappers/EmailMcpWrapper.js';
 import { AiMcpWrapper } from '../../infra/mcp/wrappers/AiMcpWrapper.js';
+import { VideoMcpWrapper } from '../../infra/mcp/wrappers/VideoMcpWrapper.js';
 
 // Ads
 import { LiveAdsAdapter } from '../../infra/ads/GoogleAds/LiveAdsAdapter.js';
@@ -28,6 +29,7 @@ import { MockTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/MockTrendAd
 // Research / Competitor
 import { LiveCompetitorAdapter } from '../../infra/research/Meta/LiveCompetitorAdapter.js';
 import { MockCompetitorAdapter } from '../../infra/research/Meta/MockCompetitorAdapter.js';
+import { LiveVideoAdapter } from '../../infra/research/YouTube/LiveVideoAdapter.js';
 
 // Fulfilment
 import { LiveFulfilmentAdapter } from '../../infra/fulfilment/LiveFulfilmentAdapter.js';
@@ -141,6 +143,10 @@ export class ServiceFactory {
         // For now, just log and return undefined or a mock if implemented
         return undefined;
       }
+      case 'LiveVideoAdapter': {
+        console.log(`[ServiceFactory] Creating LiveVideoAdapter.`);
+        return new LiveVideoAdapter();
+      }
       case 'FulfilmentAdapter': {
         const live = isServiceLive('fulfilment');
         console.log(`[ServiceFactory] Creating FulfilmentAdapter. Live mode: ${live}`);
@@ -182,6 +188,8 @@ export class ServiceFactory {
               return new EmailMcpWrapper(adapterInstance);
           case 'AiAdapter':
               return new AiMcpWrapper(adapterInstance);
+          case 'LiveVideoAdapter':
+              return new VideoMcpWrapper(adapterInstance);
           default:
               return null;
       }

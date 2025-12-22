@@ -1,5 +1,6 @@
 import { CompetitorAnalysisPort } from '../../../core/domain/ports/CompetitorAnalysisPort.js';
 import axios from 'axios';
+import { logger } from '../../logging/LoggerService.js';
 
 export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
   private serpApiKey: string | undefined;
@@ -20,43 +21,37 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
       };
     }
 
+    const query = `best ${category} store -amazon -ebay -walmart -target -etsy`;
+    let response, results, competitors, saturationScore;
     try {
-      console.log(`[LiveCompetitorAdapter] Searching for competitors in: ${category}`);
-      // Search for independent stores, excluding major marketplaces
-      const query = `best ${category} store -amazon -ebay -walmart -target -etsy`;
-      
-      const response = await axios.get('https://serpapi.com/search.json', {
+      logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', params: { engine: 'google', q: query, api_key: this.serpApiKey, num: 10, gl: 'us', hl: 'en' } });
+      response = await axios.get('https://serpapi.com/search.json', {
         params: {
           engine: 'google',
           q: query,
           api_key: this.serpApiKey,
           num: 10,
-          gl: 'us', // Geo-location: US
-          hl: 'en'  // Language: English
+          gl: 'us',
+          hl: 'en'
         }
       });
-
-      const results = response.data.organic_results || [];
-      
-      // Map results to a cleaner format
-      const competitors = results.map((r: any) => ({
+      results = response.data.organic_results || [];
+      competitors = results.map((r: any) => ({
         name: r.title,
         url: r.link,
         snippet: r.snippet,
         position: r.position
       }));
-
-      // Simple saturation logic: If we find many relevant results, saturation is higher
-      const saturationScore = Math.min(competitors.length / 10, 1.0);
-
+      saturationScore = Math.min(competitors.length / 10, 1.0);
+      logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', query, competitorsCount: competitors.length, competitors });
       return {
         competitors,
         saturation_score: saturationScore,
         source: 'serpapi',
         query_used: query
       };
-
     } catch (error: any) {
+      logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', query, error: error.message });
       console.error('[LiveCompetitorAdapter] SERP Search failed:', error.message);
       return { error: error.message, competitors: [] };
     }
@@ -82,12 +77,10 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
         brand = competitorUrl; // Fallback to using the string as-is
     }
 
+    let response;
     try {
-      console.log(`[LiveCompetitorAdapter] Checking Meta Ads for brand: ${brand}`);
-      
-      // Meta Marketing API - Ads Archive
-      // Docs: https://developers.facebook.com/docs/marketing-api/reference/ads_archive/
-      const response = await axios.get('https://graph.facebook.com/v19.0/ads_archive', {
+      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', params: { access_token: this.metaAccessToken, search_terms: brand, ad_active_status: 'ACTIVE', ad_reached_countries: '["US"]', ad_type: 'ALL', limit: 5, fields: 'id,ad_creation_time,ad_creative_bodies,ad_creative_link_captions,publisher_platforms' } });
+      response = await axios.get('https://graph.facebook.com/v19.0/ads_archive', {
         params: {
           access_token: this.metaAccessToken,
           search_terms: brand,
@@ -98,17 +91,15 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
           fields: 'id,ad_creation_time,ad_creative_bodies,ad_creative_link_captions,publisher_platforms'
         }
       });
-
+      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', brand, adsCount: response.data.data?.length || 0, ads: response.data.data });
       return response.data.data || [];
-
     } catch (error: any) {
       const errorData = error.response?.data?.error || {};
+      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', brand, error: errorData.message || error.message });
       console.error('[LiveCompetitorAdapter] Meta Ads check failed:', errorData.message || error.message);
-      
       if (errorData.code === 1) {
           console.warn('[LiveCompetitorAdapter] Hint: "Unknown error" (Code 1) often means the App is in Development Mode and lacks "Advanced Access" to query public ads. Switch App to Live Mode or verify Business Manager.');
       }
-      
       return [];
     }
   }

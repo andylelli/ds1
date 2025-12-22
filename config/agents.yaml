@@ -9,7 +9,7 @@ agents:
     class: ProductResearchAgent
     model: gpt-4
     system_prompt: "You are the Product Research Agent. Your goal is to identify winning products based on trends and competitor analysis."
-    tools: ["trend_tool", "competitor_tool"]
+    tools: ["trend_tool", "competitor_tool", "youtube_tool"]
 
   - id: supplier_agent
     class: SupplierAgent

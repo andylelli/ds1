@@ -1,4 +1,4 @@
-mcp_servers:
+ mcp_servers:
   # Internal Adapters (exposed as Tools)
   - id: shopify_tool
     type: internal # Options: "internal", "stdio", "sse"
@@ -41,3 +41,7 @@ mcp_servers:
     type: stdio
     command: npx
     args: ["-y", "@modelcontextprotocol/server-filesystem", "./data"]
+  - id: youtube_tool
+    type: internal
+    class: LiveVideoAdapter
+    config: {}
