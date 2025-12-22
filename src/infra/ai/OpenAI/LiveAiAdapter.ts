@@ -2,6 +2,7 @@ import { AiPort, AiResponse, ToolDefinition } from '../../../core/domain/ports/A
 import { openAIService } from './OpenAIService.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
+import { logger } from '../../logging/LoggerService.js';
 
 const _SHOW_DEBUG_ENV = process.env.DEBUG_ENV === 'true';
 
@@ -60,8 +61,24 @@ export class LiveAiAdapter implements AiPort {
                     }));
                 }
 
+                logger.external('OpenAI', 'chat', { 
+                    summary: 'Sending chat request',
+                    status: 'started',
+                    data: { model: openAIService.deploymentName, systemPrompt: systemPrompt.substring(0, 50) + '...' }
+                });
+
                 const result = await client.chat.completions.create(request, { timeout: 30000 });
                 const choice = result.choices[0];
+
+                logger.external('OpenAI', 'chat', { 
+                    summary: 'Chat response received',
+                    status: 'success',
+                    data: { 
+                        model: openAIService.deploymentName, 
+                        contentLength: choice.message.content?.length,
+                        toolCalls: choice.message.tool_calls?.length || 0
+                    }
+                });
 
                 // success -> reset failure count
                 LiveAiAdapter._failureCount = 0;
@@ -79,6 +96,12 @@ export class LiveAiAdapter implements AiPort {
                 lastErr = err;
                 console.error(`[LiveAiAdapter] attempt ${attempt} failed:`, err?.message || err);
                 if (_SHOW_DEBUG_ENV) console.error(err);
+
+                logger.external('OpenAI', 'chat', { 
+                    summary: 'Chat request failed',
+                    status: 'failed',
+                    data: { error: err.message, attempt }
+                });
 
                 if (this.activityLog) {
                     await this.activityLog.log({

@@ -277,7 +277,12 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
           throw err;
         } finally {
           const duration = Date.now() - start;
-          logger.external('GoogleTrends', 'interestOverTime', { keyword, duration, success, error: errorMsg });
+          logger.external('GoogleTrends', 'interestOverTime', { 
+              summary: `Interest over time for: ${keyword}`,
+              status: success ? 'success' : 'failed',
+              duration,
+              data: { keyword, success, error: errorMsg }
+          });
         }
       });
     });
@@ -307,7 +312,12 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
           throw err;
         } finally {
           const duration = Date.now() - start;
-          logger.external('GoogleTrends', 'relatedQueries', { keyword, duration, success, error: errorMsg });
+          logger.external('GoogleTrends', 'relatedQueries', { 
+              summary: `Related queries for: ${keyword}`,
+              status: success ? 'success' : 'failed',
+              duration,
+              data: { keyword, success, error: errorMsg }
+          });
         }
       });
     });
@@ -334,7 +344,12 @@ export class LiveTrendAdapter implements TrendAnalysisPort {
             throw err;
           } finally {
             const duration = Date.now() - start;
-            logger.external('GoogleTrends', 'realTimeTrends', { duration, success, error: errorMsg });
+            logger.external('GoogleTrends', 'realTimeTrends', { 
+                summary: 'Fetching real-time trends',
+                status: success ? 'success' : 'failed',
+                duration,
+                data: { success, error: errorMsg }
+            });
           }
         });
       } catch (e: any) {

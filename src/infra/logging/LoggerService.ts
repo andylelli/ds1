@@ -21,7 +21,7 @@ class LoggerService implements LoggerPort {
     if (loggingMode === 'file') {
       this.activityLogger = new FileLoggerAdapter(systemMode, 'activity.log');
       this.errorLogger = new FileLoggerAdapter(systemMode, 'error.log');
-      this.externalLogger = new FileLoggerAdapter(systemMode, 'external.log');
+      this.externalLogger = new FileLoggerAdapter(systemMode, 'external.log', true); // Pretty print external logs
     } else {
       // Default to console for all
       const consoleAdapter = new ConsoleLoggerAdapter();

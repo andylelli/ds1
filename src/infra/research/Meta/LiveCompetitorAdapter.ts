@@ -24,7 +24,12 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
     const query = `best ${category} store -amazon -ebay -walmart -target -etsy`;
     let response, results, competitors, saturationScore;
     try {
-      logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', params: { engine: 'google', q: query, api_key: this.serpApiKey, num: 10, gl: 'us', hl: 'en' } });
+      logger.external('CompetitorAnalysis', 'SERPAPI', { 
+          endpoint: 'https://serpapi.com/search.json', 
+          summary: `Analyzing competitors for: ${category}`,
+          status: 'started',
+          params: { engine: 'google', q: query, api_key: '***', num: 10, gl: 'us', hl: 'en' } 
+      });
       response = await axios.get('https://serpapi.com/search.json', {
         params: {
           engine: 'google',
@@ -43,7 +48,17 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
         position: r.position
       }));
       saturationScore = Math.min(competitors.length / 10, 1.0);
-      logger.external('CompetitorAnalysis', 'SERPAPI', { endpoint: 'https://serpapi.com/search.json', query, competitorsCount: competitors.length, competitors });
+      logger.external('CompetitorAnalysis', 'SERPAPI', { 
+          endpoint: 'https://serpapi.com/search.json', 
+          summary: `Found ${competitors.length} competitors`,
+          status: 'success',
+          data: {
+              query, 
+              competitorsCount: competitors.length, 
+              saturationScore,
+              topCompetitors: competitors.slice(0, 3).map((c: any) => c.name)
+          }
+      });
       return {
         competitors,
         saturation_score: saturationScore,
@@ -79,7 +94,12 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
 
     let response;
     try {
-      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', params: { access_token: this.metaAccessToken, search_terms: brand, ad_active_status: 'ACTIVE', ad_reached_countries: '["US"]', ad_type: 'ALL', limit: 5, fields: 'id,ad_creation_time,ad_creative_bodies,ad_creative_link_captions,publisher_platforms' } });
+      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { 
+          endpoint: 'https://graph.facebook.com/v19.0/ads_archive', 
+          summary: `Checking ads for brand: ${brand}`,
+          status: 'started',
+          params: { search_terms: brand, ad_active_status: 'ACTIVE', ad_reached_countries: '["US"]' } 
+      });
       response = await axios.get('https://graph.facebook.com/v19.0/ads_archive', {
         params: {
           access_token: this.metaAccessToken,
@@ -91,7 +111,16 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
           fields: 'id,ad_creation_time,ad_creative_bodies,ad_creative_link_captions,publisher_platforms'
         }
       });
-      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { endpoint: 'https://graph.facebook.com/v19.0/ads_archive', brand, adsCount: response.data.data?.length || 0, ads: response.data.data });
+      logger.external('CompetitorAnalysis', 'MetaAdsAPI', { 
+          endpoint: 'https://graph.facebook.com/v19.0/ads_archive', 
+          summary: `Found ${response.data.data?.length || 0} ads for ${brand}`,
+          status: 'success',
+          data: {
+              brand, 
+              adsCount: response.data.data?.length || 0, 
+              ads: response.data.data 
+          }
+      });
       return response.data.data || [];
     } catch (error: any) {
       const errorData = error.response?.data?.error || {};

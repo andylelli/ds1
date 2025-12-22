@@ -218,9 +218,10 @@ Below are examples of what the **External Log** entries will look like when full
 
 | Integration | Priority | Status | Implementation Notes |
 |---|---|---|---|
-| Google Trends | Tier 1 | 🟡 Partial | LiveTrendAdapter uses google-trends-api (unofficial). Covers interest over time. Real-time trends disabled. Logs all API calls to external.log. |
-| Google Ads (Keywords) | Tier 1 | 🟢 Active | LiveAdsAdapter connected via google-ads-api. Can create/list campaigns. Logs all API calls to external.log. |
-| Meta Ad Library | Tier 1 | 🟡 Partial | LiveCompetitorAdapter now logs all Meta Ad Library API calls (success and error) to external.log. |
-| SERPApi (Competitor Scraper) | Tier 1 | 🟢 Active | LiveCompetitorAdapter now logs all SERPApi calls (success and error) to external.log. |
-| Shopify | Tier 1 | 🟢 Active | LiveShopAdapter now logs all product create/list/get actions (success and error) to external.log. |
-| YouTube Data | Tier 1 | 🟢 Active | LiveVideoAdapter now logs all YouTube search and video detail API calls (success and error) to external.log. |
+| Google Trends | Tier 1 | � Active | LiveTrendAdapter uses google-trends-api. Logs detailed summaries and data structures to external.log (pretty-printed). |
+| Google Ads (Keywords) | Tier 1 | 🟢 Active | LiveAdsAdapter connected via google-ads-api. Logs all API calls to external.log. |
+| Meta Ad Library | Tier 1 | 🟢 Active | LiveCompetitorAdapter logs detailed ad search results and metrics to external.log (pretty-printed). |
+| SERPApi (Competitor Scraper) | Tier 1 | 🟢 Active | LiveCompetitorAdapter logs detailed competitor analysis and saturation scores to external.log (pretty-printed). |
+| Shopify | Tier 1 | 🟢 Active | LiveShopAdapter logs detailed product actions (create/list/get) with summaries and response data to external.log (pretty-printed). |
+| YouTube Data | Tier 1 | 🟢 Active | LiveVideoAdapter logs all YouTube search and video detail API calls to external.log. |
+| OpenAI | Tier 1 | 🟢 Active | LiveAiAdapter logs chat requests and response summaries to external.log (pretty-printed). |

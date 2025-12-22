@@ -4,12 +4,14 @@ import { LoggerPort } from '../../core/domain/ports/LoggerPort.js';
 
 export class FileLoggerAdapter implements LoggerPort {
   private logFile: string;
+  private prettyPrint: boolean;
 
-  constructor(mode: 'live' | 'simulation' | 'mock', filename: string) {
+  constructor(mode: 'live' | 'simulation' | 'mock', filename: string, prettyPrint: boolean = false) {
     // Map 'mock' to 'simulation' folder for simplicity, or keep separate if preferred.
     // The plan said logs/live or logs/simulation.
     const folder = mode === 'live' ? 'live' : 'simulation';
     this.logFile = path.resolve(process.cwd(), 'logs', folder, filename);
+    this.prettyPrint = prettyPrint;
     this.ensureLogDirectory();
   }
 
@@ -22,7 +24,12 @@ export class FileLoggerAdapter implements LoggerPort {
 
   private write(level: string, message: string, context?: any) {
     const timestamp = new Date().toISOString();
-    const contextStr = context ? JSON.stringify(context) : '';
+    let contextStr = '';
+    if (context) {
+        contextStr = this.prettyPrint 
+            ? '\n' + JSON.stringify(context, null, 2) 
+            : JSON.stringify(context);
+    }
     const line = `[${timestamp}] [${level.toUpperCase()}] ${message} ${contextStr}\n`;
     
     fs.appendFile(this.logFile, line, (err) => {

@@ -58,7 +58,16 @@ export class LiveShopAdapter implements ShopManagementPort {
     console.log(`[LiveShop] 🔴 Creating product in LIVE STORE: ${product.name}`);
     try {
       const { client, session } = shopifyService.getClient();
-      logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', product });
+      logger.external('Shopify', 'createProduct', { 
+        endpoint: 'ShopifyAPI', 
+        summary: `Creating product: ${product.name}`,
+        status: 'started',
+        data: {
+            name: product.name,
+            category: product.category,
+            price: product.price
+        }
+      });
       if (!client || !session) {
         logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', error: 'Client not initialized' });
         if (this.activityLog) {
@@ -85,7 +94,15 @@ export class LiveShopAdapter implements ShopManagementPort {
           }]
         }
       });
-      logger.external('Shopify', 'createProduct', { endpoint: 'ShopifyAPI', response });
+      logger.external('Shopify', 'createProduct', { 
+        endpoint: 'ShopifyAPI', 
+        summary: `Product created successfully: ${product.name}`,
+        status: 'success',
+        response: {
+            id: response.body.product.id,
+            title: response.body.product.title
+        }
+      });
       if (this.activityLog) {
         await this.activityLog.log({
           agent: 'StoreBuildAgent',
@@ -110,7 +127,11 @@ export class LiveShopAdapter implements ShopManagementPort {
   async listProducts(): Promise<Product[]> {
     try {
       const { client, session } = shopifyService.getClient();
-      logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI' });
+      logger.external('Shopify', 'listProducts', { 
+        endpoint: 'ShopifyAPI',
+        summary: 'Listing products',
+        status: 'started'
+      });
       if (!client || !session) {
         logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI', error: 'Client not initialized' });
         if (this.activityLog) {
@@ -129,7 +150,15 @@ export class LiveShopAdapter implements ShopManagementPort {
         session: session,
         limit: 10
       });
-      logger.external('Shopify', 'listProducts', { endpoint: 'ShopifyAPI', response });
+      logger.external('Shopify', 'listProducts', { 
+        endpoint: 'ShopifyAPI', 
+        summary: `Listed ${response.data.length} products`,
+        status: 'success',
+        response: {
+            count: response.data.length,
+            products: response.data.map((p: any) => ({ id: p.id, title: p.title }))
+        }
+      });
       if (this.activityLog) {
         await this.activityLog.log({
           agent: 'StoreBuildAgent',
@@ -158,7 +187,12 @@ export class LiveShopAdapter implements ShopManagementPort {
   async getProduct(id: string): Promise<Product | null> {
     try {
       const { client, session } = shopifyService.getClient();
-      logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', id });
+      logger.external('Shopify', 'getProduct', { 
+        endpoint: 'ShopifyAPI', 
+        id,
+        summary: `Fetching product ${id}`,
+        status: 'started'
+      });
       if (!client || !session) {
         logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', error: 'Client not initialized', id });
         if (this.activityLog) {
@@ -177,7 +211,12 @@ export class LiveShopAdapter implements ShopManagementPort {
         session: session,
         id: parseInt(id)
       });
-      logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', response });
+      logger.external('Shopify', 'getProduct', { 
+        endpoint: 'ShopifyAPI', 
+        summary: response ? `Product found: ${response.title}` : 'Product not found',
+        status: 'success',
+        response: response ? { id: response.id, title: response.title } : null
+      });
       if (this.activityLog) {
         await this.activityLog.log({
           agent: 'StoreBuildAgent',
