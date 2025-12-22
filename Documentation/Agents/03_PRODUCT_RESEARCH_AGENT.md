@@ -31,23 +31,36 @@ The Product Research Agent executes a rigorous, multi-phase pipeline to ensure o
 ### 11-Step Product Research Pipeline
 
 **Phase 1: Context & Discovery**
-1. **Request Intake & Normalization**: Converts a vague human request into a structured strategic directive using OpenAI and the StrategyProfile.
-2. **Prior Learning Ingestion**: Loads historical context and risk adjustments from the database to avoid repeating past mistakes.
-3. **Multi-Signal Discovery**: Gathers raw market data from multiple sources (Google Trends, Competitor Analysis, Ads, Video, Shop) to form a triangulated view.
-4. **Theme Generation**: Clusters signals into coherent product opportunities, assigning certainty levels (Observed/Inferred).
+1. **Request Intake & Normalization**: Converts a vague human request into a structured strategic directive using **OpenAI** (via MCP: `OpenAIService`).
+2. **Prior Learning Ingestion**: Loads historical context and risk adjustments from the database using **PersistencePort** (internal DB adapter).
+3. **Multi-Signal Discovery**: Gathers raw market data from multiple sources:
+    - **Google Trends** (via MCP: `TrendAnalysisPort` → `LiveTrendAdapter`)
+    - **Competitor Analysis** (via MCP: `CompetitorAnalysisPort` → `LiveCompetitorAdapter` [SERPApi, Meta Ad Library])
+    - **Ads/Keyword Metrics** (via MCP: `AdsPlatformPort` → `LiveAdsAdapter` [Google Ads])
+    - **Video Validation** (via MCP: `VideoAnalysisPort` → `LiveVideoAdapter` [YouTube Data API])
+    - **Shop/Compliance** (via MCP: `ShopCompliancePort`/`ShopManagementPort` → `LiveShopAdapter` [Shopify])
+4. **Theme Generation**: Clusters signals into coherent product opportunities (internal logic, no external adapter).
 
 **Phase 2: Filtering & Ranking**
-5. **Strategic Gating**: Immediately discards ideas that violate business rules, fulfillment risks, or strategy profile constraints.
-6. **Scoring & Ranking**: Calculates a weighted score for each theme based on trend growth, signal diversity, and risk adjustments.
-7. **Time & Cycle Fitness**: Ensures the opportunity is actionable now by estimating trend phase and opportunity window.
+5. **Strategic Gating**: Discards ideas that violate business rules, fulfillment risks, or strategy profile constraints (internal logic, no external adapter).
+6. **Scoring & Ranking**: Calculates a weighted score for each theme (internal logic, no external adapter).
+7. **Time & Cycle Fitness**: Ensures the opportunity is actionable now (internal logic, no external adapter).
 
 **Phase 3: Validation & Packaging**
-8. **Deep Validation**: Stress-tests top candidates for qualitative data, competition quality, and price band.
-9. **Productization (Offer Concepts)**: Transforms validated themes into sellable concepts with clear hypotheses and differentiation strategies.
-10. **Opportunity Brief Creation**: Maps all data into a strict OpportunityBrief schema and saves to the database.
-11. **Handoff via Events**: Publishes events to trigger downstream agents (Supplier, Marketing, etc.).
+8. **Deep Validation**: Stress-tests top candidates (internal logic, but may call **VideoAnalysisPort** or **CompetitorAnalysisPort** for deeper checks in future phases).
+9. **Productization (Offer Concepts)**: Transforms validated themes into sellable concepts (internal logic, may use **OpenAI** in future phases).
+10. **Opportunity Brief Creation**: Maps all data into a strict OpportunityBrief schema and saves to the database (**PersistencePort**).
+11. **Handoff via Events**: Publishes events to trigger downstream agents (**EventBusPort**; internal event system).
 
-Each step is observable via logs and events, and adapters for trends, competitors, ads, shop, and video are invoked as needed based on the research brief and available integrations.
+**Adapter Summary:**
+- **OpenAIService**: Step 1 (Request Intake), Step 9 (future: Productization)
+- **LiveTrendAdapter**: Step 3 (Trends)
+- **LiveCompetitorAdapter**: Step 3 (Competitors: SERPApi, Meta Ad Library)
+- **LiveAdsAdapter**: Step 3 (Ads/Keyword Metrics)
+- **LiveVideoAdapter**: Step 3 (Video Validation), Step 8 (future: Deep Validation)
+- **LiveShopAdapter**: Step 3 (Shop/Compliance)
+- **PersistencePort**: Step 2 (Learnings), Step 10 (Save Brief)
+- **EventBusPort**: Step 11 (Handoff)
 
 ## Update Plan
 
