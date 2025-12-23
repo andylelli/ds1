@@ -7,23 +7,9 @@ import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
 import { logger } from '../infra/logging/LoggerService.js';
 import { ActivityLogEntry } from '../core/domain/types/ActivityLogEntry.js';
 import { OpportunityBrief, ProductConcept, Seasonality, OpportunityDefinition, CustomerProblem, ProblemFrequency, ProblemUrgency, DemandEvidence, SignalType, TrendDirection, ConfidenceLevel, CompetitionAnalysis, CompetitionDensity, CompetitionQuality, SaturationRisk, PricingAndEconomics, MarginFeasibility, PriceSensitivity, OfferConcept, Complexity, DifferentiationStrategy, RiskAssessment, RiskLevel, TimeAndCycle, TrendPhase, ExecutionSpeedFit, ValidationPlan, TestType, KillCriteria, AssumptionsAndCertainty, EvidenceReferences } from '../core/domain/types/OpportunityBrief.js';
+import { StrategyProfile, CurrentStrategy } from '../core/domain/types/StrategyProfile.js';
 
 // --- Section 0 & 1 Interfaces ---
-interface ScoringConfig {
-    weights: {
-        demand: number;
-        trend: number;
-        competition: number;
-        risk: number;
-    };
-}
-
-interface StrategyProfile {
-    risk_tolerance: 'low' | 'medium' | 'high';
-    target_margin: number;
-    allowed_categories: string[];
-    scoring_config?: ScoringConfig;
-}
 
 interface ResearchBrief {
     request_id: string;
@@ -192,11 +178,7 @@ export class ProductResearchAgent extends BaseAgent {
    */
   private async loadDependencies(): Promise<boolean> {
       // In a real implementation, these would be loaded from a config service or DB
-      this.strategyProfile = {
-          risk_tolerance: 'medium',
-          target_margin: 0.30,
-          allowed_categories: ['Fitness', 'Home', 'Pet', 'Gadgets', 'General']
-      };
+      this.strategyProfile = CurrentStrategy;
       return true;
   }
 
@@ -1327,7 +1309,7 @@ export class ProductResearchAgent extends BaseAgent {
       
       if (result.products && result.products.length > 0) {
           for (const product of result.products) {
-              this.log('info', `✅ Found product: ${product.name}`);
+              this.log('info', `✅ Found product: ${product.name}`, { productId: product.id });
               await this.eventBus.publish('Product.Found', { product });
           }
       } else {

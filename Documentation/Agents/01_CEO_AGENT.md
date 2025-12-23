@@ -75,10 +75,23 @@ The primary interaction loop for the Control Panel chat interface.
 3.  **AI Execution**: Calls `AiPort.chat` with the user message and available tools.
 4.  **Tool Execution**: If the AI elects to call a tool (e.g., `startProductResearch`), the method executes the corresponding logic and returns the result to the chat.
 
-#### `askAboutProduct(requestId: string)`
+#### `askAboutProduct(query: string)`
 Generates the "Narrative" status report.
-1.  **Log Query**: Calls `db.getActivity({ entityId: requestId })` to retrieve all technical logs for a specific workflow.
-2.  **Synthesis**: Prompts the LLM to "provide a cohesive, executive summary... Tell it as a story" based on the raw logs.
+1.  **Fuzzy Resolution**: Accepts a Request ID (`req_...`), Product ID (`prod_...`), or Product Name (e.g., "Gaming Chair").
+    *   If a name is provided, it performs a fuzzy search (`ILIKE`) to find the Product ID.
+    *   It then traces the Product ID back to the original Research Request ID to capture the full history.
+2.  **Recursive Log Fetching**:
+    *   Fetches logs for the Request ID.
+    *   Scans for linked entities (e.g., `metadata.productId`) and recursively fetches logs for those entities (Supplier, Marketing).
+    *   Merges and sorts all logs to create a unified timeline.
+3.  **Analysis**:
+    *   **Failure Analysis**: Uses `FailureAnalyzer` to detect patterns like Rate Limits, No Signals, or Strategic Misalignment.
+    *   **Workflow Tracking**: Compares logs against the `ProductResearchWorkflow` definition to calculate progress (e.g., "Step 5 of 11").
+4.  **Synthesis**: Prompts the LLM to tell a "Hero's Journey" story:
+    *   **The Quest**: Research phase.
+    *   **The Discovery**: Product finding.
+    *   **The Execution**: Sourcing and Marketing.
+    *   **The Outcome**: Current status and next steps.
 
 #### `evaluateProduct(product: any)`
 The decision engine for product approval.
@@ -114,28 +127,31 @@ The CEO exposes the following tools to the LLM:
 *   `buildStorePage`: Delegated command to Store Agent.
 *   `launchMarketingCampaign`: Delegated command to Marketing Agent.
 
+### 8.6 Helper Components
+
+#### `FailureAnalyzer`
+A static analysis class that parses raw log messages to identify root causes of failures.
+*   **Rate Limits**: Detects "429" or "quota" errors.
+*   **No Signals**: Detects empty search results.
+*   **Strategic Misalignment**: Detects rejections based on `StrategyProfile`.
+*   **Dependency Failures**: Detects missing system components.
+
+#### `StrategyProfile`
+A centralized definition of the company's strategic goals, used by the CEO to explain *why* decisions were made.
+*   **Allowed Categories**: e.g., "Fitness", "Home", "Pet".
+*   **Risk Tolerance**: "Low", "Medium", "High".
+*   **Target Margin**: e.g., 30%.
+
+#### `ProductResearchWorkflow`
+A formal definition of the 11-step research pipeline.
+*   Used to map log messages to specific workflow steps (e.g., "Step 5: Gating").
+*   Allows the CEO to report exact progress percentages (e.g., "45% Complete").
+
 ## 9. Planned Updates (Phased Roadmap)
 
 To ensure the CEO evolves from a simple interface into a true strategic partner, the following roadmap is established.
 
-### Phase 1: Deep Research Observability (The "Research Expert" CEO)
-**Goal**: Enable the CEO to answer granular questions about the 11-step research pipeline (e.g., "Why did we reject the 'Heated Socks' theme?").
-
-#### Implementation Plan
-1.  **Artifact Persistence**:
-    *   Update `ProductResearchAgent` to save intermediate artifacts (Signals, Themes, Concepts) to a dedicated `research_artifacts` table or JSONB column in `activity_log`.
-    *   Ensure each artifact is tagged with `request_id` and `step_number`.
-2.  **Context Expansion**:
-    *   Update `CEOAgent.askAboutProduct` to fetch these artifacts alongside the text logs.
-    *   Inject the JSON schemas for `Signal`, `Theme`, and `OpportunityBrief` into the system prompt so the LLM understands the data structure.
-3.  **Failure Analysis Logic**:
-    *   Implement a `FailureAnalyzer` helper class that parses error logs for specific keywords (e.g., "RateLimit", "No Signals", "Validation Failed").
-    *   Feed this structured failure reason into the CEO's narrative prompt.
-4.  **Testing & Validation**:
-    *   **Unit Tests**: Create tests for `FailureAnalyzer` to ensure it correctly identifies error types from log strings.
-    *   **Integration Tests**: Mock the database with sample artifacts and verify `askAboutProduct` returns a coherent narrative.
-
-### Phase 2: Cross-Departmental Omniscience (The "Company Operator" CEO)
+### Phase 1: Cross-Departmental Omniscience (The "Company Operator" CEO)
 **Goal**: Connect the CEO to the pulse of Supply Chain, Marketing, and Sales.
 
 #### Implementation Plan

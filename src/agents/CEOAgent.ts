@@ -2,6 +2,9 @@ import { BaseAgent } from './BaseAgent.js';
 import { AiPort, ToolDefinition } from '../core/domain/ports/AiPort.js';
 import { PersistencePort } from '../core/domain/ports/PersistencePort.js';
 import { ResearchStagingService } from '../core/services/ResearchStagingService.js';
+import { FailureAnalyzer } from '../core/analysis/FailureAnalyzer.js';
+import { CurrentStrategy } from '../core/domain/types/StrategyProfile.js';
+import { ProductResearchWorkflow } from '../core/domain/workflows/ProductResearchWorkflow.js';
 
 import { EventBusPort } from '../core/domain/ports/EventBusPort.js';
 
@@ -175,30 +178,160 @@ export class CEOAgent extends BaseAgent {
    * Ask the CEO to explain the status of a research request.
    * This generates a narrative based on the activity logs.
    */
-  public async askAboutProduct(requestId: string): Promise<string> {
-      // 1. Fetch logs
-      // We cast to any because getActivity is a new method on PersistencePort
-      const logs = await (this.db as any).getActivity({ entityId: requestId });
+  public async askAboutProduct(query: string): Promise<string> {
+      let requestId = query;
+      let productId: string | undefined;
+      let productName: string | undefined;
+
+      // 0. Resolve Entity (ID vs Name)
+      const isId = query.startsWith('req_') || query.startsWith('prod_') || query.startsWith('opp_');
       
-      if (!logs || logs.length === 0) {
-          return `I have no records for request ID: ${requestId}. The research might not have started yet, or the ID is incorrect.`;
+      if (!isId) {
+          // Assume it's a product name
+          this.log('info', `Searching for product matching name: "${query}"...`);
+          const product = await this.db.findProductByName(query);
+          if (product) {
+              this.log('info', `Found product: ${product.name} (${product.id})`);
+              productId = product.id;
+              productName = product.name;
+              // Try to find the original request ID
+              const linkedReqId = await this.db.getRequestIdForProduct(product.id);
+              if (linkedReqId) {
+                  requestId = linkedReqId;
+                  this.log('info', `Traced back to Request ID: ${requestId}`);
+              } else {
+                  // If no request ID found, we might just have to report on the product logs
+                  requestId = product.id; // Fallback to searching by product ID
+              }
+          } else {
+              return `I couldn't find any product matching "${query}". Please check the name or provide a Request ID.`;
+          }
       }
 
-      // 2. Format logs
+      // 1. Fetch logs
+      // We cast to any because getActivity is a new method on PersistencePort
+      let logs = await (this.db as any).getActivity({ entityId: requestId });
+      
+      if (!logs || logs.length === 0) {
+          // If we failed with requestId, try treating the query as a direct entityId (maybe it was a product ID)
+          logs = await (this.db as any).getActivity({ entityId: query });
+          if (!logs || logs.length === 0) {
+             return `I have no records for ID/Name: ${query}.`;
+          }
+      }
+
+      // 1b. Recursive Fetch: Look for linked Product IDs
+      const linkedProductIds = new Set<string>();
+      if (productId) linkedProductIds.add(productId);
+
+      logs.forEach((l: any) => {
+          if (l.metadata && l.metadata.productId) {
+              linkedProductIds.add(l.metadata.productId);
+          }
+      });
+
+      if (linkedProductIds.size > 0) {
+          this.log('info', `Found linked products: ${Array.from(linkedProductIds).join(', ')}. Fetching additional logs...`);
+          for (const pid of linkedProductIds) {
+              const productLogs = await (this.db as any).getActivity({ entityId: pid });
+              if (productLogs && productLogs.length > 0) {
+                  logs = logs.concat(productLogs);
+              }
+          }
+          // Re-sort by timestamp
+          logs.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      }
+
+      // 2. Analyze Failures
+      const failureAnalysis = FailureAnalyzer.analyze(logs);
+
+      // 2b. Analyze Workflow Progress
+      let maxStep = -1;
+      const completedSteps: string[] = [];
+      
+      logs.forEach((l: any) => {
+          const msg = (l.message || '').toString();
+          ProductResearchWorkflow.forEach(step => {
+              if (msg.includes(step.logPattern)) {
+                  if (step.id > maxStep) maxStep = step.id;
+                  if (!completedSteps.includes(step.name)) completedSteps.push(step.name);
+              }
+          });
+      });
+
+      const currentStepName = maxStep >= 0 ? ProductResearchWorkflow.find(s => s.id === maxStep)?.name : "Initialization";
+      const progressPercent = Math.round(((maxStep + 1) / ProductResearchWorkflow.length) * 100);
+
+      // 3. Extract Artifacts (e.g. partial research)
+      // We look for logs that might contain useful data even if the process failed later
+      const artifacts: any = {};
+      logs.forEach((l: any) => {
+          if (l.metadata) {
+             if (l.metadata.competitors) artifacts.competitors = l.metadata.competitors;
+             if (l.metadata.trends) artifacts.trends = l.metadata.trends;
+             if (l.metadata.customer_feedback) artifacts.customer_feedback = l.metadata.customer_feedback;
+          }
+      });
+
+      // 4. Format logs for context
       const logSummary = logs.map((l: any) => `[${l.timestamp}] ${l.action}: ${l.message}`).join('\n');
 
-      // 3. Ask AI to narrate
-      const prompt = `
+      // 5. Construct Prompt
+      let prompt = `
           You are the CEO. You are reviewing the progress of a product research initiative.
-          Here is the activity log for Request ID: ${requestId}.
+          Here is the activity log for ${productName ? `Product: "${productName}"` : `Request ID: ${requestId}`}.
+          
+          STRATEGY CONTEXT:
+          We are currently focusing on these categories: ${CurrentStrategy.allowed_categories.join(', ')}.
+          Our risk tolerance is ${CurrentStrategy.risk_tolerance} and we target a margin of ${(CurrentStrategy.target_margin * 100)}%.
+          
+          WORKFLOW STATUS:
+          Current Phase: ${currentStepName} (Step ${maxStep} of 11)
+          Progress: ${progressPercent}%
+          Completed Steps: ${completedSteps.join(' -> ')}
           
           LOGS:
           ${logSummary}
+      `;
+
+      if (failureAnalysis) {
+          prompt += `
+          
+          CRITICAL ALERT: The research process has FAILED.
+          Root Cause: ${failureAnalysis.rootCause}
+          Details: ${failureAnalysis.details}
+          Recommendation: ${failureAnalysis.recommendation}
+          
+          Please explain this failure to me clearly. Do not be technical. 
+          Explain WHAT went wrong (e.g. "We couldn't find enough data" or "The AI service is down") and what we should do next.
+          
+          Also, mention which step of the workflow we failed at (${currentStepName}).
+          `;
+      } else {
+          prompt += `
           
           Please provide a cohesive, executive summary of what has happened so far. 
-          Tell it as a story. Highlight key decisions, findings, and current status.
-          Do not just list the logs.
-      `;
+          Tell it as a "Hero's Journey" story. 
+          
+          Structure:
+          1. The Quest (Research): How we started and what we were looking for. Mention the workflow steps we passed (e.g. "We successfully cleared the Gating and Scoring phases...").
+          2. The Discovery (Product): What we found (The "Winner") and why it's special.
+          3. The Execution (Sourcing/Marketing): What happened after we found it (Supplier negotiations, Ad campaigns).
+          4. The Outcome: Current status and next steps.
+
+          Highlight key decisions, findings, and current status.
+          `;
+      }
+
+      if (Object.keys(artifacts).length > 0) {
+          prompt += `
+          
+          I also found some partial data that was collected before any issues:
+          ${JSON.stringify(artifacts, null, 2)}
+          
+          Please mention these findings if they are relevant, even if the overall process failed.
+          `;
+      }
 
       try {
           const response = await this.ai.chat(prompt, "Explain the status.", []);

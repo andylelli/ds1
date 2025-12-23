@@ -143,6 +143,50 @@ export class PostgresAdapter implements PersistencePort {
     return items;
   }
 
+  async findProductByName(name: string): Promise<Product | null> {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'test' ? this.simPool : this.pgPool;
+    if (!pool) return null;
+
+    try {
+        // Case-insensitive fuzzy match
+        const res = await pool.query(
+            "SELECT * FROM products WHERE name ILIKE $1 LIMIT 1", 
+            [`%${name}%`]
+        );
+        if (res.rows.length > 0) {
+            const r = res.rows[0];
+            return { ...r.data, timestamp: r.created_at, _db: mode === 'test' ? 'sim' : 'live' };
+        }
+    } catch (e: any) {
+        console.error(`Failed to find product by name: ${e.message}`);
+    }
+    return null;
+  }
+
+  async getRequestIdForProduct(productId: string): Promise<string | null> {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'test' ? this.simPool : this.pgPool;
+    if (!pool) return null;
+
+    try {
+        // Look for the 'ProductFound' event or log which links productId to requestId
+        // We look in activity_log where metadata->>'productId' matches
+        const res = await pool.query(
+            `SELECT entity_id FROM activity_log 
+             WHERE metadata->>'productId' = $1 
+             ORDER BY timestamp ASC LIMIT 1`,
+            [productId]
+        );
+        if (res.rows.length > 0) {
+            return res.rows[0].entity_id;
+        }
+    } catch (e: any) {
+        console.error(`Failed to find requestId for product: ${e.message}`);
+    }
+    return null;
+  }
+
   async saveOrder(order: Order): Promise<void> {
     const mode = configService.get('dbMode');
     const pool = (mode === 'test') ? this.simPool : this.pgPool;

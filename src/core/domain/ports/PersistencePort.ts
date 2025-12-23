@@ -7,6 +7,8 @@ export interface PersistencePort {
 
   saveProduct(product: Product): Promise<void>;
   getProducts(source?: string): Promise<Product[]>;
+  findProductByName(name: string): Promise<Product | null>;
+  getRequestIdForProduct(productId: string): Promise<string | null>;
   
   saveOrder(order: Order): Promise<void>;
   getOrders(source?: string): Promise<Order[]>;

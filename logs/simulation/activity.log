@@ -12113,3 +12113,442 @@
   "agent": "Analytics",
   "type": "info"
 }
+[2025-12-23T16:46:51.299Z] [INFO] Initializing Container... 
+[2025-12-23T16:46:51.301Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:46:51.302Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:46:51.302Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:46:51.303Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:46:51.303Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:46:51.304Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:46:51.304Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:46:51.305Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:46:51.305Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:46:51.305Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:46:51.306Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:46:51.306Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:46:51.306Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:46:51.307Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:46:51.309Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:46:51.309Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:46:51.309Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:46:51.310Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:46:51.310Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:46:51.310Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:46:51.311Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:46:51.311Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:46:51.311Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:46:51.312Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:46:51.312Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:46:51.312Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:46:51.313Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:46:51.313Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:46:51.314Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:46:51.314Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:46:51.314Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:46:51.314Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:46:51.314Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:46:51.315Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:46:51.315Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:46:51.315Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:46:51.316Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:46:51.316Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:46:51.316Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:46:51.316Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:46:51.316Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:46:51.317Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:46:51.317Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:46:51.317Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:46:51.317Z] [INFO] Container initialized. 
+[2025-12-23T16:47:25.702Z] [INFO] Initializing Container... 
+[2025-12-23T16:47:25.704Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:47:25.705Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:47:25.705Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:47:25.706Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:47:25.706Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:47:25.706Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:47:25.707Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:47:25.707Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:47:25.708Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:47:25.708Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:47:25.709Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:47:25.709Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:47:25.710Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:47:25.710Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:47:25.712Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:47:25.712Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:47:25.712Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:47:25.712Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:47:25.713Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:47:25.713Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:47:25.714Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:47:25.714Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:47:25.714Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:47:25.715Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:47:25.715Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:47:25.715Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:47:25.716Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:47:25.716Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:47:25.717Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:47:25.717Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:47:25.717Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:47:25.717Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:47:25.718Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:47:25.718Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:47:25.718Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:47:25.718Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:47:25.719Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:47:25.719Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:47:25.719Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:47:25.720Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:47:25.720Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:47:25.720Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:47:25.720Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:47:25.720Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:47:25.721Z] [INFO] Container initialized. 
+[2025-12-23T16:47:59.338Z] [INFO] Initializing Container... 
+[2025-12-23T16:47:59.340Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:47:59.341Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:47:59.342Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:47:59.342Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:47:59.343Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:47:59.343Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:47:59.344Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:47:59.344Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:47:59.344Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:47:59.345Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:47:59.346Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:47:59.346Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:47:59.346Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:47:59.347Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:47:59.349Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:47:59.349Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:47:59.349Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:47:59.350Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:47:59.350Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:47:59.350Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:47:59.351Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:47:59.351Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:47:59.351Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:47:59.351Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:47:59.352Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:47:59.352Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:47:59.352Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:47:59.353Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:47:59.353Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:47:59.353Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:47:59.354Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:47:59.354Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:47:59.354Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:47:59.354Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:47:59.355Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:47:59.355Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:47:59.355Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:47:59.355Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:47:59.356Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:47:59.356Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:47:59.356Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:47:59.356Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:47:59.357Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:47:59.357Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:47:59.357Z] [INFO] Container initialized. 
+[2025-12-23T16:48:46.903Z] [INFO] Initializing Container... 
+[2025-12-23T16:48:46.906Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:48:46.907Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:48:46.907Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:48:46.907Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:48:46.908Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:48:46.908Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:48:46.909Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:48:46.909Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:48:46.910Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:48:46.910Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:48:46.911Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:48:46.911Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:48:46.912Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:48:46.912Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:48:46.914Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:48:46.914Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:48:46.914Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:48:46.915Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:48:46.915Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:48:46.916Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:48:46.916Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:48:46.916Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:48:46.917Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:48:46.917Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:48:46.917Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:48:46.918Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:48:46.918Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:48:46.918Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:48:46.919Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:48:46.919Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:48:46.919Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:48:46.920Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:48:46.920Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:48:46.921Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:48:46.921Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:48:46.921Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:48:46.922Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:48:46.922Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:48:46.922Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:48:46.922Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:48:46.923Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:48:46.923Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:48:46.923Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:48:46.923Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:48:46.923Z] [INFO] Container initialized. 
+[2025-12-23T16:49:46.098Z] [INFO] Initializing Container... 
+[2025-12-23T16:49:46.100Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:49:46.100Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:49:46.101Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:49:46.101Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:49:46.102Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:49:46.102Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:49:46.103Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:49:46.103Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:49:46.104Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:49:46.104Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:49:46.104Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:49:46.105Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:49:46.105Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:49:46.106Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:49:46.107Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:49:46.107Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:49:46.107Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:49:46.107Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:49:46.108Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:49:46.108Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:49:46.109Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:49:46.109Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:49:46.109Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:49:46.110Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:49:46.110Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:49:46.110Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:49:46.111Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:49:46.112Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:49:46.112Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:49:46.113Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:49:46.113Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:49:46.113Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:49:46.114Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:49:46.114Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:49:46.115Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:49:46.115Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:49:46.115Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:49:46.115Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:49:46.116Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:49:46.116Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:49:46.116Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:49:46.116Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:49:46.117Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:49:46.117Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:49:46.117Z] [INFO] Container initialized. 
+[2025-12-23T16:51:47.778Z] [INFO] Initializing Container... 
+[2025-12-23T16:51:47.780Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:51:47.781Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:51:47.781Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:51:47.782Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:51:47.782Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:51:47.783Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:51:47.783Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:51:47.783Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:51:47.784Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:51:47.784Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:51:47.785Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:51:47.785Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:51:47.786Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:51:47.786Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:51:47.787Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:51:47.788Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:51:47.788Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:51:47.788Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:51:47.789Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:51:47.789Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:51:47.789Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:51:47.789Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:51:47.790Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:51:47.790Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:51:47.790Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:51:47.790Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:51:47.791Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:51:47.791Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:51:47.792Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:51:47.792Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:51:47.792Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:51:47.792Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:51:47.793Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:51:47.793Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:51:47.793Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:51:47.794Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:51:47.794Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:51:47.794Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:51:47.794Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:51:47.794Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:51:47.795Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:51:47.795Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:51:47.795Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:51:47.795Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:51:47.796Z] [INFO] Container initialized. 
+[2025-12-23T16:54:12.927Z] [INFO] Initializing Container... 
+[2025-12-23T16:54:12.930Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:54:12.931Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:54:12.931Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:54:12.931Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:54:12.932Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:54:12.933Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:54:12.933Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:54:12.933Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:54:12.934Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:54:12.934Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:54:12.935Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:54:12.935Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:54:12.936Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:54:12.936Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:54:12.937Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:54:12.937Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:54:12.938Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:54:12.938Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:54:12.938Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:54:12.939Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:54:12.939Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:54:12.939Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:54:12.940Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:54:12.940Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:54:12.941Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:54:12.941Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:54:12.941Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:54:12.942Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:54:12.942Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:54:12.942Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:54:12.943Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:54:12.943Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:54:12.943Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:54:12.943Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:54:12.944Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:54:12.944Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:54:12.944Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:54:12.945Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:54:12.945Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:54:12.945Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:54:12.945Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:54:12.946Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:54:12.946Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:54:12.946Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:54:12.946Z] [INFO] Container initialized. 
+[2025-12-23T16:54:13.022Z] [INFO] [info] Found linked products: prod_winner_99. Fetching additional logs... 
+{
+  "agent": "CEO",
+  "type": "info"
+}
+[2025-12-23T16:56:53.259Z] [INFO] Initializing Container... 
+[2025-12-23T16:56:53.262Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:56:53.263Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:56:53.263Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:56:53.264Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:56:53.264Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:56:53.264Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:56:53.265Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:56:53.265Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:56:53.266Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:56:53.266Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:56:53.266Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:56:53.267Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:56:53.267Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:56:53.268Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:56:53.269Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:56:53.269Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:56:53.269Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:56:53.269Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:56:53.270Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:56:53.270Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:56:53.270Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:56:53.271Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:56:53.271Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:56:53.271Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:56:53.272Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:56:53.272Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:56:53.273Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:56:53.273Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:56:53.273Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:56:53.273Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:56:53.274Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:56:53.274Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:56:53.274Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:56:53.274Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:56:53.274Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:56:53.275Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:56:53.275Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:56:53.275Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:56:53.275Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:56:53.275Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:56:53.276Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:56:53.276Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:56:53.276Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:56:53.276Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:56:53.276Z] [INFO] Container initialized. 
+[2025-12-23T16:59:11.486Z] [INFO] Initializing Container... 
+[2025-12-23T16:59:11.489Z] [INFO] Registered internal service: shopify_tool (ShopifyAdapter) 
+[2025-12-23T16:59:11.489Z] [INFO] Registered MCP tools for ShopifyAdapter 
+[2025-12-23T16:59:11.490Z] [INFO] Registered internal service: ads_tool (AdsAdapter) 
+[2025-12-23T16:59:11.490Z] [INFO] Registered MCP tools for AdsAdapter 
+[2025-12-23T16:59:11.491Z] [INFO] Registered internal service: trend_tool (TrendAdapter) 
+[2025-12-23T16:59:11.491Z] [INFO] Registered MCP tools for TrendAdapter 
+[2025-12-23T16:59:11.492Z] [INFO] Registered internal service: competitor_tool (CompetitorAdapter) 
+[2025-12-23T16:59:11.492Z] [INFO] Registered MCP tools for CompetitorAdapter 
+[2025-12-23T16:59:11.493Z] [INFO] Registered internal service: fulfilment_tool (FulfilmentAdapter) 
+[2025-12-23T16:59:11.493Z] [INFO] Registered MCP tools for FulfilmentAdapter 
+[2025-12-23T16:59:11.494Z] [INFO] Registered internal service: email_tool (EmailAdapter) 
+[2025-12-23T16:59:11.495Z] [INFO] Registered MCP tools for EmailAdapter 
+[2025-12-23T16:59:11.495Z] [INFO] Registered internal service: ai_tool (AiAdapter) 
+[2025-12-23T16:59:11.496Z] [INFO] Registered MCP tools for AiAdapter 
+[2025-12-23T16:59:11.497Z] [INFO] Registered internal service: youtube_tool (LiveVideoAdapter) 
+[2025-12-23T16:59:11.497Z] [INFO] Registered MCP tools for LiveVideoAdapter 
+[2025-12-23T16:59:11.497Z] [INFO] [Container] System Mode from config: simulation 
+[2025-12-23T16:59:11.498Z] [INFO] [Container] Services Config: {"ceo":"mock","shop":"mock","ads":"mock","trends":"live","competitor":"live","fulfilment":"mock","email":"mock","ai":"live","operations":"mock","analytics":"mock"} 
+[2025-12-23T16:59:11.498Z] [INFO] [Container] Agent ceo_agent mapped to service ceo with mode mock 
+[2025-12-23T16:59:11.499Z] [INFO] Registered agent: ceo_agent [mock] 
+[2025-12-23T16:59:11.499Z] [INFO] [Container] Agent product_research_agent mapped to service trends with mode live 
+[2025-12-23T16:59:11.499Z] [INFO] Registered agent: product_research_agent [live] 
+[2025-12-23T16:59:11.500Z] [INFO] [Container] Agent supplier_agent mapped to service fulfilment with mode mock 
+[2025-12-23T16:59:11.500Z] [INFO] Registered agent: supplier_agent [mock] 
+[2025-12-23T16:59:11.500Z] [INFO] [Container] Agent store_build_agent mapped to service shop with mode mock 
+[2025-12-23T16:59:11.501Z] [INFO] Registered agent: store_build_agent [mock] 
+[2025-12-23T16:59:11.501Z] [INFO] [Container] Agent marketing_agent mapped to service ads with mode mock 
+[2025-12-23T16:59:11.502Z] [INFO] Registered agent: marketing_agent [mock] 
+[2025-12-23T16:59:11.502Z] [INFO] [Container] Agent customer_service_agent mapped to service email with mode mock 
+[2025-12-23T16:59:11.502Z] [INFO] Registered agent: customer_service_agent [mock] 
+[2025-12-23T16:59:11.503Z] [INFO] [Container] Agent operations_agent mapped to service operations with mode mock 
+[2025-12-23T16:59:11.503Z] [INFO] Registered agent: operations_agent [mock] 
+[2025-12-23T16:59:11.510Z] [INFO] [Container] Agent analytics_agent mapped to service analytics with mode mock 
+[2025-12-23T16:59:11.510Z] [INFO] Registered agent: analytics_agent [mock] 
+[2025-12-23T16:59:11.510Z] [INFO] Wiring: RESEARCH_REQUESTED -> product_research_agent.find_products 
+[2025-12-23T16:59:11.511Z] [INFO] Wiring: PRODUCT_FOUND -> ceo_agent.review_product 
+[2025-12-23T16:59:11.511Z] [INFO] Wiring: PRODUCT_APPROVED -> supplier_agent.find_suppliers 
+[2025-12-23T16:59:11.511Z] [INFO] Wiring: SUPPLIER_FOUND -> ceo_agent.review_supplier 
+[2025-12-23T16:59:11.511Z] [INFO] Wiring: SUPPLIER_APPROVED -> store_build_agent.create_product_page 
+[2025-12-23T16:59:11.512Z] [INFO] Wiring: PRODUCT_PAGE_CREATED -> marketing_agent.create_ad_campaign 
+[2025-12-23T16:59:11.512Z] [INFO] Wiring: ORDER_RECEIVED -> operations_agent.process_order 
+[2025-12-23T16:59:11.512Z] [INFO] Wiring: ORDER_SHIPPED -> customer_service_agent.notify_customer 
+[2025-12-23T16:59:11.512Z] [INFO] Wiring: DAILY_REPORT_REQUESTED -> analytics_agent.generate_report 
+[2025-12-23T16:59:11.513Z] [INFO] Workflow Manager initialized and subscriptions registered. 
+[2025-12-23T16:59:11.513Z] [INFO] Container initialized. 
+[2025-12-23T16:59:11.581Z] [INFO] [info] Searching for product matching name: "Gaming Chair"... 
+{
+  "agent": "CEO",
+  "type": "info"
+}
+[2025-12-23T16:59:11.608Z] [INFO] [info] Found product: Super Ergonomic Gaming Chair (prod_fuzzy_99) 
+{
+  "agent": "CEO",
+  "type": "info"
+}
+[2025-12-23T16:59:11.616Z] [INFO] [info] Traced back to Request ID: req_fuzzy_001 
+{
+  "agent": "CEO",
+  "type": "info"
+}
+[2025-12-23T16:59:11.622Z] [INFO] [info] Found linked products: prod_fuzzy_99. Fetching additional logs... 
+{
+  "agent": "CEO",
+  "type": "info"
+}
