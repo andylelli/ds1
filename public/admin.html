@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/bulma.css">
     <link rel="stylesheet" href="css/overrides.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -119,6 +120,14 @@
                     </div>
                     <div class="level-item">
                         <span id="ceoModeBadge" class="tag is-light">Loading...</span>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <button class="button is-small is-danger is-light" onclick="clearChatHistory()">
+                            <span class="icon"><i class="fas fa-trash"></i></span>
+                            <span>Clear Chat</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -872,32 +881,48 @@
 
             // 1. Add User Message
             appendMessage('user', message);
+            saveChatToStorage('user', message); // Save to storage
             input.value = '';
 
             // 2. Call API
             const thinkingId = appendMessage('ceo', 'Thinking...', true);
             
+            // Setup timeout (45s)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 45000);
+
             try {
                 const res = await fetch('/api/ceo/chat', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message, mode: currentMode }) 
+                    body: JSON.stringify({ message, mode: currentMode }),
+                    signal: controller.signal
                 });
                 
+                clearTimeout(timeoutId);
                 const data = await res.json();
                 
                 // Remove thinking bubble
-                document.getElementById(thinkingId).remove();
+                const thinkingEl = document.getElementById(thinkingId);
+                if (thinkingEl) thinkingEl.remove();
 
                 if (res.ok) {
                     appendMessage('ceo', data.response);
+                    saveChatToStorage('ceo', data.response); // Save to storage
                 } else {
                     appendMessage('ceo', "Error: " + (data.error || "Unknown error"));
                 }
 
             } catch (e) {
-                document.getElementById(thinkingId).remove();
-                appendMessage('ceo', "Error: Unable to reach the CEO Agent.");
+                const thinkingEl = document.getElementById(thinkingId);
+                if (thinkingEl) thinkingEl.remove();
+                
+                if (e.name === 'AbortError') {
+                    appendMessage('ceo', "Error: Request timed out. The CEO is taking too long to respond.");
+                } else {
+                    console.error(e);
+                    appendMessage('ceo', "Error: Unable to reach the CEO Agent.");
+                }
             }
         }
 
@@ -908,11 +933,65 @@
             if (isTemp) div.id = 'msg-' + Date.now();
             
             const name = sender === 'user' ? 'You' : 'CEO Agent';
-            div.innerHTML = `<div class="has-text-weight-bold mb-1">${name}</div>${text}`;
+            
+            // Parse Markdown for CEO messages (and user messages for consistency)
+            // Note: 'Thinking...' (isTemp) is kept as plain text to avoid unnecessary parsing
+            let content = text;
+            if (!isTemp && typeof marked !== 'undefined') {
+                try {
+                    content = marked.parse(text);
+                } catch (e) {
+                    console.error('Markdown parsing failed:', e);
+                    content = text; // Fallback
+                }
+            }
+
+            div.innerHTML = `<div class="has-text-weight-bold mb-1">${name}</div><div class="content">${content}</div>`;
             
             history.appendChild(div);
             history.scrollTop = history.scrollHeight;
             return div.id;
+        }
+
+        // --- Chat Persistence ---
+        function saveChatToStorage(sender, text) {
+            try {
+                const history = JSON.parse(sessionStorage.getItem('ceoChatHistory') || '[]');
+                history.push({ sender, text, timestamp: Date.now() });
+                sessionStorage.setItem('ceoChatHistory', JSON.stringify(history));
+            } catch (e) {
+                console.error('Failed to save chat history:', e);
+            }
+        }
+
+        function loadChatFromStorage() {
+            try {
+                const history = JSON.parse(sessionStorage.getItem('ceoChatHistory') || '[]');
+                if (history.length > 0) {
+                    // Clear default welcome message if we have history
+                    const chatContainer = document.getElementById('chatHistory');
+                    // Keep the first child if it's the welcome message? 
+                    // Actually, let's just clear it if we have history, or append after.
+                    // The HTML has a hardcoded welcome message. Let's remove it if we have history.
+                    if (history.length > 0) {
+                        chatContainer.innerHTML = ''; 
+                        history.forEach(msg => appendMessage(msg.sender, msg.text));
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load chat history:', e);
+            }
+        }
+
+        function clearChatHistory() {
+            if(confirm('Clear chat history?')) {
+                sessionStorage.removeItem('ceoChatHistory');
+                document.getElementById('chatHistory').innerHTML = `
+                    <div class="chat-message ceo">
+                        <div class="has-text-weight-bold mb-1">CEO Agent</div>
+                        Hello. I am ready to discuss business strategy, approve products, or review performance metrics. How can I assist you today?
+                    </div>`;
+            }
         }
 
         // --- Config ---
@@ -1063,6 +1142,7 @@
 
         // Init
         loadConfig();
+        loadChatFromStorage(); // Load chat history
         // Initialize Sidebar explicitly
         if (window.initSidebar) window.initSidebar();
 

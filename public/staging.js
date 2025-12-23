@@ -92,17 +92,17 @@ function renderItemsTable(items) {
 
                         return `
                             <tr>
-                                <td>
-                                    <strong>${item.name}</strong>
-                                    <p class="is-size-7 has-text-grey">${item.description ? item.description.substring(0, 50) + '...' : ''}</p>
+                                <td style="vertical-align: middle;">
+                                    <strong>${item.name || 'Unknown Product'}</strong>
+                                    ${item.description ? `<p class="is-size-7 has-text-grey mt-1">${item.description.substring(0, 50)}...</p>` : ''}
                                 </td>
-                                <td style="width: 150px;">
+                                <td style="width: 150px; vertical-align: middle;">
                                     <progress class="progress ${confidenceClass} is-small mb-1" value="${confidence}" max="100">${confidence}%</progress>
                                     <span class="is-size-7">${Math.round(confidence)}%</span>
                                 </td>
-                                <td><span class="tag is-light is-small">${item.source}</span></td>
-                                <td><span class="tag ${statusClass}">${item.status}</span></td>
-                                <td>
+                                <td style="vertical-align: middle;"><span class="tag is-light is-small">${item.source}</span></td>
+                                <td style="vertical-align: middle;"><span class="tag ${statusClass}">${item.status}</span></td>
+                                <td style="vertical-align: middle;">
                                     <div class="buttons are-small">
                                         ${item.status === 'pending' ? `
                                             <button class="button is-success is-light" onclick="updateStatus('${item.id}', 'approved')">

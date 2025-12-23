@@ -135,3 +135,7 @@ html, body {
 .post.instagram .caption { padding: 0 10px 10px; font-size: 0.9rem; }
 .post.instagram .cta-btn { background: #0095f6; color: white; margin: 0 10px 10px; width: calc(100% - 20px); border-radius: 4px; padding: 0.5rem; }
 
+
+/* Chat Markdown Fixes */
+.chat-message .content p:last-child { margin-bottom: 0; }
+.chat-message .content { font-size: 0.95rem; }
