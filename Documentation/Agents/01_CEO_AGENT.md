@@ -114,3 +114,61 @@ The CEO exposes the following tools to the LLM:
 *   `buildStorePage`: Delegated command to Store Agent.
 *   `launchMarketingCampaign`: Delegated command to Marketing Agent.
 
+## 9. Planned Updates (Phased Roadmap)
+
+To ensure the CEO evolves from a simple interface into a true strategic partner, the following roadmap is established.
+
+### Phase 1: Deep Research Observability (The "Research Expert" CEO)
+**Goal**: Enable the CEO to answer granular questions about the 11-step research pipeline (e.g., "Why did we reject the 'Heated Socks' theme?").
+
+#### Implementation Plan
+1.  **Artifact Persistence**:
+    *   Update `ProductResearchAgent` to save intermediate artifacts (Signals, Themes, Concepts) to a dedicated `research_artifacts` table or JSONB column in `activity_log`.
+    *   Ensure each artifact is tagged with `request_id` and `step_number`.
+2.  **Context Expansion**:
+    *   Update `CEOAgent.askAboutProduct` to fetch these artifacts alongside the text logs.
+    *   Inject the JSON schemas for `Signal`, `Theme`, and `OpportunityBrief` into the system prompt so the LLM understands the data structure.
+3.  **Failure Analysis Logic**:
+    *   Implement a `FailureAnalyzer` helper class that parses error logs for specific keywords (e.g., "RateLimit", "No Signals", "Validation Failed").
+    *   Feed this structured failure reason into the CEO's narrative prompt.
+4.  **Testing & Validation**:
+    *   **Unit Tests**: Create tests for `FailureAnalyzer` to ensure it correctly identifies error types from log strings.
+    *   **Integration Tests**: Mock the database with sample artifacts and verify `askAboutProduct` returns a coherent narrative.
+
+### Phase 2: Cross-Departmental Omniscience (The "Company Operator" CEO)
+**Goal**: Connect the CEO to the pulse of Supply Chain, Marketing, and Sales.
+
+#### Implementation Plan
+1.  **Supply Chain Integration**:
+    *   Update `SupplierAgent` to emit structured events for `StockCheck` and `SupplierFound`.
+    *   Update `CEOAgent.chat` to query the `inventory` and `suppliers` tables.
+2.  **Marketing Intelligence**:
+    *   Update `MarketingAgent` to log daily campaign metrics (ROAS, CTR, CPC) to a `campaign_metrics` table.
+    *   Update `CEOAgent` to retrieve "Top 5 Performing Campaigns" and "Bottom 5 Campaigns" for the chat context.
+3.  **Financial Context**:
+    *   Create a `FinancialService` that aggregates Revenue (from Orders), COGS (from Products), and AdSpend (from Campaigns).
+    *   Inject a `FinancialSnapshot` object into the CEO's system prompt (e.g., `{ daily_profit: 120, margin: 0.15 }`).
+4.  **Testing & Validation**:
+    *   **Unit Tests**: Verify `FinancialService` calculations (Revenue - COGS - AdSpend) with edge cases (e.g., zero revenue).
+    *   **Mock Tests**: Simulate `MarketingAgent` emitting campaign metrics and verify they are correctly stored and retrieved by the CEO.
+
+### Phase 3: Proactive Intelligence (The "Strategic Partner" CEO)
+**Goal**: Move from reactive (answering questions) to proactive (offering advice).
+
+#### Implementation Plan
+1.  **Background Monitoring**:
+    *   Implement a `CronJob` within `CEOAgent` (or a separate `WatcherService`) that runs every hour.
+    *   Define thresholds for critical metrics (e.g., "ROAS < 1.5", "Inventory < 10").
+2.  **Proactive Alerting**:
+    *   If a threshold is breached, publish a `CEO.Alert` event.
+    *   The Control Panel listens for this event and displays a notification to the user.
+3.  **Strategic Recommendations**:
+    *   Implement a weekly "Strategy Run" where the CEO analyzes the last 7 days of sales data.
+    *   Use the LLM to generate 3 actionable recommendations (e.g., "Increase budget on Campaign A", "Kill Product B", "Research new category C").
+4.  **Testing & Validation**:
+    *   **Unit Tests**: Test the `CronJob` scheduler and threshold logic (e.g., ensure alerts trigger *only* when thresholds are crossed).
+    *   **Scenario Tests**: Simulate a "Sales Drop" scenario and verify the CEO generates the correct strategic recommendation.
+    *   Use the LLM to generate 3 actionable recommendations (e.g., "Increase budget on Campaign A", "Kill Product B", "Research new category C").
+
+
+
