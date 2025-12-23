@@ -12069,3 +12069,47 @@
   "agent": "Analytics",
   "type": "info"
 }
+[2025-12-23T16:36:53.854Z] [DEBUG] [REQ] GET /api/agents?t=1766507813849 
+{
+  "body": {}
+}
+[2025-12-23T16:36:53.857Z] [INFO] [API] GET /api/agents?t=1766507813849 200 3ms 
+{
+  "method": "GET",
+  "url": "/api/agents?t=1766507813849",
+  "status": 200,
+  "duration": 3,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+}
+[2025-12-23T16:36:59.027Z] [INFO] [info] Generating report for daily 
+{
+  "agent": "Analytics",
+  "type": "info"
+}
+[2025-12-23T16:36:59.032Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 
+{
+  "agent": "Analytics",
+  "type": "info"
+}
+[2025-12-23T16:37:53.845Z] [DEBUG] [REQ] GET /api/agents?t=1766507873845 
+{
+  "body": {}
+}
+[2025-12-23T16:37:53.848Z] [INFO] [API] GET /api/agents?t=1766507873845 200 3ms 
+{
+  "method": "GET",
+  "url": "/api/agents?t=1766507873845",
+  "status": 200,
+  "duration": 3,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+}
+[2025-12-23T16:37:59.129Z] [INFO] [info] Generating report for daily 
+{
+  "agent": "Analytics",
+  "type": "info"
+}
+[2025-12-23T16:37:59.133Z] [INFO] [info] Report Generated: Revenue $0, Profit $0 
+{
+  "agent": "Analytics",
+  "type": "info"
+}

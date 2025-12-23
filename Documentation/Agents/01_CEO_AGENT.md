@@ -14,18 +14,17 @@ The **CEO Agent** is the central nervous system of the DropShip AI enterprise. I
 ### Subscribes To
 | Event | Source | Action |
 | :--- | :--- | :--- |
-| `PRODUCT_FOUND` | Research Agent | Reviews product viability. Triggers `approveProduct` or `rejectProduct`. |
-| `SUPPLIER_FOUND` | Supplier Agent | Reviews supplier costs and shipping times. Triggers `approveSupplier` or `rejectSupplier`. |
-| `ALERT_CRITICAL` | Analytics Agent | Takes emergency action (e.g., pausing ads) if metrics tank. |
+| `OpportunityResearch.BriefsPublished` | Research Agent | Receives completed research briefs and stages them for manual review via `ResearchStagingService`. |
+| `Sales.OrderReceived` | Sales System | Logs a celebratory message and updates internal financial context. |
+| `System.Error` | Any Agent | Logs the error for high-level visibility. |
 
 ### Publishes
 | Event | Payload | Description |
 | :--- | :--- | :--- |
-| `PRODUCT_APPROVED` | `{ product }` | Signals the Supplier Agent to start sourcing. |
-| `PRODUCT_REJECTED` | `{ product, reason }` | Ends the workflow for a specific product candidate. |
-| `SUPPLIER_APPROVED` | `{ supplier }` | Signals the Store Agent to build the product page. |
-| `SUPPLIER_REJECTED` | `{ supplier, reason }` | Requests the Supplier Agent to find an alternative. |
-| `COMMAND_START` | `{ type }` | Initiates a new workflow (e.g., Research). |
+| `Product.Approved` | `{ product, reason }` | (Legacy/Manual) Signals approval of a product. |
+| `Supplier.Approved` | `{ product, supplier }` | (Legacy/Manual) Signals approval of a supplier. |
+
+> **Note**: The CEO primarily acts via the **Staging Service** (database) rather than direct event publication for the core research loop. Research outputs are "staged" and await human approval in the Control Panel.
 
 ## 4. Toolbox (MCP)
 
