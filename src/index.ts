@@ -105,7 +105,7 @@ const container = new Container(configPath);
 
     // Retrieve Agents
     const agents = {
-      ceo: new CEOAgent(db, container.getEventBus(), container.getService('ai_service'), stagingService),
+      ceo: new CEOAgent(db, container.getEventBus(), container.getService('ai_tool'), stagingService),
       research: container.getAgent('product_research_agent'),
       supplier: container.getAgent('supplier_agent'),
       store: container.getAgent('store_build_agent'),
