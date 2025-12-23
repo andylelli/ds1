@@ -113,6 +113,18 @@ export class MockAdapter implements PersistencePort {
     });
   }
 
+  async getActivity(filter: any): Promise<ActivityLogEntry[]> {
+    const db = this.readDb();
+    const logs = db[this.dbId]?.['activity_log'] || [];
+    
+    return logs.filter((log: any) => {
+        if (filter.agent && log.agent !== filter.agent) return false;
+        if (filter.category && log.category !== filter.category) return false;
+        if (filter.entityId && log.entityId !== filter.entityId) return false;
+        return true;
+    });
+  }
+
   async getRecentLogs(limit: number, source?: string): Promise<any[]> {
     const logs = await this.getItems("AgentMemory");
     return logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, limit);

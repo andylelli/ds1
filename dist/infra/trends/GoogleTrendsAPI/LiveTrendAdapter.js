@@ -1,4 +1,4 @@
-import { openAIService } from '../../ai/OpenAIService.js';
+import { openAIService } from '../../ai/OpenAI/OpenAIService.js';
 import { ResearchStagingService } from '../../../core/services/ResearchStagingService.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { logger } from '../../logging/LoggerService.js';
@@ -15,7 +15,7 @@ export class LiveTrendAdapter {
         this.stagingEnabled = stagingEnabled;
     }
     async analyzeTrend(category) {
-        console.log(`[LiveTrend] Analyzing trend for ${category} using Google Trends`);
+        logger.info(`[LiveTrend] Analyzing trend for ${category} using Google Trends`);
         await this.activityLog.log({
             agent: 'ProductResearcher',
             action: 'analyze_trend',
@@ -66,7 +66,7 @@ export class LiveTrendAdapter {
         }
     }
     async checkSaturation(productName) {
-        console.log(`[LiveTrend] Checking saturation for ${productName}`);
+        logger.info(`[LiveTrend] Checking saturation for ${productName}`);
         await this.activityLog.log({
             agent: 'ProductResearcher',
             action: 'check_saturation',
@@ -112,7 +112,7 @@ export class LiveTrendAdapter {
         }
     }
     async findProducts(category) {
-        console.log(`[LiveTrend] Finding products in ${category} using Google Trends + AI`);
+        logger.info(`[LiveTrend] Finding products in ${category} using Google Trends + AI`);
         await this.activityLog.log({
             agent: 'ProductResearcher',
             action: 'find_products',
@@ -125,7 +125,9 @@ export class LiveTrendAdapter {
             // 1. Get rising queries from Google Trends
             const { rising } = await this.getRelatedQueries(category);
             // 2. Get real-time trends for the region (Daily Trends is broken)
-            const realTimeTrends = await this.getRealTimeTrends();
+            // const realTimeTrends = await this.getRealTimeTrends();
+            // DISABLED: Real-time trends API is unreliable/failing. Passing empty context.
+            const realTimeTrends = { storySummaries: { trendingStories: [] } };
             // 3. Use AI to synthesize into product recommendations
             const products = await this.synthesizeProductsWithAI(category, rising, realTimeTrends);
             // 4. If staging enabled, put in staging area
@@ -217,19 +219,35 @@ export class LiveTrendAdapter {
         return this.cachedRequest(`interest_${keyword}`, async () => {
             return this.retry(async () => {
                 const start = Date.now();
-                const result = await googleTrends.interestOverTime({
-                    keyword,
-                    startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
-                    geo: 'US'
-                });
-                const duration = Date.now() - start;
-                logger.external('GoogleTrends', 'interestOverTime', { keyword, duration });
+                let success = false;
+                let errorMsg = '';
                 try {
-                    return JSON.parse(result);
+                    const result = await googleTrends.interestOverTime({
+                        keyword,
+                        startTime: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 days ago
+                        geo: 'US'
+                    });
+                    success = true;
+                    try {
+                        return JSON.parse(result);
+                    }
+                    catch (e) {
+                        console.error(`[LiveTrend] JSON Parse Error (interestOverTime): ${result.substring(0, 200)}`);
+                        throw new Error(`Invalid JSON from Google Trends (interestOverTime). Response starts with: ${result.substring(0, 500)}...`);
+                    }
                 }
-                catch (e) {
-                    console.error(`[LiveTrend] JSON Parse Error (interestOverTime): ${result.substring(0, 200)}`);
-                    throw new Error(`Invalid JSON from Google Trends (interestOverTime). Response starts with: ${result.substring(0, 500)}...`);
+                catch (err) {
+                    errorMsg = err.message;
+                    throw err;
+                }
+                finally {
+                    const duration = Date.now() - start;
+                    logger.external('GoogleTrends', 'interestOverTime', {
+                        summary: `Interest over time for: ${keyword}`,
+                        status: success ? 'success' : 'failed',
+                        duration,
+                        data: { keyword, success, error: errorMsg }
+                    });
                 }
             });
         });
@@ -238,19 +256,35 @@ export class LiveTrendAdapter {
         return this.cachedRequest(`queries_${keyword}`, async () => {
             return this.retry(async () => {
                 const start = Date.now();
-                const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
-                const duration = Date.now() - start;
-                logger.external('GoogleTrends', 'relatedQueries', { keyword, duration });
+                let success = false;
+                let errorMsg = '';
                 try {
-                    const parsed = JSON.parse(result);
-                    return {
-                        rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
-                        top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
-                    };
+                    const result = await googleTrends.relatedQueries({ keyword, geo: 'US' });
+                    success = true;
+                    try {
+                        const parsed = JSON.parse(result);
+                        return {
+                            rising: parsed.default?.rankedList?.[0]?.rankedKeyword || [],
+                            top: parsed.default?.rankedList?.[1]?.rankedKeyword || []
+                        };
+                    }
+                    catch (e) {
+                        console.error(`[LiveTrend] JSON Parse Error (relatedQueries): ${result.substring(0, 200)}`);
+                        throw new Error(`Invalid JSON from Google Trends (relatedQueries). Response starts with: ${result.substring(0, 500)}...`);
+                    }
                 }
-                catch (e) {
-                    console.error(`[LiveTrend] JSON Parse Error (relatedQueries): ${result.substring(0, 200)}`);
-                    throw new Error(`Invalid JSON from Google Trends (relatedQueries). Response starts with: ${result.substring(0, 500)}...`);
+                catch (err) {
+                    errorMsg = err.message;
+                    throw err;
+                }
+                finally {
+                    const duration = Date.now() - start;
+                    logger.external('GoogleTrends', 'relatedQueries', {
+                        summary: `Related queries for: ${keyword}`,
+                        status: success ? 'success' : 'failed',
+                        duration,
+                        data: { keyword, success, error: errorMsg }
+                    });
                 }
             });
         });
@@ -261,14 +295,30 @@ export class LiveTrendAdapter {
                 // Try to get real data
                 return await this.retry(async () => {
                     const start = Date.now();
-                    const result = await googleTrends.realTimeTrends({ geo: 'US' });
-                    const duration = Date.now() - start;
-                    logger.external('GoogleTrends', 'realTimeTrends', { duration });
+                    let success = false;
+                    let errorMsg = '';
                     try {
-                        return JSON.parse(result);
+                        const result = await googleTrends.realTimeTrends({ geo: 'US' });
+                        success = true;
+                        try {
+                            return JSON.parse(result);
+                        }
+                        catch (e) {
+                            throw new Error(`Invalid JSON from Google Trends (realTimeTrends).`);
+                        }
                     }
-                    catch (e) {
-                        throw new Error(`Invalid JSON from Google Trends (realTimeTrends).`);
+                    catch (err) {
+                        errorMsg = err.message;
+                        throw err;
+                    }
+                    finally {
+                        const duration = Date.now() - start;
+                        logger.external('GoogleTrends', 'realTimeTrends', {
+                            summary: 'Fetching real-time trends',
+                            status: success ? 'success' : 'failed',
+                            duration,
+                            data: { success, error: errorMsg }
+                        });
                     }
                 });
             }
@@ -396,17 +446,17 @@ Return ONLY valid JSON:
     async cachedRequest(key, fetcher) {
         const cached = this.cache.get(key);
         if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
-            console.log(`[LiveTrend] Cache hit for ${key}`);
+            logger.debug(`[LiveTrend] Cache hit for ${key}`);
             return cached.data;
         }
-        console.log(`[LiveTrend] Cache miss for ${key}, fetching...`);
+        logger.debug(`[LiveTrend] Cache miss for ${key}, fetching...`);
         const data = await fetcher();
         this.cache.set(key, { data, timestamp: Date.now() });
         return data;
     }
     // === AI Fallback Methods ===
     async analyzeTrendWithAI(category) {
-        console.log(`[LiveTrend] Using AI-only for trend analysis`);
+        logger.warn(`[LiveTrend] Using AI-only for trend analysis`);
         const client = openAIService.getClient();
         const response = await client.chat.completions.create({
             model: openAIService.deploymentName,
@@ -419,7 +469,7 @@ Return ONLY valid JSON:
         return { ...JSON.parse(content || '{}'), source: 'ai_fallback' };
     }
     async checkSaturationWithAI(productName) {
-        console.log(`[LiveTrend] Using AI-only for saturation check`);
+        logger.warn(`[LiveTrend] Using AI-only for saturation check`);
         const client = openAIService.getClient();
         const response = await client.chat.completions.create({
             model: openAIService.deploymentName,
@@ -432,7 +482,7 @@ Return ONLY valid JSON:
         return { ...JSON.parse(content || '{}'), source: 'ai_fallback' };
     }
     async fallbackToAIOnly(category) {
-        console.log(`[LiveTrend] Using AI-only for product discovery`);
+        logger.warn(`[LiveTrend] Using AI-only for product discovery`);
         try {
             const client = openAIService.getClient();
             const messages = [

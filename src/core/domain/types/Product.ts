@@ -7,6 +7,7 @@ export interface Product {
   margin?: string;
   potential?: string;
   images?: string[];
+  category?: string;
   tags?: string[];
   inventory?: number;
   timestamp?: string;

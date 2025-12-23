@@ -94,7 +94,6 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
           search_terms: brand,
           ad_active_status: 'ACTIVE',
           ad_reached_countries: '["US"]',
-      logger.external('SERPApi', 'search', { category, query, competitors: competitors.length, saturationScore });
           limit: 5,
           fields: 'id,ad_creation_time,ad_creative_bodies,ad_creative_link_captions,publisher_platforms'
         }
@@ -103,9 +102,9 @@ export class LiveCompetitorAdapter implements CompetitorAnalysisPort {
       return response.data.data || [];
 
     } catch (error: any) {
-      logger.external('SERPApi', 'search', { category, error: error.message });
-      console.error('[LiveCompetitorAdapter] SERP Search failed:', error.message);
-      return { error: error.message, competitors: [] };
+      logger.external('MetaAds', 'search', { brand, error: error.message });
+      console.error('[LiveCompetitorAdapter] Meta Ads Search failed:', error.message);
+      return [];
     }
   }
 }

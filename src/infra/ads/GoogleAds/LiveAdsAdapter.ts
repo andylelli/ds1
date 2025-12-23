@@ -75,14 +75,14 @@ export class LiveAdsAdapter implements AdsPlatformPort {
       logger.external('GoogleAds', 'createCampaign', { endpoint: 'GoogleAdsAPI', campaign });
       const customer = await this.getCustomer();
       // 1. Create Budget
-      const budgetRes = await customer.campaignBudgets.create({
+      const budgetRes = await customer.campaignBudgets.create([{
         amount_micros: campaign.budget * 1000000,
         delivery_method: enums.BudgetDeliveryMethod.STANDARD,
         explicitly_shared: false,
-      });
+      }]);
       const budgetResourceName = budgetRes.results[0].resource_name;
       // 2. Create Campaign
-      const campaignRes = await customer.campaigns.create({
+      const campaignRes = await customer.campaigns.create([{
         name: `${campaign.product} - ${new Date().toISOString()}`,
         campaign_budget: budgetResourceName,
         advertising_channel_type: enums.AdvertisingChannelType.SEARCH,
@@ -93,13 +93,12 @@ export class LiveAdsAdapter implements AdsPlatformPort {
           target_content_network: false,
           target_partner_search_network: false,
         },
-        start_date: new Date().toISOString().split('T')[0].replace(/-/g, ''),
-      });
+      }]);
       const campaignId = campaignRes.results[0].resource_name;
       logger.external('GoogleAds', 'createCampaign', { endpoint: 'GoogleAdsAPI', campaignId, budget: campaign.budget });
       return {
         ...campaign,
-        id: campaignId,
+        id: campaignId || '',
         status: 'paused',
         timestamp: new Date().toISOString(),
         _db: 'live'
@@ -146,10 +145,10 @@ export class LiveAdsAdapter implements AdsPlatformPort {
       try {
         logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', id });
         const customer = await this.getCustomer();
-        await customer.campaigns.update({
+        await customer.campaigns.update([{
             resource_name: id,
             status: enums.CampaignStatus.PAUSED
-        });
+        }]);
         logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', id, status: 'paused' });
       } catch (e: any) {
           logger.external('GoogleAds', 'stopCampaign', { endpoint: 'GoogleAdsAPI', error: e.message, id });
@@ -168,7 +167,8 @@ export class LiveAdsAdapter implements AdsPlatformPort {
         geo_target_constants: ['geoTargetConstants/2840'],
         keyword_plan_network: enums.KeywordPlanNetwork.GOOGLE_SEARCH,
         language: 'languageConstants/1000',
-      });
+        include_adult_keywords: false
+      } as any);
       const results = response.results || [];
       logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, resultsCount: results.length });
       return results.map((row: any) => ({

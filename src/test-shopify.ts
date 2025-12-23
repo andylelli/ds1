@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { LiveShopAdapter } from './infra/shop/Shopify/LiveShopAdapter';
+import { LiveShopAdapter } from './infra/shop/Shopify/LiveShopAdapter.js';
 
 dotenv.config();
 

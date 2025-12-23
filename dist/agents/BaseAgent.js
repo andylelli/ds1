@@ -53,8 +53,15 @@ export class BaseAgent extends MCPServer {
         else if (type === 'debug')
             level = 'debug';
         // Use the new Logger Service
-        const logMsg = typeof data === 'string' ? data : JSON.stringify(data);
-        const context = { agent: this.name, type };
+        let logMsg = '';
+        let context = { agent: this.name, type };
+        if (typeof data === 'string') {
+            logMsg = `[${type}] ${data}`;
+        }
+        else {
+            logMsg = `[${type}]`;
+            context = { ...context, ...data };
+        }
         if (level === 'error')
             logger.error(logMsg, context);
         else if (level === 'warn')

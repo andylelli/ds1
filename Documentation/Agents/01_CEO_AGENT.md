@@ -53,6 +53,65 @@ The CEO does not blindly approve everything. It uses the `AiAdapter` to evaluate
 If the `AnalyticsAgent` reports a ROAS (Return on Ad Spend) below 1.0, the CEO has the authority to override the `MarketingAgent` and pause campaigns immediately to save budget.
 
 ## 6. Current Status
-*   **Implementation**: Partial Real / Partial Mock.
-*   **Logic**: The `CEOAgent` class is fully implemented with tool definitions and event subscriptions in `test-full-workflow.ts`.
-*   **AI Integration**: Uses `MockAiAdapter` for testing, ready for `OpenAiAdapter`.
+*   **Implementation**: Live.
+*   **Logic**: Fully implemented. Orchestrates Research, Sourcing, and Marketing.
+*   **AI Integration**: Connected to Azure OpenAI via `LiveAiAdapter`.
+*   **New Features**: "Narrative Mode" allows the CEO to explain complex logs in plain English.
+
+## 8. Technical Implementation Details
+
+### 8.1 Class Structure
+The `CEOAgent` extends `BaseAgent` and integrates with the following ports:
+*   **`AiPort`**: Interface for LLM interactions (Azure OpenAI).
+*   **`PersistencePort`**: Database access for logs, products, orders, and campaigns.
+*   **`EventBusPort`**: Pub/Sub system for inter-agent communication.
+*   **`ResearchStagingService`**: Manages the staging area for human-in-the-loop reviews.
+
+### 8.2 Core Methods
+
+#### `chat(userMessage: string, mode?: string)`
+The primary interaction loop for the Control Panel chat interface.
+1.  **Context Retrieval**: Fetches the last 50 logs, active products, recent orders, and active campaigns from the database.
+2.  **Prompt Construction**: Builds a dynamic system prompt containing a "Business Snapshot" (financials, portfolio, activity).
+3.  **AI Execution**: Calls `AiPort.chat` with the user message and available tools.
+4.  **Tool Execution**: If the AI elects to call a tool (e.g., `startProductResearch`), the method executes the corresponding logic and returns the result to the chat.
+
+#### `askAboutProduct(requestId: string)`
+Generates the "Narrative" status report.
+1.  **Log Query**: Calls `db.getActivity({ entityId: requestId })` to retrieve all technical logs for a specific workflow.
+2.  **Synthesis**: Prompts the LLM to "provide a cohesive, executive summary... Tell it as a story" based on the raw logs.
+
+#### `evaluateProduct(product: any)`
+The decision engine for product approval.
+*   **Simulation Mode**: Auto-approves products to ensure rapid testing cycles.
+*   **Live Mode**: Prompts the AI with a "Strict CEO" persona to evaluate the product based on description and price. It expects the AI to call `approveProduct` or `rejectProduct`.
+
+#### `stageBriefs(payload: any)`
+Handles the output of the Research Agent.
+1.  **Session Management**: Checks for an existing staging session or creates a new one.
+2.  **Staging**: Converts `OpportunityBrief` objects into staged items (`status: 'pending'`) for manual review in the UI.
+
+### 8.3 Prompts & Personas
+
+*   **General Chat**: "You are the CEO of a dropshipping company. You have access to the real-time state of your business... Answer based strictly on the data above."
+*   **Narrative**: "You are the CEO. You are reviewing the progress of a product research initiative... Tell it as a story. Highlight key decisions, findings, and current status."
+*   **Evaluation**: "You are a strict CEO. Evaluate the product proposal... Should we sell this?"
+*   **Planning**: "You are the CEO... Your goal is to orchestrate a team of agents... Break down the user's goal into a high-level strategy..."
+
+### 8.4 Event Subscriptions
+
+| Event Topic | Handler Logic |
+| :--- | :--- |
+| `System.Error` | Logs the error for visibility. |
+| `Sales.OrderReceived` | Logs a celebratory message with order details. |
+| `OpportunityResearch.BriefsPublished` | Triggers `stageBriefs` to queue items for review. |
+
+### 8.5 MCP Tool Definitions
+The CEO exposes the following tools to the LLM:
+*   `approveProduct` / `rejectProduct`: Decision tools.
+*   `approveSupplier` / `rejectSupplier`: Decision tools.
+*   `startProductResearch`: Delegated command to Research Agent.
+*   `sourceProduct`: Delegated command to Supplier Agent.
+*   `buildStorePage`: Delegated command to Store Agent.
+*   `launchMarketingCampaign`: Delegated command to Marketing Agent.
+

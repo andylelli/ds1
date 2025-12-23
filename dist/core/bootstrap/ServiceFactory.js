@@ -3,8 +3,8 @@ import { MockAdapter } from '../../infra/db/MockAdapter.js';
 import { PostgresEventBus } from '../../infra/events/PostgresEventBus.js';
 import { ResearchStagingService } from '../services/ResearchStagingService.js';
 // Shop
-import { LiveShopAdapter } from '../../infra/shop/LiveShopAdapter.js';
-import { MockShopAdapter } from '../../infra/shop/MockShopAdapter.js';
+import { LiveShopAdapter } from '../../infra/shop/Shopify/LiveShopAdapter.js';
+import { MockShopAdapter } from '../../infra/shop/Shopify/MockShopAdapter.js';
 import { ShopifyMcpWrapper } from '../../infra/mcp/wrappers/ShopifyMcpWrapper.js';
 import { AdsMcpWrapper } from '../../infra/mcp/wrappers/AdsMcpWrapper.js';
 import { TrendMcpWrapper } from '../../infra/mcp/wrappers/TrendMcpWrapper.js';
@@ -12,15 +12,17 @@ import { CompetitorMcpWrapper } from '../../infra/mcp/wrappers/CompetitorMcpWrap
 import { FulfilmentMcpWrapper } from '../../infra/mcp/wrappers/FulfilmentMcpWrapper.js';
 import { EmailMcpWrapper } from '../../infra/mcp/wrappers/EmailMcpWrapper.js';
 import { AiMcpWrapper } from '../../infra/mcp/wrappers/AiMcpWrapper.js';
+import { VideoMcpWrapper } from '../../infra/mcp/wrappers/VideoMcpWrapper.js';
 // Ads
-import { LiveAdsAdapter } from '../../infra/ads/LiveAdsAdapter.js';
-import { MockAdsAdapter } from '../../infra/ads/MockAdsAdapter.js';
+import { LiveAdsAdapter } from '../../infra/ads/GoogleAds/LiveAdsAdapter.js';
+import { MockAdsAdapter } from '../../infra/ads/GoogleAds/MockAdsAdapter.js';
 // Trends
-import { LiveTrendAdapter } from '../../infra/trends/GoogleBigQueryAPI/LiveTrendAdapter.js';
+import { LiveTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/LiveTrendAdapter.js';
 import { MockTrendAdapter } from '../../infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
 // Research / Competitor
-import { LiveCompetitorAdapter } from '../../infra/research/LiveCompetitorAdapter.js';
-import { MockCompetitorAdapter } from '../../infra/research/MockCompetitorAdapter.js';
+import { LiveCompetitorAdapter } from '../../infra/research/Meta/LiveCompetitorAdapter.js';
+import { MockCompetitorAdapter } from '../../infra/research/Meta/MockCompetitorAdapter.js';
+import { LiveVideoAdapter } from '../../infra/research/YouTube/LiveVideoAdapter.js';
 // Fulfilment
 import { LiveFulfilmentAdapter } from '../../infra/fulfilment/LiveFulfilmentAdapter.js';
 import { MockFulfilmentAdapter } from '../../infra/fulfilment/MockFulfilmentAdapter.js';
@@ -28,8 +30,8 @@ import { MockFulfilmentAdapter } from '../../infra/fulfilment/MockFulfilmentAdap
 import { LiveEmailAdapter } from '../../infra/email/LiveEmailAdapter.js';
 import { MockEmailAdapter } from '../../infra/email/MockEmailAdapter.js';
 // AI
-import { LiveAiAdapter } from '../../infra/ai/LiveAiAdapter.js';
-import { MockAiAdapter } from '../../infra/ai/MockAiAdapter.js';
+import { LiveAiAdapter } from '../../infra/ai/OpenAI/LiveAiAdapter.js';
+import { MockAiAdapter } from '../../infra/ai/OpenAI/MockAiAdapter.js';
 // Agents
 import { CEOAgent } from '../../agents/CEOAgent.js';
 import { ProductResearchAgent } from '../../agents/ProductResearchAgent.js';
@@ -83,46 +85,64 @@ export class ServiceFactory {
             return systemMode === 'live';
         };
         switch (className) {
-            case 'ShopifyAdapter':
-                if (isServiceLive('shop')) {
-                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-                    return new LiveShopAdapter(pool);
-                }
-                return new MockShopAdapter();
-            case 'AdsAdapter':
-                const isLive = isServiceLive('ads');
-                console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${isLive}`);
-                if (isLive) {
-                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-                    return new LiveAdsAdapter(pool);
-                }
-                return new MockAdsAdapter();
-            case 'TrendAdapter':
-                if (isServiceLive('trends')) {
+            case 'ShopifyAdapter': {
+                const live = isServiceLive('shop');
+                console.log(`[ServiceFactory] Creating ShopAdapter. Live mode: ${live}`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return live ? new LiveShopAdapter(pool) : new MockShopAdapter();
+            }
+            case 'AdsAdapter': {
+                const live = isServiceLive('ads');
+                console.log(`[ServiceFactory] Creating AdsAdapter. Live mode: ${live}`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return live ? new LiveAdsAdapter(pool) : new MockAdsAdapter();
+            }
+            case 'TrendAdapter': {
+                const live = isServiceLive('trends');
+                console.log(`[ServiceFactory] Creating TrendAdapter. Live mode: ${live}`);
+                if (live) {
                     if (!deps || !deps.db) {
                         throw new Error("LiveTrendAdapter requires a database connection (deps.db).");
                     }
-                    // Assuming deps.db is PostgresAdapter which has getPool()
                     return new LiveTrendAdapter(deps.db.getPool());
                 }
                 return new MockTrendAdapter();
-            case 'CompetitorAdapter':
-                return isServiceLive('competitor') ? new LiveCompetitorAdapter() : new MockCompetitorAdapter();
-            case 'FulfilmentAdapter':
-                if (isServiceLive('fulfilment')) {
-                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-                    return new LiveFulfilmentAdapter(pool);
-                }
-                return new MockFulfilmentAdapter();
-            case 'EmailAdapter':
-                return isServiceLive('email') ? new LiveEmailAdapter() : new MockEmailAdapter();
-            case 'AiAdapter':
-                if (isServiceLive('ai')) {
-                    // Pass DB pool if available for logging
-                    const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
-                    return new LiveAiAdapter(pool);
-                }
-                return new MockAiAdapter();
+            }
+            case 'CompetitorAdapter': {
+                const live = isServiceLive('competitor');
+                console.log(`[ServiceFactory] Creating CompetitorAdapter. Live mode: ${live}`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return live ? new LiveCompetitorAdapter(pool) : new MockCompetitorAdapter();
+            }
+            case 'VideoAdapter': {
+                const live = isServiceLive('video');
+                console.log(`[ServiceFactory] Creating VideoAdapter. Live mode: ${live}`);
+                // You would add actual LiveVideoAdapter/MockVideoAdapter instantiation here
+                // For now, just log and return undefined or a mock if implemented
+                return undefined;
+            }
+            case 'LiveVideoAdapter': {
+                console.log(`[ServiceFactory] Creating LiveVideoAdapter.`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return new LiveVideoAdapter(pool);
+            }
+            case 'FulfilmentAdapter': {
+                const live = isServiceLive('fulfilment');
+                console.log(`[ServiceFactory] Creating FulfilmentAdapter. Live mode: ${live}`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return live ? new LiveFulfilmentAdapter(pool) : new MockFulfilmentAdapter();
+            }
+            case 'EmailAdapter': {
+                const live = isServiceLive('email');
+                console.log(`[ServiceFactory] Creating EmailAdapter. Live mode: ${live}`);
+                return live ? new LiveEmailAdapter() : new MockEmailAdapter();
+            }
+            case 'AiAdapter': {
+                const live = isServiceLive('ai');
+                console.log(`[ServiceFactory] Creating AiAdapter. Live mode: ${live}`);
+                const pool = (deps && deps.db && typeof deps.db.getPool === 'function') ? deps.db.getPool() : undefined;
+                return live ? new LiveAiAdapter(pool) : new MockAiAdapter();
+            }
             default:
                 throw new Error(`Unknown adapter class: ${className}`);
         }
@@ -146,6 +166,8 @@ export class ServiceFactory {
                 return new EmailMcpWrapper(adapterInstance);
             case 'AiAdapter':
                 return new AiMcpWrapper(adapterInstance);
+            case 'LiveVideoAdapter':
+                return new VideoMcpWrapper(adapterInstance);
             default:
                 return null;
         }
@@ -158,7 +180,9 @@ export class ServiceFactory {
             case 'CEOAgent':
                 return new CEOAgent(deps.db, deps.eventBus, deps.ai, deps.staging);
             case 'ProductResearchAgent':
-                return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor);
+                // Inject 'shop' adapter as 'shopCompliance' port
+                // Inject 'video' adapter for YouTube analysis
+                return new ProductResearchAgent(deps.db, deps.eventBus, deps.trend, deps.competitor, deps.ads, deps.shop, deps.video);
             case 'SupplierAgent':
                 return new SupplierAgent(deps.db, deps.eventBus, deps.fulfilment);
             case 'StoreBuildAgent':

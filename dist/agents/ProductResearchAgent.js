@@ -1,8 +1,13 @@
 import { BaseAgent } from './BaseAgent.js';
-import { openAIService } from '../infra/ai/OpenAIService.js';
+import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
+import { logger } from '../infra/logging/LoggerService.js';
+import { analyzeTrendShape } from '../utils/math.js';
 export class ProductResearchAgent extends BaseAgent {
     trendAnalyzer;
     competitorAnalyzer;
+    adsAnalyzer;
+    shopCompliance;
+    videoAnalyzer;
     // Section 0: Dependencies
     strategyProfile = null;
     // Section 2: Context
@@ -25,10 +30,13 @@ export class ProductResearchAgent extends BaseAgent {
     concepts = [];
     // Section 10: Opportunity Briefs
     briefs = [];
-    constructor(db, eventBus, trendAnalyzer, competitorAnalyzer) {
+    constructor(db, eventBus, trendAnalyzer, competitorAnalyzer, adsAnalyzer, shopCompliance, videoAnalyzer) {
         super('ProductResearcher', db, eventBus);
         this.trendAnalyzer = trendAnalyzer;
         this.competitorAnalyzer = competitorAnalyzer;
+        this.adsAnalyzer = adsAnalyzer;
+        this.shopCompliance = shopCompliance;
+        this.videoAnalyzer = videoAnalyzer;
         this.registerTool('find_winning_products', this.findWinningProducts.bind(this));
         this.registerTool('analyze_niche', this.analyzeNiche.bind(this));
         this.registerTool('analyze_competitors', this.analyzeCompetitors.bind(this));
@@ -39,6 +47,15 @@ export class ProductResearchAgent extends BaseAgent {
         });
     }
     async logStep(action, category, status, message, details) {
+        // Log to file system for visibility
+        const logMsg = `[${category}] ${action}: ${message}`;
+        if (status === 'failed')
+            logger.error(logMsg, details);
+        else if (status === 'warning')
+            logger.warn(logMsg, details);
+        else
+            logger.info(logMsg, details);
+        // Log to database for Control Panel
         await this.db.saveActivity({
             agent: this.name,
             action,
@@ -200,11 +217,18 @@ export class ProductResearchAgent extends BaseAgent {
         const signals = [];
         // 1. Search Intent (Google Trends / BigQuery)
         try {
-            // Use the AI strategy generation from before to get keywords
+            this.log('debug', '[collectSignals] Calling trendAnalyzer.findProducts');
             const keywords = await this.generateSearchStrategies(brief.raw_criteria.category);
             for (const keyword of keywords) {
-                // Use TrendAnalyzer (which wraps BigQuery/Trends)
-                const products = await this.trendAnalyzer.findProducts(keyword);
+                let products;
+                try {
+                    products = await this.trendAnalyzer.findProducts(keyword);
+                    this.log('debug', { message: `[collectSignals] trendAnalyzer.findProducts result for "${keyword}":`, data: products });
+                    logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, productsCount: products?.length || 0, products });
+                }
+                catch (err) {
+                    logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, error: err?.message });
+                }
                 if (products && products.length > 0) {
                     signals.push({
                         id: `sig_search_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -217,23 +241,27 @@ export class ProductResearchAgent extends BaseAgent {
             }
         }
         catch (e) {
-            this.log('error', `Failed to collect Search signals: ${e}`);
+            this.log('error', `[collectSignals] Failed to collect Search signals: ${e}`);
+            logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', error: e?.message });
             await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Search signals: ${e.message}`, { error: e.stack });
         }
         // 2. Competitor Analysis (Marketplace Movement)
         try {
-            // Use CompetitorAnalyzer
-            // Assuming analyzeCompetitors returns a list of competitors or products
-            // The interface might vary, let's assume it takes a category
-            // Note: The port interface is `analyzeCompetitors(product_name: string): Promise<any>`
-            // We don't have a specific product name yet, just a category.
-            // We can use the products found in step 1 to seed this.
+            this.log('debug', '[collectSignals] Calling competitorAnalyzer.analyzeCompetitors');
             const seedProducts = signals
                 .filter(s => s.family === 'search')
                 .flatMap(s => s.data.products)
-                .slice(0, 3); // Take top 3 to save tokens/time
+                .slice(0, 3);
             for (const prod of seedProducts) {
-                const compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
+                let compData;
+                try {
+                    compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
+                    this.log('debug', { message: `[collectSignals] competitorAnalyzer.analyzeCompetitors result for "${prod.name}":`, data: compData });
+                    logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, result: compData });
+                }
+                catch (err) {
+                    logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, error: err?.message });
+                }
                 if (compData) {
                     signals.push({
                         id: `sig_comp_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
@@ -246,8 +274,136 @@ export class ProductResearchAgent extends BaseAgent {
             }
         }
         catch (e) {
-            this.log('error', `Failed to collect Competitor signals: ${e}`);
+            this.log('error', `[collectSignals] Failed to collect Competitor signals: ${e}`);
+            logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', error: e?.message });
             await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Competitor signals: ${e.message}`, { error: e.stack });
+        }
+        // 3. Video Analysis (YouTube)
+        if (this.videoAnalyzer) {
+            try {
+                this.log('debug', '[collectSignals] Calling videoAnalyzer.searchVideos');
+                const seedProducts = signals
+                    .filter(s => s.family === 'search')
+                    .flatMap(s => s.data.products)
+                    .slice(0, 3);
+                for (const prod of seedProducts) {
+                    let videoData;
+                    try {
+                        videoData = await this.videoAnalyzer.searchVideos(prod.name, 5);
+                        this.log('debug', { message: `[collectSignals] videoAnalyzer.searchVideos result for "${prod.name}":`, data: videoData });
+                        logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, resultCount: videoData.length });
+                    }
+                    catch (err) {
+                        logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, error: err?.message });
+                    }
+                    if (videoData && videoData.length > 0) {
+                        signals.push({
+                            id: `sig_video_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                            family: 'social',
+                            source: 'YouTube',
+                            timestamp: new Date().toISOString(),
+                            data: { product: prod.name, videos: videoData }
+                        });
+                    }
+                }
+            }
+            catch (e) {
+                this.log('error', `[collectSignals] Failed to collect Video signals: ${e}`);
+                logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', error: e?.message });
+                await this.logStep('Signal Collection Failed', 'Discovery', 'failed', `Failed to collect Video signals: ${e.message}`, { error: e.stack });
+            }
+        }
+        else {
+            this.log('warn', '[collectSignals] Video Analyzer not available. Skipping YouTube analysis.');
+        }
+        // 3. Ads Validation (Search Volume / CPC)
+        try {
+            this.log('debug', '[collectSignals] Calling adsAnalyzer.getKeywordMetrics');
+            if (this.adsAnalyzer && this.adsAnalyzer.getKeywordMetrics) {
+                const keywords = signals
+                    .filter(s => s.family === 'search')
+                    .map(s => s.data.keyword);
+                if (keywords.length > 0) {
+                    let metrics;
+                    try {
+                        metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
+                        this.log('debug', { message: `[collectSignals] adsAnalyzer.getKeywordMetrics result:`, data: metrics });
+                        logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, metrics });
+                    }
+                    catch (err) {
+                        logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, error: err?.message });
+                    }
+                    if (metrics) {
+                        signals.push({
+                            id: `sig_ads_${Date.now()}`,
+                            family: 'marketplace',
+                            source: 'GoogleAds',
+                            timestamp: new Date().toISOString(),
+                            data: { metrics }
+                        });
+                    }
+                }
+            }
+        }
+        catch (e) {
+            this.log('warn', `[collectSignals] Failed to collect Ads signals: ${e}`);
+            logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', error: e?.message });
+        }
+        // 4. Shop Compliance (Shopify)
+        try {
+            this.log('debug', '[collectSignals] Calling shopCompliance.checkPolicy');
+            if (this.shopCompliance && this.shopCompliance.checkPolicy) {
+                let shopResult;
+                try {
+                    shopResult = await this.shopCompliance.checkPolicy(brief.raw_criteria.category, '');
+                    this.log('debug', { message: `[collectSignals] shopCompliance.checkPolicy result:`, data: shopResult });
+                    logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, result: shopResult });
+                }
+                catch (err) {
+                    logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, error: err?.message });
+                }
+                if (shopResult) {
+                    signals.push({
+                        id: `sig_shop_${Date.now()}`,
+                        family: 'marketplace',
+                        source: 'Shopify',
+                        timestamp: new Date().toISOString(),
+                        data: { shopResult }
+                    });
+                }
+            }
+        }
+        catch (e) {
+            this.log('warn', `[collectSignals] Failed to collect Shop Compliance signals: ${e}`);
+            logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', error: e?.message });
+        }
+        // 5. Video Analysis (YouTube)
+        try {
+            this.log('debug', '[collectSignals] Calling videoAnalyzer.searchVideos');
+            if (this.videoAnalyzer && this.videoAnalyzer.searchVideos) {
+                let videoResults;
+                try {
+                    videoResults = await this.videoAnalyzer.searchVideos(brief.raw_criteria.category, 5);
+                    this.log('debug', { message: `[collectSignals] videoAnalyzer.searchVideos result:`, data: videoResults });
+                    logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, resultCount: videoResults?.length || 0, result: videoResults });
+                }
+                catch (err) {
+                    logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, error: err?.message });
+                }
+                if (videoResults) {
+                    signals.push({
+                        id: `sig_video_${Date.now()}`,
+                        family: 'social',
+                        source: 'YouTube',
+                        timestamp: new Date().toISOString(),
+                        data: { videoResults }
+                    });
+                }
+            }
+        }
+        catch (e) {
+            this.log('warn', `[collectSignals] Failed to collect Video signals: ${e}`);
+            logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', error: e?.message });
         }
         // Check constraint: At least two families
         const families = new Set(signals.map(s => s.family));
@@ -263,83 +419,27 @@ export class ProductResearchAgent extends BaseAgent {
      */
     async generateThemes(signals) {
         this.log('info', `[Section 4] Generating Themes from ${signals.length} signals...`);
-        // In a real system, we would use an LLM to cluster these signals into themes.
-        // For now, we will group by product name/keyword from the signals.
-        const themesMap = new Map();
-        for (const signal of signals) {
-            // Handle Search Signals with specific products
-            if (signal.family === 'search' && signal.data.products && Array.isArray(signal.data.products) && signal.data.products.length > 0) {
-                for (const product of signal.data.products) {
-                    if (!product.name)
-                        continue; // Skip if name is missing (e.g. summary object)
-                    const themeName = product.name;
-                    const description = product.description || `High search interest in ${themeName}`;
-                    const key = themeName.toLowerCase();
-                    if (!themesMap.has(key)) {
-                        themesMap.set(key, {
-                            id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-                            name: themeName,
-                            description: description,
-                            supporting_signals: [],
-                            certainty: 'Inferred'
-                        });
-                    }
-                    const theme = themesMap.get(key);
-                    if (!theme.supporting_signals.includes(signal.id)) {
-                        theme.supporting_signals.push(signal.id);
-                    }
-                    // Check certainty
-                    const signalFamilies = signals
-                        .filter(s => theme.supporting_signals.includes(s.id))
-                        .map(s => s.family);
-                    if (new Set(signalFamilies).size > 1) {
-                        theme.certainty = 'Observed';
-                    }
-                }
-                continue;
-            }
-            let themeName = '';
-            let description = '';
-            if (signal.family === 'search') {
-                themeName = signal.data.keyword || 'Unknown';
-                description = `High search interest in ${themeName}`;
-            }
-            else if (signal.family === 'competitor') {
-                themeName = signal.data.product || 'Unknown';
-                description = `Competitor activity in ${themeName}`;
-            }
-            else if (signal.family === 'social') {
-                // Handle social signals (including mocks)
-                themeName = signal.data.hashtag ? signal.data.hashtag.replace('#', '') : 'Trending Topic';
-                description = `Viral social trend: ${themeName}`;
-            }
-            else {
-                continue;
-            }
-            // Normalize theme name (simple lowercase for clustering)
-            const key = themeName.toLowerCase();
-            if (!themesMap.has(key)) {
-                themesMap.set(key, {
-                    id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-                    name: themeName,
-                    description: description,
-                    supporting_signals: [],
-                    certainty: 'Inferred' // Default
-                });
-            }
-            const theme = themesMap.get(key);
-            theme.supporting_signals.push(signal.id);
-            // Upgrade certainty if we have multiple signal families
-            const signalFamilies = signals
-                .filter(s => theme.supporting_signals.includes(s.id))
-                .map(s => s.family);
-            if (new Set(signalFamilies).size > 1) {
-                theme.certainty = 'Observed';
-            }
+        try {
+            // Use OpenAI to cluster signals into semantic themes
+            const rawThemes = await openAIService.generateThemes(signals);
+            const validSignalIds = new Set(signals.map(s => s.id));
+            const themes = rawThemes.map((t) => ({
+                id: `theme_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+                name: t.name,
+                description: t.description,
+                supporting_signals: (t.signal_ids || []).filter((id) => validSignalIds.has(id)),
+                certainty: (t.confidence && t.confidence > 0.8) ? 'Observed' : 'Inferred',
+                rationale: t.rationale,
+                confidence: t.confidence,
+                seasonality: t.seasonality
+            }));
+            this.generatedThemes = themes;
+            return themes;
         }
-        const themes = Array.from(themesMap.values());
-        this.generatedThemes = themes;
-        return themes;
+        catch (error) {
+            this.log('error', `Failed to generate themes via AI: ${error}`);
+            return [];
+        }
     }
     /**
      * Section 5: Hard-Gate Filtering
@@ -401,39 +501,68 @@ export class ProductResearchAgent extends BaseAgent {
      */
     async scoreAndRankThemes(themes, adjustments) {
         this.log('info', `[Section 6] Scoring ${themes.length} themes...`);
+        // Default weights
+        const weights = this.strategyProfile?.scoring_config?.weights || {
+            demand: 0.4,
+            trend: 0.3,
+            competition: 0.2,
+            risk: 0.1
+        };
         const scoredThemes = themes.map(theme => {
-            // 1. Base Score (Mock Heuristics)
-            // In reality, this would come from analyzing the signals attached to the theme
-            let score = 0.5; // Start neutral
-            // Heuristic: Certainty Bonus
-            if (theme.certainty === 'Observed')
-                score += 0.2;
-            if (theme.certainty === 'Inferred')
-                score += 0.1;
-            // Heuristic: Signal Count Bonus
-            const signalCount = theme.supporting_signals.length;
-            score += Math.min(signalCount * 0.05, 0.2); // Cap at 0.2
-            // 2. Apply Risk Adjustments (from Section 2)
-            // We check if any adjustment applies to this theme (e.g. by keyword matching)
-            // Since adjustments were global or category based, we might apply them all or filter.
-            // The checklist says "Apply prior-learning adjustments".
-            // Let's assume adjustments in `this.riskAdjustments` are relevant to the whole request context.
+            const signals = this.collectedSignals.filter(s => theme.supporting_signals.includes(s.id));
+            // 1. Demand Strength (0-100)
+            // Aggregate search volume and social views
+            let totalVolume = 0;
+            let totalViews = 0;
+            for (const s of signals) {
+                if (s.family === 'search' && s.data.volume)
+                    totalVolume += s.data.volume;
+                if (s.family === 'social' && s.data.views)
+                    totalViews += s.data.views;
+            }
+            // Normalize (Assumptions: High Volume = 100k, High Views = 1M)
+            const normVolume = Math.min(totalVolume / 100000, 1) * 100;
+            const normViews = Math.min(totalViews / 1000000, 1) * 100;
+            const demandScore = Math.max(normVolume, normViews); // Take the strongest signal
+            // 2. Trend Velocity (0-100)
+            // Calculate slope of trend points
+            let maxSlope = 0;
+            for (const s of signals) {
+                if (s.family === 'search' && s.data.trend_points && Array.isArray(s.data.trend_points)) {
+                    const points = s.data.trend_points;
+                    if (points.length > 1) {
+                        const slope = (points[points.length - 1] - points[0]) / points.length;
+                        maxSlope = Math.max(maxSlope, slope);
+                    }
+                }
+            }
+            // Normalize slope (Assumption: Slope of 5 is high growth)
+            const trendScore = Math.min(Math.max(maxSlope, 0) / 5, 1) * 100;
+            // 3. Competition Density (0-100)
+            // Count competitor signals
+            const competitorCount = signals.filter(s => s.family === 'competitor').length;
+            // Normalize (Assumption: 10 competitors is saturated)
+            const competitionScore = Math.min(competitorCount / 10, 1) * 100;
+            // 4. Risk Adjustment
+            let riskScore = 50; // Start neutral
             for (const adj of adjustments) {
                 if (adj.type === 'penalty')
-                    score += adj.value; // value is negative
+                    riskScore += adj.value;
                 if (adj.type === 'boost')
-                    score += adj.value;
+                    riskScore += adj.value;
             }
-            // 3. Random Variance (to simulate different potential)
-            // In a real agent, this would be based on "Demand Acceleration", "Competition Saturation", etc.
-            // We'll mock these sub-scores.
-            const demandScore = Math.random();
-            const competitionScore = Math.random(); // Lower is better usually, but let's say this is "Opportunity Score"
-            score += (demandScore * 0.3);
-            score += (competitionScore * 0.2);
-            // Clamp 0-1
-            score = Math.max(0, Math.min(1, score));
-            return { ...theme, score };
+            riskScore = Math.max(0, Math.min(100, riskScore));
+            // Calculate Final Score
+            // Score = (Demand * 0.4) + (Trend * 0.3) + (LowCompetition * 0.2) + (Risk * 0.1)
+            // We invert competition score because Low Competition is good.
+            const competitionFactor = 100 - competitionScore;
+            let finalScore = (demandScore * weights.demand) +
+                (trendScore * weights.trend) +
+                (competitionFactor * weights.competition) +
+                (riskScore * weights.risk);
+            // Cap at 100
+            finalScore = Math.min(100, Math.max(0, finalScore));
+            return { ...theme, score: parseFloat(finalScore.toFixed(2)) };
         });
         // Rank
         scoredThemes.sort((a, b) => (b.score || 0) - (a.score || 0));
@@ -449,6 +578,7 @@ export class ProductResearchAgent extends BaseAgent {
         this.log('info', `[Section 7] Checking Time Fitness for ${themes.length} themes...`);
         const passed = [];
         const notes = [];
+        const currentMonth = new Date().getMonth() + 1; // 1-12
         // Execution Speed Mapping (Days to launch)
         const executionDays = {
             'fast': 7,
@@ -456,23 +586,49 @@ export class ProductResearchAgent extends BaseAgent {
             'thorough': 30
         }[brief.execution_speed] || 14;
         for (const theme of themes) {
-            // 1. Estimate Trend Phase (Mock)
-            // In reality, we'd look at the trend signal slope
-            const phases = ['early', 'mid', 'late'];
-            const phase = phases[Math.floor(Math.random() * phases.length)]; // Random for now
-            // 2. Estimate Opportunity Window (Days remaining)
+            const signals = this.collectedSignals.filter(s => theme.supporting_signals.includes(s.id));
+            // 1. Analyze Trend Shape
+            let trendShape = 'Flat';
+            let trendPoints = [];
+            // Find the best trend signal
+            for (const s of signals) {
+                if (s.family === 'search' && s.data.trend_points && Array.isArray(s.data.trend_points)) {
+                    if (s.data.trend_points.length > trendPoints.length) {
+                        trendPoints = s.data.trend_points;
+                    }
+                }
+            }
+            if (trendPoints.length >= 5) {
+                trendShape = analyzeTrendShape(trendPoints);
+            }
+            // 2. Estimate Opportunity Window
             let windowDays = 0;
-            if (phase === 'early')
+            if (trendShape === 'Rising')
                 windowDays = 90;
-            if (phase === 'mid')
-                windowDays = 45;
-            if (phase === 'late')
-                windowDays = 10;
-            // 3. Compare
+            if (trendShape === 'Peaking')
+                windowDays = 30;
+            if (trendShape === 'Falling')
+                windowDays = 0;
+            if (trendShape === 'Flat')
+                windowDays = 45; // Stable demand
+            // 3. Seasonality Check
+            let seasonalityPenalty = false;
+            if (theme.seasonality === 'Winter' && currentMonth > 11)
+                seasonalityPenalty = true; // Too late for Winter (Dec)
+            if (theme.seasonality === 'Summer' && currentMonth > 6)
+                seasonalityPenalty = true; // Too late for Summer (July)
+            if (theme.seasonality === 'Q4_Gift' && currentMonth > 11)
+                seasonalityPenalty = true; // Too late for Xmas
+            if (seasonalityPenalty) {
+                windowDays = 0;
+                this.log('info', `Theme ${theme.name} rejected due to Seasonality (${theme.seasonality}) vs Month ${currentMonth}`);
+            }
+            // 4. Compare
             const isViable = windowDays >= executionDays;
             notes.push({
                 themeId: theme.id,
-                phase,
+                trendShape,
+                seasonality: theme.seasonality,
                 windowDays,
                 executionDays,
                 isViable
@@ -481,7 +637,7 @@ export class ProductResearchAgent extends BaseAgent {
                 passed.push(theme);
             }
             else {
-                this.log('info', `Theme ${theme.name} rejected: Window (${windowDays}d) < Execution (${executionDays}d) [Phase: ${phase}]`);
+                this.log('info', `Theme ${theme.name} rejected: Window (${windowDays}d) < Execution (${executionDays}d) [Shape: ${trendShape}]`);
             }
         }
         this.timeFilteredThemes = passed;
@@ -496,22 +652,28 @@ export class ProductResearchAgent extends BaseAgent {
         // Limit to top 5 for deep scan as per checklist
         const candidates = themes.slice(0, 5);
         for (const theme of candidates) {
-            // Mock Deep Scan
-            // In reality, this would call:
-            // - Social listening API for comments
-            // - Competitor analysis for reviews
-            // - Supplier API for logistics check
-            const validation = {
-                qualitative_samples: [
-                    "Love the concept but hate the plastic feel",
-                    "Need this for my small apartment",
-                    "Too expensive for what it is"
-                ],
-                problem_language: ["space saving", "durable", "eco-friendly"],
-                competition_quality: Math.random() > 0.5 ? 'high' : 'medium',
-                price_band: { min: 20, max: 80 },
-                operational_risks: Math.random() > 0.7 ? ['Fragile shipping'] : []
-            };
+            // Real Deep Scan using LLM
+            this.log('info', `[Section 8] Validating theme: ${theme.name}`);
+            let validation;
+            try {
+                const result = await openAIService.validateTheme(theme);
+                if (result) {
+                    validation = result;
+                }
+                else {
+                    throw new Error("Failed to generate validation data");
+                }
+            }
+            catch (e) {
+                this.log('error', `[Section 8] Validation failed for ${theme.name}, falling back to heuristic.`);
+                validation = {
+                    qualitative_samples: ["Data unavailable"],
+                    problem_language: ["unknown"],
+                    competition_quality: 'medium',
+                    price_band: { min: 0, max: 0 },
+                    operational_risks: ["Validation Error"]
+                };
+            }
             // Enrich theme
             theme.validation = validation;
             validated.push(theme);
@@ -526,17 +688,33 @@ export class ProductResearchAgent extends BaseAgent {
         this.log('info', `[Section 9] Creating Offer Concepts for ${themes.length} themes...`);
         const concepts = [];
         for (const theme of themes) {
-            // Mock Concept Generation
-            // In reality, this would use LLM to synthesize the validation data into a concept
-            const concept = {
-                theme_id: theme.id,
-                core_hypothesis: `If we sell ${theme.name} positioned as ${theme.validation?.problem_language[0] || 'solution'}, we can capture the ${theme.validation?.price_band.min}-${theme.validation?.price_band.max} price point.`,
-                bundle_options: ["Starter Kit", "Refill Pack"],
-                target_persona: "Busy Urban Professional",
-                usage_scenario: "Used daily during morning routine",
-                differentiation: "Higher quality materials + eco-friendly packaging",
-                supplier_check: 'pass' // Mock pass
-            };
+            // Real Concept Generation using LLM
+            this.log('info', `[Section 9] Generating concept for: ${theme.name}`);
+            let concept;
+            try {
+                const result = await openAIService.generateConcept(theme, theme.validation);
+                if (result) {
+                    concept = {
+                        ...result,
+                        theme_id: theme.id
+                    };
+                }
+                else {
+                    throw new Error("Failed to generate concept");
+                }
+            }
+            catch (e) {
+                this.log('error', `[Section 9] Concept generation failed for ${theme.name}, falling back to heuristic.`);
+                concept = {
+                    theme_id: theme.id,
+                    core_hypothesis: `If we sell ${theme.name}, we can capture the market.`,
+                    bundle_options: ["Standard"],
+                    target_persona: "General Audience",
+                    usage_scenario: "Daily use",
+                    differentiation: "Standard",
+                    supplier_check: 'pass'
+                };
+            }
             concepts.push(concept);
         }
         this.concepts = concepts;
@@ -744,7 +922,7 @@ export class ProductResearchAgent extends BaseAgent {
                 initial_scope: brief // Send the full structured brief
             }, request_id);
             this.log('info', `[Section 1] Brief Created: ${briefId}`);
-            await this.logStep('Step 1: Brief', 'Research', 'completed', 'Research brief created.', brief);
+            await this.logStep('Step 1: Brief', 'Research', 'completed', `Research brief created for '${brief.raw_criteria.category}' targeting '${brief.target_personas.join(', ')}'.`, brief);
             // Section 2: Prior Learning Ingestion
             await this.logStep('Step 2: Learnings', 'Research', 'started', 'Ingesting prior learnings...');
             const { learnings, adjustments } = await this.ingestPriorLearnings(brief);
@@ -755,7 +933,7 @@ export class ProductResearchAgent extends BaseAgent {
                 artifacts: learnings.map(l => l.artifact_id).filter(Boolean)
             }, request_id);
             this.log('info', `[Section 2] Prior Learnings Attached: ${learnings.length} items`);
-            await this.logStep('Step 2: Learnings', 'Research', 'completed', 'Prior learnings ingested.', { count: learnings.length });
+            await this.logStep('Step 2: Learnings', 'Research', 'completed', `Ingested ${learnings.length} prior learnings relevant to this category.`, { learnings, adjustments });
             // Section 3: Multi-Signal Discovery
             await this.logStep('Step 3: Signals', 'Discovery', 'started', 'Collecting signals...');
             const signals = await this.collectSignals(brief);
@@ -771,7 +949,7 @@ export class ProductResearchAgent extends BaseAgent {
                 sources: [...new Set(signals.map(s => s.source))]
             }, request_id);
             this.log('info', `[Section 3] Signals Collected: ${signals.length} items from ${[...new Set(signals.map(s => s.family))].join(', ')}`);
-            await this.logStep('Step 3: Signals', 'Discovery', 'completed', `Collected ${signals.length} signals.`, { count: signals.length });
+            await this.logStep('Step 3: Signals', 'Discovery', 'completed', `Collected ${signals.length} signals from ${[...new Set(signals.map(s => s.family))].join(', ')}.`, { signals });
             // Section 4: Theme Generation
             await this.logStep('Step 4: Themes', 'Analysis', 'started', 'Generating themes...');
             const themes = await this.generateThemes(signals);
@@ -780,7 +958,7 @@ export class ProductResearchAgent extends BaseAgent {
                 themes: themes
             }, request_id);
             this.log('info', `[Section 4] Themes Generated: ${themes.length} themes`);
-            await this.logStep('Step 4: Themes', 'Analysis', 'completed', `Generated ${themes.length} themes.`, { count: themes.length });
+            await this.logStep('Step 4: Themes', 'Analysis', 'completed', `Generated ${themes.length} themes: ${themes.map(t => t.name).join(', ')}.`, { themes });
             // Section 5: Hard-Gate Filtering
             await this.logStep('Step 5: Gating', 'Filtering', 'started', 'Gating themes...');
             const { passed, rejected } = await this.gateThemes(themes, brief);
@@ -791,7 +969,7 @@ export class ProductResearchAgent extends BaseAgent {
                 rejection_summary: rejected.map(r => r.reason)
             }, request_id);
             this.log('info', `[Section 5] Themes Gated: ${passed.length} passed, ${rejected.length} rejected`);
-            await this.logStep('Step 5: Gating', 'Filtering', 'completed', `Gated down to ${passed.length} themes.`, { count: passed.length });
+            await this.logStep('Step 5: Gating', 'Filtering', 'completed', `Gated down to ${passed.length} themes. Passed: ${passed.map(t => t.name).join(', ')}.`, { passed, rejected });
             // Section 6: Preliminary Scoring & Ranking
             await this.logStep('Step 6: Scoring', 'Ranking', 'started', 'Scoring and ranking themes...');
             const rankedThemes = await this.scoreAndRankThemes(passed, adjustments);
@@ -800,7 +978,7 @@ export class ProductResearchAgent extends BaseAgent {
                 candidates: rankedThemes
             }, request_id);
             this.log('info', `[Section 6] Shortlist Ranked: Top ${rankedThemes.length} themes`);
-            await this.logStep('Step 6: Scoring', 'Ranking', 'completed', `Ranked ${rankedThemes.length} themes.`, { top: rankedThemes[0]?.name });
+            await this.logStep('Step 6: Scoring', 'Ranking', 'completed', `Ranked ${rankedThemes.length} themes. Top candidate: ${rankedThemes[0]?.name} (Score: ${rankedThemes[0]?.score}).`, { rankedThemes });
             // Section 7: Time & Cycle Fitness Check
             await this.logStep('Step 7: Time Fitness', 'Filtering', 'started', 'Checking time fitness...');
             const { passed: timePassed, notes: timeNotes } = await this.checkTimeFitness(rankedThemes, brief);
@@ -811,7 +989,7 @@ export class ProductResearchAgent extends BaseAgent {
                 time_notes: timeNotes
             }, request_id);
             this.log('info', `[Section 7] Time Filtered: ${timePassed.length} passed`);
-            await this.logStep('Step 7: Time Fitness', 'Filtering', 'completed', `${timePassed.length} themes passed time fitness.`, { count: timePassed.length });
+            await this.logStep('Step 7: Time Fitness', 'Filtering', 'completed', `${timePassed.length} themes passed time fitness check.`, { passed: timePassed, notes: timeNotes });
             // Section 8: Deep Validation
             await this.logStep('Step 8: Deep Validation', 'Validation', 'started', 'Performing deep validation...');
             const validatedThemes = await this.performDeepValidation(timePassed);
@@ -821,7 +999,7 @@ export class ProductResearchAgent extends BaseAgent {
                 candidates: validatedThemes
             }, request_id);
             this.log('info', `[Section 8] Validated Candidates Ready: ${validatedThemes.length} themes`);
-            await this.logStep('Step 8: Deep Validation', 'Validation', 'completed', `Validated ${validatedThemes.length} themes.`, { count: validatedThemes.length });
+            await this.logStep('Step 8: Deep Validation', 'Validation', 'completed', `Validated ${validatedThemes.length} themes ready for productization.`, { validatedThemes });
             // Section 9: Productization
             await this.logStep('Step 9: Productization', 'Concepting', 'started', 'Creating offer concepts...');
             const concepts = await this.createOfferConcepts(validatedThemes);
@@ -831,7 +1009,7 @@ export class ProductResearchAgent extends BaseAgent {
                 concepts: concepts
             }, request_id);
             this.log('info', `[Section 9] Offer Concepts Created: ${concepts.length} concepts`);
-            await this.logStep('Step 9: Productization', 'Concepting', 'completed', `Created ${concepts.length} concepts.`, { count: concepts.length });
+            await this.logStep('Step 9: Productization', 'Concepting', 'completed', `Created ${concepts.length} offer concepts: ${concepts.map(c => c.core_hypothesis).join(', ')}.`, { concepts });
             // Section 10: Opportunity Brief Creation
             await this.logStep('Step 10: Briefs', 'Output', 'started', 'Creating opportunity briefs...');
             const briefs = await this.createOpportunityBriefs(concepts, validatedThemes, request_id, brief);
@@ -845,7 +1023,7 @@ export class ProductResearchAgent extends BaseAgent {
                 briefs: briefs
             }, request_id);
             this.log('info', `[Section 10] Briefs Published: ${briefs.length} briefs`);
-            await this.logStep('Step 10: Briefs', 'Output', 'completed', `Created ${briefs.length} briefs.`, { count: briefs.length });
+            await this.logStep('Step 10: Briefs', 'Output', 'completed', `Published ${briefs.length} opportunity briefs.`, { briefs });
             // Section 11: Handoff via Events
             this.log('info', `[Section 11] Initiating Handoff for ${briefs.length} opportunities...`);
             await this.logStep('Step 11: Handoff', 'Output', 'started', 'Initiating handoff...');

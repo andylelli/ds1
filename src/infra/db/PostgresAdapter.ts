@@ -328,6 +328,49 @@ export class PostgresAdapter implements PersistencePort {
     }
   }
 
+  async getActivity(filter: any): Promise<ActivityLogEntry[]> {
+    const mode = configService.get('dbMode');
+    const pool = mode === 'test' ? this.simPool : this.pgPool;
+    if (!pool) return [];
+
+    let query = `SELECT * FROM activity_log WHERE 1=1`;
+    const params: any[] = [];
+    let paramIndex = 1;
+
+    if (filter.agent) {
+      query += ` AND agent = $${paramIndex++}`;
+      params.push(filter.agent);
+    }
+    if (filter.category) {
+      query += ` AND category = $${paramIndex++}`;
+      params.push(filter.category);
+    }
+    if (filter.entityId) {
+      query += ` AND entity_id = $${paramIndex++}`;
+      params.push(filter.entityId);
+    }
+    
+    query += ` ORDER BY timestamp ASC`;
+
+    try {
+      const result = await pool.query(query, params);
+      return result.rows.map(row => {
+          let details = row.details;
+          if (typeof details === 'string') {
+              try { details = JSON.parse(details); } catch (e) {}
+          }
+          return {
+              ...row,
+              details,
+              timestamp: row.timestamp
+          };
+      });
+    } catch (e) {
+      console.error('Failed to get activity:', e);
+      return [];
+    }
+  }
+
   async getRecentLogs(limit: number, source?: string): Promise<any[]> {
     const mode = configService.get('dbMode');
     

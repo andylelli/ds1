@@ -234,7 +234,7 @@
                                             <tr>
                                                 <th>Time</th>
                                                 <th>Message</th>
-                                                <th>Data</th>
+                                                <th>Details</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -245,7 +245,7 @@
                                                         <div style="max-height: 100px; overflow-y: auto; word-break: break-word;">${log.message}</div>
                                                     </td>
                                                     <td style="width: 40%;">
-                                                        ${log.data ? `<pre class="is-size-7 p-1" style="max-height: 200px; overflow: auto; white-space: pre-wrap;">${JSON.stringify(log.data, null, 2)}</pre>` : '-'}
+                                                        ${log.details ? `<pre class="is-size-7 p-1" style="max-height: 200px; overflow: auto; white-space: pre-wrap;">${JSON.stringify(log.details, null, 2)}</pre>` : '-'}
                                                     </td>
                                                 </tr>
                                             `).join('')}

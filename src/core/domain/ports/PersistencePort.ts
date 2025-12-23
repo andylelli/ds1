@@ -17,6 +17,7 @@ export interface PersistencePort {
   saveLog(agent: string, message: string, level: string, data?: any): Promise<void>;
   saveActivity(entry: ActivityLogEntry): Promise<void>;
   getRecentLogs(limit: number, source?: string): Promise<any[]>;
+  getActivity(filter: any): Promise<ActivityLogEntry[]>;
 
   // Clear simulation data
   clearSimulationData(): Promise<void>;

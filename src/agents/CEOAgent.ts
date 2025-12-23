@@ -172,6 +172,43 @@ export class CEOAgent extends BaseAgent {
   }
 
   /**
+   * Ask the CEO to explain the status of a research request.
+   * This generates a narrative based on the activity logs.
+   */
+  public async askAboutProduct(requestId: string): Promise<string> {
+      // 1. Fetch logs
+      // We cast to any because getActivity is a new method on PersistencePort
+      const logs = await (this.db as any).getActivity({ entityId: requestId });
+      
+      if (!logs || logs.length === 0) {
+          return `I have no records for request ID: ${requestId}. The research might not have started yet, or the ID is incorrect.`;
+      }
+
+      // 2. Format logs
+      const logSummary = logs.map((l: any) => `[${l.timestamp}] ${l.action}: ${l.message}`).join('\n');
+
+      // 3. Ask AI to narrate
+      const prompt = `
+          You are the CEO. You are reviewing the progress of a product research initiative.
+          Here is the activity log for Request ID: ${requestId}.
+          
+          LOGS:
+          ${logSummary}
+          
+          Please provide a cohesive, executive summary of what has happened so far. 
+          Tell it as a story. Highlight key decisions, findings, and current status.
+          Do not just list the logs.
+      `;
+
+      try {
+          const response = await this.ai.chat(prompt, "Explain the status.", []);
+          return response.content;
+      } catch (e: any) {
+          return `I tried to analyze the logs but encountered an error: ${e.message}`;
+      }
+  }
+
+  /**
    * Workflow Action: review_product
    * Triggered by: PRODUCT_FOUND
    */

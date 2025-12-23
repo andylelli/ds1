@@ -12,7 +12,7 @@ if (_SHOW_DEBUG_ENV) {
 }
 import { AzureOpenAI } from "openai";
 import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
-import { PROMPT_THEME_CLUSTERING } from "../../../core/prompts.js";
+import { PROMPT_THEME_CLUSTERING, PROMPT_DEEP_VALIDATION, PROMPT_CONCEPT_GENERATION } from "../../../core/prompts.js";
 
 export class OpenAIService {
   private client: AzureOpenAI | null = null;
@@ -43,6 +43,55 @@ export class OpenAIService {
     } catch (error) {
       console.error("Error generating themes:", error);
       return [];
+    }
+  }
+
+  public async validateTheme(theme: any): Promise<any> {
+    const client = this.getClient();
+    const prompt = PROMPT_DEEP_VALIDATION + "\n\nTHEME:\n" + JSON.stringify({
+      name: theme.name,
+      description: theme.description,
+      rationale: theme.rationale
+    }, null, 2);
+
+    try {
+      const completion = await client.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: this.deploymentName,
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+      });
+
+      const content = completion.choices[0].message.content;
+      if (!content) return null;
+      return JSON.parse(content);
+    } catch (error) {
+      console.error("Error validating theme:", error);
+      return null;
+    }
+  }
+
+  public async generateConcept(theme: any, validationData: any): Promise<any> {
+    const client = this.getClient();
+    const prompt = PROMPT_CONCEPT_GENERATION + "\n\nTHEME:\n" + JSON.stringify({
+      name: theme.name,
+      description: theme.description
+    }, null, 2) + "\n\nVALIDATION DATA:\n" + JSON.stringify(validationData, null, 2);
+
+    try {
+      const completion = await client.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: this.deploymentName,
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+      });
+
+      const content = completion.choices[0].message.content;
+      if (!content) return null;
+      return JSON.parse(content);
+    } catch (error) {
+      console.error("Error generating concept:", error);
+      return null;
     }
   }
 

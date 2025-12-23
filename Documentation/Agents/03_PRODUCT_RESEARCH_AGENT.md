@@ -67,13 +67,13 @@ These steps exist and process data, but the decision logic is currently simplifi
 
 6.  **Scoring & Ranking**:
     *   **Purpose**: Prioritizes opportunities based on potential and risk.
-    *   **Implementation**: Calculates a score based on signal count + random variance (simulating market demand).
-    *   **Status**: ⚠️ **Heuristic** (Math.random() used for demand simulation).
+    *   **Implementation**: Calculates a deterministic score using weighted factors: Demand (40%), Trend (30%), Competition (20%), and Risk (10%).
+    *   **Status**: ✅ **Real Logic** (Multi-factor Model).
 
 7.  **Time & Cycle Fitness**:
     *   **Purpose**: Ensures the opportunity is actionable *now*.
-    *   **Implementation**: Randomly assigns a "trend phase" (Early/Mid/Late) to test the logic.
-    *   **Status**: ⚠️ **Mocked** (Random phase assignment).
+    *   **Implementation**: Analyzes trend slope (Rising/Falling) and seasonality constraints (e.g., "No Winter products in December").
+    *   **Status**: ✅ **Real Logic** (Trend Analysis).
 
 ### Phase 3: Validation & Packaging (Template-Based)
 These steps structure the output but rely on templates rather than dynamic generation.
@@ -287,15 +287,15 @@ This section tracks the specific engineering plan to upgrade "Stubbed" or "Heuri
 #### Implementation Phases
 
 **Phase 1: Metric Normalization**
-*   [ ] **Create Helpers**: Implement `normalizeSignalData(signals)` to convert raw numbers (e.g., "10k views", "500 searches") into a 0-100 index.
-*   [ ] **Define Weights**: Create a `ScoringConfig` object in `StrategyProfile` to allow tuning weights without code changes.
+*   [x] **Create Helpers**: Implement `normalizeSignalData(signals)` to convert raw numbers (e.g., "10k views", "500 searches") into a 0-100 index.
+*   [x] **Define Weights**: Create a `ScoringConfig` object in `StrategyProfile` to allow tuning weights without code changes.
 
 **Phase 2: Logic Implementation**
-*   [ ] **Update Agent**: Rewrite `scoreAndRankThemes()` to implement the formula.
-*   [ ] **Integrate Step 2**: Ensure `context.risk_modifiers` are correctly applied.
+*   [x] **Update Agent**: Rewrite `scoreAndRankThemes()` to implement the formula.
+*   [x] **Integrate Step 2**: Ensure `context.risk_modifiers` are correctly applied.
 
 **Phase 3: Verification**
-*   [ ] **Test Case**: Create `test-scoring.ts`.
+*   [x] **Test Case**: Create `test-scoring.ts`.
     *   Scenario A: High Search Vol, Low Competition -> Expect Score > 80.
     *   Scenario B: High Search Vol, High Competition -> Expect Score ~60.
     *   Scenario C: Low Search Vol -> Expect Score < 40.
@@ -323,18 +323,18 @@ This section tracks the specific engineering plan to upgrade "Stubbed" or "Heuri
 #### Implementation Phases
 
 **Phase 1: Math Utilities**
-*   [ ] **Create Helper**: `src/utils/math.ts` -> `calculateLinearRegression(points)`.
-*   [ ] **Trend Analyzer**: Create `analyzeTrendShape(points)` that returns `Rising`, `Peaking`, `Falling`.
+*   [x] **Create Helper**: `src/utils/math.ts` -> `calculateLinearRegression(points)`.
+*   [x] **Trend Analyzer**: Create `analyzeTrendShape(points)` that returns `Rising`, `Peaking`, `Falling`.
 
 **Phase 2: Seasonality Intelligence**
-*   [ ] **Update Prompt**: Add `seasonality_check` to the Step 1 or Step 4 LLM prompt to tag themes with "Winter", "Summer", "Evergreen".
-*   [ ] **Logic Update**: In `checkTimeFitness()`, reject "Winter" products if current date > Nov 15.
+*   [x] **Update Prompt**: Add `seasonality_check` to the Step 1 or Step 4 LLM prompt to tag themes with "Winter", "Summer", "Evergreen".
+*   [x] **Logic Update**: In `checkTimeFitness()`, reject "Winter" products if current date > Nov 15.
 
 **Phase 3: Integration**
-*   [ ] **Update Agent**: Replace random assignment with `analyzeTrendShape(theme.signals.trends)`.
+*   [x] **Update Agent**: Replace random assignment with `analyzeTrendShape(theme.signals.trends)`.
 
 **Phase 4: Verification**
-*   [ ] **Test Case**: `test-trend-cycle.ts`.
+*   [x] **Test Case**: `test-trend-cycle.ts`.
     *   Input: Trend data for "Pumpkin Spice" (Peaks Oct).
     *   Run in August -> `Approved` (Rising).
     *   Run in November -> `Rejected` (Falling/Late).

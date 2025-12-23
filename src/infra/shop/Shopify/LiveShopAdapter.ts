@@ -233,8 +233,7 @@ export class LiveShopAdapter implements ShopManagementPort {
         name: response.title || '',
         description: response.body_html || '',
         price: parseFloat(response.variants?.[0]?.price || '0'),
-        category: response.product_type || '',
-        status: 'active'
+        category: response.product_type || ''
       };
     } catch (e: any) {
       logger.external('Shopify', 'getProduct', { endpoint: 'ShopifyAPI', error: e.message, id });

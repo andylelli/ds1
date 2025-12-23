@@ -124,6 +124,7 @@ export class Container {
             case 'FulfilmentAdapter': return 'fulfilment';
             case 'EmailAdapter': return 'email';
             case 'AiAdapter': return 'ai';
+            case 'LiveVideoAdapter': return 'video';
             default: return null;
         }
     }

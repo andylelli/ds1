@@ -1,5 +1,5 @@
 import { BaseAgent } from './BaseAgent.js';
-import { openAIService } from '../infra/ai/OpenAIService.js';
+import { openAIService } from '../infra/ai/OpenAI/OpenAIService.js';
 import { configService } from '../infra/config/ConfigService.js';
 export class StoreBuildAgent extends BaseAgent {
     shop;

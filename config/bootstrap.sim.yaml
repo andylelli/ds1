@@ -7,7 +7,7 @@ services:
   shop: mock
   ads: mock
   trends: live
-  competitor: mock
+  competitor: live
   fulfilment: mock
   email: mock
   ai: live
@@ -21,8 +21,8 @@ paths:
 bootstrap:
   services:
     ceo: mock
-    trends: simulation
-    competitor: mock
+    trends: live
+    competitor: live
     fulfilment: mock
     shop: mock
     ads: mock

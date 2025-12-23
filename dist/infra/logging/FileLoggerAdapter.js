@@ -2,11 +2,13 @@ import fs from 'fs';
 import path from 'path';
 export class FileLoggerAdapter {
     logFile;
-    constructor(mode, filename) {
+    prettyPrint;
+    constructor(mode, filename, prettyPrint = false) {
         // Map 'mock' to 'simulation' folder for simplicity, or keep separate if preferred.
         // The plan said logs/live or logs/simulation.
         const folder = mode === 'live' ? 'live' : 'simulation';
         this.logFile = path.resolve(process.cwd(), 'logs', folder, filename);
+        this.prettyPrint = prettyPrint;
         this.ensureLogDirectory();
     }
     ensureLogDirectory() {
@@ -17,7 +19,12 @@ export class FileLoggerAdapter {
     }
     write(level, message, context) {
         const timestamp = new Date().toISOString();
-        const contextStr = context ? JSON.stringify(context) : '';
+        let contextStr = '';
+        if (context) {
+            contextStr = this.prettyPrint
+                ? '\n' + JSON.stringify(context, null, 2)
+                : JSON.stringify(context);
+        }
         const line = `[${timestamp}] [${level.toUpperCase()}] ${message} ${contextStr}\n`;
         fs.appendFile(this.logFile, line, (err) => {
             if (err)

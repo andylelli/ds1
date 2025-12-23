@@ -2,7 +2,7 @@ import { PostgresEventBus } from './infra/events/PostgresEventBus.js';
 import { MockAdapter } from './infra/db/MockAdapter.js';
 import { ProductResearchAgent } from './agents/ProductResearchAgent.js';
 import { MockTrendAdapter } from './infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
-import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
+import { MockCompetitorAdapter } from './infra/research/Meta/MockCompetitorAdapter.js';
 
 async function testResearchVertical() {
     console.log('--- Starting Research Vertical Test ---');

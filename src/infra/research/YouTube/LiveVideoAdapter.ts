@@ -1,6 +1,6 @@
 import { logger } from '../../logging/LoggerService.js';
 import { google, youtube_v3 } from 'googleapis';
-import { VideoAnalysisPort, VideoResult, VideoDetails } from '../../../core/domain/ports/VideoAnalysisPort';
+import { VideoAnalysisPort, VideoResult, VideoDetails } from '../../../core/domain/ports/VideoAnalysisPort.js';
 import { ActivityLogService } from '../../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
 
@@ -80,7 +80,7 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
             }
             return results;
         } catch (error) {
-            logger.external('YouTube', 'searchVideos', { query, maxResults, error: error.message });
+            logger.external('YouTube', 'searchVideos', { query, maxResults, error: (error as any).message });
             console.error("Error searching YouTube videos:", error);
             if (this.activityLog) {
                 await this.activityLog.log({
@@ -89,7 +89,7 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
                     category: 'research',
                     status: 'failed',
                     message: `YouTube search failed for: ${query}`,
-                    details: { error: error.message }
+                    details: { error: (error as any).message }
                 });
             }
             return [];
@@ -125,7 +125,7 @@ export class LiveVideoAdapter implements VideoAnalysisPort {
             logger.external('YouTube', 'getVideoDetails', { videoIds, resultCount: details.length });
             return details;
         } catch (error) {
-            logger.external('YouTube', 'getVideoDetails', { videoIds, error: error.message });
+            logger.external('YouTube', 'getVideoDetails', { videoIds, error: (error as any).message });
             console.error("Error getting YouTube video details:", error);
             return [];
         }

@@ -7,7 +7,7 @@ import { MockAdapter } from './infra/db/MockAdapter.js';
 import { ProductResearchAgent } from './agents/ProductResearchAgent.js';
 import { LiveTrendAdapter } from './infra/trends/GoogleTrendsAPI/LiveTrendAdapter.js';
 import { LiveAdsAdapter } from './infra/ads/GoogleAds/LiveAdsAdapter.js';
-import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
+import { MockCompetitorAdapter } from './infra/research/Meta/MockCompetitorAdapter.js';
 import { Pool } from 'pg';
 
 // Mock Pool

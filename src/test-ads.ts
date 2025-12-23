@@ -1,5 +1,5 @@
 
-import { LiveAdsAdapter } from './infra/ads/LiveAdsAdapter.js';
+import { LiveAdsAdapter } from './infra/ads/GoogleAds/LiveAdsAdapter.js';
 import { MockAdapter } from './infra/db/MockAdapter.js';
 import dotenv from 'dotenv';
 

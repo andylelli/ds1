@@ -5,10 +5,10 @@ import { SupplierAgent } from './agents/SupplierAgent.js';
 import { StoreBuildAgent } from './agents/StoreBuildAgent.js';
 import { MarketingAgent } from './agents/MarketingAgent.js';
 import { MockTrendAdapter } from './infra/trends/GoogleTrendsAPI/MockTrendAdapter.js';
-import { MockCompetitorAdapter } from './infra/research/MockCompetitorAdapter.js';
+import { MockCompetitorAdapter } from './infra/research/Meta/MockCompetitorAdapter.js';
 import { MockFulfilmentAdapter } from './infra/fulfilment/MockFulfilmentAdapter.js';
-import { MockShopAdapter } from './infra/shop/MockShopAdapter.js';
-import { MockAdsAdapter } from './infra/ads/MockAdsAdapter.js';
+import { MockShopAdapter } from './infra/shop/Shopify/MockShopAdapter.js';
+import { MockAdsAdapter } from './infra/ads/GoogleAds/MockAdsAdapter.js';
 async function testExecutionVertical() {
     console.log('--- Starting Execution Vertical Test ---');
     // 1. Infrastructure

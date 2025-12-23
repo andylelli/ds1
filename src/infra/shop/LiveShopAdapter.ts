@@ -3,7 +3,7 @@ import { ShopManagementPort } from '../../core/domain/ports/ShopManagementPort.j
 import { Product } from '../../core/domain/types/Product.js';
 import { ActivityLogService } from '../../core/services/ActivityLogService.js';
 import { Pool } from 'pg';
-import { shopifyService } from './ShopifyService.js';
+import { shopifyService } from './Shopify/ShopifyService.js';
 
 export class LiveShopAdapter implements ShopManagementPort {
   private activityLog: ActivityLogService | null = null;

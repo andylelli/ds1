@@ -32,9 +32,11 @@ export class FileLoggerAdapter implements LoggerPort {
     }
     const line = `[${timestamp}] [${level.toUpperCase()}] ${message} ${contextStr}\n`;
     
-    fs.appendFile(this.logFile, line, (err) => {
-      if (err) console.error('Failed to write to log file', err);
-    });
+    try {
+      fs.appendFileSync(this.logFile, line);
+    } catch (err) {
+      console.error('Failed to write to log file', err);
+    }
   }
 
   debug(message: string, context?: any): void {

@@ -138,7 +138,7 @@ export class ServiceFactory {
         return live ? new LiveCompetitorAdapter(pool) : new MockCompetitorAdapter();
       }
       case 'VideoAdapter': {
-        const live = isServiceLive('video');
+        const live = isServiceLive('video' as any);
         console.log(`[ServiceFactory] Creating VideoAdapter. Live mode: ${live}`);
         // You would add actual LiveVideoAdapter/MockVideoAdapter instantiation here
         // For now, just log and return undefined or a mock if implemented

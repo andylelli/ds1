@@ -9,10 +9,20 @@ import { ActivityLogEntry } from '../core/domain/types/ActivityLogEntry.js';
 import { OpportunityBrief, ProductConcept, Seasonality, OpportunityDefinition, CustomerProblem, ProblemFrequency, ProblemUrgency, DemandEvidence, SignalType, TrendDirection, ConfidenceLevel, CompetitionAnalysis, CompetitionDensity, CompetitionQuality, SaturationRisk, PricingAndEconomics, MarginFeasibility, PriceSensitivity, OfferConcept, Complexity, DifferentiationStrategy, RiskAssessment, RiskLevel, TimeAndCycle, TrendPhase, ExecutionSpeedFit, ValidationPlan, TestType, KillCriteria, AssumptionsAndCertainty, EvidenceReferences } from '../core/domain/types/OpportunityBrief.js';
 
 // --- Section 0 & 1 Interfaces ---
+interface ScoringConfig {
+    weights: {
+        demand: number;
+        trend: number;
+        competition: number;
+        risk: number;
+    };
+}
+
 interface StrategyProfile {
     risk_tolerance: 'low' | 'medium' | 'high';
     target_margin: number;
     allowed_categories: string[];
+    scoring_config?: ScoringConfig;
 }
 
 interface ResearchBrief {
@@ -70,6 +80,7 @@ interface Theme {
     validation?: ValidationData; // Section 8
     rationale?: string;
     confidence?: number;
+    seasonality?: 'Winter' | 'Summer' | 'Evergreen' | 'Q4_Gift';
 }
 
 // --- Section 8 Interfaces ---
@@ -84,6 +95,8 @@ interface ValidationData {
 import { AdsPlatformPort } from '../core/domain/ports/AdsPlatformPort.js';
 import { ShopCompliancePort } from '../core/domain/ports/ShopCompliancePort.js';
 import { VideoAnalysisPort } from '../core/domain/ports/VideoAnalysisPort.js';
+
+import { analyzeTrendShape } from '../utils/math.js';
 
 export class ProductResearchAgent extends BaseAgent {
   private trendAnalyzer: TrendAnalysisPort;
@@ -151,13 +164,16 @@ export class ProductResearchAgent extends BaseAgent {
     });
   }
 
-  private async logStep(action: string, category: string, status: 'started' | 'completed' | 'failed' | 'warning', message: string, details?: any) {
+  private async logStep(action: string, category: string, status: 'started' | 'completed' | 'failed' | 'warning', message: string, details?: any, entityId?: string) {
     // Log to file system for visibility
     const logMsg = `[${category}] ${action}: ${message}`;
     if (status === 'failed') logger.error(logMsg, details);
     else if (status === 'warning') logger.warn(logMsg, details);
     else logger.info(logMsg, details);
 
+    // Extract entityId if possible (e.g. request_id or brief_id)
+    const finalEntityId = entityId || details?.request_id || details?.brief_id || details?.id;
+    
     // Log to database for Control Panel
     await this.db.saveActivity({
       agent: this.name,
@@ -166,6 +182,7 @@ export class ProductResearchAgent extends BaseAgent {
       status,
       message,
       details,
+      entityId: typeof finalEntityId === 'string' ? finalEntityId : undefined,
       timestamp: new Date()
     });
   }
@@ -343,9 +360,9 @@ export class ProductResearchAgent extends BaseAgent {
               let products;
               try {
                   products = await this.trendAnalyzer.findProducts(keyword);
-                  this.log('debug', `[collectSignals] trendAnalyzer.findProducts result for "${keyword}":`, products);
+                  this.log('debug', { message: `[collectSignals] trendAnalyzer.findProducts result for "${keyword}":`, data: products });
                   logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, productsCount: products?.length || 0, products });
-              } catch (err) {
+              } catch (err: any) {
                   logger.external('GoogleTrends', 'findProducts', { endpoint: 'GoogleTrendsAPI', keyword, error: err?.message });
               }
               if (products && products.length > 0) {
@@ -375,9 +392,9 @@ export class ProductResearchAgent extends BaseAgent {
               let compData;
               try {
                   compData = await this.competitorAnalyzer.analyzeCompetitors(prod.name);
-                  this.log('debug', `[collectSignals] competitorAnalyzer.analyzeCompetitors result for "${prod.name}":`, compData);
+                  this.log('debug', { message: `[collectSignals] competitorAnalyzer.analyzeCompetitors result for "${prod.name}":`, data: compData });
                   logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, result: compData });
-              } catch (err) {
+              } catch (err: any) {
                   logger.external('CompetitorAnalysis', 'analyzeCompetitors', { endpoint: 'Facebook/Meta', product: prod.name, error: err?.message });
               }
               if (compData) {
@@ -409,9 +426,9 @@ export class ProductResearchAgent extends BaseAgent {
                   let videoData;
                   try {
                       videoData = await this.videoAnalyzer.searchVideos(prod.name, 5);
-                      this.log('debug', `[collectSignals] videoAnalyzer.searchVideos result for "${prod.name}":`, videoData);
+                      this.log('debug', { message: `[collectSignals] videoAnalyzer.searchVideos result for "${prod.name}":`, data: videoData });
                       logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, resultCount: videoData.length });
-                  } catch (err) {
+                  } catch (err: any) {
                       logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', product: prod.name, error: err?.message });
                   }
 
@@ -446,9 +463,9 @@ export class ProductResearchAgent extends BaseAgent {
                   let metrics;
                   try {
                       metrics = await this.adsAnalyzer.getKeywordMetrics(keywords);
-                      this.log('debug', `[collectSignals] adsAnalyzer.getKeywordMetrics result:`, metrics);
+                      this.log('debug', { message: `[collectSignals] adsAnalyzer.getKeywordMetrics result:`, data: metrics });
                       logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, metrics });
-                  } catch (err) {
+                  } catch (err: any) {
                       logger.external('GoogleAds', 'getKeywordMetrics', { endpoint: 'GoogleAdsAPI', keywords, error: err?.message });
                   }
                   if (metrics) {
@@ -474,9 +491,9 @@ export class ProductResearchAgent extends BaseAgent {
               let shopResult;
               try {
                   shopResult = await this.shopCompliance.checkPolicy(brief.raw_criteria.category, '');
-                  this.log('debug', `[collectSignals] shopCompliance.checkPolicy result:`, shopResult);
+                  this.log('debug', { message: `[collectSignals] shopCompliance.checkPolicy result:`, data: shopResult });
                   logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, result: shopResult });
-              } catch (err) {
+              } catch (err: any) {
                   logger.external('Shopify', 'checkPolicy', { endpoint: 'ShopifyAPI', category: brief.raw_criteria.category, error: err?.message });
               }
               if (shopResult) {
@@ -501,9 +518,9 @@ export class ProductResearchAgent extends BaseAgent {
               let videoResults;
               try {
                   videoResults = await this.videoAnalyzer.searchVideos(brief.raw_criteria.category, 5);
-                  this.log('debug', `[collectSignals] videoAnalyzer.searchVideos result:`, videoResults);
+                  this.log('debug', { message: `[collectSignals] videoAnalyzer.searchVideos result:`, data: videoResults });
                   logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, resultCount: videoResults?.length || 0, result: videoResults });
-              } catch (err) {
+              } catch (err: any) {
                   logger.external('YouTube', 'searchVideos', { endpoint: 'YouTubeAPI', category: brief.raw_criteria.category, error: err?.message });
               }
               if (videoResults) {
@@ -551,7 +568,8 @@ export class ProductResearchAgent extends BaseAgent {
               supporting_signals: (t.signal_ids || []).filter((id: string) => validSignalIds.has(id)),
               certainty: (t.confidence && t.confidence > 0.8) ? 'Observed' : 'Inferred',
               rationale: t.rationale,
-              confidence: t.confidence
+              confidence: t.confidence,
+              seasonality: t.seasonality
           }));
 
           this.generatedThemes = themes;
@@ -630,43 +648,75 @@ export class ProductResearchAgent extends BaseAgent {
   private async scoreAndRankThemes(themes: Theme[], adjustments: RiskAdjustment[]): Promise<Theme[]> {
       this.log('info', `[Section 6] Scoring ${themes.length} themes...`);
       
+      // Default weights
+      const weights = this.strategyProfile?.scoring_config?.weights || {
+          demand: 0.4,
+          trend: 0.3,
+          competition: 0.2,
+          risk: 0.1
+      };
+
       const scoredThemes = themes.map(theme => {
-          // 1. Base Score (Mock Heuristics)
-          // In reality, this would come from analyzing the signals attached to the theme
-          let score = 0.5; // Start neutral
-
-          // Heuristic: Certainty Bonus
-          if (theme.certainty === 'Observed') score += 0.2;
-          if (theme.certainty === 'Inferred') score += 0.1;
-
-          // Heuristic: Signal Count Bonus
-          const signalCount = theme.supporting_signals.length;
-          score += Math.min(signalCount * 0.05, 0.2); // Cap at 0.2
-
-          // 2. Apply Risk Adjustments (from Section 2)
-          // We check if any adjustment applies to this theme (e.g. by keyword matching)
-          // Since adjustments were global or category based, we might apply them all or filter.
-          // The checklist says "Apply prior-learning adjustments".
-          // Let's assume adjustments in `this.riskAdjustments` are relevant to the whole request context.
+          const signals = this.collectedSignals.filter(s => theme.supporting_signals.includes(s.id));
           
-          for (const adj of adjustments) {
-              if (adj.type === 'penalty') score += adj.value; // value is negative
-              if (adj.type === 'boost') score += adj.value;
+          // 1. Demand Strength (0-100)
+          // Aggregate search volume and social views
+          let totalVolume = 0;
+          let totalViews = 0;
+          
+          for (const s of signals) {
+              if (s.family === 'search' && s.data.volume) totalVolume += s.data.volume;
+              if (s.family === 'social' && s.data.views) totalViews += s.data.views;
           }
-
-          // 3. Random Variance (to simulate different potential)
-          // In a real agent, this would be based on "Demand Acceleration", "Competition Saturation", etc.
-          // We'll mock these sub-scores.
-          const demandScore = Math.random();
-          const competitionScore = Math.random(); // Lower is better usually, but let's say this is "Opportunity Score"
           
-          score += (demandScore * 0.3);
-          score += (competitionScore * 0.2);
+          // Normalize (Assumptions: High Volume = 100k, High Views = 1M)
+          const normVolume = Math.min(totalVolume / 100000, 1) * 100;
+          const normViews = Math.min(totalViews / 1000000, 1) * 100;
+          const demandScore = Math.max(normVolume, normViews); // Take the strongest signal
 
-          // Clamp 0-1
-          score = Math.max(0, Math.min(1, score));
+          // 2. Trend Velocity (0-100)
+          // Calculate slope of trend points
+          let maxSlope = 0;
+          for (const s of signals) {
+              if (s.family === 'search' && s.data.trend_points && Array.isArray(s.data.trend_points)) {
+                  const points = s.data.trend_points;
+                  if (points.length > 1) {
+                      const slope = (points[points.length - 1] - points[0]) / points.length;
+                      maxSlope = Math.max(maxSlope, slope);
+                  }
+              }
+          }
+          // Normalize slope (Assumption: Slope of 5 is high growth)
+          const trendScore = Math.min(Math.max(maxSlope, 0) / 5, 1) * 100;
 
-          return { ...theme, score };
+          // 3. Competition Density (0-100)
+          // Count competitor signals
+          const competitorCount = signals.filter(s => s.family === 'competitor').length;
+          // Normalize (Assumption: 10 competitors is saturated)
+          const competitionScore = Math.min(competitorCount / 10, 1) * 100;
+
+          // 4. Risk Adjustment
+          let riskScore = 50; // Start neutral
+          for (const adj of adjustments) {
+              if (adj.type === 'penalty') riskScore += adj.value; 
+              if (adj.type === 'boost') riskScore += adj.value;
+          }
+          riskScore = Math.max(0, Math.min(100, riskScore));
+
+          // Calculate Final Score
+          // Score = (Demand * 0.4) + (Trend * 0.3) + (LowCompetition * 0.2) + (Risk * 0.1)
+          // We invert competition score because Low Competition is good.
+          const competitionFactor = 100 - competitionScore;
+
+          let finalScore = (demandScore * weights.demand) + 
+                           (trendScore * weights.trend) + 
+                           (competitionFactor * weights.competition) + 
+                           (riskScore * weights.risk);
+          
+          // Cap at 100
+          finalScore = Math.min(100, Math.max(0, finalScore));
+
+          return { ...theme, score: parseFloat(finalScore.toFixed(2)) };
       });
 
       // Rank
@@ -687,6 +737,7 @@ export class ProductResearchAgent extends BaseAgent {
       
       const passed: Theme[] = [];
       const notes: any[] = [];
+      const currentMonth = new Date().getMonth() + 1; // 1-12
 
       // Execution Speed Mapping (Days to launch)
       const executionDays = {
@@ -696,23 +747,50 @@ export class ProductResearchAgent extends BaseAgent {
       }[brief.execution_speed] || 14;
 
       for (const theme of themes) {
-          // 1. Estimate Trend Phase (Mock)
-          // In reality, we'd look at the trend signal slope
-          const phases = ['early', 'mid', 'late'];
-          const phase = phases[Math.floor(Math.random() * phases.length)]; // Random for now
+          const signals = this.collectedSignals.filter(s => theme.supporting_signals.includes(s.id));
           
-          // 2. Estimate Opportunity Window (Days remaining)
-          let windowDays = 0;
-          if (phase === 'early') windowDays = 90;
-          if (phase === 'mid') windowDays = 45;
-          if (phase === 'late') windowDays = 10;
+          // 1. Analyze Trend Shape
+          let trendShape = 'Flat';
+          let trendPoints: number[] = [];
+          
+          // Find the best trend signal
+          for (const s of signals) {
+              if (s.family === 'search' && s.data.trend_points && Array.isArray(s.data.trend_points)) {
+                  if (s.data.trend_points.length > trendPoints.length) {
+                      trendPoints = s.data.trend_points;
+                  }
+              }
+          }
 
-          // 3. Compare
+          if (trendPoints.length >= 5) {
+              trendShape = analyzeTrendShape(trendPoints);
+          }
+
+          // 2. Estimate Opportunity Window
+          let windowDays = 0;
+          if (trendShape === 'Rising') windowDays = 90;
+          if (trendShape === 'Peaking') windowDays = 30;
+          if (trendShape === 'Falling') windowDays = 0;
+          if (trendShape === 'Flat') windowDays = 45; // Stable demand
+
+          // 3. Seasonality Check
+          let seasonalityPenalty = false;
+          if (theme.seasonality === 'Winter' && currentMonth > 11) seasonalityPenalty = true; // Too late for Winter (Dec)
+          if (theme.seasonality === 'Summer' && currentMonth > 6) seasonalityPenalty = true; // Too late for Summer (July)
+          if (theme.seasonality === 'Q4_Gift' && currentMonth > 11) seasonalityPenalty = true; // Too late for Xmas
+
+          if (seasonalityPenalty) {
+              windowDays = 0;
+              this.log('info', `Theme ${theme.name} rejected due to Seasonality (${theme.seasonality}) vs Month ${currentMonth}`);
+          }
+
+          // 4. Compare
           const isViable = windowDays >= executionDays;
 
           notes.push({
               themeId: theme.id,
-              phase,
+              trendShape,
+              seasonality: theme.seasonality,
               windowDays,
               executionDays,
               isViable
@@ -721,7 +799,7 @@ export class ProductResearchAgent extends BaseAgent {
           if (isViable) {
               passed.push(theme);
           } else {
-              this.log('info', `Theme ${theme.name} rejected: Window (${windowDays}d) < Execution (${executionDays}d) [Phase: ${phase}]`);
+              this.log('info', `Theme ${theme.name} rejected: Window (${windowDays}d) < Execution (${executionDays}d) [Shape: ${trendShape}]`);
           }
       }
 
@@ -740,23 +818,27 @@ export class ProductResearchAgent extends BaseAgent {
       const candidates = themes.slice(0, 5);
 
       for (const theme of candidates) {
-          // Mock Deep Scan
-          // In reality, this would call:
-          // - Social listening API for comments
-          // - Competitor analysis for reviews
-          // - Supplier API for logistics check
-
-          const validation: ValidationData = {
-              qualitative_samples: [
-                  "Love the concept but hate the plastic feel",
-                  "Need this for my small apartment",
-                  "Too expensive for what it is"
-              ],
-              problem_language: ["space saving", "durable", "eco-friendly"],
-              competition_quality: Math.random() > 0.5 ? 'high' : 'medium',
-              price_band: { min: 20, max: 80 },
-              operational_risks: Math.random() > 0.7 ? ['Fragile shipping'] : []
-          };
+          // Real Deep Scan using LLM
+          this.log('info', `[Section 8] Validating theme: ${theme.name}`);
+          
+          let validation: ValidationData;
+          try {
+              const result = await openAIService.validateTheme(theme);
+              if (result) {
+                  validation = result;
+              } else {
+                  throw new Error("Failed to generate validation data");
+              }
+          } catch (e) {
+              this.log('error', `[Section 8] Validation failed for ${theme.name}, falling back to heuristic.`);
+              validation = {
+                  qualitative_samples: ["Data unavailable"],
+                  problem_language: ["unknown"],
+                  competition_quality: 'medium',
+                  price_band: { min: 0, max: 0 },
+                  operational_risks: ["Validation Error"]
+              };
+          }
 
           // Enrich theme
           theme.validation = validation;
@@ -776,18 +858,32 @@ export class ProductResearchAgent extends BaseAgent {
       const concepts: ProductConcept[] = [];
 
       for (const theme of themes) {
-          // Mock Concept Generation
-          // In reality, this would use LLM to synthesize the validation data into a concept
+          // Real Concept Generation using LLM
+          this.log('info', `[Section 9] Generating concept for: ${theme.name}`);
           
-          const concept: ProductConcept = {
-              theme_id: theme.id,
-              core_hypothesis: `If we sell ${theme.name} positioned as ${theme.validation?.problem_language[0] || 'solution'}, we can capture the ${theme.validation?.price_band.min}-${theme.validation?.price_band.max} price point.`,
-              bundle_options: ["Starter Kit", "Refill Pack"],
-              target_persona: "Busy Urban Professional",
-              usage_scenario: "Used daily during morning routine",
-              differentiation: "Higher quality materials + eco-friendly packaging",
-              supplier_check: 'pass' // Mock pass
-          };
+          let concept: ProductConcept;
+          try {
+              const result = await openAIService.generateConcept(theme, theme.validation);
+              if (result) {
+                  concept = {
+                      ...result,
+                      theme_id: theme.id
+                  };
+              } else {
+                  throw new Error("Failed to generate concept");
+              }
+          } catch (e) {
+              this.log('error', `[Section 9] Concept generation failed for ${theme.name}, falling back to heuristic.`);
+              concept = {
+                  theme_id: theme.id,
+                  core_hypothesis: `If we sell ${theme.name}, we can capture the market.`,
+                  bundle_options: ["Standard"],
+                  target_persona: "General Audience",
+                  usage_scenario: "Daily use",
+                  differentiation: "Standard",
+                  supplier_check: 'pass'
+              };
+          }
 
           concepts.push(concept);
       }
@@ -996,18 +1092,18 @@ export class ProductResearchAgent extends BaseAgent {
   private async handleResearchRequest(payload: { request_id: string, criteria: any }) {
     const { request_id, criteria } = payload;
     this.log('info', `[Section 1] Processing Request: ${request_id}`);
-    await this.logStep('Pipeline Start', 'System', 'started', `Starting Research Pipeline for Request: ${request_id}`, payload);
+    await this.logStep('Pipeline Start', 'System', 'started', `Starting Research Pipeline for Request: ${request_id}`, payload, request_id);
 
     try {
         // Section 0: Preconditions
-        await this.logStep('Step 0: Dependencies', 'Initialization', 'started', 'Loading dependencies...');
+        await this.logStep('Step 0: Dependencies', 'Initialization', 'started', 'Loading dependencies...', undefined, request_id);
         if (!await this.loadDependencies()) {
             throw new Error("Failed to load dependencies (Strategy Profile, etc.)");
         }
-        await this.logStep('Step 0: Dependencies', 'Initialization', 'completed', 'Dependencies loaded.');
+        await this.logStep('Step 0: Dependencies', 'Initialization', 'completed', 'Dependencies loaded.', undefined, request_id);
 
         // Section 1: Request Intake & Normalization
-        await this.logStep('Step 1: Brief', 'Research', 'started', 'Creating research brief...');
+        await this.logStep('Step 1: Brief', 'Research', 'started', 'Creating research brief...', undefined, request_id);
         const brief = await this.createResearchBrief(request_id, criteria);
         
         if (brief.alignment_score < 0.5) {
@@ -1023,10 +1119,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 1] Brief Created: ${briefId}`);
-        await this.logStep('Step 1: Brief', 'Research', 'completed', 'Research brief created.', brief);
+        await this.logStep('Step 1: Brief', 'Research', 'completed', `Research brief created for '${brief.raw_criteria.category}' targeting '${brief.target_personas.join(', ')}'.`, brief, request_id);
 
         // Section 2: Prior Learning Ingestion
-        await this.logStep('Step 2: Learnings', 'Research', 'started', 'Ingesting prior learnings...');
+        await this.logStep('Step 2: Learnings', 'Research', 'started', 'Ingesting prior learnings...', undefined, request_id);
         const { learnings, adjustments } = await this.ingestPriorLearnings(brief);
         
         await this.eventBus.publish('OpportunityResearch.PriorLearningsAttached' as any, {
@@ -1037,16 +1133,16 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 2] Prior Learnings Attached: ${learnings.length} items`);
-        await this.logStep('Step 2: Learnings', 'Research', 'completed', 'Prior learnings ingested.', { count: learnings.length });
+        await this.logStep('Step 2: Learnings', 'Research', 'completed', `Ingested ${learnings.length} prior learnings relevant to this category.`, { learnings, adjustments }, request_id);
 
         // Section 3: Multi-Signal Discovery
-        await this.logStep('Step 3: Signals', 'Discovery', 'started', 'Collecting signals...');
+        await this.logStep('Step 3: Signals', 'Discovery', 'started', 'Collecting signals...', undefined, request_id);
         const signals = await this.collectSignals(brief);
         
         if (signals.length === 0) {
             const msg = 'No signals collected. Aborting research pipeline.';
             this.log('error', msg);
-            await this.logStep('Step 3: Signals', 'Discovery', 'failed', msg, { count: 0 });
+            await this.logStep('Step 3: Signals', 'Discovery', 'failed', msg, { count: 0 }, request_id);
             throw new Error(msg);
         }
 
@@ -1057,10 +1153,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 3] Signals Collected: ${signals.length} items from ${[...new Set(signals.map(s => s.family))].join(', ')}`);
-        await this.logStep('Step 3: Signals', 'Discovery', 'completed', `Collected ${signals.length} signals.`, { count: signals.length });
+        await this.logStep('Step 3: Signals', 'Discovery', 'completed', `Collected ${signals.length} signals from ${[...new Set(signals.map(s => s.family))].join(', ')}.`, { signals }, request_id);
 
         // Section 4: Theme Generation
-        await this.logStep('Step 4: Themes', 'Analysis', 'started', 'Generating themes...');
+        await this.logStep('Step 4: Themes', 'Analysis', 'started', 'Generating themes...', undefined, request_id);
         const themes = await this.generateThemes(signals);
 
         await this.eventBus.publish('OpportunityResearch.ThemesGenerated' as any, {
@@ -1069,10 +1165,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 4] Themes Generated: ${themes.length} themes`);
-        await this.logStep('Step 4: Themes', 'Analysis', 'completed', `Generated ${themes.length} themes.`, { count: themes.length });
+        await this.logStep('Step 4: Themes', 'Analysis', 'completed', `Generated ${themes.length} themes: ${themes.map(t => t.name).join(', ')}.`, { themes }, request_id);
 
         // Section 5: Hard-Gate Filtering
-        await this.logStep('Step 5: Gating', 'Filtering', 'started', 'Gating themes...');
+        await this.logStep('Step 5: Gating', 'Filtering', 'started', 'Gating themes...', undefined, request_id);
         const { passed, rejected } = await this.gateThemes(themes, brief);
 
         await this.eventBus.publish('OpportunityResearch.ThemesGated' as any, {
@@ -1083,10 +1179,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 5] Themes Gated: ${passed.length} passed, ${rejected.length} rejected`);
-        await this.logStep('Step 5: Gating', 'Filtering', 'completed', `Gated down to ${passed.length} themes.`, { count: passed.length });
+        await this.logStep('Step 5: Gating', 'Filtering', 'completed', `Gated down to ${passed.length} themes. Passed: ${passed.map(t => t.name).join(', ')}.`, { passed, rejected }, request_id);
 
         // Section 6: Preliminary Scoring & Ranking
-        await this.logStep('Step 6: Scoring', 'Ranking', 'started', 'Scoring and ranking themes...');
+        await this.logStep('Step 6: Scoring', 'Ranking', 'started', 'Scoring and ranking themes...', undefined, request_id);
         const rankedThemes = await this.scoreAndRankThemes(passed, adjustments);
 
         await this.eventBus.publish('OpportunityResearch.ShortlistRanked' as any, {
@@ -1095,10 +1191,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 6] Shortlist Ranked: Top ${rankedThemes.length} themes`);
-        await this.logStep('Step 6: Scoring', 'Ranking', 'completed', `Ranked ${rankedThemes.length} themes.`, { top: rankedThemes[0]?.name });
+        await this.logStep('Step 6: Scoring', 'Ranking', 'completed', `Ranked ${rankedThemes.length} themes. Top candidate: ${rankedThemes[0]?.name} (Score: ${rankedThemes[0]?.score}).`, { rankedThemes }, request_id);
 
         // Section 7: Time & Cycle Fitness Check
-        await this.logStep('Step 7: Time Fitness', 'Filtering', 'started', 'Checking time fitness...');
+        await this.logStep('Step 7: Time Fitness', 'Filtering', 'started', 'Checking time fitness...', undefined, request_id);
         const { passed: timePassed, notes: timeNotes } = await this.checkTimeFitness(rankedThemes, brief);
 
         await this.eventBus.publish('OpportunityResearch.TimeFiltered' as any, {
@@ -1109,10 +1205,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 7] Time Filtered: ${timePassed.length} passed`);
-        await this.logStep('Step 7: Time Fitness', 'Filtering', 'completed', `${timePassed.length} themes passed time fitness.`, { count: timePassed.length });
+        await this.logStep('Step 7: Time Fitness', 'Filtering', 'completed', `${timePassed.length} themes passed time fitness check.`, { passed: timePassed, notes: timeNotes }, request_id);
 
         // Section 8: Deep Validation
-        await this.logStep('Step 8: Deep Validation', 'Validation', 'started', 'Performing deep validation...');
+        await this.logStep('Step 8: Deep Validation', 'Validation', 'started', 'Performing deep validation...', undefined, request_id);
         const validatedThemes = await this.performDeepValidation(timePassed);
 
         await this.eventBus.publish('OpportunityResearch.ValidatedCandidatesReady' as any, {
@@ -1122,10 +1218,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 8] Validated Candidates Ready: ${validatedThemes.length} themes`);
-        await this.logStep('Step 8: Deep Validation', 'Validation', 'completed', `Validated ${validatedThemes.length} themes.`, { count: validatedThemes.length });
+        await this.logStep('Step 8: Deep Validation', 'Validation', 'completed', `Validated ${validatedThemes.length} themes ready for productization.`, { validatedThemes }, request_id);
 
         // Section 9: Productization
-        await this.logStep('Step 9: Productization', 'Concepting', 'started', 'Creating offer concepts...');
+        await this.logStep('Step 9: Productization', 'Concepting', 'started', 'Creating offer concepts...', undefined, request_id);
         const concepts = await this.createOfferConcepts(validatedThemes);
 
         await this.eventBus.publish('OpportunityResearch.OfferConceptsCreated' as any, {
@@ -1135,10 +1231,10 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 9] Offer Concepts Created: ${concepts.length} concepts`);
-        await this.logStep('Step 9: Productization', 'Concepting', 'completed', `Created ${concepts.length} concepts.`, { count: concepts.length });
+        await this.logStep('Step 9: Productization', 'Concepting', 'completed', `Created ${concepts.length} offer concepts: ${concepts.map(c => c.core_hypothesis).join(', ')}.`, { concepts }, request_id);
 
         // Section 10: Opportunity Brief Creation
-        await this.logStep('Step 10: Briefs', 'Output', 'started', 'Creating opportunity briefs...');
+        await this.logStep('Step 10: Briefs', 'Output', 'started', 'Creating opportunity briefs...', undefined, request_id);
         const briefs = await this.createOpportunityBriefs(concepts, validatedThemes, request_id, brief);
 
         // Save briefs to DB
@@ -1153,11 +1249,11 @@ export class ProductResearchAgent extends BaseAgent {
         }, request_id);
 
         this.log('info', `[Section 10] Briefs Published: ${briefs.length} briefs`);
-        await this.logStep('Step 10: Briefs', 'Output', 'completed', `Created ${briefs.length} briefs.`, { count: briefs.length });
+        await this.logStep('Step 10: Briefs', 'Output', 'completed', `Published ${briefs.length} opportunity briefs.`, { briefs }, request_id);
 
         // Section 11: Handoff via Events
         this.log('info', `[Section 11] Initiating Handoff for ${briefs.length} opportunities...`);
-        await this.logStep('Step 11: Handoff', 'Output', 'started', 'Initiating handoff...');
+        await this.logStep('Step 11: Handoff', 'Output', 'started', 'Initiating handoff...', undefined, request_id);
 
         for (const brief of briefs) {
             // 1. Request Supplier Feasibility Check
@@ -1176,12 +1272,12 @@ export class ProductResearchAgent extends BaseAgent {
         }
 
         this.log('info', `[Section 11] Handoff Complete. Research Cycle Finished.`);
-        await this.logStep('Step 11: Handoff', 'Output', 'completed', 'Handoff complete.');
-        await this.logStep('Pipeline Complete', 'System', 'completed', `Pipeline Complete. Generated ${briefs.length} briefs.`, { briefs: briefs.map(b => b.id) });
+        await this.logStep('Step 11: Handoff', 'Output', 'completed', 'Handoff complete.', undefined, request_id);
+        await this.logStep('Pipeline Complete', 'System', 'completed', `Pipeline Complete. Generated ${briefs.length} briefs.`, { briefs: briefs.map(b => b.id) }, request_id);
 
     } catch (error: any) {
       this.log('error', `Research Aborted: ${error.message}`);
-      await this.logStep('Pipeline Failed', 'System', 'failed', `Pipeline Failed: ${error.message}`, { error: error.stack });
+      await this.logStep('Pipeline Failed', 'System', 'failed', `Pipeline Failed: ${error.message}`, { error: error.stack }, request_id);
       await this.eventBus.publish('OpportunityResearch.Aborted', {
         brief_id: `unknown_${request_id}`,
         reason: error.message

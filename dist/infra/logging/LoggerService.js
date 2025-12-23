@@ -15,9 +15,9 @@ class LoggerService {
         const dbMode = configService.get('dbMode');
         const systemMode = dbMode === 'live' ? 'live' : 'simulation';
         if (loggingMode === 'file') {
-            this.activityLogger = new FileLoggerAdapter(systemMode, 'activity.log');
-            this.errorLogger = new FileLoggerAdapter(systemMode, 'error.log');
-            this.externalLogger = new FileLoggerAdapter(systemMode, 'external.log');
+            this.activityLogger = new FileLoggerAdapter(systemMode, 'activity.log', true); // Pretty print for better readability
+            this.errorLogger = new FileLoggerAdapter(systemMode, 'error.log', true);
+            this.externalLogger = new FileLoggerAdapter(systemMode, 'external.log', true); // Pretty print external logs
         }
         else {
             // Default to console for all

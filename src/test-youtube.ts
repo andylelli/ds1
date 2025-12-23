@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { LiveVideoAdapter } from './infra/research/YouTube/LiveVideoAdapter';
+import { LiveVideoAdapter } from './infra/research/YouTube/LiveVideoAdapter.js';
 
 dotenv.config();
 
